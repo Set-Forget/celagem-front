@@ -28,7 +28,7 @@ import { newInvoiceSchema } from "./schemas/invoices"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ItemsTable from "./components/items-table"
-import Header from "@/lib/components/header"
+import Header from "@/components/header"
 import { Separator } from "@/components/ui/separator"
 
 const companies = [

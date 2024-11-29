@@ -1,4 +1,4 @@
-import Header from "@/lib/components/header";
+import Header from "@/components/header";
 import { CustomersTable } from "./components/customers-table";
 import { Separator } from "@/components/ui/separator";
 

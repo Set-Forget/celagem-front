@@ -18,7 +18,6 @@ import {
 import { newInvoiceSchema } from "../schemas/invoices"
 import ItemRow from "./item-row"
 import TableFooter from "./table-footer"
-import { ScrollArea } from "@/components/ui/scroll-area"
 
 export default function ItemsTable() {
   const { control } = useFormContext<z.infer<typeof newInvoiceSchema>>()

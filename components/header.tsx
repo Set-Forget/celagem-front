@@ -2,7 +2,7 @@
 
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { usePathname } from "next/navigation"
-import { HEADER_TITLES } from "../constants/header-titles"
+import { HEADER_TITLES } from "../lib/constants/header-titles"
 import { ReactNode, useEffect, useState } from "react"
 
 export default function Header({ title, children }: { children?: ReactNode, title?: string }) {

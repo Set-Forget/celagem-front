@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/resizable"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import Header from "@/components/header"
 import { Pencil, Plus, X } from "lucide-react"
 import { ContactsTable } from "./components/contacts-table"
-import Header from "@/lib/components/header"
 
 const notes = [
   { id: 1, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc." },
