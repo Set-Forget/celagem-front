@@ -30,7 +30,7 @@ export default async function CustomerPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const customerId = (await params).id
+  //const customerId = (await params).id
 
   return (
     <div>

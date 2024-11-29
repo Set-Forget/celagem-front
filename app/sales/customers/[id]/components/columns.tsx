@@ -31,7 +31,7 @@ export const columns: ColumnDef<Contact>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: () => {
       return (
         <></>
       )
