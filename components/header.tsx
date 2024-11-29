@@ -7,7 +7,7 @@ import { ReactNode, useEffect, useState } from "react"
 
 export default function Header({ title, children }: { children?: ReactNode, title?: string }) {
   const pathname = usePathname()
-  const [isSticky, setIsSticky] = useState(false)
+  const [isSticky, setIsSticky] = useState(window.scrollY > 17)
 
   const getHeaderTitle = (pathname: string): string => {
     const match = HEADER_TITLES.find(({ path }) => {

@@ -41,7 +41,7 @@ export default async function CustomerPage({
         </Button>
       </Header>
       <Separator />
-      <ResizablePanelGroup direction="horizontal">
+      <ResizablePanelGroup className="flex !h-auto !w-auto" direction="horizontal">
         <ResizablePanel defaultSize={70}>
           <div className="flex flex-col gap-4 py-4">
             <div className="px-4 flex flex-col gap-4">
