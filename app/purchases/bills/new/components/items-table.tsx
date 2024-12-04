@@ -10,15 +10,14 @@ import { Label } from "@/components/ui/label"
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow
 } from "@/components/ui/table"
+import { newBillSchema } from "../../schemas/bills"
 import ItemRow from "./item-row"
 import TableFooter from "./table-footer"
-import { newBillSchema } from "../../schemas/bills"
 
 export default function ItemsTable() {
   const { control } = useFormContext<z.infer<typeof newBillSchema>>()
@@ -35,6 +34,8 @@ export default function ItemsTable() {
       quantity: 1,
       price: "",
       tax: "21",
+      item_code: "",
+      item_name: "",
     });
   }
 

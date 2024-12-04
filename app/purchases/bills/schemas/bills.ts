@@ -6,7 +6,7 @@ export const billItemSchema = z.object({
   item_code: z.string(),
   item_name: z.string(),
   quantity: z.number(),
-  price: z.number(),
+  price: z.string(),
   tax: z.enum(["0", "21", "10.5"]),
 });
 
