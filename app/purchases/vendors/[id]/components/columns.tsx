@@ -3,16 +3,15 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
+import { Supplier } from "../../schema/suppliers"
 
-import { Contact } from "../../schemas/customers"
-
-export const columns: ColumnDef<Contact>[] = [
+export const columns: ColumnDef<Supplier>[] = [
   {
     accessorKey: "name",
     header: "Nombre",
     cell: ({ row }) => (
       <div>
-        {row.getValue("name")} {row.original.last_name}
+        {row.getValue("name")} {row.original.contact_name}
       </div>
     ),
   },
