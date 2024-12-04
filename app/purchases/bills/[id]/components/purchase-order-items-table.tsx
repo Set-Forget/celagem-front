@@ -33,7 +33,7 @@ const data: BillItem[] = [
     "description": "Guantes de nitrilo talla M",
     "quantity": 50,
     "id": "5e7361f5-0fbf-433b-8688-b65896a0f54a",
-    "price": 400.93,
+    "price": "400.93",
     "tax": "21",
   },
 ]
