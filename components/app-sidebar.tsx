@@ -2,8 +2,10 @@
 
 import {
   AudioWaveform,
+  Box,
   ChevronRight,
   Command,
+  FileText,
   GalleryVerticalEnd,
   LayoutDashboard,
   ShoppingBag,
@@ -59,46 +61,73 @@ const data = {
   ],
   navMain: [
     {
-      title: "Sales",
+      title: "Ventas",
       url: "#",
       icon: ShoppingBag,
       isActive: true,
       items: [
         {
-          title: "Invoices",
+          title: "Facturas de venta",
           url: "/sales/invoices",
         },
         {
-          title: "Credit Notes",
+          title: "Notas de crédito",
           url: "/sales/credit-notes",
         },
         {
-          title: "Customers",
+          title: "Notas de débito",
+          url: "/purchases/debit-notes",
+        },
+        {
+          title: "Clientes",
           url: "/sales/customers",
         },
       ],
     },
     {
-      title: "Purchases",
+      title: "Compras",
       url: "#",
       icon: ShoppingCart,
       items: [
         {
-          title: "Bills",
-          url: "/purchases/bills",
+          title: "Solicitudes de pedido",
+          url: "/purchases/purchase-requests",
         },
         {
-          title: "Debit Notes",
-          url: "/purchases/debit-notes",
-        },
-        {
-          title: "Purchase Orders",
+          title: "Ordenes de compra",
           url: "/purchases/purchase-orders",
         },
         {
-          title: "Vendors",
+          title: "Recepciones",
+          url: "/purchases/purchase-receipts",
+        },
+        {
+          title: "Facturas",
+          url: "/purchases/bills",
+        },
+        {
+          title: "Proveedores",
           url: "/purchases/vendors",
         }
+      ],
+    },
+    {
+      title: "Contabilidad",
+      url: "#",
+      icon: FileText,
+      items: [
+        {
+          title: "Plan de cuentas",
+          url: "/accounting/chart-of-accounts",
+        },
+        {
+          title: "Asientos contables",
+          url: "/accounting/journal-entries",
+        },
+        {
+          title: "Centros de costos",
+          url: "/accounting/cost-centers",
+        },
       ],
     },
   ],
@@ -119,7 +148,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenuButton asChild tooltip="Dashboard">
                 <Link href="/dashboard">
                   <LayoutDashboard />
-                  Dashboard
+                  Tablero
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -157,6 +186,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenuItem>
               </Collapsible>
             ))}
+            <SidebarMenuItem key="Inventory">
+              <SidebarMenuButton asChild tooltip="Inventory">
+                <Link href="/inventory">
+                  <Box />
+                  Inventario
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

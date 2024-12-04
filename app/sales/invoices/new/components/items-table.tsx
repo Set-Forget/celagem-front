@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table"
-import { newInvoiceSchema } from "../schemas/invoices"
+import { newInvoiceSchema } from "../../schemas/invoices"
 import ItemRow from "./item-row"
 import TableFooter from "./table-footer"
 

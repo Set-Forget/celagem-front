@@ -35,7 +35,7 @@ export default async function CustomerPage({
   return (
     <div>
       <Header>
-        <Button size="sm">
+        <Button className="ml-auto" size="sm">
           <Pencil className="w-4 h-4" />
           Editar Cliente
         </Button>

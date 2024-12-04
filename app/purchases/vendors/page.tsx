@@ -1,9 +1,16 @@
+import Header from "@/components/header";
+import { SuppliersTable } from "./components/suppliers-table";
+import { Separator } from "@/components/ui/separator";
 
+export default function SuppliersPage() {
 
-export default function VendorsPage() {
   return (
-    <div>
-      <h1>Vendors</h1>
-    </div>
+    <>
+      <Header />
+      <Separator />
+      <div className="flex flex-col gap-4 p-4 h-[calc(100svh-127px)]">
+        <SuppliersTable />
+      </div>
+    </>
   )
 }

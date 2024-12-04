@@ -24,7 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { newInvoiceSchema } from "./schemas/invoices"
+import { newInvoiceSchema } from "../schemas/invoices"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ItemsTable from "./components/items-table"
@@ -57,7 +57,7 @@ export default function NewInvoicePage() {
   }
 
   return (
-    <div>
+    <>
       <Header />
       <Separator />
       <div className="flex flex-col p-4">
@@ -290,6 +290,6 @@ export default function NewInvoicePage() {
           </div>
         </Form>
       </div>
-    </div>
+    </>
   )
 }

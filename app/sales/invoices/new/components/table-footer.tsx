@@ -1,5 +1,5 @@
 import { useFormContext, useWatch } from "react-hook-form"
-import { newInvoiceSchema } from "../schemas/invoices"
+import { newInvoiceSchema } from "../../schemas/invoices"
 import { z } from "zod"
 
 export default function TableFooter() {

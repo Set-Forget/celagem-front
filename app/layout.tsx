@@ -33,7 +33,7 @@ export default function RootLayout({
         <SidebarProvider>
           <AppSidebar />
           <SidebarInset>
-            <div className="flex flex-col flex-1 justify-between">
+            <div className="flex flex-col flex-1">
               {children}
             </div>
           </SidebarInset>

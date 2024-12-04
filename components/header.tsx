@@ -32,9 +32,7 @@ export default function Header({ title, children }: { children?: ReactNode, titl
     }
 
     const onScroll = () => {
-      window.requestAnimationFrame(() => {
-        handleScroll()
-      })
+      handleScroll()
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -52,7 +50,7 @@ export default function Header({ title, children }: { children?: ReactNode, titl
           : ''}
         group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12
       `}>
-        <div className="flex items-center gap-2 w-full">
+        <div className="flex items-center gap-2">
           <SidebarTrigger className="-ml-1" />
           <h1 className="text-lg font-medium tracking-tight">{title || headerTitle}</h1>
         </div>

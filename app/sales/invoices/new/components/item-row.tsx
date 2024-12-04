@@ -10,7 +10,7 @@ import {
 import { Trash2 } from "lucide-react"
 import { useFormContext, useWatch } from "react-hook-form"
 import { z } from "zod"
-import { newInvoiceSchema } from "../schemas/invoices"
+import { newInvoiceSchema } from "../../schemas/invoices"
 
 export default function ItemRow({ index, remove }: { index: number, remove: (index: number) => void }) {
   const { control } = useFormContext<z.infer<typeof newInvoiceSchema>>()
