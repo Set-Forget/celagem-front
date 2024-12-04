@@ -14,6 +14,7 @@ import {
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import * as React from "react"
 
+import { Contact } from "@/app/sales/customers/schemas/customers"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -24,7 +25,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
-import { Contact } from "../../schemas/customers"
 import { columns } from "./columns"
 
 const data: Contact[] = [

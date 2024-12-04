@@ -9,6 +9,7 @@ export const supplierSchema = z.object({
   contact_id: z.string(),
   contact_name: z.string(),
   contact_email: z.string(),
+  contact_role: z.string(),
   id: z.string(),
   cuit: z.string(),
   address: z.string(),

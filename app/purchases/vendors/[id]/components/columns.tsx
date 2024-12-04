@@ -1,17 +1,17 @@
 "use client"
 
+import { Contact } from "@/app/sales/customers/schemas/customers"
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { Supplier } from "../../schema/suppliers"
 
-export const columns: ColumnDef<Supplier>[] = [
+export const columns: ColumnDef<Contact>[] = [
   {
     accessorKey: "name",
     header: "Nombre",
     cell: ({ row }) => (
       <div>
-        {row.getValue("name")} {row.original.contact_name}
+        {row.getValue("name")} {row.original.name}
       </div>
     ),
   },
