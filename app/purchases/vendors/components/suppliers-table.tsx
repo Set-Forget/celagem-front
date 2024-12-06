@@ -33,6 +33,7 @@ import {
 import { cn } from "@/lib/utils"
 import { columns } from "./columns"
 import { Supplier } from "../schema/suppliers"
+import Link from "next/link"
 
 const data: Supplier[] = [
   {
@@ -360,9 +361,12 @@ export function SuppliersTable() {
         </div>
         <Button
           size="sm"
+          asChild
         >
-          <Plus className="w-4 h-4" />
-          Crear Proveedor
+          <Link href="/purchases/vendors/new">
+            <Plus className="w-4 h-4" />
+            Crear Proveedor
+          </Link>
         </Button>
       </div>
       <div className="rounded-sm border h-[calc(100%-96px)]">
