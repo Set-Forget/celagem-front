@@ -28,6 +28,7 @@ export const newBillSchema = z.object({
     id: z.string(),
     name: z.string(),
   }),
+  payment_terms: z.string(),
 });
 
 export type NewBill = z.infer<typeof newBillSchema>;

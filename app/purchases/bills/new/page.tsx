@@ -616,6 +616,58 @@ export default function NewBillPage() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={newBillForm.control}
+                name="payment_terms"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel className="w-fit">
+                      Condición de pago
+                    </FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Condición de pago" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="anticipo">
+                            Anticipo
+                          </SelectItem>
+                          <SelectItem value="7_dias">
+                            7 días
+                          </SelectItem>
+                          <SelectItem value="15_dias">
+                            15 días
+                          </SelectItem>
+                          <SelectItem value="30_dias">
+                            30 días
+                          </SelectItem>
+                          <SelectItem value="60_dias">
+                            60 días
+                          </SelectItem>
+                          <SelectItem value="90_dias">
+                            90 días
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    {newBillForm.formState.errors.payment_terms ? (
+                      <FormMessage>
+                        {newBillForm.formState.errors.payment_terms.message}
+                      </FormMessage>
+                    ) :
+                      <FormDescription>
+                        Este será el tipo de pago que se registrará.
+                      </FormDescription>
+                    }
+                  </FormItem>
+                )}
+              />
             </div>
             <ItemsTable />
           </form>
