@@ -1,15 +1,7 @@
 import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
-import { ChevronDown, Eye } from "lucide-react"
-import { PurchaseRequestItemsTable } from "./components/purchase-request-items-table"
+import { Eye } from "lucide-react"
 
 export default async function PurchaseRequestPage({
   params,
