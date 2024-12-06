@@ -29,7 +29,7 @@ export default function CustomTableFooter() {
   return (
     <TableFooter className="border-t-0">
       <TableRow className="!border-b bg-background">
-        <TableCell colSpan={4} className="h-6 text-xs font-medium py-0">
+        <TableCell colSpan={6} className="h-6 text-xs font-medium py-0">
           <span>Subtotal</span>
         </TableCell>
         <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right pr-5">
@@ -41,7 +41,7 @@ export default function CustomTableFooter() {
         <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right pr-5"></TableCell>
       </TableRow>
       <TableRow className="!border-b bg-background">
-        <TableCell colSpan={4} className="h-6 text-xs font-medium py-0">
+        <TableCell colSpan={6} className="h-6 text-xs font-medium py-0">
           <span>Impuestos</span>
         </TableCell>
         <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right pr-5">
@@ -53,7 +53,7 @@ export default function CustomTableFooter() {
         <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right pr-5"></TableCell>
       </TableRow>
       <TableRow>
-        <TableCell colSpan={4} className="h-6 text-xs font-medium py-0">
+        <TableCell colSpan={6} className="h-6 text-xs font-medium py-0">
           <span>Total</span>
         </TableCell>
         <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right pr-5">

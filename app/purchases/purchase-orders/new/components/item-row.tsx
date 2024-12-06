@@ -2,7 +2,6 @@ import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/f
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   TableCell,
   TableRow
@@ -11,6 +10,7 @@ import { Trash2 } from "lucide-react"
 import { useFormContext, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { newPurchaseOrderSchema } from "../../schemas/purchase-orders"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function ItemRow({ index, remove }: { index: number, remove: (index: number) => void }) {
   const { control } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()
@@ -135,6 +135,31 @@ export default function ItemRow({ index, remove }: { index: number, remove: (ind
                     {currency}
                   </div>
                 </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </TableCell>
+      <TableCell className="py-0">
+        <FormField
+          control={control}
+          name={`items.${index}.tax`}
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-[100px]">
+              <FormControl>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="border-0 rounded-none">
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="21">21%</SelectItem>
+                    <SelectItem value="10.5">10.5%</SelectItem>
+                    <SelectItem value="0">Excento</SelectItem>
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>

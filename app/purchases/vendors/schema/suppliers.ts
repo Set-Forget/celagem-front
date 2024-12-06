@@ -1,4 +1,3 @@
-
 import { z } from "zod";
 
 export const supplierSchema = z.object({
@@ -13,5 +12,20 @@ export const supplierSchema = z.object({
   cuit: z.string(),
   address: z.string(),
 });
+
+export const newSupplierSchema = z.object({
+  name: z.string(),
+  phone_number: z.string(),
+  email: z.string(),
+  cuit: z.string(),
+  city: z.string(),
+  country: z.string(),
+  province: z.string(),
+  postal_code: z.string(),
+  address: z.string(),
+  tax_status: z.string(),
+  registered_name: z.string(),
+  payment_terms: z.string(),
+})
 
 export type Supplier = z.infer<typeof supplierSchema>;

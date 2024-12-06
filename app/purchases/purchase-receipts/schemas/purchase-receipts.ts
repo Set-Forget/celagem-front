@@ -17,6 +17,10 @@ export const purchaseReceiptItemsSchema = z.object({
 });
 
 export const newPurchaseReceiptSchema = z.object({
+  headquarter: z.object({
+    id: z.string({ required_error: "La sede es requerida" }),
+    name: z.string({ required_error: "La sede es requerida" }),
+  }),
   purchase_order: z.string({ required_error: "La orden de compra es requerida" }),
   supplier: z.string({ required_error: "El proveedor es requerido" }),
   received_at: z.string({ required_error: "La fecha de recepción es requerida" }),

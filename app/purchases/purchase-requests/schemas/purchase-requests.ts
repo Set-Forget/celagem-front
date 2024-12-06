@@ -19,6 +19,10 @@ export const purchaseRequestsSchema = z.object({
 });
 
 export const newPurchaseRequestSchema = z.object({
+  headquarter: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
   title: z.string({ required_error: "El título es requerido" }),
   required_by: z.string({ required_error: "La fecha requerida es requerida" }),
   items: z.array(purchaseRequestsItemsSchema).nonempty("Al menos un item es requerido"),

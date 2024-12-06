@@ -65,6 +65,10 @@ export default async function PurchaseRequestPage({
               <label className="text-muted-foreground text-sm">Fecha de recepción</label>
               <span className="text-sm">12 de febrero de 2022</span>
             </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-muted-foreground text-sm">Sede</label>
+              <span className="text-sm">Sede principal</span>
+            </div>
           </div>
         </div>
         <Separator />

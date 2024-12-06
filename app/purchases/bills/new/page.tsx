@@ -1,6 +1,6 @@
 "use client"
 
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
+import { CalendarIcon, Check, CheckIcon, ChevronsUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -114,6 +114,14 @@ const cost_centers = [
     "name": "Producción"
   },
 ]
+
+const headquarters = [
+  { id: "hq1", name: "Main Office" },
+  { id: "hq2", name: "Regional Office - North" },
+  { id: "hq3", name: "Regional Office - South" },
+  { id: "hq4", name: "International Office - Europe" },
+  { id: "hq5", name: "International Office - Asia" },
+];
 
 export default function NewBillPage() {
   const newBillForm = useForm<z.infer<typeof newBillSchema>>({
@@ -345,7 +353,7 @@ export default function NewBillPage() {
                 name="accounting_date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
-                    <FormLabel className="w-fit">Fecha de contabilidad</FormLabel>
+                    <FormLabel className="w-fit">Fecha de contabilización</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -380,7 +388,7 @@ export default function NewBillPage() {
                       </FormMessage>
                     ) :
                       <FormDescription>
-                        Fecha en la que se registrará la factura en la contabilidad.
+                        Fecha en la que se registrará la factura en la contabilización.
                       </FormDescription>
                     }
                   </FormItem>
@@ -529,7 +537,80 @@ export default function NewBillPage() {
                       </FormMessage>
                     ) :
                       <FormDescription>
-                        Cuenta contable a la que se cargará la factura.
+                        Centro de costos al que se cargará la factura.
+                      </FormDescription>
+                    }
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={newBillForm.control}
+                name="headquarter"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel className="w-fit">Sede</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "w-full justify-between pl-3 font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value
+                              ? headquarters.find(
+                                (cost_center) => cost_center.id === field.value?.id
+                              )?.name
+                              : "Selecciona una sede"}
+                            <ChevronsUpDown className="opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                        <Command>
+                          <CommandInput
+                            placeholder="Buscar sedes..."
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>
+                              No se encontraron sedes.
+                            </CommandEmpty>
+                            <CommandGroup>
+                              {headquarters.map((cost_center) => (
+                                <CommandItem
+                                  value={cost_center.id}
+                                  key={cost_center.id}
+                                  onSelect={() => {
+                                    newBillForm.setValue("headquarter", cost_center)
+                                  }}
+                                >
+                                  {cost_center.name}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto",
+                                      cost_center.id === field.value?.id
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    {newBillForm.formState.errors.headquarter ? (
+                      <FormMessage>
+                        {newBillForm.formState.errors.headquarter.message}
+                      </FormMessage>
+                    ) :
+                      <FormDescription>
+                        Sede a la que se le asignará la solicitud de compra.
                       </FormDescription>
                     }
                   </FormItem>

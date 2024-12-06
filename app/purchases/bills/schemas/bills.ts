@@ -24,6 +24,10 @@ export const newBillSchema = z.object({
   currency: z.string({ required_error: "La moneda es requerida" }),
   payment_term: z.string({ required_error: "Payment Term is required" }),
   notes: z.string().optional(),
+  headquarter: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
 });
 
 export type NewBill = z.infer<typeof newBillSchema>;

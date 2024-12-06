@@ -1,6 +1,6 @@
 "use client"
 
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
+import { CalendarIcon, Check, CheckIcon, ChevronsUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -37,6 +37,14 @@ const companies = [
   { label: "Spotify", value: "32-33445566-7" },
   { label: "Adobe", value: "33-22334455-9" },
 ] as const;
+
+const headquarters = [
+  { id: "hq1", name: "Main Office" },
+  { id: "hq2", name: "Regional Office - North" },
+  { id: "hq3", name: "Regional Office - South" },
+  { id: "hq4", name: "International Office - Europe" },
+  { id: "hq5", name: "International Office - Asia" },
+];
 
 export default function NewPurchaseReceivePage() {
   const newPurchaseReceipt = useForm<z.infer<typeof newPurchaseReceiptSchema>>({
@@ -204,6 +212,79 @@ export default function NewPurchaseReceivePage() {
                     ) :
                       <FormDescription>
                         Esta será la fecha en la que se recibió el pedido.
+                      </FormDescription>
+                    }
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={newPurchaseReceipt.control}
+                name="headquarter"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel className="w-fit">Sede</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "w-full justify-between pl-3 font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value
+                              ? headquarters.find(
+                                (cost_center) => cost_center.id === field.value?.id
+                              )?.name
+                              : "Selecciona una sede"}
+                            <ChevronsUpDown className="opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                        <Command>
+                          <CommandInput
+                            placeholder="Buscar sedes..."
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>
+                              No se encontraron sedes.
+                            </CommandEmpty>
+                            <CommandGroup>
+                              {headquarters.map((cost_center) => (
+                                <CommandItem
+                                  value={cost_center.id}
+                                  key={cost_center.id}
+                                  onSelect={() => {
+                                    newPurchaseReceipt.setValue("headquarter", cost_center)
+                                  }}
+                                >
+                                  {cost_center.name}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto",
+                                      cost_center.id === field.value?.id
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    {newPurchaseReceipt.formState.errors.headquarter ? (
+                      <FormMessage>
+                        {newPurchaseReceipt.formState.errors.headquarter.message}
+                      </FormMessage>
+                    ) :
+                      <FormDescription>
+                        Sede a la que se le asignará la solicitud de compra.
                       </FormDescription>
                     }
                   </FormItem>

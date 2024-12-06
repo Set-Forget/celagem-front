@@ -77,6 +77,10 @@ export default async function PurchaseOrderPage({
               <label className="text-muted-foreground text-sm">Fecha de emisión</label>
               <span className="text-sm">12 de febrero de 2022</span>
             </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-muted-foreground text-sm">Sede</label>
+              <span className="text-sm">Sede principal</span>
+            </div>
           </div>
         </div>
         <Separator />
@@ -84,7 +88,7 @@ export default async function PurchaseOrderPage({
           <h2 className="text-base font-medium">Contabilidad</h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Fecha de contabilidad</label>
+              <label className="text-muted-foreground text-sm">Fecha de contabilización</label>
               <span className="text-sm">12 de febrero de 2022</span>
             </div>
             <div className="flex flex-col gap-1">

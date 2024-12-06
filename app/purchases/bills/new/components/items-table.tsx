@@ -50,10 +50,12 @@ export default function ItemsTable() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="h-9">Código</TableHead>
+              <TableHead className="h-9">Nombre</TableHead>
               <TableHead className="h-9 pl-3">Descripción</TableHead>
-              <TableHead className="w-[100px] h-9">Cantidad</TableHead>
-              <TableHead className="w-[150px] h-9">Precio unitario</TableHead>
-              <TableHead className="w-[100px] h-9">Impuesto</TableHead>
+              <TableHead className="h-9">Cantidad</TableHead>
+              <TableHead className="h-9">Precio unitario</TableHead>
+              <TableHead className="h-9">Impuesto</TableHead>
               <TableHead className="text-right h-9 pr-5">Subtotal</TableHead>
               <TableHead className="w-9 h-9"></TableHead>
             </TableRow>
@@ -63,7 +65,7 @@ export default function ItemsTable() {
               <ItemRow key={item.id} index={index} remove={removeItem} />
             ))}
             <TableRow className="m-0 text-center text-muted-foreground text-xs">
-              <TableCell colSpan={6} className="h-6 p-0">
+              <TableCell colSpan={8} className="h-6 p-0">
                 <Button
                   onClick={handleAddItem}
                   size="sm"

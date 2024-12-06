@@ -92,6 +92,10 @@ export default async function PurchaseOrderPage({
               <label className="text-muted-foreground text-sm">Número de orden</label>
               <span className="text-sm">OC-4500001782</span>
             </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-muted-foreground text-sm">Sede</label>
+              <span className="text-sm">Sede Central</span>
+            </div>
           </div>
         </div>
         <Separator />

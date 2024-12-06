@@ -7,6 +7,7 @@ import {
   Command,
   FileText,
   GalleryVerticalEnd,
+  Landmark,
   LayoutDashboard,
   ShoppingBag,
   ShoppingCart
@@ -98,7 +99,7 @@ const data = {
           url: "/purchases/purchase-orders",
         },
         {
-          title: "Recepciones",
+          title: "Recibos",
           url: "/purchases/purchase-receipts",
         },
         {
@@ -130,6 +131,21 @@ const data = {
         },
       ],
     },
+    {
+      title: "Tesorería",
+      url: "#",
+      icon: Landmark,
+      items: [
+        {
+          title: "Pagos",
+          url: "/banking/payments",
+        },
+        {
+          title: "Cobros",
+          url: "/banking/receipts",
+        },
+      ],
+    }
   ],
 }
 

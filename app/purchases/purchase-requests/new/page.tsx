@@ -1,6 +1,6 @@
 "use client"
 
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, CheckIcon, ChevronsUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -23,6 +23,16 @@ import { Separator } from "@/components/ui/separator"
 import { newPurchaseRequestSchema } from "../schemas/purchase-requests"
 import ItemsTable from "./components/items-table"
 import { Textarea } from "@/components/ui/textarea"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+
+const headquarters = [
+  { id: "hq1", name: "Main Office" },
+  { id: "hq2", name: "Regional Office - North" },
+  { id: "hq3", name: "Regional Office - South" },
+  { id: "hq4", name: "International Office - Europe" },
+  { id: "hq5", name: "International Office - Asia" },
+];
+
 
 export default function NewPurchaseRequestPage() {
   const newPurchaseRequest = useForm<z.infer<typeof newPurchaseRequestSchema>>({
@@ -43,7 +53,7 @@ export default function NewPurchaseRequestPage() {
       <div className="flex flex-col p-4">
         <Form {...newPurchaseRequest}>
           <form onSubmit={newPurchaseRequest.handleSubmit(onSubmit)} className="space-y-6 flex flex-col h-[calc(100vh-183px)]">
-            <div className="flex gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={newPurchaseRequest.control}
                 name="title"
@@ -109,6 +119,79 @@ export default function NewPurchaseRequestPage() {
                     ) :
                       <FormDescription>
                         Esta será la fecha en la que se requiere la compra.
+                      </FormDescription>
+                    }
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={newPurchaseRequest.control}
+                name="headquarter"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel className="w-fit">Sede</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "w-full justify-between pl-3 font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value
+                              ? headquarters.find(
+                                (cost_center) => cost_center.id === field.value?.id
+                              )?.name
+                              : "Selecciona una sede"}
+                            <ChevronsUpDown className="opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                        <Command>
+                          <CommandInput
+                            placeholder="Buscar sedes..."
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>
+                              No se encontraron sedes.
+                            </CommandEmpty>
+                            <CommandGroup>
+                              {headquarters.map((cost_center) => (
+                                <CommandItem
+                                  value={cost_center.id}
+                                  key={cost_center.id}
+                                  onSelect={() => {
+                                    newPurchaseRequest.setValue("headquarter", cost_center)
+                                  }}
+                                >
+                                  {cost_center.name}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto",
+                                      cost_center.id === field.value?.id
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    {newPurchaseRequest.formState.errors.headquarter ? (
+                      <FormMessage>
+                        {newPurchaseRequest.formState.errors.headquarter.message}
+                      </FormMessage>
+                    ) :
+                      <FormDescription>
+                        Sede a la que se le asignará la solicitud de compra.
                       </FormDescription>
                     }
                   </FormItem>

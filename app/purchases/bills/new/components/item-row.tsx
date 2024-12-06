@@ -42,13 +42,49 @@ export default function ItemRow({ index, remove }: { index: number, remove: (ind
       <TableCell className="py-0 pl-0">
         <FormField
           control={control}
+          name={`items.${index}.item_code`}
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full">
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="GIF-001"
+                  className="border-0 rounded-none"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </TableCell>
+      <TableCell className="py-0 pl-0">
+        <FormField
+          control={control}
+          name={`items.${index}.item_name`}
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full">
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="Guante de nitrilo"
+                  className="border-0 rounded-none"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </TableCell>
+      <TableCell className="py-0 pl-0">
+        <FormField
+          control={control}
           name={`items.${index}.description`}
           render={({ field }) => (
             <FormItem className="flex flex-col w-full">
               <FormControl>
                 <Input
                   {...field}
-                  placeholder="Descripción del item..."
+                  placeholder="Talla M, color azul"
                   className="border-0 rounded-none"
                 />
               </FormControl>

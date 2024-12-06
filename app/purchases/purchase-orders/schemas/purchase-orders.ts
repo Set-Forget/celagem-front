@@ -17,9 +17,14 @@ export const newPurchaseOrderItemSchema = z.object({
   quantity: z.number({ required_error: "La cantidad es requerida" }),
   id: z.string({ required_error: "El id es requerido" }),
   price: z.string({ required_error: "El precio es requerido" }),
+  tax: z.string()
 })
 
 export const newPurchaseOrderSchema = z.object({
+  headquarter: z.object({
+    id: z.string({ required_error: "La sede es requerida" }),
+    name: z.string({ required_error: "La sede es requerida" }),
+  }),
   supplier_name: z.string({ required_error: "El proveedor es requerido" }),
   currency: z.string({ required_error: "La moneda es requerida" }),
   title: z.string({ required_error: "El título es requerido" }),

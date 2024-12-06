@@ -18,4 +18,5 @@ export const HEADER_TITLES = [
   { path: "/purchases/vendors/new", title: "Nuevo proveedor" },
   { path: "/purchases/bills", title: "Facturas de compra" },
   { path: "/purchases/bills/new", title: "Cargar factura de compra" },
+  { path: "/banking/payments/new", title: "Registrar pago" },
 ];
