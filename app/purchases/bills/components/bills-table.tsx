@@ -259,8 +259,8 @@ const data: Invoice[] = [
 ]
 
 const options = [
-  { label: "Paga", value: "overdue" },
-  { label: "Vencida", value: "paid" },
+  { label: "Paga", value: "paid" },
+  { label: "Vencida", value: "overdue" },
   { label: "Pendiente", value: "pending" },
 ]
 
