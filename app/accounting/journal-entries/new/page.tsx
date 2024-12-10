@@ -26,6 +26,7 @@ export default function NewJournalEntryPage() {
     resolver: zodResolver(newJournalEntrySchema),
     defaultValues: {
       date: new Date().toISOString(),
+      items: []
     }
   })
 
@@ -146,7 +147,7 @@ export default function NewJournalEntryPage() {
             </div>
             <Separator />
             <div className="flex flex-col gap-4 p-4">
-              <span className="text-base font-medium">Información de los asientos contables</span>
+              <span className="text-base font-medium">Items del asiento</span>
               <ItemsTable />
             </div>
           </form>

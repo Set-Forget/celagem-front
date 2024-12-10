@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/table"
 import { newJournalEntrySchema } from "../../schemas/journal-entries"
 import ItemRow from "./item-row"
+import CustomTableFooter from "./table-footer"
 
 export default function ItemsTable() {
   const { control } = useFormContext<z.infer<typeof newJournalEntrySchema>>()
@@ -24,14 +25,6 @@ export default function ItemsTable() {
     control: control,
     name: "items",
   });
-
-  const handleAddItem = () => {
-    appendItem({
-      account: "",
-      credit: 0,
-      debit: 0,
-    })
-  }
 
   return (
     <div className="flex flex-col gap-2 flex-grow">
@@ -51,26 +44,19 @@ export default function ItemsTable() {
             </TableRow>
           </TableHeader>
           <TableBody scrollBarClassName="pt-[40px]">
+            {fields.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center">
+                  <span className="text-xs text-muted-foreground">No hay asientos contables cargados</span>
+                </TableCell>
+              </TableRow>
+            )}
             {fields.map((item, index) => (
               <ItemRow key={item.id} index={index} remove={removeItem} />
             ))}
-            <TableRow className="m-0 text-center text-muted-foreground text-xs">
-              <TableCell colSpan={8} className="h-6 p-0">
-                <Button
-                  onClick={handleAddItem}
-                  size="sm"
-                  type="button"
-                  variant="ghost"
-                  className="h-9 rounded-none w-full"
-                >
-                  <Plus />
-                  Agregar Asiento
-                </Button>
-              </TableCell>
-            </TableRow>
           </TableBody>
-          {/*           <CustomTableFooter />
- */}        </Table>
+          <CustomTableFooter append={appendItem} />
+        </Table>
       </div>
     </div>
   )

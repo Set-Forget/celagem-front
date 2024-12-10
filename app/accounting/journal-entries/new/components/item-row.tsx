@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Separator } from "@/components/ui/separator"
 import {
   TableCell,
   TableRow
@@ -67,7 +66,7 @@ export default function ItemRow({ index, remove }: { index: number, remove: (ind
                         No se encontraron cuentas.
                       </CommandEmpty>
                       <CommandGroup>
-                        {accounts.map((account, account_index) => {
+                        {accounts.map((account) => {
                           return (
                             <Fragment key={account.value}>
                               <CommandItem
@@ -77,17 +76,14 @@ export default function ItemRow({ index, remove }: { index: number, remove: (ind
                                 }}
                                 className="px-2 py-1.5 rounded-none"
                               >
-                                <div className="grid grid-cols-[1fr,auto] gap-4 items-center w-full">
-                                  <div className="font-medium">{account.label}</div>
-                                  <Check
-                                    className={cn(
-                                      "ml-auto h-4 w-4",
-                                      account.label === field.value ? "opacity-100" : "opacity-0"
-                                    )}
-                                  />
-                                </div>
+                                {account.label}
+                                <Check
+                                  className={cn(
+                                    "ml-auto h-4 w-4",
+                                    account.label === field.value ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
                               </CommandItem>
-                              {account_index !== accounts.length - 1 && <Separator />}
                             </Fragment>
                           )
                         })}
@@ -113,7 +109,6 @@ export default function ItemRow({ index, remove }: { index: number, remove: (ind
                     placeholder="500.00"
                     className="pl-9 border-0 rounded-none"
                     inputMode="decimal"
-                    readOnly
                     onChange={(e) => {
                       let value = e.target.value;
                       value = value.replace(/,/g, '');

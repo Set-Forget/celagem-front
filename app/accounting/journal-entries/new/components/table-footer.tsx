@@ -1,43 +1,67 @@
-import { useFormContext, useWatch } from "react-hook-form"
+import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { TableCell, TableFooter, TableRow } from "@/components/ui/table"
-import { newPaymentSchema } from "../../schemas/payments"
+import { newJournalEntrySchema } from "../../schemas/journal-entries";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
-export default function CustomTableFooter() {
-  const { control } = useFormContext<z.infer<typeof newPaymentSchema>>()
+export default function CustomTableFooter({ append }: { append: (value: any) => void }) {
+  const { control } = useFormContext<z.infer<typeof newJournalEntrySchema>>()
 
   const items = useWatch({
     control,
-    name: `invoices`,
+    name: `items`,
   });
 
-  const total = items.reduce((acc, item) => {
-    return acc + Number(item.amount)
+  const totalDebit = items.reduce((acc, item) => {
+    return acc + Number(item.debit)
   }, 0)
 
-  const totalBalance = items.reduce((acc, item) => {
-    return acc + Number(item.balance)
+  const totalCredit = items.reduce((acc, item) => {
+    return acc + Number(item.credit)
   }, 0)
+
+  const handleAddItem = () => {
+    append({
+      account: "",
+      credit: 0,
+      debit: 0,
+    })
+  }
 
   return (
     <TableFooter className="border-t-0">
       <TableRow>
-        <TableCell colSpan={3} className="h-6 text-xs font-medium py-0">
+        <TableCell colSpan={1} className="h-6 text-xs font-medium py-0">
           <span>Total</span>
         </TableCell>
-        <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-left pl-5">
+        <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-left pl-4">
           ARS{" "}
           <span>
-            {totalBalance.toFixed(2)}
+            {totalDebit.toFixed(2)}
           </span>
         </TableCell>
-        <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-left pl-5">
+        <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-left pl-4">
           ARS{" "}
           <span>
-            {total.toFixed(2)}
+            {totalCredit.toFixed(2)}
           </span>
         </TableCell>
         <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right pr-5"></TableCell>
+      </TableRow>
+      <TableRow className="bg-background border-b-0 border-t">
+        <TableCell className="h-6 text-xs font-medium py-0" colSpan={4}>
+          <Button
+            onClick={handleAddItem}
+            size="sm"
+            type="button"
+            variant="ghost"
+            className="h-7 rounded-none w-full"
+          >
+            <Plus />
+            Agregar Asiento
+          </Button>
+        </TableCell>
       </TableRow>
     </TableFooter>
   )
