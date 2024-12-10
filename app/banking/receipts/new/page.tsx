@@ -267,7 +267,7 @@ export default function NewReceiptPage() {
                       </FormMessage>
                     ) :
                       <FormDescription>
-                        Estas notas no serán visibles en el detalle del recibo.
+                        Estas notas no serán visibles en el detalle de la recepción.
                       </FormDescription>
                     }
                   </FormItem>

@@ -217,7 +217,7 @@ export function PurchaseReceiptsTable() {
         <div className="flex gap-4">
           <div className="flex gap-1">
             <Input
-              placeholder="Buscar recibo de compra..."
+              placeholder="Buscar recepción de compra..."
               value={(table.getColumn("purchase_order")?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
                 table.getColumn("purchase_order")?.setFilterValue(event.target.value)
@@ -266,7 +266,7 @@ export function PurchaseReceiptsTable() {
         >
           <Link href="/purchases/purchase-receipts/new">
             <Plus className="w-4 h-4" />
-            Crear Recibo
+            Crear Recepción
           </Link>
         </Button>
       </div>
@@ -323,7 +323,7 @@ export function PurchaseReceiptsTable() {
       </div>
       <div className="flex items-center justify-end space-x-2 pt-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          Mostrando {table.getRowModel().rows.length} de {table.getRowCount()} recibos.
+          Mostrando {table.getRowModel().rows.length} de {table.getRowCount()} recepciones.
         </div>
         <div className="space-x-2 flex items-center">
           {table.getFilteredSelectedRowModel().rows.length > 0 && (

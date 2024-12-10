@@ -92,7 +92,7 @@ export default function NewPurchaseReceivePage() {
                       </FormMessage>
                     ) :
                       <FormDescription>
-                        Esta será la orden de compra a la que se asociará el recibo.
+                        Esta será la orden de compra a la que se asociará la recepción.
                       </FormDescription>
                     }
                   </FormItem>
@@ -165,7 +165,7 @@ export default function NewPurchaseReceivePage() {
                       </FormMessage>
                     ) :
                       <FormDescription>
-                        Este será el proveedor con el que se asociará el recibo.
+                        Este será el proveedor con el que se asociará la recepción.
                       </FormDescription>
                     }
                   </FormItem>
@@ -306,7 +306,7 @@ export default function NewPurchaseReceivePage() {
               onClick={newPurchaseReceipt.handleSubmit(onSubmit)}
               size="sm"
             >
-              Crear Recibo
+              Crear Recepción
             </Button>
           </div>
         </Form>

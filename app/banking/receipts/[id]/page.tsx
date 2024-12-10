@@ -11,7 +11,7 @@ export default async function ReceiptPage({
 
   return (
     <>
-      <Header title="Recibo 321461560092" />
+      <Header title="Recepción 321461560092" />
       <Separator />
       <div className="flex flex-col gap-4 py-4 flex-1">
         <div className="px-4 flex flex-col gap-4">

@@ -61,7 +61,7 @@ export default async function PurchaseOrderPage({
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <Link href="/purchases/purchase-receipts/new">
-                  Recibo de compra
+                  Recepciones
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
@@ -145,7 +145,7 @@ export default async function PurchaseOrderPage({
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Recibos de compra</label>
+              <label className="text-muted-foreground text-sm">Recepciones de compra</label>
               <div className="flex gap-2 items-center group w-fit">
                 <span className="text-sm font-medium">RC-4500001782</span>
                 <Button variant="outline" size="icon" className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity">
