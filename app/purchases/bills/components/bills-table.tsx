@@ -11,17 +11,14 @@ import {
   useReactTable,
   VisibilityState
 } from "@tanstack/react-table"
-import { ChevronDown, ChevronLeft, ChevronRight, Plus, Search } from "lucide-react"
+import { CalendarIcon, Check, ChevronLeft, ChevronRight, ListFilter, Plus, Search } from "lucide-react"
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
+import { Calendar } from "@/components/ui/calendar"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command"
 import { Input } from "@/components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
   Table,
   TableBody,
@@ -31,8 +28,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
-import { columns, Invoice } from "./columns"
+import { addDays, format } from "date-fns"
 import Link from "next/link"
+import { DateRange } from "react-day-picker"
+import { columns, Invoice } from "./columns"
+import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
 
 const data: Invoice[] = [
   {
@@ -257,6 +258,12 @@ const data: Invoice[] = [
   }
 ]
 
+const options = [
+  { label: "Paga", value: "overdue" },
+  { label: "Vencida", value: "paid" },
+  { label: "Pendiente", value: "pending" },
+]
+
 const PAGE_SIZE = 15
 
 export function BillsTable() {
@@ -264,6 +271,10 @@ export function BillsTable() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: new Date(2022, 0, 20),
+    to: addDays(new Date(2022, 0, 20), 365),
+  })
 
   const table = useReactTable({
     data,
@@ -289,6 +300,10 @@ export function BillsTable() {
     },
   })
 
+  const selectedRows = table.getFilteredSelectedRowModel().rows
+  const facets = table.getColumn("status")?.getFacetedUniqueValues()
+  const selectedValues = new Set(table.getColumn("status")?.getFilterValue() as string[])
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center pb-4 justify-between">
@@ -310,43 +325,167 @@ export function BillsTable() {
               <Search />
             </Button>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="ml-auto">
-                Columnas <ChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {typeof column.columnDef.header === "string" && column.columnDef.header}
-                      {typeof column.columnDef.header === "function" && column.id}
-                    </DropdownMenuCheckboxItem>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                id="date"
+                size="sm"
+                variant={"outline"}
+                className={cn(
+                  "justify-start text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                {date?.from ? (
+                  date.to ? (
+                    <>
+                      {format(date.from, "LLL dd, y")} -{" "}
+                      {format(date.to, "LLL dd, y")}
+                    </>
+                  ) : (
+                    format(date.from, "LLL dd, y")
                   )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                ) : (
+                  <span>Seleccioná un rango</span>
+                )}
+                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={date?.from}
+                selected={date}
+                onSelect={setDate}
+                numberOfMonths={2}
+              />
+            </PopoverContent>
+          </Popover>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm" className="h-8">
+                <ListFilter className="ml-auto h-4 w-4" />
+                Estado
+                {selectedValues?.size > 0 && (
+                  <>
+                    <Separator orientation="vertical" className="mx-2 h-4" />
+                    <Badge
+                      variant="secondary"
+                      className="rounded-sm px-1 font-normal lg:hidden"
+                    >
+                      {selectedValues.size}
+                    </Badge>
+                    <div className="hidden space-x-1 lg:flex">
+                      {selectedValues.size > 2 ? (
+                        <Badge
+                          variant="secondary"
+                          className="rounded-sm px-1 font-normal"
+                        >
+                          {selectedValues.size} selected
+                        </Badge>
+                      ) : (
+                        options
+                          .filter((option) => selectedValues.has(option.value))
+                          .map((option) => (
+                            <Badge
+                              variant="secondary"
+                              key={option.value}
+                              className="rounded-sm px-1 font-normal"
+                            >
+                              {option.label}
+                            </Badge>
+                          ))
+                      )}
+                    </div>
+                  </>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0" align="start">
+              <Command>
+                <CommandInput placeholder="Estado" />
+                <CommandList>
+                  <CommandEmpty>No results found.</CommandEmpty>
+                  <CommandGroup>
+                    {options.map((option) => {
+                      const isSelected = selectedValues.has(option.value)
+                      return (
+                        <CommandItem
+                          key={option.value}
+                          onSelect={() => {
+                            if (isSelected) {
+                              selectedValues.delete(option.value)
+                            } else {
+                              selectedValues.add(option.value)
+                            }
+                            const filterValues = Array.from(selectedValues)
+                            table.getColumn("status")?.setFilterValue(
+                              filterValues.length ? filterValues : undefined
+                            )
+                          }}
+                        >
+                          <div
+                            className={cn(
+                              "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                              isSelected
+                                ? "bg-primary text-primary-foreground"
+                                : "opacity-50 [&_svg]:invisible"
+                            )}
+                          >
+                            <Check />
+                          </div>
+                          <span>{option.label}</span>
+                          {facets?.get(option.value) && (
+                            <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
+                              {facets.get(option.value)}
+                            </span>
+                          )}
+                        </CommandItem>
+                      )
+                    })}
+                  </CommandGroup>
+                  {selectedValues.size > 0 && (
+                    <>
+                      <CommandSeparator />
+                      <CommandGroup>
+                        <CommandItem
+                          onSelect={() => table.getColumn("status")?.setFilterValue(undefined)}
+                          className="justify-center text-center text-xs"
+                        >
+                          Limpiar filtro
+                        </CommandItem>
+                      </CommandGroup>
+                    </>
+                  )}
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
-        <Button
-          size="sm"
-          asChild
-        >
-          <Link href="/purchases/bills/new">
-            <Plus className="w-4 h-4" />
-            Cargar Factura
-          </Link>
-        </Button>
+        <div className="flex gap-4">
+          {selectedRows.length > 0 && (
+            <Button
+              className="ml-auto"
+              size="sm"
+              variant="ghost"
+              asChild
+            >
+              <Link href="/banking/payments/new">
+                Registrar pagos
+              </Link>
+            </Button>
+          )}
+          <Button
+            size="sm"
+            asChild
+          >
+            <Link href="/purchases/bills/new">
+              <Plus className="w-4 h-4" />
+              Cargar Factura
+            </Link>
+          </Button>
+        </div>
       </div>
       <div className="rounded-sm border h-[calc(100%-96px)]">
         <Table>

@@ -7,15 +7,6 @@ import { JournalEntryItem } from "../../schemas/journal-entries"
 
 export const columns: ColumnDef<JournalEntryItem>[] = [
   {
-    accessorKey: "name",
-    header: "Título",
-    cell: ({ row }) => (
-      <div>
-        {row.getValue("name")}
-      </div>
-    ),
-  },
-  {
     accessorKey: "account",
     header: "Cuenta",
     cell: ({ row }) => {

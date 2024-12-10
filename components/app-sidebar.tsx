@@ -99,7 +99,7 @@ const data = {
           url: "/purchases/purchase-orders",
         },
         {
-          title: "Recibos",
+          title: "Recepciones",
           url: "/purchases/purchase-receipts",
         },
         {

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { date, z } from "zod";
 
 export const journalEntryItemSchema = z.object({
   id: z.string().optional(),
@@ -17,6 +17,14 @@ export const journalEntrySchema = z.object({
   account: z.string(),
   amount: z.number(),
   date: z.string(),
+  notes: z.string().optional(),
+});
+
+export const newJournalEntrySchema = z.object({
+  title: z.string(),
+  date: z.string(),
+  notes: z.string().optional(),
+  items: z.array(journalEntryItemSchema.omit({ id: true, balance: true, date: true })),
 });
 
 export type JournalEntry = z.infer<typeof journalEntrySchema>;

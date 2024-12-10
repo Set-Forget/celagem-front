@@ -50,9 +50,9 @@ export default function NewPurchaseRequestPage() {
     <>
       <Header />
       <Separator />
-      <div className="flex flex-col p-4">
+      <div className="flex flex-col p-4 h-full justify-between">
         <Form {...newPurchaseRequest}>
-          <form onSubmit={newPurchaseRequest.handleSubmit(onSubmit)} className="space-y-6 flex flex-col h-[calc(100vh-183px)]">
+          <form onSubmit={newPurchaseRequest.handleSubmit(onSubmit)} className="space-y-6 flex flex-col">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={newPurchaseRequest.control}

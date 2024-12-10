@@ -18,22 +18,22 @@ import { format } from "date-fns"
 import { CalendarIcon, CheckIcon, ChevronsUpDown } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { newPaymentSchema } from "../schemas/payments"
+import { newReceiptSchema } from "../schemas/receipts"
 import ItemsTable from "./components/items-table"
 import { Textarea } from "@/components/ui/textarea"
 
-const accounts_paid_from = [
+const accounts_receipted_to = [
   { id: "af1", name: "CAJA GENERAL" },
   { id: "af2", name: "CUENTA CORRIENTE" },
   { id: "af3", name: "CUENTA DE AHORRO" },
   { id: "af4", name: "CAJA CHICA" },
 ];
 
-export default function NewPurchaseReceivePage() {
-  const newPaymentForm = useForm<z.infer<typeof newPaymentSchema>>({
-    resolver: zodResolver(newPaymentSchema),
+export default function NewReceiptPage() {
+  const newReceiptForm = useForm<z.infer<typeof newReceiptSchema>>({
+    resolver: zodResolver(newReceiptSchema),
     defaultValues: {
-      payment_type: "pay",
+      payment_type: "receive",
       invoices: [
         {
           id: "0004-000000345",
@@ -61,27 +61,27 @@ export default function NewPurchaseReceivePage() {
     }
   })
 
-  const onSubmit = (data: z.infer<typeof newPaymentSchema>) => {
+  const onSubmit = (data: z.infer<typeof newReceiptSchema>) => {
     console.log(data)
   }
 
   return (
     <>
-      <Header />
+      <Header title="Registrar cobro" />
       <Separator />
       <div className="flex flex-col h-full justify-between">
-        <Form {...newPaymentForm}>
-          <form onSubmit={newPaymentForm.handleSubmit(onSubmit)} className="flex flex-col">
+        <Form {...newReceiptForm}>
+          <form onSubmit={newReceiptForm.handleSubmit(onSubmit)} className="flex flex-col">
             <div className="flex flex-col gap-4 p-4">
-              <span className="text-base font-medium">Información del pago</span>
+              <span className="text-base font-medium">Información del cobro</span>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField
-                  control={newPaymentForm.control}
+                  control={newReceiptForm.control}
                   name="payment_mode"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
                       <FormLabel className="w-fit">
-                        Modo de pago
+                        Modo de cobro
                       </FormLabel>
                       <FormControl>
                         <Select
@@ -90,7 +90,7 @@ export default function NewPurchaseReceivePage() {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Modo de pago" />
+                              <SelectValue placeholder="Modo de cobro" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -112,24 +112,24 @@ export default function NewPurchaseReceivePage() {
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      {newPaymentForm.formState.errors.payment_mode ? (
+                      {newReceiptForm.formState.errors.payment_mode ? (
                         <FormMessage>
-                          {newPaymentForm.formState.errors.payment_mode.message}
+                          {newReceiptForm.formState.errors.payment_mode.message}
                         </FormMessage>
                       ) :
                         <FormDescription>
-                          Este será el modo de pago que se registrará.
+                          Este será el modo de cobro que se registrará.
                         </FormDescription>
                       }
                     </FormItem>
                   )}
                 />
                 <FormField
-                  control={newPaymentForm.control}
+                  control={newReceiptForm.control}
                   name="payment_date"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Fecha de pago</FormLabel>
+                      <FormLabel className="w-fit">Fecha de cobro</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -158,25 +158,25 @@ export default function NewPurchaseReceivePage() {
                           />
                         </PopoverContent>
                       </Popover>
-                      {newPaymentForm.formState.errors.payment_date ? (
+                      {newReceiptForm.formState.errors.payment_date ? (
                         <FormMessage>
-                          {newPaymentForm.formState.errors.payment_date.message}
+                          {newReceiptForm.formState.errors.payment_date.message}
                         </FormMessage>
                       ) :
                         <FormDescription>
-                          Esta será la fecha en la que se registrará el pago.
+                          Esta será la fecha en la que se registrará el cobro.
                         </FormDescription>
                       }
                     </FormItem>
                   )}
                 />
                 <FormField
-                  control={newPaymentForm.control}
+                  control={newReceiptForm.control}
                   name="account_paid_from"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
                       <FormLabel className="w-fit">
-                        Cuenta contable origen
+                        Cuenta contable destino
                       </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -190,10 +190,10 @@ export default function NewPurchaseReceivePage() {
                               )}
                             >
                               {field.value
-                                ? accounts_paid_from.find(
+                                ? accounts_receipted_to.find(
                                   (account) => account.id === field.value?.id
                                 )?.name
-                                : "Cuenta origen de la empresa"}
+                                : "Cuenta destino de la empresa"}
                               <ChevronsUpDown className="opacity-50" />
                             </Button>
                           </FormControl>
@@ -209,12 +209,12 @@ export default function NewPurchaseReceivePage() {
                                 No se encontraron cuentas.
                               </CommandEmpty>
                               <CommandGroup>
-                                {accounts_paid_from.map((account) => (
+                                {accounts_receipted_to.map((account) => (
                                   <CommandItem
                                     value={account.id}
                                     key={account.id}
                                     onSelect={() => {
-                                      newPaymentForm.setValue("account_paid_from", account)
+                                      newReceiptForm.setValue("account_paid_from", account)
                                     }}
                                   >
                                     {account.name}
@@ -233,13 +233,13 @@ export default function NewPurchaseReceivePage() {
                           </Command>
                         </PopoverContent>
                       </Popover>
-                      {newPaymentForm.formState.errors.company_bank_account ? (
+                      {newReceiptForm.formState.errors.company_bank_account ? (
                         <FormMessage>
-                          {newPaymentForm.formState.errors.company_bank_account.message}
+                          {newReceiptForm.formState.errors.company_bank_account.message}
                         </FormMessage>
                       ) :
                         <FormDescription>
-                          Esta será la cuenta origen de la empresa desde la que se realizará el pago.
+                          Esta será la cuenta destino de la empresa desde la que se realizará el cobro.
                         </FormDescription>
                       }
                     </FormItem>
@@ -247,7 +247,7 @@ export default function NewPurchaseReceivePage() {
                 />
               </div>
               <FormField
-                control={newPaymentForm.control}
+                control={newReceiptForm.control}
                 name="notes"
                 render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
@@ -261,13 +261,13 @@ export default function NewPurchaseReceivePage() {
                         className="resize-none"
                       />
                     </FormControl>
-                    {newPaymentForm.formState.errors.notes ? (
+                    {newReceiptForm.formState.errors.notes ? (
                       <FormMessage>
-                        {newPaymentForm.formState.errors.notes.message}
+                        {newReceiptForm.formState.errors.notes.message}
                       </FormMessage>
                     ) :
                       <FormDescription>
-                        Estas notas no serán visibles en el detalle del pago.
+                        Estas notas no serán visibles en el detalle del recibo.
                       </FormDescription>
                     }
                   </FormItem>
@@ -276,7 +276,7 @@ export default function NewPurchaseReceivePage() {
             </div>
             <Separator />
             <div className="flex flex-col gap-4 p-4">
-              <span className="text-base font-medium">Facturas a pagar</span>
+              <span className="text-base font-medium">Facturas a cobrar</span>
               <ItemsTable />
             </div>
           </form>
@@ -290,10 +290,10 @@ export default function NewPurchaseReceivePage() {
             </Button>
             <Button
               type="submit"
-              onClick={newPaymentForm.handleSubmit(onSubmit)}
+              onClick={newReceiptForm.handleSubmit(onSubmit)}
               size="sm"
             >
-              Registrar pago
+              Registrar cobro
             </Button>
           </div>
         </Form>

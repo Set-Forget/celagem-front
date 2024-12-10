@@ -135,6 +135,11 @@ export const columns: ColumnDef<Invoice>[] = [
                 Ver detalles
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href="/banking/payments/new">
+                Registrar pago
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

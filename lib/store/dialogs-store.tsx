@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 
 export type DialogsState = {
-  open: "new-cost-center" | false,
+  open: "new-cost-center" | "select-invoices" | false,
   payload?: any
 }
 

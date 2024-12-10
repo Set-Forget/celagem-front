@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const invoicesToPaySchema = z.object({
+export const invoicesToReceiptSchema = z.object({
   id: z.string(),
   status: z.enum(["overdue", "paid", "pending"]),
   provider: z.string(),
@@ -12,7 +12,7 @@ export const invoicesToPaySchema = z.object({
   currency: z.string(),
 })
 
-export const newPaymentSchema = z.object({
+export const newReceiptSchema = z.object({
   payment_type: z.enum(["pay", "receive", "transfer"]),
   payment_mode: z.enum(["cash", "check", "credit_card", "debit_card", "bank_transfer"]),
   payment_date: z.string(),
@@ -55,8 +55,8 @@ export const newPaymentSchema = z.object({
     id: z.string(),
     name: z.string(),
   }),
-  invoices: z.array(invoicesToPaySchema),
+  invoices: z.array(invoicesToReceiptSchema),
   notes: z.string(),
 })
 
-export type NewPayment = z.infer<typeof newPaymentSchema>
+export type NewReceipt = z.infer<typeof newReceiptSchema>
