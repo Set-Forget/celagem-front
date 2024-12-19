@@ -1,11 +1,10 @@
 "use client"
 
-import { Contact } from "@/app/sales/customers/schemas/customers"
 import {
   ColumnDef
 } from "@tanstack/react-table"
 
-export const columns: ColumnDef<Contact>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "name",
     header: "Nombre",
