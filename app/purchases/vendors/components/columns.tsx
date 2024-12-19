@@ -3,14 +3,7 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { ChevronRight } from "lucide-react"
-
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { cn } from "@/lib/utils"
-import { CUSTOMER_TYPE } from "../adapters/customers"
-import Link from "next/link"
 import { Supplier } from "../schema/suppliers"
 
 export const columns: ColumnDef<Supplier>[] = [
@@ -38,8 +31,8 @@ export const columns: ColumnDef<Supplier>[] = [
   },
   {
     accessorKey: "supplier_name",
-    header: "Empresa",
-    cell: ({ row }) => <div>{row.getValue("supplier_name")}</div>,
+    header: "Proveedor",
+    cell: ({ row }) => <div className="font-medium">{row.getValue("supplier_name")}</div>,
   },
   {
     accessorKey: "cuit",
@@ -56,18 +49,7 @@ export const columns: ColumnDef<Supplier>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       return (
-        <Button
-          variant="ghost"
-          size="sm"
-          asChild
-        >
-          <Link
-            href={`/purchases/vendors/${row.original.id}`}
-          >
-            <ChevronRight />
-            Ver detalles
-          </Link>
-        </Button>
+        <></>
       )
     },
   },

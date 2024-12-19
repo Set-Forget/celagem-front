@@ -3,22 +3,11 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import { INVOICE_STATUSES } from "../adapters/invoices"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
-import Link from "next/link"
+import { INVOICE_STATUSES } from "../adapters/invoices"
 
 export type Invoice = {
   company_name: string;
@@ -31,7 +20,6 @@ export type Invoice = {
   currency: "USD" | "ARS" | "EUR" | "CLP";
   description: string;
 };
-
 
 export const columns: ColumnDef<Invoice>[] = [
   {
@@ -67,7 +55,7 @@ export const columns: ColumnDef<Invoice>[] = [
   },
   {
     accessorKey: "company_name",
-    header: "Razón social",
+    header: "Proveedor",
     cell: ({ row }) => <div>{row.getValue("company_name")}</div>,
   },
   {
@@ -101,7 +89,7 @@ export const columns: ColumnDef<Invoice>[] = [
   },
   {
     accessorKey: "amount",
-    header: () => <div className="text-right">Importe</div>,
+    header: () => <div className="text-right pr-4">Importe</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
       const currency = row.original.currency
@@ -112,37 +100,7 @@ export const columns: ColumnDef<Invoice>[] = [
         currencyDisplay: "code",
       }).format(amount)
 
-      return <div className="text-right font-medium">{formatted}</div>
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: () => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link href="/purchases/bills/1">
-                Ver detalles
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link href="/banking/payments/new">
-                Registrar pago
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+      return <div className="text-right font-medium pr-4">{formatted}</div>
     },
   },
 ]

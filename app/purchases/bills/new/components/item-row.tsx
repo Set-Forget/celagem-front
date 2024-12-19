@@ -162,7 +162,7 @@ export default function ItemRow({ index, remove }: { index: number, remove: (ind
                   <SelectContent>
                     <SelectItem value="21">21%</SelectItem>
                     <SelectItem value="10.5">10.5%</SelectItem>
-                    <SelectItem value="0">Excento</SelectItem>
+                    <SelectItem value="0">Exento</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>

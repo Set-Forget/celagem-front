@@ -1,3 +1,5 @@
+'use client'
+
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -14,12 +16,17 @@ import { ChevronDown, Eye } from "lucide-react"
 import Link from "next/link"
 import { PurchaseOrderItemsTable } from "./components/purchase-order-items-table"
 
-export default async function PurchaseOrderPage({
+export default function PurchaseOrderPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
   //const customerId = (await params).id
+
+  const handleGeneratePDF = async () => {
+    const { generatePurchaseOrderPDF } = await import("../templates/purchase-order")
+    generatePurchaseOrderPDF()
+  }
 
   return (
     <>
@@ -47,6 +54,11 @@ export default async function PurchaseOrderPage({
               <DropdownMenuItem>
                 Cancelar orden de compra
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleGeneratePDF()}
+              >
+                Generar PDF
+              </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -71,7 +83,6 @@ export default async function PurchaseOrderPage({
           </DropdownMenuContent>
         </DropdownMenu>
       </Header>
-      <Separator />
       <div className="flex flex-col gap-4 py-4 flex-1">
         <div className="px-4 flex flex-col gap-4">
           <h2 className="text-base font-medium">General</h2>

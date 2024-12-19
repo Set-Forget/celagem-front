@@ -151,7 +151,6 @@ export default function ChartOfAccountsPage() {
           </DropdownMenuContent>
         </DropdownMenu>
       </Header>
-      <Separator />
       <div className="flex flex-col p-4 h-full justify-between">
         <NestedAccountTable data={sampleData} />
       </div>

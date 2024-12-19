@@ -21,7 +21,6 @@ const notes = [
 
 const tags = [
   { id: 1, name: "Cliente" },
-  { id: 2, name: "Contactado" },
   { id: 3, name: "VIP" },
 ]
 
@@ -37,10 +36,9 @@ export default async function CustomerPage({
       <Header>
         <Button className="ml-auto" size="sm">
           <Pencil className="w-4 h-4" />
-          Editar Cliente
+          Editar cliente
         </Button>
       </Header>
-      <Separator />
       <ResizablePanelGroup className="flex !h-auto !w-auto" direction="horizontal">
         <ResizablePanel defaultSize={70}>
           <div className="flex flex-col gap-4 py-4">
@@ -49,7 +47,7 @@ export default async function CustomerPage({
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Nombre</label>
-                  <span className="text-sm">Set&Forget</span>
+                  <span className="text-sm">Johnson Group</span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Número de teléfono</label>
@@ -86,7 +84,7 @@ export default async function CustomerPage({
               <h2 className="text-base font-medium">Estado de cuenta</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Saldo actual</label>
+                  <label className="text-muted-foreground text-sm">Saldo pendiente</label>
                   <div className="flex gap-1.5 items-center">
                     <StatusIndicator status="busy" size="sm" />
                     <span className="text-md font-medium">$1234.56</span>
@@ -104,15 +102,19 @@ export default async function CustomerPage({
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Razón social</label>
-                  <span className="text-sm">Set&Forget S.A.</span>
+                  <span className="text-sm">N/A</span>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">CUIT</label>
-                  <span className="text-sm">30-12345678-9</span>
+                  <label className="text-muted-foreground text-sm">CUIL</label>
+                  <span className="text-sm">20-12345678-9</span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Condición frente al IVA</label>
                   <span className="text-sm">Responsable Inscripto</span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Tipo</label>
+                  <span className="text-sm">Persona física</span>
                 </div>
               </div>
             </div>
@@ -125,7 +127,7 @@ export default async function CustomerPage({
                   variant="outline"
                 >
                   <Plus className="w-4 h-4" />
-                  Agregar Contacto
+                  Agregar contacto
                 </Button>
               </div>
               <ContactsTable />
@@ -184,11 +186,11 @@ export default async function CustomerPage({
           <div className="p-4 flex flex-col gap-4">
             <h2 className="text-base font-medium">Actividad</h2>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Creado por <strong>John Doe</strong></label>
+              <label className="text-muted-foreground text-sm">Creado por <strong className="font-medium">John Doe</strong></label>
               <span className="text-sm">Hace 3 días</span>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Editado por <strong>Jane Doe</strong></label>
+              <label className="text-muted-foreground text-sm">Editado por <strong className="font-medium">Jane Doe</strong></label>
               <span className="text-sm">Hace 2 días</span>
             </div>
           </div>

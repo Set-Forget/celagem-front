@@ -27,18 +27,6 @@ export default function ItemsTable() {
     name: "items",
   });
 
-  const handleAddItem = () => {
-    appendItem({
-      id: uuidv4(),
-      description: "",
-      quantity: 1,
-      price: "",
-      tax: "21",
-      item_code: "",
-      item_name: "",
-    });
-  }
-
   return (
     <div className="flex flex-col gap-2 flex-grow">
       <div className="flex items-center justify-between w-full">
@@ -46,9 +34,9 @@ export default function ItemsTable() {
           Items
         </Label>
       </div>
-      <div className="flex flex-col border rounded-sm">
-        <Table>
-          <TableHeader>
+      <div className="flex flex-col">
+        <Table className="border-none">
+          <TableHeader className="bg-sidebar">
             <TableRow>
               <TableHead className="h-9">Código</TableHead>
               <TableHead className="h-9">Nombre</TableHead>
@@ -61,25 +49,18 @@ export default function ItemsTable() {
             </TableRow>
           </TableHeader>
           <TableBody scrollBarClassName="pt-[40px]">
+            {fields.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center">
+                  <span className="text-xs text-muted-foreground">No hay items</span>
+                </TableCell>
+              </TableRow>
+            )}
             {fields.map((item, index) => (
               <ItemRow key={item.id} index={index} remove={removeItem} />
             ))}
-            <TableRow className="m-0 text-center text-muted-foreground text-xs">
-              <TableCell colSpan={8} className="h-6 p-0">
-                <Button
-                  onClick={handleAddItem}
-                  size="sm"
-                  type="button"
-                  variant="ghost"
-                  className="h-9 rounded-none w-full"
-                >
-                  <Plus />
-                  Agregar Item
-                </Button>
-              </TableCell>
-            </TableRow>
           </TableBody>
-          <TableFooter />
+          <TableFooter append={appendItem} />
         </Table>
       </div>
     </div>

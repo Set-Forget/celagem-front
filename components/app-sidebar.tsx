@@ -77,7 +77,7 @@ const data = {
         },
         {
           title: "Notas de débito",
-          url: "/purchases/debit-notes",
+          url: "/sales/debit-notes",
         },
         {
           title: "Clientes",

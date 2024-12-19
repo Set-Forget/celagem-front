@@ -37,7 +37,6 @@ export default function NewJournalEntryPage() {
   return (
     <>
       <Header title="Nuevo asiento" />
-      <Separator />
       <div className="flex flex-col h-full justify-between">
         <Form {...newJournalEntryForm}>
           <form onSubmit={newJournalEntryForm.handleSubmit(onSubmit)} className="flex flex-col">

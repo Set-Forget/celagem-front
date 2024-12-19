@@ -1,21 +1,16 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { cn } from "@/lib/utils"
 import {
   ColumnDef,
   Row
 } from "@tanstack/react-table"
-
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { MoreHorizontal } from "lucide-react"
-import Link from "next/link"
-import { PurchaseOrder } from "../schemas/purchase-orders"
 import { PURCHASE_ORDER_STATUS } from "../adapters/customers"
-import { Progress } from "@/components/ui/progress"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { PurchaseOrder } from "../schemas/purchase-orders"
 
 const PercentageReceivedCell = ({ row }: { row: Row<PurchaseOrder> }) => {
   return (
@@ -75,7 +70,7 @@ export const columns: ColumnDef<PurchaseOrder>[] = [
       {format(new Date(row.getValue("created_at")), "dd MMM yyyy")}
     </div>,
   },
-  {
+  /* {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -95,9 +90,15 @@ export const columns: ColumnDef<PurchaseOrder>[] = [
                 Ver detalles
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem onClick={(e) => {
+              e.stopPropagation();
+              generatePurchaseOrderPDF()
+            }}>
+              Descargar PDF
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
     },
-  },
+  }, */
 ]

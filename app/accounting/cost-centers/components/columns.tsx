@@ -3,23 +3,11 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import Link from "next/link"
-import { CostCenter } from "../schemas/cost-centers"
-import { COST_CENTERS_STATUSES } from "../adapter/statuses"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { COST_CENTERS_STATUSES } from "../adapter/statuses"
+import { CostCenter } from "../schemas/cost-centers"
 
 export const columns: ColumnDef<CostCenter>[] = [
   {
@@ -52,28 +40,5 @@ export const columns: ColumnDef<CostCenter>[] = [
         <div className="font-medium">{row.getValue("id")}</div>
       </div>
     ),
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: () => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              Editar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
   },
 ]

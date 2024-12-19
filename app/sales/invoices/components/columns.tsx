@@ -100,7 +100,7 @@ export const columns: ColumnDef<Invoice>[] = [
   },
   {
     accessorKey: "amount",
-    header: () => <div className="text-right">Importe</div>,
+    header: () => <div>Importe</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
       const currency = row.original.currency
@@ -111,29 +111,7 @@ export const columns: ColumnDef<Invoice>[] = [
         currencyDisplay: "code",
       }).format(amount)
 
-      return <div className="text-right font-medium">{formatted}</div>
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: () => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+      return <div className="font-medium">{formatted}</div>
     },
   },
 ]

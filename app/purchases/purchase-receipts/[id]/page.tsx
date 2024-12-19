@@ -1,3 +1,5 @@
+'use client'
+
 import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,17 +13,39 @@ import { Separator } from "@/components/ui/separator"
 import { ChevronDown } from "lucide-react"
 import { PurchaseRequestItemsTable } from "./components/purchase-request-items-table"
 
-export default async function PurchaseRequestPage({
+export default function PurchaseRequestPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
   //const customerId = (await params).id
 
+  const handleGeneratePDF = async () => {
+    const { generatePurchaseReceiptPDF } = await import("../templates/purchase-receipt")
+    generatePurchaseReceiptPDF()
+  }
+
   return (
     <>
       <Header title="RC-2000342">
-        <div className="ml-auto">
+        <div className="ml-auto flex gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm" variant="ghost">
+                Acciones
+                <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={() => handleGeneratePDF()}
+                >
+                  Generar PDF
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm">
@@ -42,7 +66,6 @@ export default async function PurchaseRequestPage({
           </DropdownMenu>
         </div>
       </Header>
-      <Separator />
       <div className="flex flex-col gap-4 py-4 flex-1">
         <div className="px-4 flex flex-col gap-4">
           <h2 className="text-base font-medium">General</h2>

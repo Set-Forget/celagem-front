@@ -1,10 +1,9 @@
 "use client"
 
+import { Contact } from "@/app/sales/customers/schemas/customers"
 import {
   ColumnDef
 } from "@tanstack/react-table"
-
-import { Contact } from "../../schemas/customers"
 
 export const columns: ColumnDef<Contact>[] = [
   {
@@ -12,7 +11,7 @@ export const columns: ColumnDef<Contact>[] = [
     header: "Nombre",
     cell: ({ row }) => (
       <div>
-        {row.getValue("name")} {row.original.last_name}
+        {row.getValue("name")} {row.original.name}
       </div>
     ),
   },

@@ -3,15 +3,9 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { ChevronRight } from "lucide-react"
-
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { cn } from "@/lib/utils"
-import { CUSTOMER_TYPE } from "../adapters/customers"
-import { Customer } from "../schemas/customers"
-import Link from "next/link"
+import { Customer } from "../schema/customers"
+import { CUSTOMER_TYPE, SALES_CONDITION } from "../adapters/customers"
 
 export const columns: ColumnDef<Customer>[] = [
   {
@@ -37,26 +31,25 @@ export const columns: ColumnDef<Customer>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "company_name",
-    header: "Empresa",
-    cell: ({ row }) => <div>{row.getValue("company_name")}</div>,
+    accessorKey: "customer_name",
+    header: "Proveedor",
+    cell: ({ row }) => <div className="font-medium">{row.getValue("customer_name")}</div>,
   },
   {
-    accessorKey: "type",
+    accessorKey: "customer_type",
     header: "Tipo",
     cell: ({ row }) => {
-      return <Badge
-        variant="outline"
-        className={cn("rounded-sm")}
-      >
-        {CUSTOMER_TYPE[row.getValue("type") as keyof typeof CUSTOMER_TYPE]}
-      </Badge>
-    },
+      const customerType = CUSTOMER_TYPE[row.getValue("customer_type") as keyof typeof CUSTOMER_TYPE]
+      return <div>{customerType}</div>
+    }
   },
   {
-    accessorKey: "cuit",
-    header: "CUIT",
-    cell: ({ row }) => <div>{row.getValue("cuit")}</div>,
+    accessorKey: "fiscal_category",
+    header: "Condición frente al IVA",
+    cell: ({ row }) => {
+      const salesCondition = SALES_CONDITION[row.getValue("fiscal_category") as keyof typeof SALES_CONDITION]
+      return <div>{salesCondition}</div>
+    }
   },
   {
     accessorKey: "address",
@@ -68,18 +61,7 @@ export const columns: ColumnDef<Customer>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       return (
-        <Button
-          variant="ghost"
-          size="sm"
-          asChild
-        >
-          <Link
-            href={`/sales/customers/${row.original.cuit}`}
-          >
-            <ChevronRight />
-            Ver detalles
-          </Link>
-        </Button>
+        <></>
       )
     },
   },

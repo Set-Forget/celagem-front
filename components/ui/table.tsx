@@ -1,13 +1,13 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "./scroll-area";
 
 const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <ScrollArea className="h-full" disableScrollbar>
+  <ScrollArea className="h-full rounded-sm border" disableScrollbar>
     <table
       ref={ref}
       className={cn('w-full caption-bottom text-sm', className)}
@@ -24,8 +24,7 @@ const TableHeader = React.forwardRef<
   <thead
     ref={ref}
     className={cn(
-      'sticky top-0 bg-background z-10',
-      'after:content-[""] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-border',
+      'sticky top-0 z-50',
       className
     )}
     {...props}
@@ -48,7 +47,7 @@ const TableBody = React.forwardRef<
   >
     {children}
     <tr className="flex h-0">
-      <td className="flex max-h-0 p-0">
+      <td className="flex max-h-0 pt-0">
         <ScrollBar className={cn(scrollBarClassName)} />
       </td>
     </tr>
@@ -129,12 +128,7 @@ const TableCaption = React.forwardRef<
 TableCaption.displayName = "TableCaption"
 
 export {
-  Table,
-  TableHeader,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
-}
+  Table, TableBody, TableCaption, TableCell, TableFooter,
+  TableHead, TableHeader, TableRow
+};
+

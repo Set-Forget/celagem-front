@@ -190,32 +190,30 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data }) => {
           </Popover>
         </div>
       </div>
-      <div className='border rounded-sm'>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className='w-6'></TableHead>
-              <TableHead>ID</TableHead>
-              <TableHead>Cuenta</TableHead>
-              <TableHead className='text-right'>Balance</TableHead>
-              <TableHead className='w-6'></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>{renderTableRows(filteredData)}</TableBody>
-          <TableFooter className="border-t-0">
-            <TableRow>
-              <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right rounded-bl-sm"></TableCell>
-              <TableCell colSpan={2} className="h-6 text-xs font-medium py-0">
-                <span>Total</span>
-              </TableCell>
-              <TableCell colSpan={1} className="h-6 text-xs font-semibold py-0 text-right">
-                ARS 17,000.00
-              </TableCell>
-              <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right rounded-br-sm"></TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className='w-6'></TableHead>
+            <TableHead>ID</TableHead>
+            <TableHead>Cuenta</TableHead>
+            <TableHead className='text-right'>Balance</TableHead>
+            <TableHead className='w-6'></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>{renderTableRows(filteredData)}</TableBody>
+        <TableFooter className="border-t-0">
+          <TableRow>
+            <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right rounded-bl-sm"></TableCell>
+            <TableCell colSpan={2} className="h-6 text-xs font-medium py-0">
+              <span>Total</span>
+            </TableCell>
+            <TableCell colSpan={1} className="h-6 text-xs font-semibold py-0 text-right">
+              ARS 17,000.00
+            </TableCell>
+            <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right rounded-br-sm"></TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
       <div className="text-sm text-muted-foreground">
         {accountsCount} cuentas en total
       </div>

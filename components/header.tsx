@@ -42,11 +42,11 @@ export default function Header({ title, children }: { children?: ReactNode, titl
   }, [])
 
   return (
-    <div className="sticky top-0 z-50">
+    <div className="sticky top-0 z-50 border-b">
       <header className={`
         flex h-16 shrink-0 px-4 items-center gap-2 
         ${isSticky
-          ? 'bg-background border-b'
+          ? 'bg-background'
           : ''}
         group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12
       `}>

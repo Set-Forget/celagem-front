@@ -59,7 +59,7 @@ export default function CustomTableFooter({ append }: { append: (value: any) => 
             className="h-7 rounded-none w-full"
           >
             <Plus />
-            Agregar Asiento
+            Agregar item
           </Button>
         </TableCell>
       </TableRow>

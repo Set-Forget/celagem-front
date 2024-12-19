@@ -33,9 +33,9 @@ export default function ItemsTable() {
           Asientos contables
         </Label>
       </div>
-      <div className="flex flex-col border rounded-sm">
+      <div className="flex flex-col">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-sidebar">
             <TableRow>
               <TableHead className="h-9">Cuenta</TableHead>
               <TableHead className="h-9">Debe</TableHead>
@@ -47,7 +47,7 @@ export default function ItemsTable() {
             {fields.length === 0 && (
               <TableRow>
                 <TableCell colSpan={4} className="text-center">
-                  <span className="text-xs text-muted-foreground">No hay asientos contables cargados</span>
+                  <span className="text-xs text-muted-foreground">No hay items</span>
                 </TableCell>
               </TableRow>
             )}
