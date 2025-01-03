@@ -178,7 +178,7 @@ export default function PurchaseRequestsPage() {
 
   return (
     <>
-      <Header>
+      <Header title="Solicitudes de pedido">
         <Button
           className="ml-auto"
           size="sm"

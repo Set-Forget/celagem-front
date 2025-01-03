@@ -8,9 +8,10 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
-import { Pencil, Plus, X } from "lucide-react"
+import { ChevronDown, Pencil, Plus, X } from "lucide-react"
 import { columns } from "./components/columns"
 import CustomTableFooter from "./components/table-footer"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 const data = [
   {
@@ -35,9 +36,32 @@ export default function CreditNotePage({
 }) {
   //const customerId = (await params).id
 
+  const handleGeneratePDF = async () => {
+    const { generateCreditNotePDF } = await import("../templates/credit-note")
+    generateCreditNotePDF()
+  }
+
   return (
     <>
-      <Header title="NC-6252" />
+      <Header title="NC-6252">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="ml-auto" size="sm" variant="ghost">
+              Acciones
+              <ChevronDown />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={() => handleGeneratePDF()}
+              >
+                Generar PDF
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </Header>
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={70}>
           <div className="flex flex-col gap-4 py-4 flex-1">

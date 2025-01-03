@@ -1,6 +1,6 @@
 import FilterSelector, { FilterConfig } from "@/components/filter-selector";
 import { Table } from "@tanstack/react-table";
-import { CalendarFold, CircleDashed, Search } from "lucide-react";
+import { CalendarFold, Search } from "lucide-react";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -10,6 +10,9 @@ const filtersConfig: Record<string, FilterConfig> = {
   date_range: {
     type: "date_range",
     label: "Rango de fecha",
+    options: [
+      { label: "Fecha de recepción", value: "reception_date" },
+    ],
     key: "date_range",
     icon: CalendarFold
   },

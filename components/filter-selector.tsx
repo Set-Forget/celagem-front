@@ -1,6 +1,6 @@
 "use client"
 
-import { CalendarFold, CalendarIcon, Check, CircleDashed, ListFilter, LucideProps, Search, X } from "lucide-react"
+import { CalendarIcon, Check, ListFilter, LucideProps } from "lucide-react"
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
@@ -28,12 +28,12 @@ import {
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { DateRange } from "react-day-picker"
+import { ActiveFilterChip } from "./active-filter-chip"
 import { Calendar } from "./ui/calendar"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
-import { ActiveFilterChip } from "./active-filter-chip"
 
-type DateRangeFilter = { from: string | Date; to: string | Date };
+type DateRangeFilter = { field: string, from: Date; to: Date };
 type SearchFilter = { field: string; query: string };
 
 type SelectedFilters = {
@@ -48,6 +48,16 @@ export type FilterConfig = {
   options?: { label: string; value: string }[];
 };
 
+/* 
+  * MultipleFilter
+  * 
+  * Componente que permite seleccionar múltiples opciones de un campo.
+  * 
+  * @param options Opciones de campo.
+  * @param selectedValues Valores seleccionados.
+  * @param onChange Función que se ejecuta cuando se selecciona una opción.
+*/
+
 const MultipleFilter = ({
   options,
   selectedValues,
@@ -56,7 +66,6 @@ const MultipleFilter = ({
   options: { label: string; value: string }[];
   selectedValues: string[];
   onChange: (values: string[]) => void;
-  setOpen?: (value: boolean) => void;
 }) => {
   const selectedSet = new Set(selectedValues)
 
@@ -103,29 +112,64 @@ const MultipleFilter = ({
   );
 };
 
+/* 
+  * DateRangeFilter
+  * 
+  * Componente que permite seleccionar un rango de fecha.
+  * 
+  * @param options Opciones de campo.
+  * @param selectedValues Valores seleccionados.
+  * @param onChange Función que se ejecuta cuando se selecciona un rango de fecha.
+  * @param setOpen Función que cierra el popover.
+*/
+
 const DateRangeFilter = ({
+  options,
   selectedValues,
   onChange,
   setOpen,
 }: {
-  selectedValues: DateRange;
-  onChange: (value: DateRange) => void;
+  options: { label: string; value: string }[];
+  selectedValues: DateRangeFilter;
+  onChange: (value: DateRangeFilter) => void;
   setOpen: (value: boolean) => void;
 }) => {
-  const [localDate, setLocalDate] = React.useState<DateRange | undefined>(selectedValues);
+  const [localDate, setLocalDate] = React.useState<DateRange | undefined>({
+    from: selectedValues.from,
+    to: selectedValues.to,
+  });
+  const [field, setField] = React.useState(selectedValues.field || options[0]?.value);
 
   return (
     <div className="p-4">
       <div className="flex flex-col gap-2">
+        <Label>Campo</Label>
+        <Select value={field} onValueChange={(value) => setField(value)}>
+          <SelectTrigger className="h-7 text-xs">
+            <SelectValue placeholder="Seleccionar campo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {options.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col gap-2 mt-4">
         <Label>Rango de fecha</Label>
         <Popover>
           <PopoverTrigger asChild>
             <Button
               id="date"
+              size="sm"
               variant={"outline"}
               className={cn(
-                "justify-start text-left font-normal min-w-[250px] h-8",
-                localDate?.from && "text-muted-foreground"
+                "justify-start text-left font-normal min-w-[250px] h-7",
+                !localDate?.from && "text-muted-foreground"
               )}
             >
               {localDate?.from ? (
@@ -159,8 +203,12 @@ const DateRangeFilter = ({
           className="w-fit ml-auto mt-2 h-7"
           disabled={!localDate?.from || !localDate?.to}
           onClick={() => {
-            localDate && onChange(localDate);
-            setOpen(false);
+            if (localDate && field) {
+              if (localDate?.from && localDate?.to) {
+                onChange({ from: localDate.from, to: localDate.to, field });
+              }
+              setOpen(false);
+            }
           }}
         >
           Aplicar
@@ -169,6 +217,17 @@ const DateRangeFilter = ({
     </div>
   );
 };
+
+/* 
+  * SearchFilter
+  * 
+  * Componente que permite realizar una búsqueda por campo.
+  * 
+  * @param options Opciones de campo.
+  * @param selectedValues Valores seleccionados.
+  * @param onChange Función que se ejecuta cuando se realiza una búsqueda.
+  * @param setOpen Función que cierra el popover.
+*/
 
 const SearchFilter = ({
   options,
@@ -195,9 +254,12 @@ const SearchFilter = ({
         <Label>Buscar por</Label>
         <Select
           value={field}
-          onValueChange={(value) => setField(value)}
+          onValueChange={(value) => {
+            setField(value)
+            setQuery("")
+          }}
         >
-          <SelectTrigger className="h-8">
+          <SelectTrigger className="h-7 text-xs">
             <SelectValue placeholder="Seleccionar campo" />
           </SelectTrigger>
           <SelectContent>
@@ -218,7 +280,7 @@ const SearchFilter = ({
           placeholder="Escribe tu búsqueda"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="h-8"
+          className="h-7 !text-xs min-w-[250px]"
         />
       </div>
 
@@ -234,6 +296,53 @@ const SearchFilter = ({
   );
 };
 
+/* 
+  * SingleFilter
+  * 
+  * Componente que permite seleccionar una opción de un campo.
+  * 
+  * @param options Opciones de campo.
+  * @param selectedValue Valor seleccionado.
+  * @param onChange Función que se ejecuta cuando se selecciona una opción.
+  * @param setOpen Función que cierra el popover.
+*/
+
+const SingleFilter = ({
+  options,
+  selectedValue,
+  onChange,
+}: {
+  options: { label: string; value: string }[];
+  selectedValue: string;
+  onChange: (value: string) => void;
+  setOpen?: (value: boolean) => void;
+}) => {
+  return (
+    <Command className="min-w-[150px]">
+      <CommandList>
+        <CommandEmpty>No se encontraron resultados.</CommandEmpty>
+        <CommandGroup>
+          {options.map((option) => (
+            <CommandItem
+              key={option.value}
+              onSelect={() => onChange(option.value)}
+            >
+              <span>{option.label}</span>
+              <Check
+                className={cn(
+                  "ml-auto",
+                  selectedValue === option.value ? "opacity-100" : "opacity-0"
+                )}
+              />
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  );
+};
+
+
 const isDateRange = (value: any): value is DateRangeFilter =>
   value && typeof value === "object" && "from" in value && "to" in value;
 
@@ -242,9 +351,52 @@ const isSearchFilter = (value: any): value is SearchFilter =>
 
 const filterComponents: Record<string, React.ComponentType<any>> = {
   multiple: MultipleFilter,
+  single: SingleFilter,
   date_range: DateRangeFilter,
   search: SearchFilter,
 };
+
+/* 
+  * FilterSelector
+  * 
+  * Componente que permite seleccionar filtros de una lista de filtros configurados.
+  * 
+  * Recibe un objeto `filtersConfig` que contiene la configuración de los filtros.
+  * 
+  * La configuración de un filtro tiene la siguiente forma:
+  * 
+  * ```ts
+  * const filtersConfig: Record<string, FilterConfig> = {
+  *   status: {
+  *     type: "multiple",
+  *     options: [
+  *       { label: "Activo", value: "active" },
+  *       { label: "Inactivo", value: "inactive" },
+  *     ],
+  *     label: "Estado",
+  *     key: "status",
+  *     icon: CircleDashed
+  *   },
+  *   search: {
+  *     type: "search",
+  *     label: "Buscar",
+  *     options: [
+  *       { label: "Nombre", value: "name" },
+  *     ],
+  *     key: "search",
+  *     icon: Search
+  *   },
+  * };
+  * ```
+  * 
+  * Los tipos de filtro soportados son:
+  * 
+  * - `multiple`: Filtro de selección múltiple.
+  * - `date_range`: Filtro de rango de fecha.
+  * - `search`: Filtro de búsqueda.
+  * 
+  * @param filtersConfig Objeto con la configuración de los filtros.
+*/
 
 export default function FilterSelector({
   filtersConfig,
@@ -265,11 +417,13 @@ export default function FilterSelector({
   const handleFilterChange = (filterKey: string, values: any) => {
     setSelectedFilters((prev) => {
       const updatedFilters = { ...prev };
+
       if (
         (Array.isArray(values) && values.length === 0) ||
         (typeof values === "object" &&
           values !== null &&
-          Object.keys(values).length === 0)
+          Object.keys(values).length === 0) ||
+        values === ""
       ) {
         delete updatedFilters[filterKey];
       } else {
@@ -279,7 +433,6 @@ export default function FilterSelector({
       return updatedFilters;
     });
   };
-
 
   const getLabelsFromValues = (filterKey: string, values: string[]) => {
     const options = filtersConfig[filterKey]?.options || [];
@@ -333,16 +486,25 @@ export default function FilterSelector({
                     setOpen,
                     selectedValues: selectedFilters[openedFilter] || [],
                   })}
+                  {...(filterConfig.type === "single" && {
+                    options: filterConfig.options,
+                    onChange: (value: string) => handleFilterChange(openedFilter, value),
+                    setOpen,
+                    selectedValue: selectedFilters[openedFilter] || "",
+                  })}
                   {...(filterConfig.type === "date_range" && {
-                    onChange: (values: { from: Date | undefined; to: Date | undefined }) => handleFilterChange(openedFilter, values),
+                    options: filterConfig.options,
+                    onChange: (values: { from: Date | undefined; to: Date | undefined }) =>
+                      handleFilterChange(openedFilter, values),
                     setOpen,
                     selectedValues: selectedFilters[openedFilter] || { from: undefined, to: undefined },
-                  })
-                  }{...(filterConfig.type === "search" && {
+                  })}
+                  {...(filterConfig.type === "search" && {
                     options: filterConfig.options,
-                    onChange: (values: { field: string; query: string }) => handleFilterChange(openedFilter, values),
+                    onChange: (values: { field: string; query: string }) =>
+                      handleFilterChange(openedFilter, values),
                     setOpen,
-                    selectedValues: selectedFilters[openedFilter] || { field: filterConfig?.options?.[0].value, query: "" },
+                    selectedValues: selectedFilters[openedFilter] || { field: "", query: "" },
                   })}
                 />
               );
@@ -377,22 +539,33 @@ export default function FilterSelector({
           )}
         </PopoverContent>
       </Popover>
-      {Object.entries(selectedFilters).map(([key, value]) => (
-        <ActiveFilterChip
-          key={key}
-          label={filtersConfig[key]?.label || key}
-          value={
-            Array.isArray(value)
-              ? getLabelsFromValues(key, value)
-              : isDateRange(value)
-                ? `${format(value.from, "LLL dd, yy")} - ${format(value.to, "LLL dd, yy")}`
+      {Object.entries(selectedFilters).map(([key, value]) => {
+        const filterConfig = filtersConfig[key];
+        return (
+          <ActiveFilterChip
+            key={key}
+            label={
+              isDateRange(value)
+                ? `${filterConfig?.options?.find((opt) => opt.value === value.field)?.label || "Rango de fecha"}`
                 : isSearchFilter(value)
-                  ? `${filtersConfig[key].options?.find((opt) => opt.value === value.field)?.label}: "${value.query}"`
-                  : "N/A"
-          }
-          onRemove={() => clearFilter(key)}
-        />
-      ))}
+                  ? `${filterConfig?.options?.find((opt) => opt.value === value.field)?.label || "Buscar"}`
+                  : filterConfig?.label || key
+            }
+            value={
+              Array.isArray(value)
+                ? getLabelsFromValues(key, value)
+                : isDateRange(value)
+                  ? `${format(value.from, "LLL dd, yyyy")} - ${format(value.to, "LLL dd, yyyy")}`
+                  : isSearchFilter(value)
+                    ? `"${value.query}"`
+                    : typeof value === "string"
+                      ? filterConfig?.options?.find((opt) => opt.value === value)?.label || value
+                      : "N/A"
+            }
+            onRemove={() => clearFilter(key)}
+          />
+        );
+      })}
     </div>
   )
 }

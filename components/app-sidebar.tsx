@@ -4,13 +4,15 @@ import {
   AudioWaveform,
   Box,
   ChevronRight,
+  ClipboardList,
   Command,
   FileText,
   GalleryVerticalEnd,
   Landmark,
   LayoutDashboard,
   ShoppingBag,
-  ShoppingCart
+  ShoppingCart,
+  Stethoscope
 } from "lucide-react"
 import * as React from "react"
 
@@ -35,8 +37,8 @@ import {
 } from "@/components/ui/collapsible"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { title } from "process"
 
-// This is sample data.
 const data = {
   user: {
     name: "Agustin Delgado",
@@ -68,7 +70,7 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "Facturas de venta",
+          title: "Facturas",
           url: "/sales/invoices",
         },
         {
@@ -145,6 +147,45 @@ const data = {
           url: "/banking/receipts",
         },
       ],
+    },
+    {
+      title: "Inventario",
+      url: "#",
+      icon: Box,
+
+    },
+    {
+      title: "Gestión médica",
+      url: "#",
+      icon: Stethoscope,
+      items: [
+        {
+          title: "Agenda",
+          url: "/medical-management/scheduler",
+        },
+        {
+          title: "Pacientes",
+          url: "/medical-management/patients",
+        },
+        {
+          title: "Historia clínica",
+          url: "/medical-management/medical-records",
+          items: [
+            {
+              title: "Consultas",
+              url: "/medical-management/medical-records/consultations",
+            },
+            {
+              title: "Recetas",
+              url: "/medical-management/medical-records/prescriptions",
+            },
+            {
+              title: "Estudios",
+              url: "/medical-management/medical-records/studies",
+            },
+          ],
+        },
+      ],
     }
   ],
 }
@@ -180,36 +221,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuButton tooltip={item.title}>
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      {item.items && <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />}
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {item.items?.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton
-                            isActive={pathname.includes(subItem.url)}
-                            asChild
-                          >
-                            <Link href={subItem.url}>
-                              <span>{subItem.title}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
+                  {item.items && (
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {item.items?.map((subItem) => (
+                          <SidebarMenuSubItem key={subItem.title}>
+                            <SidebarMenuSubButton
+                              isActive={pathname.includes(subItem.url)}
+                              asChild
+                            >
+                              <Link href={subItem.url}>
+                                <span>{subItem.title}</span>
+                              </Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  )}
                 </SidebarMenuItem>
               </Collapsible>
             ))}
-            <SidebarMenuItem key="Inventory">
-              <SidebarMenuButton asChild tooltip="Inventory">
-                <Link href="/inventory">
-                  <Box />
-                  Inventario
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

@@ -19,6 +19,10 @@ const filtersConfig: Record<string, FilterConfig> = {
   },
   date_range: {
     type: "date_range",
+    options: [
+      { label: "Fecha de vencimiento", value: "due_date" },
+      { label: "Fecha de emisión", value: "issue_date" },
+    ],
     label: "Rango de fecha",
     key: "date_range",
     icon: CalendarFold

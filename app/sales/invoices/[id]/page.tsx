@@ -37,6 +37,11 @@ export default function InvoicePage({
 }) {
   //const customerId = (await params).id
 
+  const handleGeneratePDF = async () => {
+    const { generateInvoicePDF } = await import("../templates/invoice")
+    generateInvoicePDF()
+  }
+
   return (
     <>
       <Header title="FA-4500001782">
@@ -48,6 +53,23 @@ export default function InvoicePage({
             Pendiente
           </Badge>
         </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="ghost">
+              Acciones
+              <ChevronDown />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={() => handleGeneratePDF()}
+              >
+                Generar PDF
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button size="sm">

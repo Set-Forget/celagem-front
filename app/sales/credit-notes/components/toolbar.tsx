@@ -21,6 +21,9 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "date_range",
     label: "Rango de fecha",
     key: "date_range",
+    options: [
+      { label: "Fecha de emisión", value: "issue_date" },
+    ],
     icon: CalendarFold
   },
   search: {

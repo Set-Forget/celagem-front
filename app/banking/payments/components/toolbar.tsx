@@ -20,6 +20,9 @@ const filtersConfig: Record<string, FilterConfig> = {
   },
   date_range: {
     type: "date_range",
+    options: [
+      { label: "Fecha de pago", value: "payment_date" },
+    ],
     label: "Rango de fecha",
     key: "date_range",
     icon: CalendarFold

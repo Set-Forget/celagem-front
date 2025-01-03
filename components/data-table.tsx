@@ -114,12 +114,12 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))
           ) : (
-            <TableRow>
+            <TableRow className="border-none">
               <TableCell
                 colSpan={columns.length}
-                className="h-24 text-center"
+                className="h-auto text-xs text-center"
               >
-                No results.
+                No hay items
               </TableCell>
             </TableRow>
           )}
@@ -158,8 +158,7 @@ export function DataTable<TData, TValue>({
             </Button>
           </div>
         </div>
-      )
-      }
+      )}
     </div>
   )
 }

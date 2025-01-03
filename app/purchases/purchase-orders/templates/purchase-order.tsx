@@ -29,43 +29,62 @@ export const generatePurchaseOrderPDF = () => {
             </div>
         </div>
         <div style="width:100%; padding-left:12px; padding-right: 12px; margin-top: 48px">
-            <img src="/celagem-logo.svg" alt="CENTRO DE FERTILIDAD REPRONAT S.A.S." style="width:362px; height: 77px; display: block; height: auto;" />
+            <img src="/celagem-logo.svg" alt="CENTRO DE FERTILIDAD REPRONAT S.A.S." style="width:362px; height: 77px; display: block;" />
         </div>
     </div>
 
-    <!-- Billing Information -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; font-size:12px">
+    <!-- DATOS DEL PROVEEDOR Y DATOS DE LA EMPRESA -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; font-size:12px;">
+        <!-- PROVEEDOR -->
         <div style="background-color: #f8f9fa; padding: 12px; border-radius: 8px;">
-            <h3 style="margin: 0 0 16px 0; font-size: 14px; font-weight:bold">PHARMAXIS COLOMBIA SAS</h3>
-            <div style="display:flex; justify-content: space-between;">
-                <span style="display: inline-block;">NIT/CUIT:</span>
+            <h3 style="margin: 0 0 16px 0; font-size: 14px; font-weight: bold;">
+                DATOS DEL PROVEEDOR
+            </h3>
+            <div style="display: flex; justify-content: space-between;">
+                <span>NIT/CUIT:</span>
                 <span style="font-weight: 500;"><strong>901029126-4</strong></span>
             </div>
-            <div style="display:flex; justify-content: space-between; gap:16px">
-                <span style="display: inline-block;">Dirección:</span>
-                <span style="font-weight: 500;"><strong>CR 49 94 67 110111 Bogotá</strong></span>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Razón Social:</span>
+                <span style="font-weight: 500;"><strong>PHARMAXIS COLOMBIA SAS</strong></span>
             </div>
-            <div style="display:flex; justify-content: space-between;">
-                <span style="display: inline-block;">Teléfono:</span>
-                <span style="font-weight: 500;"><strong>6412514</strong></span>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Dirección:</span>
+                <span style="font-weight: 500;"><strong>CR 49 94 67</strong></span>
             </div>
-            <div style="display:flex; justify-content: space-between;">
-                <span style="display: inline-block;">Ciudad:</span>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Ciudad:</span>
                 <span style="font-weight: 500;"><strong>Bogotá</strong></span>
             </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Teléfono:</span>
+                <span style="font-weight: 500;"><strong>6412514</strong></span>
+            </div>
         </div>
+
+        <!-- EMPRESA -->
         <div style="background-color: #f8f9fa; padding: 12px; border-radius: 8px;">
-            <h3 style=" margin: 0 0 16px 0; font-size: 14px; font-weight:bold">CENTRO DE FERTILIDAD REPRONAT S.A.S.</h3>
-            <div style="display:flex; justify-content: space-between;">
-                <span style="display: inline-block;">NIT/CUIT:</span>
-                <span style="font-weight: 500;"><strong>901068002-6</strong></span>
+            <h3 style="margin: 0 0 16px 0; font-size: 14px; font-weight: bold;">
+                DATOS DE LA EMPRESA
+            </h3>
+            <div style="display: flex; justify-content: space-between;">
+                <span>CUIT/NIT:</span>
+                <span style="font-weight: 500;"><strong>30-12345678-9</strong></span>
             </div>
-            <div style="display:flex; justify-content: space-between; gap:16px">
-                <span style="display: inline-block;">Dirección:</span>
-                <span style="font-weight: 500;"><strong>Av. Siempre Viva 123</strong></span>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Razón Social:</span>
+                <span style="font-weight: 500;">
+                    <strong>CENTRO DE FERTILIDAD REPRONAT S.A.S.</strong>
+                </span>
             </div>
-            <div style="display:flex; justify-content: space-between;">
-                <span style="display: inline-block;">PBX:</span>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Dirección:</span>
+                <span style="font-weight: 500;">
+                    <strong>Av. Siempre Viva 123</strong>
+                </span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>PBX:</span>
                 <span style="font-weight: 500;"><strong>7456614</strong></span>
             </div>
         </div>
@@ -139,7 +158,7 @@ export const generatePurchaseOrderPDF = () => {
     <!-- Signature Section -->
     <div style="margin-top: 24px; display: flex; justify-content: space-between; gap:24px">
         <div style="background-color: #f8f9fa; padding: 12px; border-radius: 8px;display:flex; flex-direction:column;width:100%;justify-content: space-between">
-            <p style="margin-bottom: 12px; font-weight:bold; margin-top:0;font-size:14px">AUTORIZADOR</p>
+             <p style="margin-bottom: 12px; font-weight:bold; text-align:left; margin-top:0;font-size:12px">AUTORIZADOR</p>
             <p style="font-size:12px; margin:12px 0">JUAN JOSE MARTINEZ</p>
             <hr style="width: 100%; border-top: 1px solid #000; margin:0px">
         </div>

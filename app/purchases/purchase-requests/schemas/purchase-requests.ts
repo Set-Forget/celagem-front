@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { supplierSchema } from "../../vendors/schema/suppliers";
 
 export const purchaseRequestsItemsSchema = z.object({
   item_code: z.string(),
@@ -26,6 +27,7 @@ export const newPurchaseRequestSchema = z.object({
   title: z.string({ required_error: "El título es requerido" }),
   required_by: z.string({ required_error: "La fecha requerida es requerida" }),
   items: z.array(purchaseRequestsItemsSchema).nonempty("Al menos un item es requerido"),
+  suppliers: z.array(supplierSchema).nonempty("Al menos un proveedor es requerido"),
   notes: z.string().optional(),
 });
 

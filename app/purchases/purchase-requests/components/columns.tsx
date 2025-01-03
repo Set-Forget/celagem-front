@@ -5,12 +5,8 @@ import {
 } from "@tanstack/react-table"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { MoreHorizontal } from "lucide-react"
-import Link from "next/link"
 import { PURCHASE_REQUEST_STATUS } from "../adapters/customers"
 
 export const columns: ColumnDef<any>[] = [

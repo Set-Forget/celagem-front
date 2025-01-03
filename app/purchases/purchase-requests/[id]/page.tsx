@@ -1,3 +1,6 @@
+'use client'
+
+import { DataTable } from "@/components/data-table"
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -12,14 +15,29 @@ import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { ChevronDown } from "lucide-react"
 import Link from "next/link"
-import { PurchaseRequestItemsTable } from "./components/purchase-request-items-table"
+import { columns } from "./components/columns"
 
-export default async function PurchaseRequestPage({
+const data = [
+  {
+    "id": "1ebf68c9-8bb8-4da2-8b84-e33896a4f47b",
+    "item_code": "CODE-3100",
+    "item_name": "Guantes quirúrgicos",
+    "description": "Guantes de látex quirúrgicos, talla M",
+    "quantity": 100
+  },
+]
+
+export default function PurchaseRequestPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
   //const customerId = (await params).id
+
+  const handleGeneratePDF = async () => {
+    const { generatePurchaseRequestPDF } = await import("../templates/purchase-request")
+    generatePurchaseRequestPDF()
+  }
 
   return (
     <>
@@ -32,9 +50,29 @@ export default async function PurchaseRequestPage({
             Pendiente
           </Badge>
         </div>
-        <Button size="sm" variant="ghost">
-          Cancelar solicitud
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="ghost">
+              Acciones
+              <ChevronDown />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                Cancelar solicitud
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Envíar solicitud
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleGeneratePDF()}
+              >
+                Generar PDF
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button size="sm">
@@ -45,11 +83,6 @@ export default async function PurchaseRequestPage({
           <DropdownMenuContent align="end">
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/purchases/quotation-request/new/22">
-                  Pedido de cotización
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
                 <Link href="/purchases/purchase-orders/new">
                   Orden de compra
                 </Link>
@@ -58,7 +91,6 @@ export default async function PurchaseRequestPage({
           </DropdownMenuContent>
         </DropdownMenu>
       </Header>
-      <Separator />
       <div className="flex flex-col gap-4 py-4 flex-1">
         <div className="px-4 flex flex-col gap-4">
           <h2 className="text-base font-medium">General</h2>
@@ -82,11 +114,15 @@ export default async function PurchaseRequestPage({
           </div>
         </div>
         <Separator />
-        <div className="px-4 flex flex-col gap-4 flex-1">
+        <div className="px-4 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-medium">Items</h2>
           </div>
-          <PurchaseRequestItemsTable />
+          <DataTable
+            data={data}
+            columns={columns}
+            pagination={false}
+          />
         </div>
       </div>
     </>

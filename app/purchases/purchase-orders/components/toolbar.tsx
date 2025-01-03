@@ -19,6 +19,9 @@ const filtersConfig: Record<string, FilterConfig> = {
   },
   date_range: {
     type: "date_range",
+    options: [
+      { label: "Fecha de creación", value: "created_at" },
+    ],
     label: "Rango de fecha",
     key: "date_range",
     icon: CalendarFold

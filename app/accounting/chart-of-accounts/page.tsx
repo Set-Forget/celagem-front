@@ -1,10 +1,8 @@
 import Header from "@/components/header";
-import { Separator } from "@/components/ui/separator";
-import NestedAccountTable from "./components/nested-account-table";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import Link from "next/link";
+import NestedAccountTable from "./components/nested-account-table";
 
 const sampleData = [
   {

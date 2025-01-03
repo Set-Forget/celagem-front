@@ -16,12 +16,6 @@ const filtersConfig: Record<string, FilterConfig> = {
     key: "status",
     icon: CircleDashed
   },
-  /*   date_range: {
-      type: "date_range",
-      label: "Rango de fecha",
-      key: "date_range",
-      icon: CalendarFold
-    }, */
   search: {
     type: "search",
     label: "Buscar",
