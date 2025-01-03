@@ -9,7 +9,7 @@ import { usePathname, useRouter } from "next/navigation"
 import Toolbar from "./components/toolbar"
 import { columns } from "./components/columns"
 
-export const PATIENT_DATA = [
+const PATIENT_DATA = [
   {
     "id": "f735e78e-2a19-483c-9c3d-9a822a1f43b6",
     "id_type": "CC",
