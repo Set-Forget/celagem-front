@@ -117,7 +117,7 @@ export const MultiSelect = React.forwardRef<
       variant,
       defaultValue = [],
       placeholder = "Select options",
-      maxCount = 3,
+      maxCount = 1,
       modalPopover = false,
       asChild = false,
       className,
@@ -166,7 +166,7 @@ export const MultiSelect = React.forwardRef<
           >
             {selectedValues.length > 0 && (
               <div className="flex justify-between items-center w-full">
-                <div className="flex flex-wrap items-center">
+                <div className="flex items-center">
                   {selectedValues.slice(0, maxCount).map((value) => {
                     const option = options.find((o) => o.value === value);
                     const IconComponent = option?.icon;
@@ -202,8 +202,8 @@ export const MultiSelect = React.forwardRef<
                       )}
                     >
                       {`+ ${selectedValues.length - maxCount} more`}
-                      <XCircle
-                        className="ml-2 h-4 w-4 cursor-pointer"
+                      <X
+                        className="!h-3 !w-3 text-muted-foreground hover:text-foreground transition ml-1"
                         onClick={(event) => {
                           event.stopPropagation();
                           clearExtraOptions();
