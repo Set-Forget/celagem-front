@@ -29,12 +29,7 @@ export const generateCreditNotePDF = () => {
                 <span>Fecha de Emisión:</span>
                 <span style="font-weight: 500;"><strong>15/12/2024</strong></span>
             </div>
-            <!-- Fecha de vencimiento (opcional para NC) -->
-            <div style="display: flex; justify-content: space-between;">
-                <span>Fecha de Vencimiento:</span>
-                <span style="font-weight: 500;"><strong>15/12/2024</strong></span>
-            </div>
-
+            
             <div style="display: flex; justify-content: space-between;">
                 <span>Orden de compra:</span>
                 <span style="font-weight: 500;"><strong>2224</strong></span>

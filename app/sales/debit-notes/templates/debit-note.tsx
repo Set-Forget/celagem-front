@@ -19,6 +19,16 @@ export const generateDebitNotePDF = () => {
                 <span style="display: inline-block;">N° de Nota de Débito:</span>
                 <span style="font-weight: 500;"><strong>0001-00005678</strong></span>
             </div>
+            <!-- Número de factura -->
+            <div style="display: flex; justify-content: space-between;">
+                <span style="display: inline-block;">N° de Factura:</span>
+                <span style="font-weight: 500;"><strong>0001-00005678</strong></span>
+            </div>
+            <!-- Fecha de emisión -->
+            <div style="display: flex; justify-content: space-between;">
+                <span>Fecha de Emisión:</span>
+                <span style="font-weight: 500;"><strong>15/12/2024</strong></span>
+            </div>
             <!-- Fecha de vencimiento (opcional para NC) -->
             <div style="display: flex; justify-content: space-between;">
                 <span>Fecha de Vencimiento:</span>
