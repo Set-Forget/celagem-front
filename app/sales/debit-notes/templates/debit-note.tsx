@@ -14,9 +14,9 @@ export const generateDebitNotePDF = () => {
             <h1 style="margin: 0 0 20px 0; font-size: 24px; font-weight: bold;">
                 NOTA DE DÉBITO TIPO A
             </h1>
-            <!-- Número de Nota de Crédito -->
+            <!-- Número de Nota de Débito -->
             <div style="display: flex; justify-content: space-between;">
-                <span style="display: inline-block;">N° de Nota de Crédito:</span>
+                <span style="display: inline-block;">N° de Nota de Débito:</span>
                 <span style="font-weight: 500;"><strong>0001-00005678</strong></span>
             </div>
             <!-- Fecha de vencimiento (opcional para NC) -->
