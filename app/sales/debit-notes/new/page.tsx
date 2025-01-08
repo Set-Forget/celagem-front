@@ -21,9 +21,9 @@ export default function NewDebitNotePage() {
     defaultValues: {
       items: [{
         "item_code": "ITEM-9634",
-        "item_name": "Guantes de nitrilo",
-        "description": "Guantes de nitrilo talla M",
-        "quantity": 50,
+        "item_name": "Intereses",
+        "description": "Intereses por atraso en pago de factura",
+        "quantity": 1,
         "id": "5e7361f5-0fbf-433b-8688-b65896a0f54a",
         "price": "400.93",
         "tax": "21",

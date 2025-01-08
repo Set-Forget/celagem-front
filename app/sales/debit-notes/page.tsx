@@ -235,7 +235,7 @@ export default function DebitNotesPage() {
 
   return (
     <>
-      <Header title="Notas de crédito" />
+      <Header title="Notas de débito" />
       <div className="flex flex-col gap-4 p-4 h-[calc(100svh-99px)]">
         <DataTable
           data={data}

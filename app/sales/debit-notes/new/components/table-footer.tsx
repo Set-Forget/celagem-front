@@ -41,7 +41,7 @@ export default function TableFooter({ append }: { append: (value: any) => void }
 
   const tolerance = 0.01;
 
-  const debit_note_total = (subtotal + taxes) - invoice_total;
+  const debit_note_total = (subtotal + taxes);
   const adjusted_debit_note_total = Math.abs(debit_note_total) < tolerance ? 0 : debit_note_total;
 
   const total = invoice_total + adjusted_debit_note_total;
