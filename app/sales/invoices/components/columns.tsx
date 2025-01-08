@@ -3,21 +3,11 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import { INVOICE_STATUSES } from "../adapters/invoices"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
+import { INVOICE_STATUSES } from "../adapters/invoices"
 
 export type Invoice = {
   company_name: string;

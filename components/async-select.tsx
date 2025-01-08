@@ -163,7 +163,7 @@ export function AsyncSelect<T>({
           <ChevronsUpDown className="opacity-50" size={10} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("p-0 pointer-events-auto", className)}>
+      <PopoverContent className={cn("p-0", className)}>
         <Command>
           <div className="relative border-b w-full">
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -209,9 +209,7 @@ export function AsyncSelect<T>({
               ))}
             </CommandGroup>
           </CommandList>
-
           {actionButton && actionButton}
-
         </Command>
       </PopoverContent>
     </Popover>

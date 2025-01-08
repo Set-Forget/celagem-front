@@ -197,11 +197,11 @@ export const MultiSelect = React.forwardRef<
                     <Badge
                       onMouseOver={(e) => e.stopPropagation()}
                       className={cn(
-                        "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
+                        "badge bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
                         multiSelectVariants({ variant })
                       )}
                     >
-                      {`+ ${selectedValues.length - maxCount} more`}
+                      {`+ ${selectedValues.length - maxCount} más`}
                       <X
                         className="!h-3 !w-3 text-muted-foreground hover:text-foreground transition ml-1"
                         onClick={(event) => {

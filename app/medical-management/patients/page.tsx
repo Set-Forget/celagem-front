@@ -324,7 +324,7 @@ export default function PatientsPage() {
           size="sm"
           asChild
         >
-          <Link href="">
+          <Link href="/medical-management/patients/new">
             <Plus className="w-4 h-4" />
             Crear paciente
           </Link>

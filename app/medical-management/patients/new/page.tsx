@@ -1,0 +1,1399 @@
+"use client"
+
+import Header from "@/components/header"
+import { Button } from "@/components/ui/button"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm, useWatch } from "react-hook-form"
+import { z } from "zod"
+import { newPatientSchema } from "../schema/patients"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { format } from "date-fns"
+import { Calendar } from "@/components/ui/calendar"
+import { Switch } from "@/components/ui/switch"
+
+const HEADQUARTERS = [
+  {
+    value: "1",
+    label: "Sede Asistencial Bogotá",
+  },
+  {
+    value: "2",
+    label: "Sede Asistencial Bucamaranga",
+  },
+  {
+    value: "3",
+    label: "Sede Medellín",
+  },
+]
+
+const LINK_TYPES = [
+  {
+    value: "subsidized",
+    label: "Subsidiado",
+  },
+  {
+    value: "contributor",
+    label: "Cotizante",
+  },
+  {
+    value: "beneficiary",
+    label: "Beneficiario",
+  },
+  {
+    value: "additional",
+    label: "Adicional",
+  },
+  {
+    value: "particular",
+    label: "Particular",
+  },
+] as const
+
+const DOCUMENT_TYPES = [
+  {
+    value: "adult-without-identification",
+    label: "Adulto sin identificación",
+  },
+  {
+    value: "citizen-id",
+    label: "Cédula de ciudadanía",
+  },
+  {
+    value: "dni",
+    label: "Documento nacional de identidad",
+  },
+  {
+    value: "unique-population-registration-key",
+    label: "Clave única de registro de población",
+  },
+  {
+    value: "immigration-card",
+    label: "Cédula de extranjería",
+  },
+  {
+    value: "minor-without-identification",
+    label: "Menor sin identificación",
+  },
+  {
+    value: "passport",
+    label: "Pasaporte",
+  },
+  {
+    value: "civil-registry",
+    label: "Registro civil",
+  },
+  {
+    value: "cuit",
+    label: "CUIT",
+  },
+] as const
+
+const BIOLOGICAL_SEX_TYPES = [
+  {
+    value: "male",
+    label: "Masculino",
+  },
+  {
+    value: "female",
+    label: "Femenino",
+  },
+  {
+    value: "both",
+    label: "Ambos",
+  },
+] as const
+
+const GENDER_IDENTITY_TYPES = [
+  {
+    value: "cisgender",
+    label: "Cisgénero",
+  },
+  {
+    value: "no-binary",
+    label: "No binario",
+  },
+  {
+    value: "transgender",
+    label: "Transgénero",
+  },
+  {
+    value: "fluent",
+    label: "Fluido",
+  },
+  {
+    value: "other",
+    label: "Otro",
+  },
+] as const
+
+const CITIES = [
+  {
+    value: "1",
+    label: "Bogotá",
+  },
+  {
+    value: "2",
+    label: "Bucaramanga",
+  },
+  {
+    value: "3",
+    label: "Medellín",
+  },
+]
+
+const DISABILITY_TYPES = [
+  {
+    value: "visual",
+    label: "Discapacidad visual",
+  },
+  {
+    value: "physical",
+    label: "Discapacidad física",
+  },
+  {
+    value: "hearing",
+    label: "Discapacidad auditiva",
+  },
+  {
+    value: "mental",
+    label: "Discapacidad mental",
+  },
+  {
+    value: "intellectual",
+    label: "Discapacidad intelectual",
+  },
+  {
+    value: "multiple",
+    label: "Discapacidad múltiple",
+  },
+  {
+    value: "psychosocial",
+    label: "Dispacidad psicosocial",
+  },
+  {
+    label: "Discapacidad sordoceguera",
+    value: "deafblindness",
+  },
+  {
+    value: "other",
+    label: "Otra",
+  },
+] as const
+
+export default function NewPatientPage() {
+  const newPatientForm = useForm<z.infer<typeof newPatientSchema>>({
+    resolver: zodResolver(newPatientSchema),
+  })
+
+  const onSubmit = (data: z.infer<typeof newPatientSchema>) => {
+    console.log(data)
+  }
+
+  const hasDisability = useWatch({
+    control: newPatientForm.control,
+    name: "disability",
+  })
+
+  const isCompany = useWatch({
+    control: newPatientForm.control,
+    name: "customer_type",
+  }) === "company"
+
+  return (
+    <>
+      <Header title="Nuevo paciente" />
+      <div className="flex flex-col h-full justify-between">
+        <Form {...newPatientForm}>
+          <form onSubmit={newPatientForm.handleSubmit(onSubmit)} className="flex flex-col">
+            <div className="flex flex-col gap-4 p-4">
+              <span className="text-base font-medium">General</span>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormField
+                  control={newPatientForm.control}
+                  name="first_name"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Nombre(s)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Juan"
+                        />
+                      </FormControl>
+                      {newPatientForm.formState.errors.first_name ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Este será el nombre del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="last_name"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Apellido(s)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Pérez"
+                        />
+                      </FormControl>
+                      {newPatientForm.formState.errors.last_name ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Este será el apellido del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="link_type"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Tipo de vinculación</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between font-normal pl-3",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? LINK_TYPES.find(
+                                  (language) => language.value === field.value
+                                )?.label
+                                : "Seleccionar tipo de vinculación"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent align="start" className="p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Buscar..."
+                              className="h-8"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                              <CommandGroup>
+                                {LINK_TYPES.map((type) => (
+                                  <CommandItem
+                                    value={type.label}
+                                    key={type.value}
+                                    onSelect={() => {
+                                      newPatientForm.setValue("link_type", type.value)
+                                    }}
+                                  >
+                                    {type.label}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        type.value === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      {newPatientForm.formState.errors.link_type ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Este será el tipo de vinculación del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="biological_sex"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Sexo biológico</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between font-normal pl-3",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? BIOLOGICAL_SEX_TYPES.find(
+                                  (language) => language.value === field.value
+                                )?.label
+                                : "Seleccionar sexo biológico"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent align="start" className="p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Buscar..."
+                              className="h-8"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                              <CommandGroup>
+                                {BIOLOGICAL_SEX_TYPES.map((type) => (
+                                  <CommandItem
+                                    value={type.label}
+                                    key={type.value}
+                                    onSelect={() => {
+                                      newPatientForm.setValue("biological_sex", type.value)
+                                    }}
+                                  >
+                                    {type.label}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        type.value === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      {newPatientForm.formState.errors.link_type ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Este será el sexo biológico del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="gender_identity"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Identidad de género</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between font-normal pl-3",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? GENDER_IDENTITY_TYPES.find(
+                                  (language) => language.value === field.value
+                                )?.label
+                                : "Seleccionar identidad de género"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent align="start" className="p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Buscar..."
+                              className="h-8"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                              <CommandGroup>
+                                {GENDER_IDENTITY_TYPES.map((type) => (
+                                  <CommandItem
+                                    value={type.label}
+                                    key={type.value}
+                                    onSelect={() => {
+                                      newPatientForm.setValue("gender_identity", type.value)
+                                    }}
+                                  >
+                                    {type.label}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        type.value === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormDescription>
+                        Este será la identidad de género del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="birthdate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Fecha de nacimiento</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>
+                                  Seleccionar fecha de nacimiento
+                                </span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value ? new Date(field.value) : undefined}
+                            onSelect={(date) => field.onChange(date?.toISOString())}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      {newPatientForm.formState.errors.birthdate ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Esta será la fecha de nacimiento del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="birth_place"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Lugar de nacimiento</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between font-normal pl-3",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? CITIES.find(
+                                  (language) => language.value === field.value
+                                )?.label
+                                : "Seleccionar lugar de nacimiento"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent align="start" className="p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Buscar..."
+                              className="h-8"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                              <CommandGroup>
+                                {CITIES.map((city) => (
+                                  <CommandItem
+                                    value={city.label}
+                                    key={city.value}
+                                    onSelect={() => {
+                                      newPatientForm.setValue("birth_place", city.value)
+                                    }}
+                                  >
+                                    {city.label}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        city.value === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      {newPatientForm.formState.errors.birth_place ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Este será el lugar de nacimiento del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="residence_address"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Dirección de residencia</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Calle 123 # 123-45"
+                        />
+                      </FormControl>
+                      {newPatientForm.formState.errors.residence_address ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Este será la dirección de residencia del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="residence_city_id"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Ciudad de residencia</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between font-normal pl-3",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? CITIES.find(
+                                  (language) => language.value === field.value
+                                )?.label
+                                : "Seleccionar ciudad de residencia"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent align="start" className="p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Buscar..."
+                              className="h-8"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                              <CommandGroup>
+                                {CITIES.map((city) => (
+                                  <CommandItem
+                                    value={city.label}
+                                    key={city.value}
+                                    onSelect={() => {
+                                      newPatientForm.setValue("residence_city_id", city.value)
+                                    }}
+                                  >
+                                    {city.label}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        city.value === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      {newPatientForm.formState.errors.residence_city_id ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Este será la ciudad de residencia del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <div className="flex flex-col">
+                  <FormField
+                    control={newPatientForm.control}
+                    name="disability"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-center justify-between">
+                          <FormLabel>
+                            ¿Discapacidad?
+                          </FormLabel>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  {/* cambiar por otra cosa, queda un poco raro así, quizás simplemente meter en las opciones, una que diga sin discapacidad y marcarla como default */}
+                  <FormField
+                    control={newPatientForm.control}
+                    name="disability_type_id"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col w-full mt-0.5">
+                        <Popover modal>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                disabled={!hasDisability}
+                                variant="outline"
+                                role="combobox"
+                                className={cn(
+                                  "justify-between font-normal pl-3",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value
+                                  ? DISABILITY_TYPES.find(
+                                    (language) => language.value === field.value
+                                  )?.label
+                                  : "Seleccionar tipo de discapacidad"}
+                                <ChevronsUpDown className="opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent align="start" className="p-0">
+                            <Command>
+                              <CommandInput
+                                placeholder="Buscar..."
+                                className="h-8"
+                              />
+                              <CommandList>
+                                <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                                <CommandGroup>
+                                  {DISABILITY_TYPES.map((type) => (
+                                    <CommandItem
+                                      value={type.label}
+                                      key={type.value}
+                                      onSelect={() => {
+                                        newPatientForm.setValue("disability_type_id", type.value)
+                                      }}
+                                    >
+                                      {type.label}
+                                      <Check
+                                        className={cn(
+                                          "ml-auto",
+                                          type.value === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                        {newPatientForm.formState.errors.disability_type_id ? (
+                          <FormMessage />
+                        ) :
+                          <FormDescription>
+                            Este será el tipo de discapacidad del cliente que se registrará.
+                          </FormDescription>
+                        }
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={newPatientForm.control}
+                  name="headquarter_id"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Sede</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between font-normal pl-3",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? HEADQUARTERS.find(
+                                  (language) => language.value === field.value
+                                )?.label
+                                : "Seleccionar sede"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent align="start" className="p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Buscar sede"
+                              className="h-8"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                              <CommandGroup>
+                                {HEADQUARTERS.map((headquarter) => (
+                                  <CommandItem
+                                    value={headquarter.label}
+                                    key={headquarter.value}
+                                    onSelect={() => {
+                                      newPatientForm.setValue("headquarter_id", headquarter.value)
+                                    }}
+                                  >
+                                    {headquarter.label}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        headquarter.value === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      {newPatientForm.formState.errors.headquarter_id ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Este será la sede a la que estará vinculado el cliente.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="document_type"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Tipo de documento</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between font-normal pl-3",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? DOCUMENT_TYPES.find(
+                                  (language) => language.value === field.value
+                                )?.label
+                                : "Seleccionar tipo de documento"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent align="start" className="p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Buscar..."
+                              className="h-8"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                              <CommandGroup>
+                                {DOCUMENT_TYPES.map((type) => (
+                                  <CommandItem
+                                    value={type.label}
+                                    key={type.value}
+                                    onSelect={() => {
+                                      newPatientForm.setValue("document_type", type.value)
+                                    }}
+                                  >
+                                    {type.label}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        type.value === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      {newPatientForm.formState.errors.document_type ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Este será el tipo de documento del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="document_number"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Número de documento</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="1234567890"
+                        />
+                      </FormControl>
+                      {newPatientForm.formState.errors.document_number ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Este será el número de documento del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="phone_number"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Número de teléfono</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="+1 123 456 7890"
+                        />
+                      </FormControl>
+                      {newPatientForm.formState.errors.phone_number ? (
+                        <FormMessage>
+                          {newPatientForm.formState.errors.phone_number.message}
+                        </FormMessage>
+                      ) :
+                        <FormDescription>
+                          Este será el número de teléfono del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Correo electrónico</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="ventas@guantes.com"
+                        />
+                      </FormControl>
+                      {newPatientForm.formState.errors.email ? (
+                        <FormMessage>
+                          {newPatientForm.formState.errors.email.message}
+                        </FormMessage>
+                      ) :
+                        <FormDescription>
+                          Este será el correo electrónico del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <Separator />
+            <div className="flex flex-col gap-4 p-4">
+              <span className="text-base font-medium">Acompañante</span>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormField
+                  control={newPatientForm.control}
+                  name="partner_first_name"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Nombre(s)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Juan"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Este será el nombre del acompañante del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="partner_last_name"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Apellido(s)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Pérez"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Este será el apellido del acompañante del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="partner_residence_address"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Dirección de residencia</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Calle 123 # 123-45"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Este será la dirección de residencia del acompañante del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="partner_residence_city_id"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Ciudad de residencia</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between font-normal pl-3",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? CITIES.find(
+                                  (language) => language.value === field.value
+                                )?.label
+                                : "Seleccionar ciudad de residencia"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent align="start" className="p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Buscar..."
+                              className="h-8"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                              <CommandGroup>
+                                {CITIES.map((city) => (
+                                  <CommandItem
+                                    value={city.label}
+                                    key={city.value}
+                                    onSelect={() => {
+                                      newPatientForm.setValue("partner_residence_city_id", city.value)
+                                    }}
+                                  >
+                                    {city.label}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        city.value === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormDescription>
+                        Este será la ciudad de residencia del acompañante del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="relationship"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Parentesco</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Seleccionar parentesco"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Este será el parentesco del acompañante del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <Separator />
+            <div className="flex flex-col gap-4 p-4">
+              <span className="text-base font-medium">Responsable</span>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormField
+                  control={newPatientForm.control}
+                  name="responsible_first_name"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Nombre(s)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Juan"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Este será el nombre del responsable del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="responsible_last_name"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Apellido(s)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Pérez"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Este será el apellido del responsable del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="responsible_residence_address"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Dirección de residencia</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Calle 123 # 123-45"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Este será la dirección de residencia del responsable del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="responsible_phone_number"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Número de teléfono</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="+1 123 456 7890"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Este será el número de teléfono del responsable del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="responsible_document_type"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Tipo de documento</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Cédula de ciudadanía"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Este será el tipo de documento del responsable del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="responsible_document_number"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Número de documento</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="1234567890"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Este será el número de documento del responsable del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="responsible_relationship"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Parentesco</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Seleccionar parentesco"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Este será el parentesco del responsable del cliente que se registrará.
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <Separator />
+            <div className="flex flex-col gap-4 p-4">
+              <span className="text-base font-medium">Fiscal</span>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormField
+                  control={newPatientForm.control}
+                  name="customer_type"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">
+                        Tipo de cliente
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Tipo de cliente" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="company">
+                              Empresa
+                            </SelectItem>
+                            <SelectItem value="individual">
+                              Particular
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      {newPatientForm.formState.errors.customer_type ? (
+                        <FormMessage>
+                          {newPatientForm.formState.errors.customer_type.message}
+                        </FormMessage>
+                      ) :
+                        <FormDescription>
+                          Este será el tipo de cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="registered_name"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Razón social</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={!isCompany}
+                          placeholder="Guantes S.A."
+                        />
+                      </FormControl>
+                      {newPatientForm.formState.errors.registered_name ? (
+                        <FormMessage>
+                          {newPatientForm.formState.errors.registered_name.message}
+                        </FormMessage>
+                      ) :
+                        <FormDescription>
+                          Esta será la razón social del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="cuit"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">CUIT/CUIL</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="30-12345678-9"
+                        />
+                      </FormControl>
+                      {newPatientForm.formState.errors.cuit ? (
+                        <FormMessage>
+                          {newPatientForm.formState.errors.cuit.message}
+                        </FormMessage>
+                      ) :
+                        <FormDescription>
+                          Este será el CUIT/CUIL del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="fiscal_category"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">
+                        Condición frente al IVA
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Condición frente al IVA" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="responsable_inscripto">
+                              Responsable inscripto
+                            </SelectItem>
+                            <SelectItem value="monotributista">
+                              Monotributista
+                            </SelectItem>
+                            <SelectItem value="exento">
+                              Exento
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      {newPatientForm.formState.errors.fiscal_category ? (
+                        <FormMessage>
+                          {newPatientForm.formState.errors.fiscal_category.message}
+                        </FormMessage>
+                      ) :
+                        <FormDescription>
+                          Este será el tipo de pago que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </form>
+          <div className="flex justify-end gap-2 mt-4 p-4">
+            <Button
+              type="submit"
+              onClick={newPatientForm.handleSubmit(onSubmit)}
+              size="sm"
+            >
+              Crear paciente
+            </Button>
+          </div>
+        </Form>
+      </div>
+    </>
+  )
+}

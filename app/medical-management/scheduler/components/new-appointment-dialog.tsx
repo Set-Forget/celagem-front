@@ -337,7 +337,7 @@ const APPOINTMENT_TYPES = [
     value: "semen-contributor",
     label: "Aportante de semen",
   },
-]
+] as const
 
 const HEADQUARTERS = [
   {
@@ -364,7 +364,6 @@ export default function NewAppointmentDialog() {
     resolver: zodResolver(newAppointmentSchema),
     defaultValues: {
       time_allocation: "diary",
-      attention_types: [],
       start_date: "",
     }
   });
@@ -671,18 +670,32 @@ export default function NewAppointmentDialog() {
             <div className="flex gap-2 items-center flex-1">
               <FormField
                 control={newAppointmentForm.control}
-                name="attention_types"
+                name="user_id"
                 render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
-                    <FormLabel>Tipos de atención</FormLabel>
+                    <FormLabel>Profesional</FormLabel>
                     <FormControl>
-                      <MultiSelect
-                        options={APPOINTMENT_TYPES}
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        placeholder="Seleccionar tipos de atención"
-                        variant="default"
-                        modalPopover
+                      <AsyncSelect<any>
+                        label="Profesional"
+                        triggerClassName="!w-full"
+                        placeholder="Seleccionar un profesional"
+                        fetcher={async (query) => {
+                          await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 100))
+                          if (query) {
+                            const lowercaseQuery = query.toLowerCase()
+                            return PATIENT_DATA.filter(user =>
+                              user.name.toLowerCase().includes(lowercaseQuery)
+                            ).slice(0, 10)
+                          }
+                          return PATIENT_DATA.slice(0, 10)
+                        }}
+                        getDisplayValue={(item) => item.name + " " + item.lastname}
+                        getOptionValue={(item) => item.id}
+                        renderOption={(item) => <div>{item.name}{" "}{item.lastname}</div>}
+                        onChange={field.onChange}
+                        value={field.value}
+                        noResultsMessage="No se encontraron profesionales"
+                        modal
                       />
                     </FormControl>
                     <FormMessage />
@@ -718,7 +731,7 @@ export default function NewAppointmentDialog() {
                         noResultsMessage="No se encontraron pacientes"
                         modal
                         actionButton={
-                          <Button size="sm" variant="outline" className="border-0 border-t">
+                          <Button size="sm" variant="outline" className="border-0 border-t rounded-none">
                             <Plus />
                             Crear paciente
                           </Button>
@@ -730,69 +743,134 @@ export default function NewAppointmentDialog() {
                 )}
               />
             </div>
-            <FormField
-              control={newAppointmentForm.control}
-              name="headquarter_id"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel className="w-fit">Sede</FormLabel>
-                  <Popover modal>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "justify-between font-normal pl-3",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value
-                            ? HEADQUARTERS.find(
-                              (language) => language.value === field.value
-                            )?.label
-                            : "Seleccionar sede"}
-                          <ChevronsUpDown className="opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent align="start" className="p-0">
-                      <Command>
-                        <CommandInput
-                          placeholder="Buscar sede"
-                          className="h-8"
-                        />
-                        <CommandList>
-                          <CommandEmpty>No se encontraron resultados</CommandEmpty>
-                          <CommandGroup>
-                            {HEADQUARTERS.map((headquarter) => (
-                              <CommandItem
-                                value={headquarter.label}
-                                key={headquarter.value}
-                                onSelect={() => {
-                                  newAppointmentForm.setValue("headquarter_id", headquarter.value)
-                                }}
-                              >
-                                {headquarter.label}
-                                <Check
-                                  className={cn(
-                                    "ml-auto",
-                                    headquarter.value === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex gap-2 items-center">
+              <FormField
+                control={newAppointmentForm.control}
+                name="attention_type"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel className="w-fit">Tipo de atención</FormLabel>
+                    <Popover modal>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "justify-between font-normal pl-3",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value
+                              ? APPOINTMENT_TYPES.find(
+                                (language) => language.value === field.value
+                              )?.label
+                              : "Seleccionar tipo de atención"}
+                            <ChevronsUpDown className="opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent align="start" className="p-0">
+                        <Command>
+                          <CommandInput
+                            placeholder="Buscar..."
+                            className="h-8"
+                          />
+                          <CommandList>
+                            <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                            <CommandGroup>
+                              {APPOINTMENT_TYPES.map((headquarter) => (
+                                <CommandItem
+                                  value={headquarter.label}
+                                  key={headquarter.value}
+                                  onSelect={() => {
+                                    newAppointmentForm.setValue("attention_type", headquarter.value)
+                                  }}
+                                >
+                                  {headquarter.label}
+                                  <Check
+                                    className={cn(
+                                      "ml-auto",
+                                      headquarter.value === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={newAppointmentForm.control}
+                name="headquarter_id"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel className="w-fit">Sede</FormLabel>
+                    <Popover modal>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "justify-between font-normal pl-3",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value
+                              ? HEADQUARTERS.find(
+                                (language) => language.value === field.value
+                              )?.label
+                              : "Seleccionar sede"}
+                            <ChevronsUpDown className="opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent align="start" className="p-0">
+                        <Command>
+                          <CommandInput
+                            placeholder="Buscar sede"
+                            className="h-8"
+                          />
+                          <CommandList>
+                            <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                            <CommandGroup>
+                              {HEADQUARTERS.map((headquarter) => (
+                                <CommandItem
+                                  value={headquarter.label}
+                                  key={headquarter.value}
+                                  onSelect={() => {
+                                    newAppointmentForm.setValue("headquarter_id", headquarter.value)
+                                  }}
+                                >
+                                  {headquarter.label}
+                                  <Check
+                                    className={cn(
+                                      "ml-auto",
+                                      headquarter.value === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={newAppointmentForm.control}
               name="notes"
