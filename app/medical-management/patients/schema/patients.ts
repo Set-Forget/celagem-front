@@ -19,6 +19,7 @@ export const newPatientSchema = z.object({
   residence_city_id: z.string({ required_error: "La ciudad de residencia es requerida" }),
   phone_number: z.string({ required_error: "El número de teléfono es requerido" }),
   email: z.string().optional(),
+  role: z.enum(["ovo-contributor", "pregnant", "semen-contributor"], { required_error: "El rol es requerido" }),
 
   //Datos del acompañante
   partner_first_name: z.string().optional(),

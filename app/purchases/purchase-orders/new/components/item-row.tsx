@@ -79,7 +79,7 @@ export default function ItemRow({ index, remove }: { index: number, remove: (ind
               <FormControl>
                 <Input
                   {...field}
-                  placeholder="Talla M, color azul"
+                  placeholder="Descripción del item..."
                   className="border-0 rounded-none"
                 />
               </FormControl>

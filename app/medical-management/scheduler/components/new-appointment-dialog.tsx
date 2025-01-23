@@ -20,6 +20,7 @@ import { newAppointmentSchema } from "../schemas/appointments";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Textarea } from "@/components/ui/textarea";
 import { AsyncSelect } from "@/components/async-select";
+import TEMPLATES from "../templates/templates.json";
 
 const PATIENT_DATA = [
   {
@@ -324,21 +325,6 @@ const PATIENT_DATA = [
   }
 ]
 
-const APPOINTMENT_TYPES = [
-  {
-    value: "ovo-contributor",
-    label: "Ovo-Aportante",
-  },
-  {
-    value: "pregnant",
-    label: "Gestante",
-  },
-  {
-    value: "semen-contributor",
-    label: "Aportante de semen",
-  },
-] as const
-
 const HEADQUARTERS = [
   {
     value: "1",
@@ -398,7 +384,6 @@ export default function NewAppointmentDialog() {
     }
   }, [])
 
-  console.log(selectedDate)
   useEffect(() => {
     if (selectedDate) {
       newAppointmentForm.setValue("start_date", selectedDate.toISOString())
@@ -410,7 +395,7 @@ export default function NewAppointmentDialog() {
       open={dialogState.open === "new-appointment"}
       onOpenChange={onOpenChange}
     >
-      <DialogContent className="max-w-fit">
+      <DialogContent className="w-[650px] max-w-none">
         <DialogHeader>
           <DialogTitle>Nuevo turno</DialogTitle>
           <DialogDescription>
@@ -454,12 +439,12 @@ export default function NewAppointmentDialog() {
                 </FormItem>
               )}
             />
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <FormField
                 control={newAppointmentForm.control}
                 name="start_date"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col">
+                  <FormItem className="flex flex-col w-full">
                     <FormLabel className="w-fit">Fecha de inicio</FormLabel>
                     <Popover modal>
                       <PopoverTrigger asChild>
@@ -467,15 +452,17 @@ export default function NewAppointmentDialog() {
                           <Button
                             variant={"outline"}
                             className={cn(
-                              "w-[280px] pl-3 text-left font-normal",
+                              "pl-3 text-left font-normal",
                               !field.value && "text-muted-foreground"
                             )}
                           >
-                            {field.value ? (
-                              format(new Date(field.value), "PPP - hh:mm a")
-                            ) : (
-                              <span>Seleccionar fecha</span>
-                            )}
+                            <p className="truncate w-full">
+                              {field.value ? (
+                                format(new Date(field.value), "PPP - hh:mm a")
+                              ) : (
+                                <span>Seleccionar fecha</span>
+                              )}
+                            </p>
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
                         </FormControl>
@@ -553,7 +540,7 @@ export default function NewAppointmentDialog() {
                 control={newAppointmentForm.control}
                 name="end_date"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col">
+                  <FormItem className="flex flex-col w-full">
                     <FormLabel className="w-fit">Fecha de fin</FormLabel>
                     <Popover modal>
                       <PopoverTrigger
@@ -564,7 +551,7 @@ export default function NewAppointmentDialog() {
                           <Button
                             variant={"outline"}
                             className={cn(
-                              "w-[280px] pl-3 text-left font-normal",
+                              "pl-3 text-left font-normal",
                               !field.value && "text-muted-foreground"
                             )}
                           >
@@ -667,7 +654,7 @@ export default function NewAppointmentDialog() {
                 )}
               />
             </div>
-            <div className="flex gap-2 items-center flex-1">
+            <div className="grid grid-cols-2 gap-2">
               <FormField
                 control={newAppointmentForm.control}
                 name="user_id"
@@ -743,7 +730,7 @@ export default function NewAppointmentDialog() {
                 )}
               />
             </div>
-            <div className="flex gap-2 items-center">
+            <div className="grid grid-cols-2 gap-2">
               <FormField
                 control={newAppointmentForm.control}
                 name="attention_type"
@@ -761,11 +748,13 @@ export default function NewAppointmentDialog() {
                               !field.value && "text-muted-foreground"
                             )}
                           >
-                            {field.value
-                              ? APPOINTMENT_TYPES.find(
-                                (language) => language.value === field.value
-                              )?.label
-                              : "Seleccionar tipo de atención"}
+                            <p className="truncate">
+                              {field.value
+                                ? TEMPLATES.find(
+                                  (template) => template.template === field.value
+                                )?.template
+                                : "Seleccionar tipo de atención"}
+                            </p>
                             <ChevronsUpDown className="opacity-50" />
                           </Button>
                         </FormControl>
@@ -779,19 +768,19 @@ export default function NewAppointmentDialog() {
                           <CommandList>
                             <CommandEmpty>No se encontraron resultados</CommandEmpty>
                             <CommandGroup>
-                              {APPOINTMENT_TYPES.map((headquarter) => (
+                              {TEMPLATES.map((template) => (
                                 <CommandItem
-                                  value={headquarter.label}
-                                  key={headquarter.value}
+                                  value={template.template}
+                                  key={template.id}
                                   onSelect={() => {
-                                    newAppointmentForm.setValue("attention_type", headquarter.value)
+                                    newAppointmentForm.setValue("attention_type", template.template)
                                   }}
                                 >
-                                  {headquarter.label}
+                                  {template.template}
                                   <Check
                                     className={cn(
                                       "ml-auto",
-                                      headquarter.value === field.value
+                                      template.template === field.value
                                         ? "opacity-100"
                                         : "opacity-0"
                                     )}

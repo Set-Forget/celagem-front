@@ -20,7 +20,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "search",
     label: "Buscar",
     options: [
-      { label: "Proveedor", value: "supplier" },
+      { label: "Cliente", value: "customer" },
       { label: "CUIT", value: "cuit" },
     ],
     key: "search",

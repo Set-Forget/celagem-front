@@ -10,24 +10,28 @@ export const generateInvoicePDF = () => {
     <!-- ENCABEZADO / HEADER -->
     <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 12px; gap: 20px;">
         <div style="width:100%; padding-left:12px; padding-right:12px;">
+        
             <!-- TIPO DE FACTURA Y NÚMERO -->
             <h1 style="margin: 0 0 20px 0; font-size: 24px; font-weight: bold;">
                 FACTURA TIPO A
             </h1>
+
             <!-- Número de factura -->
             <div style="display: flex; justify-content: space-between;">
                 <span style="display: inline-block;">N° de Factura:</span>
                 <span style="font-weight: 500;"><strong>0001-00001234</strong></span>
             </div>
+
+            <!-- Fecha de emisión -->
+            <div style="display: flex; justify-content: space-between;">
+                <span>Fecha de Emisión:</span>
+                <span style="font-weight: 500;"><strong>15/12/2024</strong></span>
+            </div>
+
             <!-- Fecha de vencimiento -->
             <div style="display: flex; justify-content: space-between;">
                 <span>Fecha de Vencimiento:</span>
                 <span style="font-weight: 500;"><strong>15/12/2024</strong></span>
-            </div>
-                        <!-- OC -->
-            <div style="display: flex; justify-content: space-between;">
-                <span>Orden de compra:</span>
-                <span style="font-weight: 500;"><strong>2224</strong></span>
             </div>
         </div>
 
@@ -37,12 +41,12 @@ export const generateInvoicePDF = () => {
         </div>
     </div>
 
-    <!-- DATOS DEL PROVEEDOR Y DATOS DE LA EMPRESA -->
+    <!-- DATOS DEL CLIENTE Y DATOS DE LA EMPRESA -->
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; font-size:12px;">
-        <!-- PROVEEDOR -->
+        <!-- CLIENTE -->
         <div style="background-color: #f8f9fa; padding: 12px; border-radius: 8px;">
             <h3 style="margin: 0 0 16px 0; font-size: 14px; font-weight: bold;">
-                DATOS DEL PROVEEDOR
+                DATOS DEL CLIENTE
             </h3>
             <div style="display: flex; justify-content: space-between;">
                 <span>NIT/CUIT:</span>

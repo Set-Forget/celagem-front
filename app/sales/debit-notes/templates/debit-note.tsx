@@ -19,25 +19,17 @@ export const generateDebitNotePDF = () => {
                 <span style="display: inline-block;">N° de Nota de Débito:</span>
                 <span style="font-weight: 500;"><strong>0001-00005678</strong></span>
             </div>
-            <!-- Número de factura -->
-            <div style="display: flex; justify-content: space-between;">
-                <span style="display: inline-block;">N° de Factura:</span>
-                <span style="font-weight: 500;"><strong>0001-00005678</strong></span>
-            </div>
+
             <!-- Fecha de emisión -->
             <div style="display: flex; justify-content: space-between;">
                 <span>Fecha de Emisión:</span>
                 <span style="font-weight: 500;"><strong>15/12/2024</strong></span>
             </div>
-            <!-- Fecha de vencimiento (opcional para NC) -->
+
+            <!-- Fecha de vencimiento-->
             <div style="display: flex; justify-content: space-between;">
                 <span>Fecha de Vencimiento:</span>
                 <span style="font-weight: 500;"><strong>15/12/2024</strong></span>
-            </div>
-
-            <div style="display: flex; justify-content: space-between;">
-                <span>Orden de compra:</span>
-                <span style="font-weight: 500;"><strong>2224</strong></span>
             </div>
         </div>
 
@@ -47,11 +39,11 @@ export const generateDebitNotePDF = () => {
         </div>
     </div>
 
-    <!-- DATOS DEL PROVEEDOR Y DE LA EMPRESA -->
+    <!-- DATOS DEL CLIENTE Y DE LA EMPRESA -->
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; font-size:12px;">
-        <!-- PROVEEDOR -->
+        <!-- CLIENTE -->
         <div style="background-color: #f8f9fa; padding: 12px; border-radius: 8px;">
-            <h3 style="margin: 0 0 16px 0; font-size: 14px; font-weight: bold;">DATOS DEL PROVEEDOR</h3>
+            <h3 style="margin: 0 0 16px 0; font-size: 14px; font-weight: bold;">DATOS DEL CLIENTE</h3>
             <div style="display: flex; justify-content: space-between;">
                 <span>NIT/CUIT:</span>
                 <span style="font-weight: 500;"><strong>901029126-4</strong></span>

@@ -69,16 +69,12 @@ export default function CreditNotePage({
               <h2 className="text-base font-medium">General</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Proveedor</label>
+                  <label className="text-muted-foreground text-sm">Cliente</label>
                   <span className="text-sm">Guantes S.A.</span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Número de factura</label>
                   <span className="text-sm">FA-4500001782</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Número de orden de compra</label>
-                  <span className="text-sm">OC-4500001782</span>
                 </div>
               </div>
             </div>
@@ -93,10 +89,6 @@ export default function CreditNotePage({
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Cuenta</label>
                   <span className="text-sm">CAJA GENERAL</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Centro de costos</label>
-                  <span className="text-sm">Mantenimiento</span>
                 </div>
               </div>
             </div>

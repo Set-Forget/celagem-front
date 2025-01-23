@@ -26,6 +26,8 @@ export const newPurchaseOrderSchema = z.object({
     name: z.string({ required_error: "La sede es requerida" }),
   }),
   supplier_name: z.string({ required_error: "El proveedor es requerido" }),
+  contacts_name: z.array(z.string()).nonempty("Al menos un contacto es requerido"),
+  payment_terms: z.string({ required_error: "Los términos de pago son requeridos" }),
   currency: z.string({ required_error: "La moneda es requerida" }),
   title: z.string({ required_error: "El título es requerido" }),
   items: z.array(newPurchaseOrderItemSchema).nonempty("Al menos un item es requerido"),
@@ -33,6 +35,7 @@ export const newPurchaseOrderSchema = z.object({
   purchase_order_date: z.string({ required_error: "La fecha de la orden es requerida" }),
   notes: z.string().optional(),
   address: z.string().optional(),
+  terms_and_conditions: z.string().optional(),
 })
 
 export const purchaseOrdersSchema = z.object({

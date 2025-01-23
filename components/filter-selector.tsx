@@ -35,9 +35,10 @@ import { Label } from "./ui/label"
 
 type DateRangeFilter = { field: string, from: Date; to: Date };
 type SearchFilter = { field: string; query: string };
+type DateFilter = { field: string; value: string };
 
 type SelectedFilters = {
-  [key: string]: string[] | DateRangeFilter | SearchFilter;
+  [key: string]: string[] | DateRangeFilter | SearchFilter | DateFilter;
 };
 
 export type FilterConfig = {
@@ -219,6 +220,108 @@ const DateRangeFilter = ({
 };
 
 /* 
+  * DateFilter
+  *
+  * Componente que permite seleccionar una fecha.
+  * 
+  * @param options Opciones de campo.
+  * @param selectedValues Valores seleccionados.
+  * @param onChange Función que se ejecuta cuando se selecciona una fecha.
+  * @param setOpen Función que cierra el popover.
+*/
+
+const DateFilter = ({
+  options,
+  selectedValues,
+  onChange,
+  setOpen,
+}: {
+  options: { label: string; value: string }[];
+  selectedValues: { field: string; value: string };
+  onChange: (value: { field: string; value: string }) => void;
+  setOpen: (value: boolean) => void;
+}) => {
+  const [localDate, setLocalDate] = React.useState<Date | undefined>(
+    selectedValues?.value ? new Date(selectedValues.value) : undefined
+  );
+  const [field, setField] = React.useState(
+    selectedValues?.field || options[0]?.value
+  );
+
+  const handleApply = () => {
+    if (localDate && field) {
+      onChange({
+        field,
+        value: localDate.toISOString(),
+      });
+      setOpen(false);
+    }
+  };
+
+  return (
+    <div className="p-4">
+      <div className="flex flex-col gap-2">
+        <Label>Campo</Label>
+        <Select value={field} onValueChange={(value) => setField(value)}>
+          <SelectTrigger className="h-7 text-xs">
+            <SelectValue placeholder="Seleccionar campo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {options.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col gap-2 mt-4">
+        <Label>Fecha</Label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              id="date"
+              size="sm"
+              variant={"outline"}
+              className={cn(
+                "justify-start text-left font-normal min-w-[250px] h-7",
+                !localDate && "text-muted-foreground"
+              )}
+            >
+              {localDate ? (
+                format(localDate, "LLL dd, y")
+              ) : (
+                <span>Selecciona una fecha</span>
+              )}
+              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              initialFocus
+              mode="single"
+              defaultMonth={localDate}
+              selected={localDate}
+              onSelect={(date) => setLocalDate(date as Date)}
+            />
+          </PopoverContent>
+        </Popover>
+        <Button
+          size="sm"
+          className="w-fit ml-auto mt-2 h-7"
+          disabled={!localDate}
+          onClick={handleApply}
+        >
+          Aplicar
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+/* 
   * SearchFilter
   * 
   * Componente que permite realizar una búsqueda por campo.
@@ -354,6 +457,7 @@ const filterComponents: Record<string, React.ComponentType<any>> = {
   single: SingleFilter,
   date_range: DateRangeFilter,
   search: SearchFilter,
+  date: DateFilter,
 };
 
 /* 
@@ -506,6 +610,13 @@ export default function FilterSelector({
                     setOpen,
                     selectedValues: selectedFilters[openedFilter] || { field: "", query: "" },
                   })}
+                  {...(filterConfig.type === "date" && {
+                    options: filterConfig.options,
+                    onChange: (values: { field: string; value: string }) =>
+                      handleFilterChange(openedFilter, values),
+                    setOpen,
+                    selectedValues: selectedFilters[openedFilter] || { field: "", value: "" },
+                  })}
                 />
               );
             })()
@@ -549,7 +660,9 @@ export default function FilterSelector({
                 ? `${filterConfig?.options?.find((opt) => opt.value === value.field)?.label || "Rango de fecha"}`
                 : isSearchFilter(value)
                   ? `${filterConfig?.options?.find((opt) => opt.value === value.field)?.label || "Buscar"}`
-                  : filterConfig?.label || key
+                  : typeof value === "object" && "field" in value && "value" in value
+                    ? `${filterConfig?.options?.find((opt) => opt.value === value.field)?.label || "Fecha"}`
+                    : filterConfig?.label || key
             }
             value={
               Array.isArray(value)
@@ -558,9 +671,11 @@ export default function FilterSelector({
                   ? `${format(value.from, "LLL dd, yyyy")} - ${format(value.to, "LLL dd, yyyy")}`
                   : isSearchFilter(value)
                     ? `"${value.query}"`
-                    : typeof value === "string"
-                      ? filterConfig?.options?.find((opt) => opt.value === value)?.label || value
-                      : "N/A"
+                    : typeof value === "object" && "field" in value && "value" in value
+                      ? `${format(new Date(value.value), "LLL dd, yyyy")}`
+                      : typeof value === "string"
+                        ? filterConfig?.options?.find((opt) => opt.value === value)?.label || value
+                        : "N/A"
             }
             onRemove={() => clearFilter(key)}
           />

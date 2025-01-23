@@ -55,7 +55,7 @@ export const columns: ColumnDef<DebitNote>[] = [
   },
   {
     accessorKey: "company_name",
-    header: "Proveedor",
+    header: "Cliente",
     cell: ({ row }) => <div>{row.getValue("company_name")}</div>,
   },
   {

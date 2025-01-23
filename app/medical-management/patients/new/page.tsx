@@ -18,6 +18,21 @@ import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import { Switch } from "@/components/ui/switch"
 
+const APPOINTMENT_TYPES = [
+  {
+    value: "ovo-contributor",
+    label: "Ovo-Aportante",
+  },
+  {
+    value: "pregnant",
+    label: "Gestante",
+  },
+  {
+    value: "semen-contributor",
+    label: "Aportante de semen",
+  },
+] as const
+
 const HEADQUARTERS = [
   {
     value: "1",
@@ -962,6 +977,75 @@ export default function NewPatientPage() {
                       ) :
                         <FormDescription>
                           Este será el correo electrónico del cliente que se registrará.
+                        </FormDescription>
+                      }
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={newPatientForm.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Rol</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between font-normal pl-3",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? APPOINTMENT_TYPES.find(
+                                  (language) => language.value === field.value
+                                )?.label
+                                : "Seleccionar rol"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent align="start" className="p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Buscar..."
+                              className="h-8"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No se encontraron resultados</CommandEmpty>
+                              <CommandGroup>
+                                {APPOINTMENT_TYPES.map((headquarter) => (
+                                  <CommandItem
+                                    value={headquarter.label}
+                                    key={headquarter.value}
+                                    onSelect={() => {
+                                      newPatientForm.setValue("role", headquarter.value)
+                                    }}
+                                  >
+                                    {headquarter.label}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        headquarter.value === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      {newPatientForm.formState.errors.role ? (
+                        <FormMessage />
+                      ) :
+                        <FormDescription>
+                          Este será el rol del paciente que se registrará.
                         </FormDescription>
                       }
                     </FormItem>

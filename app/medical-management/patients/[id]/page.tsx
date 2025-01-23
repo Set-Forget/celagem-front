@@ -17,11 +17,6 @@ const notes = [
   { id: 4, content: "Sed pretium tortor nec ipsum interdum dictum. Aliquam erat volutpat. Phasellus pulvinar velit arcu, at interdum ligula volutpat id. Nulla et tellus vel ipsum scelerisque auctor eu non massa. Duis laoreet vel magna eu sodales. Maecenas bibendum nisl neque, quis auctor arcu pharetra commodo. Proin sit amet facilisis libero. Fusce sagittis purus ut aliquam accumsan. Fusce vel mauris nisi. Vestibulum lobortis." },
 ]
 
-const tags = [
-  { id: 1, name: "Cliente" },
-  { id: 3, name: "VIP" },
-]
-
 export default function PatientPage({
   params,
 }: {
@@ -64,12 +59,18 @@ export default function PatientPage({
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Nombre</label>
-                  <span className="text-sm">Johnson Group</span>
+                  <span className="text-sm">Juan Perez</span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Tipo de vinculación</label>
                   <span className="text-sm">
                     Particular
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Rol</label>
+                  <span className="text-sm">
+                    Donante de semen
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">

@@ -42,7 +42,7 @@ export default function Header({ title, children }: { children?: ReactNode, titl
   }, [])
 
   return (
-    <div className="sticky top-0 border-b z-10">
+    <div className="sticky top-0 border-b z-50">
       <header className={`
         flex h-16 shrink-0 px-4 items-center gap-2 
         ${isSticky

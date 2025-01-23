@@ -1,0 +1,2212 @@
+[
+  {
+    "id": 1,
+    "formName": "Consulta de primera vez ip",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Examen Físico Hombre - Aportante de semen",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "head",
+                "label": "Cabeza",
+                "type": "input",
+                "placeholder": "Informe de la cabeza",
+                "required": true,
+                "requiredMessage": "El campo cabeza es obligatorio",
+                "defaultValue": ""
+              },
+              {
+                "name": "abdomen",
+                "label": "Abdomen",
+                "type": "input",
+                "placeholder": "Informe del abdomen",
+                "required": true,
+                "requiredMessage": "El campo abdomen es obligatorio",
+                "defaultValue": ""
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "extremities",
+                "label": "Extremidades",
+                "type": "input",
+                "placeholder": "Informe de las extremidades",
+                "required": true,
+                "requiredMessage": "El campo extremidades es obligatorio",
+                "defaultValue": ""
+              },
+              {
+                "name": "neurological",
+                "label": "Neurológico",
+                "type": "input",
+                "placeholder": "Informe del sistema neurológico",
+                "required": true,
+                "requiredMessage": "El campo neurológico es obligatorio",
+                "defaultValue": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Historia - Aportante de semen",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "reason",
+                "label": "Motivo de la Consulta",
+                "type": "textarea",
+                "placeholder": "Motivo de la consulta",
+                "required": true,
+                "requiredMessage": "El campo motivo de la consulta es obligatorio",
+                "defaultValue": ""
+              },
+              {
+                "name": "illness",
+                "label": "Enfermedad Actual",
+                "type": "textarea",
+                "placeholder": "Enfermedad actual",
+                "required": true,
+                "requiredMessage": "El campo enfermedad actual es obligatorio",
+                "defaultValue": ""
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "personal_background",
+                "label": "Antecedentes Personales",
+                "type": "textarea",
+                "placeholder": "Antecedentes personales",
+                "required": true,
+                "requiredMessage": "El campo antecedentes personales es obligatorio",
+                "defaultValue": ""
+              },
+              {
+                "name": "family_background",
+                "label": "Antecedentes Familiares",
+                "type": "textarea",
+                "placeholder": "Antecedentes familiares",
+                "required": true,
+                "requiredMessage": "El campo antecedentes familiares es obligatorio",
+                "defaultValue": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Indice de masa corporal",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "weight",
+                "label": "Peso (Kg)",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El peso debe ser mayor o igual a 1",
+                "defaultValue": null
+              },
+              {
+                "name": "height",
+                "label": "Altura (cm)",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "La altura debe ser mayor o igual a 1",
+                "defaultValue": null
+              },
+              {
+                "name": "imc",
+                "label": "IMC",
+                "type": "input",
+                "required": false,
+                "placeholder": "0",
+                "defaultValue": "",
+                "readOnly": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Signos vitales",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "tas",
+                "label": "T.A.S.",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "tad",
+                "label": "T.A.D.",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "fc",
+                "label": "F.C.",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "fr",
+                "label": "F.R.",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "formName": "Características del paciente",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Grupo sanguíneo",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "blood-type",
+                "label": "Grupo sanguíneo",
+                "type": "select",
+                "placeholder": "Seleccionar grupo sanguíneo",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "A+",
+                    "value": "A+"
+                  },
+                  {
+                    "label": "A-",
+                    "value": "A-"
+                  },
+                  {
+                    "label": "B+",
+                    "value": "B+"
+                  },
+                  {
+                    "label": "B-",
+                    "value": "B-"
+                  },
+                  {
+                    "label": "AB+",
+                    "value": "AB+"
+                  },
+                  {
+                    "label": "AB-",
+                    "value": "AB-"
+                  },
+                  {
+                    "label": "O+",
+                    "value": "O+"
+                  },
+                  {
+                    "label": "O-",
+                    "value": "O-"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Fenotipo del Paciente",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "race",
+                "label": "Raza",
+                "type": "select",
+                "placeholder": "Seleccionar raza",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Caucásico",
+                    "value": "caucasian"
+                  },
+                  {
+                    "label": "Afro",
+                    "value": "afro"
+                  },
+                  {
+                    "label": "Oriental",
+                    "value": "oriental"
+                  },
+                  {
+                    "label": "Mestizo",
+                    "value": "mestizo"
+                  },
+                  {
+                    "label": "Arabe",
+                    "value": "arab"
+                  },
+                  {
+                    "label": "Hispana",
+                    "value": "hispanic"
+                  },
+                  {
+                    "label": "Gitana",
+                    "value": "gypsy"
+                  },
+                  {
+                    "label": "Mulata",
+                    "value": "mulatto"
+                  },
+                  {
+                    "label": "India",
+                    "value": "indian"
+                  },
+                  {
+                    "label": "Africana",
+                    "value": "african"
+                  },
+                  {
+                    "label": "Latina",
+                    "value": "latina"
+                  }
+                ]
+              },
+              {
+                "name": "skin",
+                "label": "Piel",
+                "type": "select",
+                "placeholder": "Seleccionar piel",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Pálida",
+                    "value": "pale"
+                  },
+                  {
+                    "label": "Blanca",
+                    "value": "white"
+                  },
+                  {
+                    "label": "Morena",
+                    "value": "brown"
+                  },
+                  {
+                    "label": "Muy morena",
+                    "value": "dark"
+                  },
+                  {
+                    "label": "Negra",
+                    "value": "black"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "hair",
+                "label": "Tipo de pelo",
+                "type": "select",
+                "placeholder": "Seleccionar tipo de pelo",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Liso",
+                    "value": "straight"
+                  },
+                  {
+                    "label": "Rizado",
+                    "value": "curly"
+                  },
+                  {
+                    "label": "Ondulado",
+                    "value": "wavy"
+                  },
+                  {
+                    "label": "Afro",
+                    "value": "afro"
+                  }
+                ]
+              },
+              {
+                "name": "hair-color",
+                "label": "Color pelo/cejas",
+                "type": "select",
+                "placeholder": "Seleccionar color pelo/cejas",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Rubio",
+                    "value": "blonde"
+                  },
+                  {
+                    "label": "Castaño claro",
+                    "value": "light-brown"
+                  },
+                  {
+                    "label": "Castaño oscuro",
+                    "value": "dark-brown"
+                  },
+                  {
+                    "label": "Negro",
+                    "value": "black"
+                  },
+                  {
+                    "label": "Rojo",
+                    "value": "red"
+                  },
+                  {
+                    "label": "Rubio oscuro",
+                    "value": "dark-blonde"
+                  },
+                  {
+                    "label": "Otro",
+                    "value": "other"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "eye-color",
+                "label": "Color de ojos",
+                "type": "select",
+                "placeholder": "Seleccionar color de ojos",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Marron",
+                    "value": "brown"
+                  },
+                  {
+                    "label": "Ambar",
+                    "value": "amber"
+                  },
+                  {
+                    "label": "Azul",
+                    "value": "blue"
+                  },
+                  {
+                    "label": "Verde",
+                    "value": "green"
+                  },
+                  {
+                    "label": "Gris",
+                    "value": "gray"
+                  },
+                  {
+                    "label": "Pardo",
+                    "value": "hazel"
+                  },
+                  {
+                    "label": "Negro",
+                    "value": "black"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "formName": "Valoración psicológica del IP",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Valoración psicológica del IP",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "psychological-assessment",
+                "label": "Valoración Psicológica",
+                "type": "textarea",
+                "placeholder": "Valoración psicológica",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "defaultValue": ""
+              },
+              {
+                "name": "psychological-assessment-continued",
+                "label": "Valoración Psicológica (Continuación)",
+                "type": "textarea",
+                "placeholder": "Continuación de la valoración psicológica",
+                "required": false,
+                "requiredMessage": "El campo es obligatorio",
+                "defaultValue": "No aplica"
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "outcome",
+                "label": "Resultado",
+                "type": "select",
+                "placeholder": "Seleccionar resultado",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Elegible",
+                    "value": "eligible"
+                  },
+                  {
+                    "label": "No elegible",
+                    "value": "not-eligible"
+                  },
+                  {
+                    "label": "En proceso",
+                    "value": "in-process"
+                  }
+                ]
+              },
+              {
+                "name": "file",
+                "label": "Adjunto (max 10mb",
+                "type": "file",
+                "placeholder": "test",
+                "required": false,
+                "requiredMessage": "El campo es obligatorio"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "formName": "Espermograma completo",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Datos pre-analíticos",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "abstinence-days",
+                "label": "Días de abstinencia",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "collection-time",
+                "label": "Hora de recolección",
+                "type": "time",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "defaultValue": null
+              },
+              {
+                "name": "exam-time",
+                "label": "Hora del examen",
+                "type": "time",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "defaultValue": null
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "collected-form",
+                "label": "Forma recogida",
+                "type": "select",
+                "placeholder": "Seleccionar forma de recogida",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Masturbación",
+                    "value": "masturbation"
+                  },
+                  {
+                    "label": "Masturbación pareja",
+                    "value": "couple-masturbation"
+                  },
+                  {
+                    "label": "Otros",
+                    "value": "other"
+                  }
+                ]
+              },
+              {
+                "name": "collection-place",
+                "label": "Lugar de recogida",
+                "type": "select",
+                "placeholder": "Seleccionar lugar de recogida",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Centro clínico",
+                    "value": "clinic"
+                  },
+                  {
+                    "label": "Domilicio",
+                    "value": "home"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "sample-type",
+                "label": "Tipo de muestra",
+                "type": "select",
+                "placeholder": "Seleccionar tipo de muestra",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Completa",
+                    "value": "complete"
+                  },
+                  {
+                    "label": "Incial",
+                    "value": "initial"
+                  },
+                  {
+                    "label": "Media",
+                    "value": "medium"
+                  },
+                  {
+                    "label": "Final",
+                    "value": "final"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "previous-fever",
+                "label": "Estados febriles previos",
+                "type": "input",
+                "placeholder": "Estados febriles previos",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "defaultValue": ""
+              },
+              {
+                "name": "previous-terapy",
+                "label": "Terapia previa",
+                "type": "input",
+                "placeholder": "Terapia previa",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "defaultValue": ""
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "previous-surgery",
+                "label": "Cirugía previa",
+                "type": "input",
+                "placeholder": "Cirugía previa",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "defaultValue": ""
+              },
+              {
+                "name": "difficulty-collection",
+                "label": "Dificultad en la recogida",
+                "type": "input",
+                "placeholder": "Dificultad en la recogida",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "defaultValue": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Caracteres físicos",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "color",
+                "label": "Color",
+                "type": "select",
+                "placeholder": "Seleccionar color",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Blanco - Gris",
+                    "value": "white-gray"
+                  },
+                  {
+                    "label": "Nacarado",
+                    "value": "pearly"
+                  },
+                  {
+                    "label": "Translucido",
+                    "value": "translucent"
+                  },
+                  {
+                    "label": "Sanguinolento",
+                    "value": "bloody"
+                  },
+                  {
+                    "label": "Marrón",
+                    "value": "brown"
+                  }
+                ]
+              },
+              {
+                "name": "viscosity",
+                "label": "Viscosidad",
+                "type": "select",
+                "placeholder": "Seleccionar viscosidad",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Normal",
+                    "value": "normal"
+                  },
+                  {
+                    "label": "Moderada",
+                    "value": "moderate"
+                  },
+                  {
+                    "label": "Elevada",
+                    "value": "high"
+                  }
+                ]
+              },
+              {
+                "name": "liquefaction",
+                "label": "Licuefacción",
+                "type": "select",
+                "placeholder": "Seleccionar licuefacción",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Total",
+                    "value": "total"
+                  },
+                  {
+                    "label": "Incompleta",
+                    "value": "incomplete"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "volume",
+                "label": "Volumen (> ó = 1.4 mL)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "concentration",
+                "label": "Concentración (> ó = 16 Millones/mL)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Concentración",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "ph",
+                "label": "pH (> ó = 7.2)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "total-concentration",
+                "label": "Concentración Total (> ó = 39 Millones/mL)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "sperm-presence",
+                "label": "¿Presencia espermatozoides?",
+                "type": "select",
+                "placeholder": "Seleccionar presencia de espermatozoides",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Si",
+                    "value": "true"
+                  },
+                  {
+                    "label": "No",
+                    "value": "false"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Movilidad",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "progressive",
+                "label": "Progresiva (> ó = 32%)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "non-progressive",
+                "label": "No progresiva (%)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "immobile",
+                "label": "Inmóviles (%)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "total-moviles",
+                "label": "Total Moviles (> ó = 42%)",
+                "type": "number",
+                "minValue": 0,
+                "required": false,
+                "defaultValue": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Vitalidad",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "vitality",
+                "label": "Vitalidad (> ó = 54%)",
+                "type": "input",
+                "required": false,
+                "defaultValue": "No aplica"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Tipos celulares",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "hematies",
+                "label": "Hematies (M/ml)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "leukocytes",
+                "label": "Leucocitos (< ó = 1 Millón/mL)",
+                "type": "input",
+                "required": false,
+                "defaultValue": "< 1 Millón/mL"
+              },
+              {
+                "name": "round-cells",
+                "label": "Células redondas (< ó = 5 M/mL)",
+                "type": "input",
+                "required": false,
+                "defaultValue": "< 5 Millones/ mL"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Otras características",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "agglutination",
+                "label": "Aglutinación",
+                "type": "select",
+                "placeholder": "Seleccionar aglutinación",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "No",
+                    "value": "no"
+                  },
+                  {
+                    "label": "+",
+                    "value": "+"
+                  },
+                  {
+                    "label": "++",
+                    "value": "++"
+                  },
+                  {
+                    "label": "+++",
+                    "value": "+++"
+                  },
+                  {
+                    "label": "++++",
+                    "value": "++++"
+                  }
+                ]
+              },
+              {
+                "name": "aggregation",
+                "label": "¿Agregación?",
+                "type": "select",
+                "placeholder": "Seleccionar agregación",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Si",
+                    "value": "true"
+                  },
+                  {
+                    "label": "No",
+                    "value": "false"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Morfología (Kruger)",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "normal-forms",
+                "label": "Formas normales (> ó = 4%)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "head-anomalies",
+                "label": "Anomalias cabeza (%)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "pi-anomalies",
+                "label": "Anomalias PI (%)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              },
+              {
+                "name": "flagellum-anomalies",
+                "label": "Anomalias flagelo (%)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": null
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "anormal-forms",
+                "label": "Formas anormales (%)",
+                "type": "number",
+                "minValue": 0,
+                "defaultValue": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Observaciones",
+        "columns": [
+          {
+            "name": "note-1",
+            "label": "Nota 1",
+            "type": "input",
+            "defaultValue": "Valores referenciales basados en el manual OMS 2021"
+          },
+          {
+            "name": "note-2",
+            "label": "Nota 2",
+            "type": "input",
+            "defaultValue": "Pueden existir variaciones entre muestras de un mismo individuo"
+          },
+          {
+            "name": "note-3",
+            "label": "Nota 3",
+            "type": "input",
+            "defaultValue": "Este estudio es validado por la Embriólogo Marilyn Leal con tarjeta profesional 708820"
+          },
+          {
+            "name": "observation",
+            "label": "Observaciones",
+            "type": "textarea",
+            "placeholder": "Observaciones...",
+            "defaultValue": "",
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "formName": "Entrada al banco de semen por congelación",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Toma de muestra de semen",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "date",
+                "label": "Fecha",
+                "type": "date",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "defaultValue": null
+              },
+              {
+                "name": "origin",
+                "label": "Procedencia",
+                "type": "select",
+                "placeholder": "Seleccionar procedencia",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Fresco",
+                    "value": "fresh"
+                  },
+                  {
+                    "label": "Congelado",
+                    "value": "frozen"
+                  }
+                ]
+              },
+              {
+                "name": "file",
+                "label": "Adjunto (max 10mb",
+                "type": "file",
+                "placeholder": "",
+                "required": false,
+                "requiredMessage": "El campo es obligatorio"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Semen en fresco",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "sperm-washing",
+                "label": "¿Lavado espermático?",
+                "type": "select",
+                "placeholder": "Seleccionar lavado espermático",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Si",
+                    "value": "true"
+                  },
+                  {
+                    "label": "No",
+                    "value": "false"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Entrada de semen",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "frozen-cryovials",
+                "label": "N° de crioviales congelados",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              }
+            ]
+          },
+          {
+            "name": "observation",
+            "label": "Observaciones",
+            "type": "input",
+            "placeholder": "Observaciones...",
+            "required": true,
+            "requiredMessage": "El campo es obligatorio",
+            "defaultValue": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "formName": "Salida del banco de semen por descongelación",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Descongelación de semen",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "requested-by",
+                "label": "Ginecólogo que solicita descongelación",
+                "type": "select",
+                "placeholder": "Seleccionar ginecólogo",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Ilich Maurell",
+                    "value": "ilich-maurell"
+                  },
+                  {
+                    "label": "Omaira Ibarra",
+                    "value": "omaira-ibarra"
+                  },
+                  {
+                    "label": "Zamira Andreina Zayago Meza",
+                    "value": "zamira-andreina-zayago-meza"
+                  },
+                  {
+                    "label": "Nilfran Nottola",
+                    "value": "nilfran-nottola"
+                  },
+                  {
+                    "label": "Elayne Margarita Vasquez Medrano",
+                    "value": "elayne-margarita-vasquez-medrano"
+                  },
+                  {
+                    "label": "Johanna Carolina Paez Redondo",
+                    "value": "johanna-carolina-paez-redondo"
+                  }
+                ]
+              },
+              {
+                "name": "reason",
+                "label": "Motivo de la descongelación de semen",
+                "type": "select",
+                "placeholder": "Seleccionar motivo",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Fertilización y cultivo",
+                    "value": "fertilization-culture"
+                  },
+                  {
+                    "label": "Inseminación artificial",
+                    "value": "artificial-insemination"
+                  },
+                  {
+                    "label": "Donado para fertilización y cultivo",
+                    "value": "donated-fertilization-culture"
+                  },
+                  {
+                    "label": "Donado para inseminación artificial",
+                    "value": "donated-artificial-insemination"
+                  },
+                  {
+                    "label": "Evaluaciones adicionales",
+                    "value": "additional-evaluations"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "label": "N° de crioviales congelados a descongelar",
+                "name": "frozen-cryovials",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "formName": "Semen para fertilización in vitro",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Descongelación de semen",
+        "columns": [
+          {
+            "rows": [
+              {
+                "label": "Técnica",
+                "name": "technique",
+                "type": "select",
+                "placeholder": "Seleccionar técnica",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "ICSI",
+                    "value": "icsi"
+                  },
+                  {
+                    "label": "FIV",
+                    "value": "fiv"
+                  }
+                ]
+              },
+              {
+                "label": "Técnica de lavado espermático",
+                "name": "sperm-washing-technique",
+                "type": "select",
+                "placeholder": "Seleccionar técnica de lavado espermático",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Lavado espermático",
+                    "value": "sperm-washing"
+                  },
+                  {
+                    "label": "Ericcson test",
+                    "value": "ericcson-test"
+                  },
+                  {
+                    "label": "Microfluidos",
+                    "value": "microfluids"
+                  },
+                  {
+                    "label": "Anexia",
+                    "value": "anexia"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "label": "Estado de la muestra semen",
+                "name": "semen-state",
+                "type": "select",
+                "placeholder": "Seleccionar estado de la muestra",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Fresco",
+                    "value": "fresh"
+                  },
+                  {
+                    "label": "Congelado",
+                    "value": "frozen"
+                  }
+                ]
+              },
+              {
+                "label": "Fracción de muestra a fertilizar",
+                "name": "sample-fraction",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "formName": "Entrada al banco de embriones por vitrificación",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Captura embrionaria",
+        "columns": [
+          {
+            "rows": [
+              {
+                "label": "Técnica",
+                "name": "technique",
+                "type": "select",
+                "placeholder": "Seleccionar técnica",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "ICSI",
+                    "value": "icsi"
+                  },
+                  {
+                    "label": "FIV",
+                    "value": "fiv"
+                  }
+                ]
+              },
+              {
+                "label": "Procedencia",
+                "name": "origin",
+                "type": "select",
+                "placeholder": "Seleccionar procedencia",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Fresco",
+                    "value": "fresh"
+                  },
+                  {
+                    "label": "Vitrificado",
+                    "value": "vitrified"
+                  }
+                ]
+              },
+              {
+                "name": "file",
+                "label": "Adjunto (max 10mb",
+                "type": "file",
+                "required": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Datos del semen capturado",
+        "columns": [
+          {
+            "label": "Aportante del semen",
+            "name": "semen-contributor",
+            "type": "input",
+            "placeholder": "Aportante del semen...",
+            "required": false,
+            "defaultValue": ""
+          }
+        ]
+      },
+      {
+        "sectionName": "Producto de la fertilización y cultivo embrionario",
+        "columns": [
+          {
+            "rows": [
+              {
+                "label": "Número de óvulos asignados",
+                "name": "assigned-eggs",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              },
+              {
+                "label": "MII",
+                "name": "mii",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              },
+              {
+                "label": "MI",
+                "name": "mi",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "label": "VG",
+                "name": "vg",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              },
+              {
+                "label": "Degenerado",
+                "name": "degenerated",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              },
+              {
+                "label": "Total Ovocitos",
+                "name": "total-eggs",
+                "type": "number",
+                "required": false
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "label": "Número de embriones (D3)",
+                "name": "d3-embryos",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              },
+              {
+                "label": "Número de blastocistos (D5-D6)",
+                "name": "d5-d6-blastocysts",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "date",
+                "label": "Fecha de vitrificación embrionaria",
+                "type": "date",
+                "required": false,
+                "defaultValue": null
+              }
+            ]
+          },
+          {
+            "name": "observation",
+            "label": "Observaciones",
+            "type": "textarea",
+            "placeholder": "Observaciones...",
+            "required": false,
+            "defaultValue": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "formName": "Salida del banco de embriones por desvitrificación y transferencia",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Desvitrificación y transferencia de embriones",
+        "columns": [
+          {
+            "rows": [
+              {
+                "label": "Ginecólogo que solicita desvitrificación",
+                "name": "requested-by",
+                "type": "select",
+                "placeholder": "Seleccionar ginecólogo",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Ilich Maurell",
+                    "value": "ilich-maurell"
+                  },
+                  {
+                    "label": "Omaira Ibarra",
+                    "value": "omaira-ibarra"
+                  },
+                  {
+                    "label": "Zamira Andreina Zayago Meza",
+                    "value": "zamira-andreina-zayago-meza"
+                  },
+                  {
+                    "label": "Nilfran Nottola",
+                    "value": "nilfran-nottola"
+                  },
+                  {
+                    "label": "Elayne Margarita Vasquez Medrano",
+                    "value": "elayne-margarita-vasquez-medrano"
+                  },
+                  {
+                    "label": "Johanna Carolina Paez Redondo",
+                    "value": "johanna-carolina-paez-redondo"
+                  }
+                ]
+              },
+              {
+                "label": "Embriones a desvitrificar",
+                "name": "embryos-to-thaw",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              },
+              {
+                "label": "Estado del embrión",
+                "name": "embryo-state",
+                "type": "select",
+                "placeholder": "Seleccionar estado del embrión",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Fresco",
+                    "value": "fresh"
+                  },
+                  {
+                    "label": "Desvitrificado",
+                    "value": "thawed"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": "Serial embrión 1",
+            "name": "serial-embryo-1",
+            "type": "input",
+            "placeholder": "Serial embrión 1...",
+            "required": true,
+            "requiredMessage": "El campo es obligatorio",
+            "defaultValue": ""
+          },
+          {
+            "label": "Serial embrión 2",
+            "name": "serial-embryo-2",
+            "type": "input",
+            "placeholder": "Serial embrión 2...",
+            "required": false,
+            "defaultValue": ""
+          },
+          {
+            "label": "Serial embrión 3",
+            "name": "serial-embryo-3",
+            "type": "input",
+            "placeholder": "Serial embrión 3...",
+            "required": false,
+            "defaultValue": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "formName": "Consulta de primera vez por otras especialidades medicas",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Consulta otras especialidades",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "file",
+                "label": "Adjunto (max 10mb",
+                "type": "file",
+                "required": false,
+                "requiredMessage": "El campo es obligatorio"
+              }
+            ]
+          },
+          {
+            "name": "observation",
+            "label": "Observaciones",
+            "type": "textarea",
+            "placeholder": "Observaciones...",
+            "required": true,
+            "defaultValue": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "formName": "Toma de muestra de semen",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Toma de muestra de semen",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "date",
+                "label": "Fecha",
+                "type": "date",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "defaultValue": null
+              },
+              {
+                "name": "origin",
+                "label": "Procedencia",
+                "type": "select",
+                "placeholder": "Seleccionar procedencia",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Fresco",
+                    "value": "fresh"
+                  },
+                  {
+                    "label": "Congelado",
+                    "value": "frozen"
+                  }
+                ]
+              },
+              {
+                "name": "file",
+                "label": "Adjunto (max 10mb",
+                "type": "file",
+                "placeholder": "",
+                "required": false,
+                "requiredMessage": "El campo es obligatorio"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Disposición de la muestra",
+        "columns": [
+          {
+            "label": "Disposición de la muestra",
+            "name": "sample-disposition",
+            "type": "multi-select",
+            "placeholder": "Seleccionar disposición de la muestra",
+            "required": true,
+            "requiredMessage": "El campo es obligatorio",
+            "options": [
+              {
+                "label": "Espermograma",
+                "value": "semen-analysis"
+              },
+              {
+                "label": "Congelación",
+                "value": "freezing"
+              },
+              {
+                "label": "Fertilización y cultivo",
+                "value": "fertilization-culture"
+              },
+              {
+                "label": "Inseminación artificial",
+                "value": "artificial-insemination"
+              },
+              {
+                "label": "Perfil OAT",
+                "value": "oat-profile"
+              },
+              {
+                "label": "Carga viral",
+                "value": "viral-load"
+              },
+              {
+                "label": "Fish",
+                "value": "fish"
+              },
+              {
+                "label": "Fragmentación de ADN",
+                "value": "dna-fragmentation"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "formName": "Tipos de anexos",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Anexos",
+        "columns": [
+          {
+            "rows": [
+              {
+                "name": "file",
+                "label": "Resultados de laboratorio (max 10mb)",
+                "type": "file",
+                "required": false
+              },
+              {
+                "name": "file",
+                "label": "Consentimientos (max 10mb)",
+                "type": "file",
+                "required": false
+              },
+              {
+                "name": "file",
+                "label": "Documento de identidad (max 10mb)",
+                "type": "file",
+                "required": false
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "file",
+                "label": "Ecografias (max 10mb)",
+                "type": "file",
+                "required": false
+              },
+              {
+                "name": "file",
+                "label": "Panel genetico (max 10mb)",
+                "type": "file",
+                "required": false
+              },
+              {
+                "name": "file",
+                "label": "Prueba psicológica (max 10mb)",
+                "type": "file",
+                "required": false
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "name": "file",
+                "label": "Resumen de historia clínica (max 10mb)",
+                "type": "file",
+                "required": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "formName": "Control médico",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Control médico",
+        "columns": [
+          {
+            "rows": [
+              {
+                "label": "Tipo de control",
+                "name": "control-type",
+                "type": "select",
+                "placeholder": "Seleccionar tipo de control",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Control médico",
+                    "value": "medical-control"
+                  },
+                  {
+                    "label": "Biopsia testicular",
+                    "value": "testicular-biopsy"
+                  },
+                  {
+                    "label": "Aspiración uterina",
+                    "value": "uterine-aspiration"
+                  },
+                  {
+                    "label": "Retiro de dispositivo intrauterino",
+                    "value": "iud-removal"
+                  },
+                  {
+                    "label": "Retiro de implante",
+                    "value": "implant-removal"
+                  },
+                  {
+                    "label": "Génetica clínica",
+                    "value": "clinical-genetics"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "observation",
+            "label": "Observaciones",
+            "type": "textarea",
+            "placeholder": "Observaciones...",
+            "required": true,
+            "defaultValue": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "formName": "Nota de andrología",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Nota aclaratoria de andrología",
+        "columns": [
+          {
+            "name": "note",
+            "label": "Nota",
+            "type": "textarea",
+            "placeholder": "Nota...",
+            "required": true,
+            "defaultValue": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "formName": "Nota de embriología",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Nota aclaratoria de embriología",
+        "columns": [
+          {
+            "name": "note",
+            "label": "Nota",
+            "type": "textarea",
+            "placeholder": "Nota...",
+            "required": true,
+            "defaultValue": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "formName": "Nota de enfermería",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Nota aclaratoria de enfermería",
+        "columns": [
+          {
+            "name": "note",
+            "label": "Nota",
+            "type": "textarea",
+            "placeholder": "Nota...",
+            "required": true,
+            "defaultValue": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "formName": "Consulta medicina genética de ip",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Consulta medicina genética",
+        "columns": [
+          {
+            "rows": [
+              {
+                "label": "Criterio",
+                "name": "criterion",
+                "type": "select",
+                "placeholder": "Seleccionar criterio",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Portador dominante",
+                    "value": "dominant-carrier"
+                  },
+                  {
+                    "label": "Portador receptivo",
+                    "value": "receptive-carrier"
+                  },
+                  {
+                    "label": "No portador",
+                    "value": "non-carrier"
+                  }
+                ]
+              },
+              {
+                "name": "file",
+                "label": "Adjunto (max 10mb",
+                "type": "file",
+                "required": false
+              }
+            ]
+          },
+          {
+            "label": "Evolución genética",
+            "name": "genetic-evolution",
+            "type": "textarea",
+            "placeholder": "Evolución genética...",
+            "required": true,
+            "defaultValue": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "formName": "Salida del Banco de semen por desincorporación",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Desincorporación de semen",
+        "columns": [
+          {
+            "rows": [
+              {
+                "label": "Estado de la muestra",
+                "name": "sample-state",
+                "type": "select",
+                "placeholder": "Seleccionar estado de la muestra",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Fresco",
+                    "value": "fresh"
+                  },
+                  {
+                    "label": "Congelado",
+                    "value": "frozen"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "label": "Motivo de la desincorporación del congelado",
+                "name": "reason-frozen",
+                "type": "select",
+                "placeholder": "Seleccionar motivo",
+                "required": false,
+                "options": [
+                  {
+                    "label": "Paciente autorizó la desincorporación",
+                    "value": "patient-authorized"
+                  },
+                  {
+                    "label": "Paciente no renovó criopreservación",
+                    "value": "patient-not-renewed"
+                  },
+                  {
+                    "label": "Paciente decidió traslado a otro centro clínico",
+                    "value": "patient-transfer"
+                  }
+                ]
+              },
+              {
+                "label": "Motivo de la desincorporación del fresco",
+                "name": "reason-fresh",
+                "type": "select",
+                "placeholder": "Seleccionar motivo",
+                "required": false,
+                "options": [
+                  {
+                    "label": "Sin parámetro mínimo para su utilización",
+                    "value": "patient-authorized"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rows": [
+              {
+                "label": "Número de crioviales congelados a desincorporar",
+                "name": "frozen-cryovials",
+                "type": "number",
+                "placeholder": "",
+                "minValue": 0,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "formName": "Salida del banco de embriones por desincorporación",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Desincorporación de semen",
+        "columns": [
+          {
+            "rows": [
+              {
+                "label": "Estado de la muestra",
+                "name": "sample-state",
+                "type": "select",
+                "placeholder": "Seleccionar estado de la muestra",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Fresco",
+                    "value": "fresh"
+                  },
+                  {
+                    "label": "Vitrificado",
+                    "value": "vitrified"
+                  }
+                ]
+              },
+              {
+                "label": "Número de embriones a desincorporar",
+                "name": "embryos-to-disincorporate",
+                "type": "number",
+                "minValue": 0,
+                "required": true,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Seriales de embriones a desincorporar",
+        "columns": [
+          {
+            "label": "",
+            "name": "embryos-to-disincorporate-list",
+            "type": "embryos-to-disincorporate-table",
+            "required": true,
+            "defaultValue": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "formName": "Reporte acumulado de embriones en el banco",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Embriones disponibles",
+        "columns": [
+          {
+            "rows": [
+              {
+                "label": "Número de embriones vitrificados",
+                "name": "vitrified-embryos",
+                "type": "number",
+                "minValue": 0,
+                "required": true,
+                "errorMessage": "El valor debe ser mayor o igual a 1",
+                "defaultValue": null
+              },
+              {
+                "label": "Estadio embrionario",
+                "name": "embryonic-stage",
+                "type": "select",
+                "placeholder": "Seleccionar estadio embrionario",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "options": [
+                  {
+                    "label": "Día 5",
+                    "value": "day-5"
+                  },
+                  {
+                    "label": "Día 5 y 6",
+                    "value": "day-5-6"
+                  },
+                  {
+                    "label": "Día 6",
+                    "value": "day-6"
+                  }
+                ]
+              },
+              {
+                "label": "Método de vitrificación",
+                "name": "vitrification-method",
+                "type": "input",
+                "placeholder": "Método de vitrificación...",
+                "required": true,
+                "requiredMessage": "El campo es obligatorio",
+                "defaultValue": "CRYOTECH KIT"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Seguimiento de embriones",
+        "columns": [
+          {
+            "label": "",
+            "name": "embryos-to-follow-up-list",
+            "type": "embryos-to-follow-up-table",
+            "required": true,
+            "defaultValue": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "formName": "Reporte IVF",
+    "schema": "semen-contributor",
+    "sections": [
+      {
+        "sectionName": "Datos básicos IVF",
+        "columns": [
+          {
+            "rows": [
+              {
+                "label": "Código de la donante",
+                "name": "donor-code",
+                "type": "input",
+                "required": true,
+                "errorMessage": "El campo es obligatorio",
+                "placeholder": "Código de la donante...",
+                "defaultValue": ""
+              },
+              {
+                "label": "Agencia",
+                "name": "agency",
+                "placeholder": "Agencia...",
+                "type": "input",
+                "required": true,
+                "errorMessage": "El campo es obligatorio",
+                "defaultValue": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sectionName": "Reporte IVF",
+        "columns": [
+          {
+            "label": "",
+            "name": "ivf-report-list",
+            "type": "ivf-report-table",
+            "required": true,
+            "defaultValue": []
+          }
+        ]
+      }
+    ]
+  }
+]

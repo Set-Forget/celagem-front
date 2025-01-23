@@ -167,24 +167,6 @@ const data = {
           title: "Pacientes",
           url: "/medical-management/patients",
         },
-        {
-          title: "Historia clínica",
-          url: "/medical-management/medical-records",
-          items: [
-            {
-              title: "Consultas",
-              url: "/medical-management/medical-records/consultations",
-            },
-            {
-              title: "Recetas",
-              url: "/medical-management/medical-records/prescriptions",
-            },
-            {
-              title: "Estudios",
-              url: "/medical-management/medical-records/studies",
-            },
-          ],
-        },
       ],
     }
   ],

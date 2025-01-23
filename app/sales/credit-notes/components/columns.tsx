@@ -52,7 +52,7 @@ export const columns: ColumnDef<CreditNote>[] = [
   },
   {
     accessorKey: "company_name",
-    header: "Proveedor",
+    header: "Cliente",
     cell: ({ row }) => <div>{row.getValue("company_name")}</div>,
   },
   {

@@ -25,6 +25,7 @@ export const newPurchaseReceiptSchema = z.object({
   supplier: z.string({ required_error: "El proveedor es requerido" }),
   received_at: z.string({ required_error: "La fecha de recepción es requerida" }),
   received_quantity: z.number({ required_error: "La cantidad recibida es requerida" }),
+  notes: z.string().optional(),
   items: z.array(purchaseReceiptItemsSchema).nonempty("Al menos un item es requerido"),
 });
 

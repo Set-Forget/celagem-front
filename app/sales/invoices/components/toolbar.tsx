@@ -32,7 +32,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     label: "Buscar",
     options: [
       { label: "Número de factura", value: "invoice_number" },
-      { label: "Proveedor", value: "supplier" },
+      { label: "Cliente", value: "customer" },
     ],
     key: "search",
     icon: Search

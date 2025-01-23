@@ -1,5 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import {
+  Check,
   CheckIcon,
   ChevronDown,
   X,
@@ -11,7 +12,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
   CommandList
 } from "@/components/ui/command";
@@ -104,12 +107,15 @@ interface MultiSelectProps
    * Optional, can be used to add custom styles.
    */
   className?: string;
+
+  /**
+   * Placeholder text to be displayed in the search input.
+   * Optional, defaults to "Search...".
+   */
+  searchPlaceholder?: string;
 }
 
-export const MultiSelect = React.forwardRef<
-  HTMLButtonElement,
-  MultiSelectProps
->(
+export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(
   (
     {
       options,
@@ -117,7 +123,8 @@ export const MultiSelect = React.forwardRef<
       variant,
       defaultValue = [],
       placeholder = "Select options",
-      maxCount = 1,
+      searchPlaceholder = "Search...",
+      maxCount: userDefinedMaxCount,
       modalPopover = false,
       asChild = false,
       className,
@@ -127,6 +134,34 @@ export const MultiSelect = React.forwardRef<
   ) => {
     const [selectedValues, setSelectedValues] = React.useState<string[]>(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+    const [dynamicMaxCount, setDynamicMaxCount] = React.useState<number>(
+      userDefinedMaxCount ?? 1
+    );
+
+    const containerRef = React.useRef<HTMLDivElement>(null);
+
+    const calculateMaxTags = React.useCallback(() => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        const tagWidth = 100;
+        const padding = 40;
+        const maxTags = Math.floor((containerWidth - padding) / tagWidth);
+        setDynamicMaxCount(maxTags);
+      }
+    }, []);
+
+    React.useEffect(() => {
+      calculateMaxTags();
+
+      const handleResize = () => {
+        calculateMaxTags();
+      };
+
+      window.addEventListener("resize", handleResize);
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, [calculateMaxTags]);
 
     const toggleOption = (option: string) => {
       const newSelectedValues = selectedValues.includes(option)
@@ -138,12 +173,6 @@ export const MultiSelect = React.forwardRef<
 
     const handleTogglePopover = () => {
       setIsPopoverOpen((prev) => !prev);
-    };
-
-    const clearExtraOptions = () => {
-      const newSelectedValues = selectedValues.slice(0, maxCount);
-      setSelectedValues(newSelectedValues);
-      onValueChange(newSelectedValues);
     };
 
     return (
@@ -164,10 +193,13 @@ export const MultiSelect = React.forwardRef<
               className
             )}
           >
-            {selectedValues.length > 0 && (
-              <div className="flex justify-between items-center w-full">
+            <div
+              ref={containerRef}
+              className="flex justify-between items-center w-full"
+            >
+              {selectedValues.length > 0 && (
                 <div className="flex items-center">
-                  {selectedValues.slice(0, maxCount).map((value) => {
+                  {selectedValues.slice(0, dynamicMaxCount).map((value) => {
                     const option = options.find((o) => o.value === value);
                     const IconComponent = option?.icon;
                     return (
@@ -193,7 +225,7 @@ export const MultiSelect = React.forwardRef<
                       </Badge>
                     );
                   })}
-                  {selectedValues.length > maxCount && (
+                  {selectedValues.length > dynamicMaxCount && (
                     <Badge
                       onMouseOver={(e) => e.stopPropagation()}
                       className={cn(
@@ -201,53 +233,54 @@ export const MultiSelect = React.forwardRef<
                         multiSelectVariants({ variant })
                       )}
                     >
-                      {`+ ${selectedValues.length - maxCount} más`}
+                      {`+ ${selectedValues.length - dynamicMaxCount} más`}
                       <X
                         className="!h-3 !w-3 text-muted-foreground hover:text-foreground transition ml-1"
                         onClick={(event) => {
                           event.stopPropagation();
-                          clearExtraOptions();
+                          setSelectedValues([]);
+                          onValueChange([]);
                         }}
                       />
                     </Badge>
                   )}
                 </div>
+              )}
+              <div className="flex items-center justify-between">
+                <span className="font-normal w-full">
+                  {selectedValues.length > 0 ? "" : placeholder}
+                </span>
               </div>
-            )}
-            <div className="flex items-center justify-between">
-              <span className="font-normal w-full">
-                {selectedValues.length > 0 ? "" : placeholder}
-              </span>
+              <ChevronDown className="h-4 cursor-pointer !opacity-50" />
             </div>
-            <ChevronDown className="h-4 cursor-pointer !opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-auto p-0"
+          className="p-0 w-[--radix-popover-trigger-width]"
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
           <Command>
+            <CommandInput
+              placeholder={searchPlaceholder}
+              className="h-9"
+              disabled={options.filter((option) => !selectedValues.includes(option.value)).length === 0}
+            />
             <CommandList>
+              <CommandEmpty>
+                No hay opciones disponibles
+              </CommandEmpty>
               <CommandGroup>
                 {options.map((option) => {
                   const isSelected = selectedValues.includes(option.value);
+                  if (isSelected) return null;
+
                   return (
                     <CommandItem
                       key={option.value}
                       onSelect={() => toggleOption(option.value)}
                       className="cursor-pointer"
                     >
-                      <div
-                        className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                          isSelected
-                            ? "bg-primary text-primary-foreground"
-                            : "opacity-50 [&_svg]:invisible"
-                        )}
-                      >
-                        <CheckIcon className="h-4 w-4" />
-                      </div>
                       {option.icon && (
                         <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                       )}

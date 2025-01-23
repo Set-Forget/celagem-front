@@ -56,7 +56,7 @@ export const columns: ColumnDef<Invoice>[] = [
   },
   {
     accessorKey: "company_name",
-    header: "Razón social",
+    header: "Cliente",
     cell: ({ row }) => <div>{row.getValue("company_name")}</div>,
   },
   {

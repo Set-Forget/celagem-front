@@ -54,7 +54,7 @@ export default function NewCreditNotePage() {
                   name="customer"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Proveedor</FormLabel>
+                      <FormLabel className="w-fit">Cliente</FormLabel>
                       <Input
                         readOnly
                         {...field}
@@ -65,7 +65,7 @@ export default function NewCreditNotePage() {
                         </FormMessage>
                       ) :
                         <FormDescription>
-                          Proveedor relacionado con la nota de crédito.
+                          Cliente relacionado con la nota de crédito.
                         </FormDescription>
                       }
                     </FormItem>
@@ -88,29 +88,6 @@ export default function NewCreditNotePage() {
                       ) :
                         <FormDescription>
                           Número de factura relacionado con la nota de crédito.
-                        </FormDescription>
-                      }
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={newInvoiceForm.control}
-                  name="order_number"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Orden de compra</FormLabel>
-                      <Input
-                        className="w-full"
-                        {...field}
-                        readOnly
-                      />
-                      {newInvoiceForm.formState.errors.order_number ? (
-                        <FormMessage>
-                          {newInvoiceForm.formState.errors.order_number.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Orden de compra relacionada con la nota de crédito.
                         </FormDescription>
                       }
                     </FormItem>
