@@ -25,6 +25,7 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pagination?: boolean
+  loading?: boolean
   onRowClick?: (row: TData) => void
   toolbar?: (props: { table: Table<TData> }) => React.ReactNode
   footer?: () => React.ReactNode
@@ -35,6 +36,7 @@ const PAGE_SIZE = 20
 export function DataTable<TData, TValue>({
   columns,
   data,
+  loading,
   pagination = true,
   onRowClick,
   toolbar,
@@ -75,8 +77,8 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4 flex flex-col justify-between h-full">
       {toolbar && toolbar({ table })}
-      <ShadcnTable>
-        <TableHeader className="bg-sidebar">
+      <ShadcnTable className="border-separate border-spacing-0 [&_td]:border-border [&_tfoot_td]:border-t [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
+        <TableHeader className="sticky top-0 z-10 bg-accent/90 backdrop-blur-sm">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow className="border-b-0" key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
@@ -95,25 +97,17 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody scrollBarClassName="pt-[37px]">
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className={cn("[&:nth-last-child(2)]:border-b-0", "h-10", onRowClick && "cursor-pointer")}
-                data-state={row.getIsSelected() && "selected"}
-                onClick={() => onRowClick?.(row.original)}
+          {loading && (
+            <TableRow className="border-none">
+              <TableCell
+                colSpan={columns.length}
+                className="h-auto text-xs text-center"
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
+                Cargando...
+              </TableCell>
+            </TableRow>
+          )}
+          {!table?.getRowModel()?.rows?.length && !loading && (
             <TableRow className="border-none">
               <TableCell
                 colSpan={columns.length}
@@ -123,6 +117,23 @@ export function DataTable<TData, TValue>({
               </TableCell>
             </TableRow>
           )}
+          {table?.getRowModel()?.rows?.length > 0 && table.getRowModel().rows.map((row) => (
+            <TableRow
+              key={row.id}
+              className={cn("[&:nth-last-child(2)]:border-b-0", "h-10", onRowClick && "cursor-pointer")}
+              data-state={row.getIsSelected() && "selected"}
+              onClick={() => onRowClick?.(row.original)}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(
+                    cell.column.columnDef.cell,
+                    cell.getContext()
+                  )}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
         </TableBody>
         {footer && footer()}
       </ShadcnTable>

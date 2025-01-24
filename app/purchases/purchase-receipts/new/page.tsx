@@ -1,6 +1,6 @@
 "use client"
 
-import { Box, CalendarIcon, Check, CheckIcon, ChevronsUpDown, House } from "lucide-react"
+import { Box, CalendarIcon, House } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -16,17 +16,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
 import Header from "@/components/header"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import { newPurchaseReceiptSchema } from "../schemas/purchase-receipts"
-import ItemsTable from "./components/items-table"
-import { v4 as uuidv4 } from 'uuid'
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import { v4 as uuidv4 } from 'uuid'
+import { newPurchaseReceiptSchema } from "../schemas/purchase-receipts"
+import ItemsTable from "./components/items-table"
 
 const companies = [
   { label: "Google", value: "30-67890123-4" },

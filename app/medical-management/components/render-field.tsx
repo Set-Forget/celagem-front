@@ -14,6 +14,7 @@ import {
   TimeField
 } from "react-aria-components";
 import { Control, useFormContext, useWatch } from "react-hook-form";
+import { MultiSelect } from "../../../components/multi-select";
 import { Button } from "../../../components/ui/button";
 import { Calendar } from "../../../components/ui/calendar";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../components/ui/form";
@@ -21,10 +22,7 @@ import { Input } from "../../../components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../../../components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { Textarea } from "../../../components/ui/textarea";
-import { MultiSelect } from "../../../components/multi-select";
-import EmbryosToDisincorporateTable from "./embryos-to-disincorporate-table";
-import EmbryosToFollowUpTable from "./embryos-follow-up-table";
-import IVFReportTable from "./ivf-report-table";
+import RenderTable from "./render-table";
 
 export default function RenderField({
   field,
@@ -213,16 +211,8 @@ export default function RenderField({
                 </Popover>
               )}
 
-              {field.type === "embryos-to-disincorporate-table" && (
-                <EmbryosToDisincorporateTable />
-              )}
-
-              {field.type === "embryos-to-follow-up-table" && (
-                <EmbryosToFollowUpTable />
-              )}
-
-              {field.type === "ivf-report-table" && (
-                <IVFReportTable />
+              {field.type === "table" && (
+                <RenderTable {...field} />
               )}
             </>
           </FormControl>

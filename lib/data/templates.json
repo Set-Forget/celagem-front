@@ -2087,9 +2087,33 @@
           {
             "label": "",
             "name": "embryos-to-disincorporate-list",
-            "type": "embryos-to-disincorporate-table",
+            "type": "table",
             "required": true,
-            "defaultValue": []
+            "defaultValue": [],
+            "tableColumns": [
+              {
+                "rows": [
+                  {
+                    "label": "Número de embrión",
+                    "name": "embryo-number",
+                    "type": "number",
+                    "minValue": 0,
+                    "required": true,
+                    "errorMessage": "El valor debe ser mayor o igual a 1",
+                    "defaultValue": null
+                  },
+                  {
+                    "label": "Serial",
+                    "name": "serial",
+                    "type": "input",
+                    "placeholder": "Serial...",
+                    "required": true,
+                    "requiredMessage": "El campo es obligatorio",
+                    "defaultValue": ""
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
@@ -2153,11 +2177,198 @@
         "sectionName": "Seguimiento de embriones",
         "columns": [
           {
-            "label": "",
             "name": "embryos-to-follow-up-list",
-            "type": "embryos-to-follow-up-table",
+            "type": "table",
             "required": true,
-            "defaultValue": []
+            "defaultValue": [],
+            "tableColumns": [
+              {
+                "rows": [
+                  {
+                    "label": "Embrion #",
+                    "name": "embryo-number",
+                    "type": "number",
+                    "minValue": 0,
+                    "required": true,
+                    "errorMessage": "El valor debe ser mayor o igual a 1",
+                    "defaultValue": null
+                  },
+                  {
+                    "label": "Día",
+                    "name": "day",
+                    "type": "select",
+                    "placeholder": "Seleccionar día",
+                    "required": true,
+                    "requiredMessage": "El campo es obligatorio",
+                    "options": [
+                      {
+                        "label": "Día 5",
+                        "value": "day-5"
+                      },
+                      {
+                        "label": "Día 5 y 6",
+                        "value": "day-5-6"
+                      },
+                      {
+                        "label": "Día 6",
+                        "value": "day-6"
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Clasificación",
+                    "name": "classification",
+                    "type": "select",
+                    "placeholder": "Seleccionar clasificación",
+                    "required": true,
+                    "requiredMessage": "El campo es obligatorio",
+                    "options": [
+                      {
+                        "label": "6AA",
+                        "value": "6AA"
+                      },
+                      {
+                        "label": "6AB",
+                        "value": "6AB"
+                      },
+                      {
+                        "label": "6BA",
+                        "value": "6BA"
+                      },
+                      {
+                        "label": "6BB",
+                        "value": "6BB"
+                      },
+                      {
+                        "label": "5AA",
+                        "value": "5AA"
+                      },
+                      {
+                        "label": "5AB",
+                        "value": "5AB"
+                      },
+                      {
+                        "label": "5BA",
+                        "value": "5BA"
+                      },
+                      {
+                        "label": "5BB",
+                        "value": "5BB"
+                      },
+                      {
+                        "label": "4AA",
+                        "value": "4AA"
+                      },
+                      {
+                        "label": "4AB",
+                        "value": "4AB"
+                      },
+                      {
+                        "label": "4BA",
+                        "value": "4BA"
+                      },
+                      {
+                        "label": "4BB",
+                        "value": "4BB"
+                      },
+                      {
+                        "label": "3AA",
+                        "value": "3AA"
+                      },
+                      {
+                        "label": "3AB",
+                        "value": "3AB"
+                      },
+                      {
+                        "label": "3BA",
+                        "value": "3BA"
+                      },
+                      {
+                        "label": "3BB",
+                        "value": "3BB"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "rows": [
+                  {
+                    "label": "Resultado del PGT-A",
+                    "name": "pgt-a-result",
+                    "type": "select",
+                    "placeholder": "Seleccionar resultado del PGT-A",
+                    "required": true,
+                    "requiredMessage": "El campo es obligatorio",
+                    "options": [
+                      {
+                        "value": "normal-male",
+                        "label": "Normal masculino"
+                      },
+                      {
+                        "value": "normal-feale",
+                        "label": "Normal femenino"
+                      },
+                      {
+                        "value": "abnormal-male",
+                        "label": "Anormal masculino"
+                      },
+                      {
+                        "value": "abnormal-female",
+                        "label": "Anormal femenino"
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Fecha de ciclo",
+                    "name": "cycle-date",
+                    "type": "date",
+                    "required": true,
+                    "requiredMessage": "El campo es obligatorio",
+                    "defaultValue": null
+                  },
+                  {
+                    "label": "Fecha de vitrificación",
+                    "name": "vitrification-date",
+                    "type": "date",
+                    "required": true,
+                    "requiredMessage": "El campo es obligatorio",
+                    "defaultValue": null
+                  }
+                ]
+              },
+              {
+                "rows": [
+                  {
+                    "label": "Tanque",
+                    "name": "tank",
+                    "type": "number",
+                    "minValue": 0,
+                    "required": true,
+                    "errorMessage": "El valor debe ser mayor o igual a 1",
+                    "defaultValue": null
+                  },
+                  {
+                    "label": "Canister",
+                    "name": "canister",
+                    "type": "number",
+                    "minValue": 0,
+                    "required": true,
+                    "errorMessage": "El valor debe ser mayor o igual a 1",
+                    "defaultValue": null
+                  },
+                  {
+                    "label": "Escalerilla",
+                    "name": "rung",
+                    "type": "number",
+                    "minValue": 0,
+                    "required": true,
+                    "errorMessage": "El valor debe ser mayor o igual a 1",
+                    "defaultValue": null
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
@@ -2169,41 +2380,72 @@
     "schema": "semen-contributor",
     "sections": [
       {
-        "sectionName": "Datos básicos IVF",
-        "columns": [
-          {
-            "rows": [
-              {
-                "label": "Código de la donante",
-                "name": "donor-code",
-                "type": "input",
-                "required": true,
-                "errorMessage": "El campo es obligatorio",
-                "placeholder": "Código de la donante...",
-                "defaultValue": ""
-              },
-              {
-                "label": "Agencia",
-                "name": "agency",
-                "placeholder": "Agencia...",
-                "type": "input",
-                "required": true,
-                "errorMessage": "El campo es obligatorio",
-                "defaultValue": ""
-              }
-            ]
-          }
-        ]
-      },
-      {
         "sectionName": "Reporte IVF",
         "columns": [
           {
-            "label": "",
             "name": "ivf-report-list",
-            "type": "ivf-report-table",
+            "type": "table",
             "required": true,
-            "defaultValue": []
+            "defaultValue": [],
+            "tableColumns": [
+              {
+                "rows": [
+                  {
+                    "label": "Descripción IVF",
+                    "name": "ivfDescription",
+                    "type": "select",
+                    "className": "w-full",
+                    "placeholder": "Seleccionar descripción IVF",
+                    "required": true,
+                    "requiredMessage": "El campo es obligatorio",
+                    "options": [
+                      {
+                        "label": "Número de embriones congelados",
+                        "value": "frozen-embryos"
+                      },
+                      {
+                        "label": "Número de embriones transferidos",
+                        "value": "transferred-embryos"
+                      },
+                      {
+                        "label": "Número de óvulos",
+                        "value": "eggs-number"
+                      },
+                      {
+                        "label": "Número de óvulos MII",
+                        "value": "mii-eggs-number"
+                      },
+                      {
+                        "label": "Número de óvulos fertilizados",
+                        "value": "fertilized-eggs-number"
+                      },
+                      {
+                        "label": "Número de embriones día 3",
+                        "value": "day-3-embryos-number"
+                      },
+                      {
+                        "label": "Número de blastocistos",
+                        "value": "blastocysts-number"
+                      },
+                      {
+                        "label": "PGTA",
+                        "value": "pgta"
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Valor",
+                    "name": "value",
+                    "className": "w-full",
+                    "type": "input",
+                    "placeholder": "Valor...",
+                    "required": true,
+                    "requiredMessage": "El campo es obligatorio",
+                    "defaultValue": ""
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

@@ -6,11 +6,9 @@ import RenderField from "./render-field";
 export default function RenderColumn({
   column,
   control,
-  isNested = false,
 }: {
   column: ColumnConfig;
   control: Control;
-  isNested?: boolean;
 }) {
   if ("rows" in column) {
     const columnsCount = Math.max(column.rows.length, 2);
@@ -18,9 +16,7 @@ export default function RenderColumn({
       <div
         data-type="row"
         className="grid gap-4"
-        style={{
-          gridTemplateColumns: `repeat(${columnsCount}, 1fr)`,
-        }}
+        style={{ gridTemplateColumns: `repeat(${columnsCount}, 1fr)` }}
       >
         {column.rows.map((field) => (
           <RenderColumn key={field.label} column={field} control={control} />
@@ -33,13 +29,11 @@ export default function RenderColumn({
       <div
         data-type="column"
         className="grid gap-4"
-        style={{
-          gridTemplateColumns: `repeat(${columnsCount}, 1fr)`,
-        }}
+        style={{ gridTemplateColumns: `repeat(${columnsCount}, 1fr)` }}
       >
         {column.columns.map((subColumn, index) => (
           <Fragment key={index}>
-            <RenderColumn column={subColumn} control={control} isNested={true} />
+            <RenderColumn column={subColumn} control={control} />
           </Fragment>
         ))}
       </div>

@@ -11,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
   This function generates a zod schema based on the form configuration.
   It returns a zod object with the schema shape.
 */
-export const generateSchema = (formConfig: FormConfig): z.ZodObject<any> => {
+export const generateSchema = (sections: FormConfig["sections"]): z.ZodObject<any> => {
   const schemaShape: Record<string, z.ZodTypeAny> = {};
 
   const parseColumn = (column: ColumnConfig) => {
@@ -134,32 +134,17 @@ export const generateSchema = (formConfig: FormConfig): z.ZodObject<any> => {
         }, { required_error: requiredMessage, invalid_type_error: requiredMessage });
         break;
 
-      case "embryos-to-disincorporate-table":
-        schemaShape[field.name] = z.array(z.object({
-          embryoNumber: z.number().int().min(1, "El número de embrión debe ser mayor a 0"),
-          serial: z.string().min(1, "El serial es obligatorio"),
-        }, { required_error: "Al menos un embrión es requerido", invalid_type_error: "Al menos un embrión es requerido" })).nonempty("Al menos un embrión es requerido");
-        break;
+      case "table":
+        if (field.tableColumns && Array.isArray(field.tableColumns)) {
+          const tableShape = generateSchema([
+            { columns: field.tableColumns, sectionName: field.label || "" },
+          ]).shape;
 
-      case "embryos-to-follow-up-table":
-        schemaShape[field.name] = z.array(z.object({
-          embryoNumber: z.number({ required_error: "El número de embrión es requerido", invalid_type_error: "El número de embrión debe ser un número" }).min(0, "El número de embrión debe ser mayor a 0"),
-          day: z.enum(["day-5", "day-6"], { required_error: "El día es requerido" }),
-          classification: z.enum(["6AA", "6AB", "6BA", "6BB", "5AA", "5AB", "5BA", "5BB", "4AA", "4AB", "4BA", "4BB", "3AA", "3AB", "3BA", "3BB"], { required_error: "La clasificación es requerida" }),
-          pgtaResult: z.enum(["normal-female", "normal-male", "abnormal-female", "abnormal-male"], { required_error: "El resultado de PGT-A es requerido" }),
-          cycleDate: z.string({ required_error: "La fecha de ciclo es requerida" }).min(1, "La fecha de ciclo es requerida"),
-          vitrificationDate: z.string({ required_error: "La fecha de vitrificación es requerida" }).min(1, "La fecha de vitrificación es requerida"),
-          tank: z.number({ required_error: "El tanque es requerido", invalid_type_error: "El tanque es requerido" }).min(0, "El tanque es requerido"),
-          canister: z.number({ required_error: "El canister es requerido", invalid_type_error: "El canister es requerido" }).min(0, "El canister es requerido"),
-          ladder: z.number({ required_error: "La escalerilla es requerida", invalid_type_error: "La escalerilla es requerida" }).min(0, "La escalerilla es requerida"),
-        }, { required_error: "Al menos un embrión es requerido" })).nonempty("Al menos un embrión es requerido");
-        break;
-
-      case "ivf-report-table":
-        schemaShape[field.name] = z.array(z.object({
-          ivfDescription: z.enum(["frozen-embryos", "transferred-embryos", "eggs-number", "mii-eggs-number", "fertilized-eggs-number", "day-3-embryos-number", "blastocysts-number", "pgta"], { required_error: "La descripción es requerida" }),
-          value: z.string({ required_error: "El valor es requerido" }).min(1, "El valor es requerido"),
-        }, { required_error: "Al menos un reporte es requerido" })).nonempty("Al menos un reporte es requerido");
+          schemaShape[field.name] = z.array(z.object(tableShape), { required_error: "Al menos un item requerido" }).nonempty(`Al menos un item requerido`);
+        } else {
+          console.warn(`El campo "${field.name}" de tipo "table" no tiene columnas definidas.`);
+          schemaShape[field.name] = z.array(z.object({})).optional();
+        }
         break;
 
       default:
@@ -167,7 +152,7 @@ export const generateSchema = (formConfig: FormConfig): z.ZodObject<any> => {
     }
   };
 
-  formConfig.sections.forEach((section) =>
+  sections.forEach((section) =>
     section.columns.forEach(parseColumn)
   );
 
@@ -178,7 +163,7 @@ export const generateSchema = (formConfig: FormConfig): z.ZodObject<any> => {
   This function generates an object with the default values for the form.
   It returns an object with the default values for each field.
 */
-export const getDefaultValues = (formConfig: FormConfig) => {
+export const getDefaultValues = (sections: FormConfig["sections"]) => {
   const defaultValues: Record<string, any> = {};
 
   const parseColumn = (column: ColumnConfig) => {
@@ -197,7 +182,7 @@ export const getDefaultValues = (formConfig: FormConfig) => {
     }
   };
 
-  formConfig.sections.forEach((section) =>
+  sections.forEach((section) =>
     section.columns.forEach(parseColumn)
   );
 

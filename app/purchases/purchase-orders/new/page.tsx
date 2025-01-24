@@ -49,19 +49,6 @@ const companies = [
   { label: "Adobe", value: "33-22334455-9" },
 ] as const;
 
-const contacts = [
-  { label: "John Doe", value: "30-67890123-4" },
-  { label: "Jane Doe", value: "30-12345678-9" },
-  { label: "Alice Doe", value: "33-98765432-1" },
-  { label: "Bob Doe", value: "33-11223344-5" },
-  { label: "Charlie Doe", value: "34-55667788-0" },
-  { label: "David Doe", value: "30-99887766-3" },
-  { label: "Eve Doe", value: "31-44556677-2" },
-  { label: "Frank Doe", value: "31-77665544-8" },
-  { label: "Grace Doe", value: "32-33445566-7" },
-  { label: "Henry Doe", value: "33-22334455-9" },
-];
-
 const headquarters = [
   { id: "hq1", name: "Main Office" },
   { id: "hq2", name: "Regional Office - North" },
@@ -311,25 +298,6 @@ export default function NewPurchaseOrderPage() {
               )}
             />
             <ItemsTable className="col-span-2" />
-            <FormField
-              control={newPurchaseOrderForm.control}
-              name="terms_and_conditions"
-              render={({ field }) => (
-                <FormItem className="flex flex-col w-full md:col-span-2">
-                  <FormLabel className="w-fit">Terminos y condiciones</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder="Terminos y condiciones..."
-                      className="resize-none"
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Estos términos y condiciones se incluirán en la orden de compra.
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
           </div>
         </TabsContent>
         <TabsContent value="tab-2">
@@ -472,6 +440,25 @@ export default function NewPurchaseOrderPage() {
                   </FormControl>
                   <FormDescription>
                     Estas notas son internas y no se incluirán en la orden de compra.
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newPurchaseOrderForm.control}
+              name="terms_and_conditions"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full md:col-span-2">
+                  <FormLabel className="w-fit">Terminos y condiciones</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Terminos y condiciones..."
+                      className="resize-none"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Estos términos y condiciones se incluirán en la orden de compra.
                   </FormDescription>
                 </FormItem>
               )}

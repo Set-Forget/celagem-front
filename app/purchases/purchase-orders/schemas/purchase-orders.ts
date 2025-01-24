@@ -49,5 +49,22 @@ export const purchaseOrdersSchema = z.object({
   title: z.string(),
 });
 
+export const purchaseOrderListSchema = z.object({
+  id: z.number(),
+  number: z.string(),
+  supplier: z.object({ name: z.string(), id: z.string() }),
+  status: z.enum(["to-approve", "approved", "pending", "done", "cancel"]),
+  required_date: z.string(),
+  amount_total: z.number(),
+  order_lines: z.array(z.object({
+    id: z.string(),
+    product_qty: z.number(),
+    qty_received: z.number(),
+  })),
+  currency: z.object({ name: z.string(), id: z.string() }),
+})
+
+export type PurchaseOrderList = z.infer<typeof purchaseOrderListSchema>;
+
 export type PurchaseOrder = z.infer<typeof purchaseOrdersSchema>;
 export type PurchaseOrderItem = z.infer<typeof purchaseOrderItemSchema>;

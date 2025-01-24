@@ -17,13 +17,14 @@ export type FieldType = "input" | "textarea" | "custom" | "number" | "select" | 
 
 export interface FieldConfig {
   name: string;
-  label: string;
+  label?: string;
   type: FieldType;
   required?: boolean;
   requiredMessage?: string;
   placeholder?: string;
   className?: string;
   options?: { label: string; value: string }[];
+  tableColumns?: ColumnConfig[];
   component?: string;
   errorMessage?: string;
   minValue?: number;
@@ -34,7 +35,9 @@ export interface FieldConfig {
 export type ColumnConfig =
   | { rows: FieldConfig[] }
   | FieldConfig
-  | { columns: ColumnConfig[] };
+  | {
+    columns: ColumnConfig[]
+  };
 
 export interface SectionConfig {
   sectionName: string;
@@ -53,12 +56,12 @@ export default function AppointmentPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const selectedTemplate = TEMPLATES.find((template) => template.id === 21)!
-  const defaultValues = getDefaultValues(selectedTemplate);
+  const selectedTemplate = TEMPLATES.find((template) => template.id === 19)!
+  const defaultValues = getDefaultValues(selectedTemplate.sections);
 
-  const schema = generateSchema(selectedTemplate);
+  const schema = generateSchema(selectedTemplate.sections);
 
-  const form = useForm({
+  const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: defaultValues
   });
