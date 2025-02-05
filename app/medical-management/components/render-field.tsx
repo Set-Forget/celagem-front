@@ -54,9 +54,8 @@ export default function RenderField({
     }, [weight, height]);
   }
 
-  const dependentValue = field.dependsOn
-    ? useWatch({ control, name: field.dependsOn.field })
-    : null;
+  const dependentValue = useWatch({ control, name: field?.dependsOn?.field ?? "" });
+
 
   const options =
     field.dependsOn && field.dependsOn.filterOptions

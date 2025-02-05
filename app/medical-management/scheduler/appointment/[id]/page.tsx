@@ -63,7 +63,7 @@ export default function AppointmentPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const selectedTemplate = TEMPLATES.find((template) => template.id === 56)!
+  const selectedTemplate = TEMPLATES.find((template) => template.id === 22)!
   const defaultValues = getDefaultValues(selectedTemplate.sections);
 
   const schema = generateSchema(selectedTemplate.sections);
