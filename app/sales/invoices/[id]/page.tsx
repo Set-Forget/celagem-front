@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils"
 import { ChevronDown, Eye } from "lucide-react"
 import Link from "next/link"
 import { columns } from "./components/columns"
-import CustomTableFooter from "./components/table-footer"
+import TableFooter from "./components/table-footer"
 
 const data = [
   {
@@ -137,7 +137,7 @@ export default function InvoicePage({
             data={data}
             columns={columns}
             pagination={false}
-            footer={() => <CustomTableFooter />}
+            footer={() => <TableFooter />}
           />
         </div>
         <Separator />

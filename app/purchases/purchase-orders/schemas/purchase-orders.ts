@@ -56,15 +56,44 @@ export const purchaseOrderListSchema = z.object({
   status: z.enum(["to-approve", "approved", "pending", "done", "cancel"]),
   required_date: z.string(),
   amount_total: z.number(),
-  order_lines: z.array(z.object({
-    id: z.string(),
+  items: z.array(z.object({
+    id: z.number(),
     product_qty: z.number(),
     qty_received: z.number(),
   })),
   currency: z.object({ name: z.string(), id: z.string() }),
 })
 
+export const purchaseOrderDetailSchema = z.object({
+  id: z.number(),
+  number: z.string(),
+  required_date: z.string(),
+  date_order: z.string(),
+  user_id: z.object({ id: z.number(), name: z.string() }),
+  related_invoices: z.array(z.object({ id: z.number(), number: z.string() })),
+  related_receptions: z.array(z.object({ id: z.number(), number: z.string() })),
+  status: z.enum(["to-approve", "approved", "pending", "done", "cancel"]),
+  items: z.array(z.object({
+    id: z.number(),
+    user_id: z.object({ id: z.number(), name: z.string() }),
+    product_qty: z.number(),
+    qty_received: z.number(),
+    price_unit: z.number(),
+    price_subtotal: z.number(),
+    price_tax: z.number(),
+    taxes_id: z.array(z.number()),
+  })),
+  currency: z.object({ name: z.string(), id: z.string() }),
+  supplier: z.object({
+    id: z.number(),
+    name: z.string(),
+    phone: z.string(),
+    email: z.string(),
+  }),
+})
+
 export type PurchaseOrderList = z.infer<typeof purchaseOrderListSchema>;
+export type PurchaseOrderDetail = z.infer<typeof purchaseOrderDetailSchema>;
 
 export type PurchaseOrder = z.infer<typeof purchaseOrdersSchema>;
 export type PurchaseOrderItem = z.infer<typeof purchaseOrderItemSchema>;

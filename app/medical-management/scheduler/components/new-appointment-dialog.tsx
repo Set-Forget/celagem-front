@@ -341,16 +341,13 @@ const HEADQUARTERS = [
 ]
 
 export default function NewAppointmentDialog() {
-  // No es necesario, se puede extraer directamente de dialogState
-  const selectedDate = getDialogsState().payload?.date
-
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
+
+  const selectedDate = dialogState.payload?.date
 
   const newAppointmentForm = useForm<z.infer<typeof newAppointmentSchema>>({
     resolver: zodResolver(newAppointmentSchema),
     defaultValues: {
-      time_allocation: "diary",
-      start_date: "",
     }
   });
 
@@ -404,41 +401,6 @@ export default function NewAppointmentDialog() {
         </DialogHeader>
         <Form {...newAppointmentForm}>
           <form onSubmit={newAppointmentForm.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            <FormField
-              control={newAppointmentForm.control}
-              name="time_allocation"
-              defaultValue={newAppointmentForm.getValues("time_allocation")}
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Tipo de asignación de horas</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex items-center gap-4 !mt-2"
-                    >
-                      <FormItem className="flex items-center space-x-1 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="diary" />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          Diario
-                        </FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-1 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="consecutive" />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          Consecutivo
-                        </FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <div className="grid grid-cols-2 gap-2">
               <FormField
                 control={newAppointmentForm.control}
@@ -657,7 +619,7 @@ export default function NewAppointmentDialog() {
             <div className="grid grid-cols-2 gap-2">
               <FormField
                 control={newAppointmentForm.control}
-                name="user_id"
+                name="doctor_id"
                 render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel>Profesional</FormLabel>
@@ -798,7 +760,7 @@ export default function NewAppointmentDialog() {
               />
               <FormField
                 control={newAppointmentForm.control}
-                name="headquarter_id"
+                name="clinic_id"
                 render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel className="w-fit">Sede</FormLabel>
@@ -836,7 +798,7 @@ export default function NewAppointmentDialog() {
                                   value={headquarter.label}
                                   key={headquarter.value}
                                   onSelect={() => {
-                                    newAppointmentForm.setValue("headquarter_id", headquarter.value)
+                                    newAppointmentForm.setValue("clinic_id", headquarter.value)
                                   }}
                                 >
                                   {headquarter.label}

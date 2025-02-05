@@ -32,12 +32,13 @@ import { ActiveFilterChip } from "./active-filter-chip"
 import { Calendar } from "./ui/calendar"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 type DateRangeFilter = { field: string, from: Date; to: Date };
 type SearchFilter = { field: string; query: string };
 type DateFilter = { field: string; value: string };
 
-type SelectedFilters = {
+export type SelectedFilters = {
   [key: string]: string[] | DateRangeFilter | SearchFilter | DateFilter;
 };
 
@@ -507,9 +508,50 @@ export default function FilterSelector({
 }: {
   filtersConfig: Record<string, FilterConfig>;
 }) {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   const [open, setOpen] = React.useState(false);
   const [openedFilter, setOpenedFilter] = React.useState<string | null>(null);
-  const [selectedFilters, setSelectedFilters] = React.useState<SelectedFilters>({});
+
+  const value = React.useMemo(() => {
+    const filters: SelectedFilters = {};
+
+    for (const [key, config] of Object.entries(filtersConfig)) {
+      const value = searchParams.get(key);
+      if (value) {
+        try {
+          filters[key] = JSON.parse(value);
+        } catch (e) {
+          console.error(`Error parsing filter "${key}" value: ${value}`);
+        }
+      }
+    }
+
+    return filters;
+  }, [searchParams]);
+
+  /**
+   * Actualiza la URL con los filtros actuales.
+   * Para cada key definida en la configuración de filtros, se establece el valor (codificado en JSON)
+   * o se elimina el parámetro si el filtro no está presente.
+   */
+  const updateURLFilters = (updatedFilters: SelectedFilters) => {
+    // Convertimos los parámetros actuales en un objeto
+    const currentParams = Object.fromEntries(searchParams.entries());
+
+    // Actualizamos únicamente las keys correspondientes a los filtros definidos
+    for (const key in filtersConfig) {
+      if (updatedFilters.hasOwnProperty(key)) {
+        currentParams[key] = JSON.stringify(updatedFilters[key]);
+      } else {
+        delete currentParams[key];
+      }
+    }
+
+    const queryString = new URLSearchParams(currentParams).toString();
+    window.history.pushState({}, '', `${pathname}?${queryString}`);
+  };
 
   const onOpenChange = (value: boolean) => {
     setOpen(value);
@@ -518,62 +560,64 @@ export default function FilterSelector({
     }
   };
 
-  const handleFilterChange = (filterKey: string, values: any) => {
-    setSelectedFilters((prev) => {
-      const updatedFilters = { ...prev };
+  /**
+   * Al cambiar un filtro, se calcula el nuevo objeto de filtros y se actualiza la URL.
+   */
+  const handleFilterChange = (filterKey: string, newValue: any) => {
+    const updatedFilters = { ...value };
 
-      if (
-        (Array.isArray(values) && values.length === 0) ||
-        (typeof values === "object" &&
-          values !== null &&
-          Object.keys(values).length === 0) ||
-        values === ""
-      ) {
-        delete updatedFilters[filterKey];
-      } else {
-        updatedFilters[filterKey] = values;
-      }
+    const isEmpty =
+      (Array.isArray(newValue) && newValue.length === 0) ||
+      (typeof newValue === 'object' && newValue !== null && Object.keys(newValue).length === 0) ||
+      newValue === '';
 
-      return updatedFilters;
-    });
+    if (isEmpty) {
+      delete updatedFilters[filterKey];
+    } else {
+      updatedFilters[filterKey] = newValue;
+    }
+
+    updateURLFilters(updatedFilters);
+
   };
 
+  /**
+   * Elimina un filtro y actualiza la URL.
+   */
+  const clearFilter = (key: string) => {
+    const updatedFilters = { ...value };
+    delete updatedFilters[key];
+    updateURLFilters(updatedFilters);
+  };
+
+  /**
+   * Obtiene un string con los labels a partir de un array de valores para un filtro.
+   */
   const getLabelsFromValues = (filterKey: string, values: string[]) => {
     const options = filtersConfig[filterKey]?.options || [];
     return values
-      .map((value) => options.find((option) => option.value === value)?.label || value)
-      .join(", ");
+      .map(
+        (val) => options.find((option) => option.value === val)?.label ?? val
+      )
+      .join(', ');
   };
-
-  const clearFilter = (key: string) => {
-    setSelectedFilters((prev) => {
-      const updatedFilters = { ...prev };
-      delete updatedFilters[key];
-      return updatedFilters;
-    });
-  };
-
-  console.log(selectedFilters)
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
       <Popover open={open} onOpenChange={onOpenChange}>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            size="sm"
-            className="h-7"
-          >
-            {Object.keys(selectedFilters).length > 0 ? (
+          <Button variant="outline" role="combobox" aria-expanded={open} size="sm" className="h-7">
+            {Object.keys(value).length > 0 ? (
               <div className="h-4 w-4 flex items-center justify-center border border-foreground rounded-full font-semibold font-mono">
-                {Object.keys(selectedFilters).length}
+                {Object.keys(value).length}
               </div>
-            ) : <ListFilter className="h-4 w-4" />}
+            ) : (
+              <ListFilter className="h-4 w-4" />
+            )}
             Filtros
           </Button>
         </PopoverTrigger>
+
         <PopoverContent align="start" className="p-0 w-fit">
           {openedFilter ? (
             (() => {
@@ -582,43 +626,61 @@ export default function FilterSelector({
 
               if (!FilterComponent) return <div></div>;
 
-              return (
-                <FilterComponent
-                  {...(filterConfig.type === "multiple" && {
-                    options: filterConfig.options,
-                    onChange: (values: string[]) => handleFilterChange(openedFilter, values),
-                    setOpen,
-                    selectedValues: selectedFilters[openedFilter] || [],
-                  })}
-                  {...(filterConfig.type === "single" && {
-                    options: filterConfig.options,
-                    onChange: (value: string) => handleFilterChange(openedFilter, value),
-                    setOpen,
-                    selectedValue: selectedFilters[openedFilter] || "",
-                  })}
-                  {...(filterConfig.type === "date_range" && {
-                    options: filterConfig.options,
-                    onChange: (values: { from: Date | undefined; to: Date | undefined }) =>
-                      handleFilterChange(openedFilter, values),
-                    setOpen,
-                    selectedValues: selectedFilters[openedFilter] || { from: undefined, to: undefined },
-                  })}
-                  {...(filterConfig.type === "search" && {
-                    options: filterConfig.options,
-                    onChange: (values: { field: string; query: string }) =>
-                      handleFilterChange(openedFilter, values),
-                    setOpen,
-                    selectedValues: selectedFilters[openedFilter] || { field: "", query: "" },
-                  })}
-                  {...(filterConfig.type === "date" && {
-                    options: filterConfig.options,
-                    onChange: (values: { field: string; value: string }) =>
-                      handleFilterChange(openedFilter, values),
-                    setOpen,
-                    selectedValues: selectedFilters[openedFilter] || { field: "", value: "" },
-                  })}
-                />
-              );
+              switch (filterConfig.type) {
+                case 'multiple':
+                  return (
+                    <FilterComponent
+                      options={filterConfig.options}
+                      onChange={(vals: string[]) => handleFilterChange(openedFilter, vals)}
+                      setOpen={setOpen}
+                      selectedValues={value[openedFilter] || []}
+                    />
+                  );
+                case 'single':
+                  return (
+                    <FilterComponent
+                      options={filterConfig.options}
+                      onChange={(val: string) => handleFilterChange(openedFilter, val)}
+                      setOpen={setOpen}
+                      selectedValue={value[openedFilter] || ''}
+                    />
+                  );
+                case 'date_range':
+                  return (
+                    <FilterComponent
+                      options={filterConfig.options}
+                      onChange={(vals: { from: Date | undefined; to: Date | undefined }) =>
+                        handleFilterChange(openedFilter, vals)
+                      }
+                      setOpen={setOpen}
+                      selectedValues={value[openedFilter] || { from: undefined, to: undefined }}
+                    />
+                  );
+                case 'search':
+                  return (
+                    <FilterComponent
+                      options={filterConfig.options}
+                      onChange={(vals: { field: string; query: string }) =>
+                        handleFilterChange(openedFilter, vals)
+                      }
+                      setOpen={setOpen}
+                      selectedValues={value[openedFilter] || { field: '', query: '' }}
+                    />
+                  );
+                case 'date':
+                  return (
+                    <FilterComponent
+                      options={filterConfig.options}
+                      onChange={(vals: { field: string; value: string }) =>
+                        handleFilterChange(openedFilter, vals)
+                      }
+                      setOpen={setOpen}
+                      selectedValues={value[openedFilter] || { field: '', value: '' }}
+                    />
+                  );
+                default:
+                  return <div></div>;
+              }
             })()
           ) : (
             <Command>
@@ -626,61 +688,68 @@ export default function FilterSelector({
               <CommandList>
                 <CommandEmpty>No se encontraron filtros.</CommandEmpty>
                 <CommandGroup>
-                  {Object.entries(filtersConfig).map(([key, config]) => (
-                    <CommandItem
-                      key={key}
-                      value={config.label}
-                      onSelect={() => setOpenedFilter(key)}
-                      className="flex items-center"
-                    >
-                      {config.icon && <config.icon />}
-                      {config.label}
-                      <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
-                        {
-                          selectedFilters[key] ? (
-                            Array.isArray(selectedFilters[key]) ? selectedFilters[key].length : 1
-                          ) : null
-                        }
-                      </span>
-                    </CommandItem>
-                  ))}
+                  {Object.entries(filtersConfig).map(([key, config]) => {
+                    const isSelected = !!value[key];
+                    const count = Array.isArray(value[key])
+                      ? (value[key] as any[]).length
+                      : isSelected
+                        ? 1
+                        : null;
+
+                    return (
+                      <CommandItem
+                        key={key}
+                        value={config.label}
+                        onSelect={() => setOpenedFilter(key)}
+                        className="flex items-center"
+                      >
+                        {config.icon && <config.icon />}
+                        {config.label}
+                        <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
+                          {count}
+                        </span>
+                      </CommandItem>
+                    );
+                  })}
                 </CommandGroup>
               </CommandList>
             </Command>
           )}
         </PopoverContent>
       </Popover>
-      {Object.entries(selectedFilters).map(([key, value]) => {
+
+      {Object.entries(value).map(([key, val]) => {
         const filterConfig = filtersConfig[key];
         return (
           <ActiveFilterChip
             key={key}
             label={
-              isDateRange(value)
-                ? `${filterConfig?.options?.find((opt) => opt.value === value.field)?.label || "Rango de fecha"}`
-                : isSearchFilter(value)
-                  ? `${filterConfig?.options?.find((opt) => opt.value === value.field)?.label || "Buscar"}`
-                  : typeof value === "object" && "field" in value && "value" in value
-                    ? `${filterConfig?.options?.find((opt) => opt.value === value.field)?.label || "Fecha"}`
+              // Se mapea el label según el tipo de filtro
+              isDateRange(val)
+                ? filterConfig?.options?.find((opt) => opt.value === val.field)?.label || 'Rango de fecha'
+                : isSearchFilter(val)
+                  ? filterConfig?.options?.find((opt) => opt.value === val.field)?.label || 'Buscar'
+                  : typeof val === 'object' && 'field' in val && 'value' in val
+                    ? filterConfig?.options?.find((opt) => opt.value === val.field)?.label || 'Fecha'
                     : filterConfig?.label || key
             }
             value={
-              Array.isArray(value)
-                ? getLabelsFromValues(key, value)
-                : isDateRange(value)
-                  ? `${format(value.from, "LLL dd, yyyy")} - ${format(value.to, "LLL dd, yyyy")}`
-                  : isSearchFilter(value)
-                    ? `"${value.query}"`
-                    : typeof value === "object" && "field" in value && "value" in value
-                      ? `${format(new Date(value.value), "LLL dd, yyyy")}`
-                      : typeof value === "string"
-                        ? filterConfig?.options?.find((opt) => opt.value === value)?.label || value
-                        : "N/A"
+              Array.isArray(val)
+                ? getLabelsFromValues(key, val)
+                : isDateRange(val)
+                  ? `${format(val.from, 'LLL dd, yyyy')} - ${format(val.to, 'LLL dd, yyyy')}`
+                  : isSearchFilter(val)
+                    ? `"${val.query}"`
+                    : typeof val === 'object' && 'field' in val && 'value' in val
+                      ? format(new Date(val.value), 'LLL dd, yyyy')
+                      : typeof val === 'string'
+                        ? filterConfig?.options?.find((opt) => opt.value === val)?.label || val
+                        : 'N/A'
             }
             onRemove={() => clearFilter(key)}
           />
         );
       })}
     </div>
-  )
+  );
 }

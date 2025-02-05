@@ -16,7 +16,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 import * as React from "react"
 import { Button } from "./ui/button"
 import { Table as ShadcnTable, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
@@ -77,7 +77,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4 flex flex-col justify-between h-full">
       {toolbar && toolbar({ table })}
-      <ShadcnTable className="border-separate border-spacing-0 [&_td]:border-border [&_tfoot_td]:border-t [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
+      <ShadcnTable className="border-separate border-spacing-0 [&_td]:border-border [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
         <TableHeader className="sticky top-0 z-10 bg-accent/90 backdrop-blur-sm">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow className="border-b-0" key={headerGroup.id}>
@@ -103,7 +103,10 @@ export function DataTable<TData, TValue>({
                 colSpan={columns.length}
                 className="h-auto text-xs text-center"
               >
-                Cargando...
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="animate-spin" size={14} />
+                  Cargando...
+                </div>
               </TableCell>
             </TableRow>
           )}

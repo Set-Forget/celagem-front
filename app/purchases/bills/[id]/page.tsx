@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { ChevronDown, Eye } from "lucide-react"
 import Link from "next/link"
-import { PurchaseOrderItemsTable } from "./components/purchase-order-items-table"
+import { PurchaseOrderItemsTable } from "./components/items-table"
 
 export default async function PurchaseOrderPage({
   params,

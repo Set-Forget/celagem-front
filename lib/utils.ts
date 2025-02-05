@@ -30,6 +30,7 @@ export const generateSchema = (sections: FormConfig["sections"]): z.ZodObject<an
     switch (field.type) {
       case "date":
       case "input":
+      case "datetime":
       case "textarea":
         schemaShape[field.name] = field.required
           ? z.string({ message: requiredMessage }).min(1, requiredMessage)
@@ -69,13 +70,11 @@ export const generateSchema = (sections: FormConfig["sections"]): z.ZodObject<an
             schemaShape[field.name] = z.array(z.enum(values as [string, ...string[]])).optional();
           }
         } else {
-          console.warn(
-            `El campo "${field.name}" de tipo "multi-select" no tiene opciones definidas.`
-          );
           schemaShape[field.name] = z.array(z.string()).optional();
         }
         break;
 
+      case "combobox":
       case "select":
         if (field.options && field.options.length > 0) {
           const values = field.options.map((option) => option.value);
@@ -90,10 +89,7 @@ export const generateSchema = (sections: FormConfig["sections"]): z.ZodObject<an
               .optional();
           }
         } else {
-          console.warn(
-            `El campo "${field.name}" de tipo "select" no tiene opciones definidas.`
-          );
-          schemaShape[field.name] = z.string().optional();
+          schemaShape[field.name] = z.string({ required_error: `${field.label} es obligatorio` });
         }
         break;
 
@@ -140,7 +136,11 @@ export const generateSchema = (sections: FormConfig["sections"]): z.ZodObject<an
             { columns: field.tableColumns, sectionName: field.label || "" },
           ]).shape;
 
-          schemaShape[field.name] = z.array(z.object(tableShape), { required_error: "Al menos un item requerido" }).nonempty(`Al menos un item requerido`);
+          schemaShape[field.name] = field.required
+            ? z
+              .array(z.object(tableShape), { required_error: "Al menos un item requerido" })
+              .nonempty(`Al menos un item requerido`)
+            : z.array(z.object(tableShape)).optional();
         } else {
           console.warn(`El campo "${field.name}" de tipo "table" no tiene columnas definidas.`);
           schemaShape[field.name] = z.array(z.object({})).optional();

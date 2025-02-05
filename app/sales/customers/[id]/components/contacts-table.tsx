@@ -82,8 +82,6 @@ export function ContactsTable() {
     },
   })
 
-  console.log(table.getRowModel().rows.length)
-
   return (
     <div className="flex flex-col h-full">
       <div className="rounded-sm border h-[calc(100%-96px)]">

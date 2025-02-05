@@ -1,14 +1,16 @@
 import { FieldConfig } from "@/app/medical-management/scheduler/appointment/[id]/page";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarIcon, Clock, Minus, Plus } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown, Clock, Minus, Plus } from "lucide-react";
 import { useEffect } from "react";
 import {
   Button as AriaButton,
   Input as AriaInput,
+  DateField,
   DateInput,
   DateSegment,
   Group,
+  I18nProvider,
   Label,
   NumberField,
   TimeField
@@ -23,6 +25,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../../components/ui/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { Textarea } from "../../../components/ui/textarea";
 import RenderTable from "./render-table";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { DateField as DateFieldRac, DateInput as DateInputRac } from "@/components/ui/datefield-rac";
 
 export default function RenderField({
   field,
@@ -32,6 +36,7 @@ export default function RenderField({
   control: Control,
 }) {
   const { setValue } = useFormContext();
+
 
   if (field.name === "imc") {
     const weight = useWatch({ control, name: "weight" }) || 0;
@@ -48,6 +53,17 @@ export default function RenderField({
       setValue("imc", calculateBMI(weight, height));
     }, [weight, height]);
   }
+
+  const dependentValue = field.dependsOn
+    ? useWatch({ control, name: field.dependsOn.field })
+    : null;
+
+  const options =
+    field.dependsOn && field.dependsOn.filterOptions
+      ? field.dependsOn.filterOptions.find(
+        (filter) => filter.parentValue === dependentValue
+      )?.options || []
+      : field.options;
 
   return (
     <FormField
@@ -123,6 +139,65 @@ export default function RenderField({
                 </Select>
               )}
 
+              {field.type === "combobox" && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        disabled={field.dependsOn && !dependentValue}
+                        role="combobox"
+                        className={cn(
+                          "justify-between",
+                          !formField.value && "text-muted-foreground"
+                        )}
+                      >
+                        {formField.value
+                          ? options?.find(
+                            (option) => option.value === formField.value
+                          )?.label
+                          : "Seleccioná una opción"}
+                        <ChevronsUpDown className="opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                    <Command>
+                      <CommandInput
+                        placeholder="Buscar..."
+                        className="h-9"
+                      />
+                      <CommandList>
+                        <CommandEmpty>
+                          No se encontraron resultados
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {options?.map((option) => (
+                            <CommandItem
+                              value={option.label}
+                              key={option.value}
+                              onSelect={() => {
+                                setValue(field.name, option.value);
+                              }}
+                            >
+                              {option.label}
+                              <Check
+                                className={cn(
+                                  "ml-auto",
+                                  option.value === formField.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              )}
+
               {field.type === "multi-select" && (
                 <MultiSelect
                   options={field.options || []}
@@ -141,8 +216,7 @@ export default function RenderField({
                   onChange={(event) => {
                     const file = event.target.files?.[0];
                     if (file) {
-                      setValue(field.name, file); // Guardar el archivo en el estado del formulario
-                      console.log("Archivo seleccionado:", file);
+                      setValue(field.name, file);
                     }
                   }}
                 />
@@ -213,6 +287,20 @@ export default function RenderField({
 
               {field.type === "table" && (
                 <RenderTable {...field} />
+              )}
+
+              {field.type === "datetime" && (
+                <I18nProvider locale="es-419">
+                  <DateFieldRac
+                    onChange={(value) => formField.onChange(value?.toString())}
+                    className="space-y-0"
+                    granularity="minute"
+                    hourCycle={24}
+                  >
+                    <Label className="sr-only">Date and time input</Label>
+                    <DateInputRac />
+                  </DateFieldRac>
+                </I18nProvider>
               )}
             </>
           </FormControl>

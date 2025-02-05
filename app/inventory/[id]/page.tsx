@@ -1,6 +1,3 @@
-'use client'
-
-import { DataTable } from "@/components/data-table"
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -15,65 +12,22 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { useGetPurchaseOrderQuery } from "@/services/purchase-orders"
 import { Box, ChevronDown, Eye, House, Paperclip } from "lucide-react"
 import Link from "next/link"
-import { useParams } from "next/navigation"
-import { PURCHASE_ORDER_STATUS } from "../adapters/customers"
-import { columns } from "./components/columns"
-import TableFooter from "./components/table-footer"
 
-export default function PurchaseOrderPage() {
-  const { id } = useParams()
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  //const customerId = (await params).id
 
-  const { data, error, isLoading } = useGetPurchaseOrderQuery(id as string);
-
-  console.log(data, error, isLoading)
-
-  const handleGeneratePDF = async () => {
-    const { generatePurchaseOrderPDF } = await import("../templates/purchase-order")
-    generatePurchaseOrderPDF()
-  }
-
-  const status = PURCHASE_ORDER_STATUS[data?.status as keyof typeof PURCHASE_ORDER_STATUS]
-  console.log(status)
   return (
     <>
-      <Header title={data?.number}>
-        <div className="mr-auto">
-          <Badge
-            variant="custom"
-            className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
-          >
-            {status?.label}
-          </Badge>
-        </div>
-        <DropdownMenu>
+      <Header title="LAP-001 Laptop Dell XPS 15">
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="sm" variant="ghost">
-              Acciones
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                Cerrar orden de compra
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Cancelar orden de compra
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleGeneratePDF()}
-              >
-                Generar PDF
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="sm">
+            <Button className="ml-auto" size="sm">
               Crear
               <ChevronDown />
             </Button>
@@ -86,13 +40,15 @@ export default function PurchaseOrderPage() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                Factura de compra
+                Registro de pago
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Nota de débito
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </Header>
-
       <Tabs className="mt-4" defaultValue="tab-1">
         <ScrollArea>
           <TabsList className="relative justify-start !pl-4 h-auto w-full gap-1 bg-transparent p-0 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-border">
@@ -138,37 +94,27 @@ export default function PurchaseOrderPage() {
               <h2 className="text-base font-medium">General</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Solicitado por</label>
-                  <span className="text-sm">Juan Perez</span>
+                  <label className="text-muted-foreground text-sm">Precio de lista</label>
+                  <span className="text-sm">
+                    $249.99
+                  </span>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Solicitado el</label>
-                  <span className="text-sm">12 de enero de 2022</span>
+                  <label className="text-muted-foreground text-sm">
+                    Costo de compra
+                  </label>
+                  <span className="text-sm">
+                    $150.00
+                  </span>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Solicitado para</label>
-                  <span className="text-sm">12 de febrero de 2022</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Número de orden</label>
-                  <span className="text-sm">OC-4500001782</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Sede</label>
-                  <span className="text-sm">Sede Central</span>
+                  <label className="text-muted-foreground text-sm">Stock disponible</label>
+                  <span className="text-sm">
+                    20 unidades
+                  </span>
                 </div>
               </div>
             </div>
-          </div>
-          <Separator />
-          <div className="p-4 flex flex-col gap-4">
-            <h2 className="text-base font-medium">Productos</h2>
-            <DataTable
-              data={[]}
-              columns={columns}
-              pagination={false}
-              footer={() => <TableFooter />}
-            />
           </div>
         </TabsContent>
         <TabsContent value="tab-2" className="m-0 border-b">

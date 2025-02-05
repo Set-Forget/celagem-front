@@ -112,9 +112,9 @@ export default function RenderTable({ ...fields }: { tableColumns?: ColumnConfig
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             {headers.map((header, index) => (
-              <TableHead key={index}>{header}</TableHead>
+              <TableHead className="text-nowrap" key={index}>{header}</TableHead>
             ))}
-            <TableHead className="text-right pr-4">Acciones</TableHead>
+            <TableHead className="text-right pr-4"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -131,16 +131,44 @@ export default function RenderTable({ ...fields }: { tableColumns?: ColumnConfig
           {list.map((row: z.infer<typeof schema>, index: number) => (
             <TableRow className="[&:nth-last-child(2)]:border-b-0" key={index}>
               {cells.map((cell, cellIndex) => {
-                const value =
-                  cell.type === "select"
-                    ? cell.options?.find((option) => option.value === row[cell.name])?.label || row[cell.name]
-                    : cell.type === "date"
-                      ? format(new Date(row[cell.name]), "dd MMM yy")
-                      : row[cell.name];
+                let value;
 
-                return (
-                  <TableCell key={cellIndex}>{value}</TableCell>
-                );
+                if (cell.type === "select" || cell.type === "combobox") {
+                  if (cell.dependsOn) {
+                    const parentValue = row[cell.dependsOn.field];
+                    const filteredOptions = cell.dependsOn.filterOptions.find(
+                      (filter) => filter.parentValue === parentValue
+                    )?.options;
+
+                    value =
+                      filteredOptions?.find((option) => option.value === row[cell.name])
+                        ?.label || row[cell.name];
+                  } else {
+                    value =
+                      cell.options?.find((option) => option.value === row[cell.name])
+                        ?.label || row[cell.name];
+                  }
+                } else if (cell.type === "date") {
+                  value = format(new Date(row[cell.name]), "dd MMM yy");
+                } else if (cell.type === "time") {
+                  const currentDate = new Date();
+                  const time = row[cell.name];
+
+                  const date = new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth(),
+                    currentDate.getDate(),
+                    time.hour || 0,
+                    time.minute || 0,
+                    time.second || 0,
+                    time.millisecond || 0
+                  );
+                  value = format(date, "HH:mm a");
+                } else {
+                  value = row[cell.name];
+                }
+
+                return <TableCell key={cellIndex}>{value}</TableCell>;
               })}
               <TableCell className="text-right pr-4">
                 <Button

@@ -23,13 +23,20 @@ export interface FieldConfig {
   requiredMessage?: string;
   placeholder?: string;
   className?: string;
-  options?: { label: string; value: string }[];
+  options?: { label: string; value: string, id?: string }[];
   tableColumns?: ColumnConfig[];
   component?: string;
   errorMessage?: string;
   minValue?: number;
   defaultValue?: any;
   readOnly?: boolean;
+  dependsOn?: {
+    field: string;
+    filterOptions: {
+      parentValue: string;
+      options: { label: string; value: string }[];
+    }[];
+  };
 }
 
 export type ColumnConfig =
@@ -56,7 +63,7 @@ export default function AppointmentPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const selectedTemplate = TEMPLATES.find((template) => template.id === 19)!
+  const selectedTemplate = TEMPLATES.find((template) => template.id === 56)!
   const defaultValues = getDefaultValues(selectedTemplate.sections);
 
   const schema = generateSchema(selectedTemplate.sections);

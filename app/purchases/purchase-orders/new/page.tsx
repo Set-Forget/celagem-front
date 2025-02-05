@@ -1,6 +1,6 @@
 "use client"
 
-import { CalendarIcon, Check, CheckIcon, ChevronsUpDown } from "lucide-react"
+import { CalendarIcon, Check, CheckIcon, ChevronsUpDown, Ellipsis } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -107,7 +107,7 @@ export default function NewPurchaseOrderPage() {
               value="tab-2"
               className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
             >
-              <Box
+              <Ellipsis
                 className="-ms-0.5 me-1.5"
                 size={16}
                 aria-hidden="true"
@@ -117,7 +117,7 @@ export default function NewPurchaseOrderPage() {
           </TabsList>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        <TabsContent value="tab-1">
+        <TabsContent value="tab-1" className="m-0">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
             <FormField
               control={newPurchaseOrderForm.control}
@@ -300,7 +300,7 @@ export default function NewPurchaseOrderPage() {
             <ItemsTable className="col-span-2" />
           </div>
         </TabsContent>
-        <TabsContent value="tab-2">
+        <TabsContent value="tab-2" className="m-0">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
             <FormField
               control={newPurchaseOrderForm.control}

@@ -22,11 +22,11 @@ export const newPatientSchema = z.object({
   role: z.enum(["ovo-contributor", "pregnant", "semen-contributor"], { required_error: "El rol es requerido" }),
 
   //Datos del acompañante
-  partner_first_name: z.string().optional(),
-  partner_last_name: z.string().optional(),
-  partner_residence_address: z.string().optional(),
-  partner_residence_city_id: z.string().optional(),
-  relationship: z.string().optional(),
+  companion_first_name: z.string().optional(),
+  companion_last_name: z.string().optional(),
+  companion_residence_address: z.string().optional(),
+  companion_residence_city_id: z.string().optional(),
+  companion_relationship: z.string().optional(),
 
   //Datos del responsable
   responsible_first_name: z.string().optional(),
@@ -41,5 +41,5 @@ export const newPatientSchema = z.object({
   registered_name: z.string().optional(),
   fiscal_category: z.string().optional(),
   customer_type: z.string().optional(),
-  cuit: z.string().optional(),
+  tax_id: z.string().optional(),
 })

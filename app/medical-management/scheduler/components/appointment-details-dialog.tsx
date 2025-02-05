@@ -12,8 +12,6 @@ export default function AppointmentDetailsDialog() {
     closeDialogs()
   }
 
-  console.log(dialogState)
-
   useEffect(() => {
     const subscription = dialogsStateObservable.subscribe(setDialogState)
 

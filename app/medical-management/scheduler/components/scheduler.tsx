@@ -1,133 +1,22 @@
 'use client';
 
+import FilterSelector, { FilterConfig, SelectedFilters } from '@/components/filter-selector';
 import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { setDialogsState } from '@/lib/store/dialogs-store';
+import { cn } from '@/lib/utils';
 import { ArrowLeftRight, ArrowRightLeft, ChevronLeft, ChevronRight, CircleDashed, Plus, Search } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import Header from '../../../../components/header';
+import AppointmentDetailsDialog from './appointment-details-dialog';
 import DailyView from './daily-view';
 import MonthlyView from './monthly-view';
 import NewAppointmentDialog from './new-appointment-dialog';
-import WeeklyView from './weekly-view';
-import { cn } from '@/lib/utils';
-import FilterSelector, { FilterConfig } from '@/components/filter-selector';
-import AppointmentDetailsDialog from './appointment-details-dialog';
 import TableView from './table-view';
-
-const APPOINTMENTS = [
-  {
-    id: '1',
-    start_date: '2024-12-30',
-    start_time: '10:00',
-    end_time: '11:30',
-    created_by_user_id: 1,
-    professional: 'Dr. Ana López',
-    patient: 'Juan Pérez',
-    appointment_type: 'ovo-contributor',
-    headquarters: 'Sede Asistencial Bucaramanga', status: 'scheduled',
-  },
-  {
-    id: '2',
-    start_date: '2024-12-30',
-    start_time: '10:30',
-    end_time: '11:00',
-    created_by_user_id: 2,
-    professional: 'Dr. Carlos Gómez',
-    patient: 'María Rodríguez',
-    appointment_type: 'pregnant',
-    headquarters: 'Sede Asistencial Bogotá', status: 'completed',
-  },
-  {
-    id: '3',
-    start_date: '2024-12-31',
-    start_time: '09:00',
-    end_time: '09:30',
-    created_by_user_id: 3,
-    professional: 'Dra. Laura Martínez',
-    patient: 'Pedro García',
-    appointment_type: 'semen-contributor',
-    headquarters: 'Sede Medellin', status: 'scheduled',
-  },
-  {
-    id: '4',
-    start_date: '2024-12-31',
-    start_time: '13:00',
-    end_time: '13:30',
-    created_by_user_id: 4,
-    professional: 'Dr. Mario Ramírez',
-    patient: 'Sofía Hernández',
-    appointment_type: 'pregnant',
-    headquarters: 'Sede Asistencial Bogotá', status: 'scheduled',
-  },
-  {
-    id: '5',
-    start_date: '2025-01-01',
-    start_time: '11:00',
-    end_time: '11:30',
-    created_by_user_id: 1,
-    professional: 'Dr. Ana López',
-    patient: 'Lucía Fernández',
-    appointment_type: 'ovo-contributor',
-    headquarters: 'Sede Asistencial Bucaramanga', status: 'scheduled',
-  },
-  {
-    id: '6',
-    start_date: '2025-01-02',
-    start_time: '15:00',
-    end_time: '15:30',
-    created_by_user_id: 2,
-    professional: 'Dr. Carlos Gómez',
-    patient: 'Miguel Torres',
-    appointment_type: 'semen-contributor',
-    headquarters: 'Sede Medellin', status: 'scheduled',
-  },
-  {
-    id: '7',
-    start_date: '2025-01-03',
-    start_time: '16:00',
-    end_time: '16:30',
-    created_by_user_id: 3,
-    professional: 'Dra. Laura Martínez',
-    patient: 'Andrea Sánchez',
-    appointment_type: 'pregnant',
-    headquarters: 'Sede Asistencial Bogotá', status: 'scheduled',
-  },
-  {
-    id: '8',
-    start_date: '2025-01-04',
-    start_time: '08:00',
-    end_time: '08:30',
-    created_by_user_id: 4,
-    professional: 'Dr. Mario Ramírez',
-    patient: 'Roberto Díaz',
-    appointment_type: 'ovo-contributor',
-    headquarters: 'Sede Asistencial Bucaramanga', status: 'scheduled',
-  },
-  {
-    id: '9',
-    start_date: '2025-01-05',
-    start_time: '10:00',
-    end_time: '10:30',
-    created_by_user_id: 1,
-    professional: 'Dr. Ana López',
-    patient: 'Carolina Mora',
-    appointment_type: 'semen-contributor',
-    headquarters: 'Sede Medellin', status: 'scheduled',
-  },
-  {
-    id: '10',
-    start_date: '2025-01-05',
-    start_time: '18:00',
-    end_time: '18:30',
-    created_by_user_id: 2,
-    professional: 'Dr. Carlos Gómez',
-    patient: 'Esteban Vargas',
-    appointment_type: 'pregnant',
-    headquarters: 'Sede Asistencial Bogotá', status: 'scheduled',
-  },
-];
+import WeeklyView from './weekly-view';
+import { useSearchAppointmentsQuery } from '@/services/appointments';
+import { format } from 'date-fns';
 
 const filtersConfig: Record<string, FilterConfig> = {
   search: {
@@ -157,7 +46,12 @@ export default function Scheduler() {
 
   const [selectedDate, setSelectedDate] = React.useState(new Date());
 
+  const { data: appointments } = useSearchAppointmentsQuery({
+    start_date: format(selectedDate, 'yyyy-MM-dd'),
+  });
+
   const view = searchParams.get('view') || 'month';
+
   const adaptedSelectedDate = (() => {
     if (view === 'month' || view === 'table') {
       return selectedDate.toLocaleString('es-AR', {
@@ -246,7 +140,9 @@ export default function Scheduler() {
         </Button>
       </Header>
       <div className={cn('flex justify-between p-4 border-b')}>
-        <FilterSelector filtersConfig={filtersConfig} />
+        <FilterSelector
+          filtersConfig={filtersConfig}
+        />
 
         <div className='flex items-center gap-2'>
           <div className={cn('flex items-center justify-between gap-2 border rounded-sm pl-4 h-7 overflow-hidden',
@@ -280,16 +176,10 @@ export default function Scheduler() {
           }
         </div>
       </div>
-      {/* Create a context or use rtk query to store de appointments and avoid pass them as props */}
-      {view === 'month' && <MonthlyView selectedDate={selectedDate} appointments={APPOINTMENTS} />}
-      {view === 'week' && <WeeklyView selectedDate={selectedDate} appointments={APPOINTMENTS} />}
-      {view === 'day' && <DailyView selectedDate={selectedDate} appointments={APPOINTMENTS} />}
-      {view === 'table' &&
-        <div className="p-4 h-full">
-          <TableView selectedDate={selectedDate} appointments={APPOINTMENTS} />
-        </div>
-      }
-
+      {view === 'month' && <MonthlyView selectedDate={selectedDate} appointments={appointments} />}
+      {view === 'week' && <WeeklyView selectedDate={selectedDate} appointments={appointments} />}
+      {view === 'day' && <DailyView selectedDate={selectedDate} appointments={appointments} />}
+      {view === 'table' && <TableView appointments={appointments} />}
       <NewAppointmentDialog />
       <AppointmentDetailsDialog />
     </>

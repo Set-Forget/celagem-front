@@ -4,7 +4,6 @@ import {
   AudioWaveform,
   Box,
   ChevronRight,
-  ClipboardList,
   Command,
   FileText,
   GalleryVerticalEnd,
@@ -37,7 +36,6 @@ import {
 } from "@/components/ui/collapsible"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { title } from "process"
 
 const data = {
   user: {
@@ -80,6 +78,10 @@ const data = {
         {
           title: "Notas de débito",
           url: "/sales/debit-notes",
+        },
+        {
+          title: "Remitos",
+          url: "/sales/delivery-notes",
         },
         {
           title: "Clientes",
@@ -150,7 +152,7 @@ const data = {
     },
     {
       title: "Inventario",
-      url: "#",
+      url: "/inventory",
       icon: Box,
 
     },
@@ -200,10 +202,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton tooltip={item.title}>
-                      {item.icon && <item.icon />}
-                      <span>{item.title}</span>
-                      {item.items && <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />}
+                    <SidebarMenuButton
+                      isActive={pathname.includes(item.url)}
+                      asChild
+                      tooltip={item.title}
+                    >
+                      <Link href={item.url}>
+                        {item.icon && <item.icon />}
+                        <span>{item.title}</span>
+                        {item.items && <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />}
+                      </Link>
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   {item.items && (

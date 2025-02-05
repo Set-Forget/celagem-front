@@ -122,7 +122,7 @@ export function PurchaseOrderItemsTable() {
             )}
           </TableBody>
           <TableFooter>
-            <TableRow className="!border-b bg-background">
+            <TableRow className="bg-background">
               <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-medium py-0">
                 <span>Subtotal</span>
               </TableCell>
@@ -130,7 +130,7 @@ export function PurchaseOrderItemsTable() {
                 <span>ARS 400.93</span>
               </TableCell>
             </TableRow>
-            <TableRow className="!border-b bg-background">
+            <TableRow className="bg-background">
               <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-medium py-0">
                 <span>Impuestos</span>
               </TableCell>

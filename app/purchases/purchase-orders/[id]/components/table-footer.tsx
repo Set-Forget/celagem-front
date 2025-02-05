@@ -5,7 +5,7 @@ export default function TableFooter() {
 
   return (
     <ShadcnTableFooter>
-      <TableRow className="bg-background">
+      <TableRow className="!border-b bg-background">
         <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-medium py-0">
           <span>Subtotal</span>
         </TableCell>
@@ -13,12 +13,12 @@ export default function TableFooter() {
           <span>ARS 400.93</span>
         </TableCell>
       </TableRow>
-      <TableRow className="bg-background">
+      <TableRow className="!border-b bg-background">
         <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-medium py-0">
           <span>Impuestos</span>
         </TableCell>
         <TableCell className="h-6 text-xs font-medium py-0">
-          <span>ARS 84.00</span>
+          <span>ARS 0</span>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -26,7 +26,7 @@ export default function TableFooter() {
           <span>Total</span>
         </TableCell>
         <TableCell className="h-6 text-xs font-medium py-0">
-          <span>ARS 484.93</span>
+          <span>ARS 400.93</span>
         </TableCell>
       </TableRow>
     </ShadcnTableFooter>
