@@ -37,10 +37,10 @@ export default function RenderField({
 }) {
   const { setValue } = useFormContext();
 
+  const weight = useWatch({ control, name: "weight" }) || 0;
+  const height = useWatch({ control, name: "height" }) || 0;
 
   if (field.name === "imc") {
-    const weight = useWatch({ control, name: "weight" }) || 0;
-    const height = useWatch({ control, name: "height" }) || 0;
 
     const calculateBMI = (weight: number, height: number) => {
       if (height > 0) {
