@@ -40,19 +40,18 @@ export default function RenderField({
   const weight = useWatch({ control, name: "weight" }) || 0;
   const height = useWatch({ control, name: "height" }) || 0;
 
-  if (field.name === "imc") {
-
-    const calculateBMI = (weight: number, height: number) => {
-      if (height > 0) {
-        return (weight / ((height / 100) ** 2)).toFixed(2);
-      }
-      return "";
-    };
-
-    useEffect(() => {
+  useEffect(() => {
+    if (field.name === "imc") {
+      const calculateBMI = (weight: number, height: number) => {
+        if (height > 0) {
+          return (weight / ((height / 100) ** 2)).toFixed(2);
+        }
+        return "";
+      };
       setValue("imc", calculateBMI(weight, height));
-    }, [weight, height]);
-  }
+    }
+  }, [weight, height]);
+
 
   const dependentValue = useWatch({ control, name: field?.dependsOn?.field ?? "" });
 
