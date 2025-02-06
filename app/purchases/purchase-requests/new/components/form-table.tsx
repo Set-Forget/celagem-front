@@ -114,8 +114,7 @@ export default function FormTable<
               </TableRow>
             ))}
           </TableHeader>
-
-          <TableBody scrollBarClassName="pt-[37px]">
+          <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow

@@ -85,7 +85,7 @@ export default function RenderTable({ ...fields }: { tableColumns?: ColumnConfig
   const cells = getCells(fields.tableColumns);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full">
       <Form {...form}>
         <div
           className="grid gap-4 w-full"
@@ -108,86 +108,88 @@ export default function RenderTable({ ...fields }: { tableColumns?: ColumnConfig
           Agregar
         </Button>
       </Form>
-      <Table>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            {headers.map((header, index) => (
-              <TableHead className="text-nowrap" key={index}>{header}</TableHead>
-            ))}
-            <TableHead className="text-right pr-4"></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {!list || !list.length && (
-            <TableRow className="[&:nth-last-child(2)]:border-b-0">
-              <TableCell
-                colSpan={headers.length + 1}
-                className="text-center"
-              >
-                <span className="text-xs text-muted-foreground">No hay datos</span>
-              </TableCell>
+      <div className="overflow-hidden rounded-md border border-border bg-background w-full">
+        <Table className="border-separate border-spacing-0 [&_td]:border-border [&_tfoot_td]:border-t [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
+          <TableHeader className="sticky top-0 z-10 bg-accent/90 backdrop-blur-sm">
+            <TableRow className="bg-muted/50">
+              {headers.map((header, index) => (
+                <TableHead className="text-nowrap h-9" key={index}>{header}</TableHead>
+              ))}
+              <TableHead className="text-right pr-4 h-9"></TableHead>
             </TableRow>
-          )}
-          {list.map((row: z.infer<typeof schema>, index: number) => (
-            <TableRow className="[&:nth-last-child(2)]:border-b-0" key={index}>
-              {cells.map((cell, cellIndex) => {
-                let value;
-
-                if (cell.type === "select" || cell.type === "combobox") {
-                  if (cell.dependsOn) {
-                    const parentValue = row[cell.dependsOn.field];
-                    const filteredOptions = cell.dependsOn.filterOptions.find(
-                      (filter) => filter.parentValue === parentValue
-                    )?.options;
-
-                    value =
-                      filteredOptions?.find((option) => option.value === row[cell.name])
-                        ?.label || row[cell.name];
-                  } else {
-                    value =
-                      cell.options?.find((option) => option.value === row[cell.name])
-                        ?.label || row[cell.name];
-                  }
-                } else if (cell.type === "date") {
-                  value = format(new Date(row[cell.name]), "dd MMM yy");
-                } else if (cell.type === "time") {
-                  const currentDate = new Date();
-                  const time = row[cell.name];
-
-                  const date = new Date(
-                    currentDate.getFullYear(),
-                    currentDate.getMonth(),
-                    currentDate.getDate(),
-                    time.hour || 0,
-                    time.minute || 0,
-                    time.second || 0,
-                    time.millisecond || 0
-                  );
-                  value = format(date, "HH:mm a");
-                } else {
-                  value = row[cell.name];
-                }
-
-                return <TableCell key={cellIndex}>{value}</TableCell>;
-              })}
-              <TableCell className="text-right pr-4">
-                <Button
-                  type="button"
-                  size="icon"
-                  className="h-7 w-7 !text-destructive"
-                  variant="ghost"
-                  onClick={() => {
-                    setValue(fields.name,
-                      list.filter((_: any, i: number) => i !== index));
-                  }}
+          </TableHeader>
+          <TableBody>
+            {!list || !list.length && (
+              <TableRow className="[&:nth-last-child(2)]:border-b-0">
+                <TableCell
+                  colSpan={headers.length + 1}
+                  className="text-center"
                 >
-                  <Trash />
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                  <span className="text-xs text-muted-foreground">No hay datos</span>
+                </TableCell>
+              </TableRow>
+            )}
+            {list.map((row: z.infer<typeof schema>, index: number) => (
+              <TableRow className="[&:nth-last-child(2)]:border-b-0" key={index}>
+                {cells.map((cell, cellIndex) => {
+                  let value;
+
+                  if (cell.type === "select" || cell.type === "combobox") {
+                    if (cell.dependsOn) {
+                      const parentValue = row[cell.dependsOn.field];
+                      const filteredOptions = cell.dependsOn.filterOptions.find(
+                        (filter) => filter.parentValue === parentValue
+                      )?.options;
+
+                      value =
+                        filteredOptions?.find((option) => option.value === row[cell.name])
+                          ?.label || row[cell.name];
+                    } else {
+                      value =
+                        cell.options?.find((option) => option.value === row[cell.name])
+                          ?.label || row[cell.name];
+                    }
+                  } else if (cell.type === "date") {
+                    value = format(new Date(row[cell.name]), "dd MMM yy");
+                  } else if (cell.type === "time") {
+                    const currentDate = new Date();
+                    const time = row[cell.name];
+
+                    const date = new Date(
+                      currentDate.getFullYear(),
+                      currentDate.getMonth(),
+                      currentDate.getDate(),
+                      time.hour || 0,
+                      time.minute || 0,
+                      time.second || 0,
+                      time.millisecond || 0
+                    );
+                    value = format(date, "HH:mm a");
+                  } else {
+                    value = row[cell.name];
+                  }
+
+                  return <TableCell key={cellIndex}>{value}</TableCell>;
+                })}
+                <TableCell className="text-right pr-4">
+                  <Button
+                    type="button"
+                    size="icon"
+                    className="h-7 w-7 !text-destructive"
+                    variant="ghost"
+                    onClick={() => {
+                      setValue(fields.name,
+                        list.filter((_: any, i: number) => i !== index));
+                    }}
+                  >
+                    <Trash />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

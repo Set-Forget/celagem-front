@@ -92,6 +92,30 @@
         @apply !shadow-none;
     }
 
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--scroll-thumb) var(--scroll-background);
+      }
+      *::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+      *::-webkit-scrollbar-track {
+        background: var(--scroll-background);
+        border-radius: 5px; 
+      }
+      *::-webkit-scrollbar-thumb {
+        background: var(--scroll-thumb);
+        border-radius: 5px; 
+        border: 2px solid var(--scroll-background);
+      }
+      *::-webkit-scrollbar-thumb:hover {
+        background: var(--scroll-thumb-hover); 
+      }
+      *::-webkit-scrollbar-corner {
+        background: var(--scroll-background); 
+      }
+
     body {
         @apply bg-background text-foreground;
         font-family: var(--font-geist-sans);

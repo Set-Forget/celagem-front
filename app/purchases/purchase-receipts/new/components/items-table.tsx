@@ -47,7 +47,7 @@ export default function ItemsTable({ className }: { className?: string }) {
               <TableHead className="w-9 h-9"></TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody scrollBarClassName="pt-[40px]">
+          <TableBody>
             {fields.length === 0 && (
               <TableRow>
                 <TableCell colSpan={8} className="text-center">

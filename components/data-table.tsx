@@ -75,71 +75,73 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="space-y-4 flex flex-col justify-between h-full">
+    <div className="space-y-4 flex flex-col justify-between">
       {toolbar && toolbar({ table })}
-      <ShadcnTable className="border-separate border-spacing-0 [&_td]:border-border [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
-        <TableHeader className="sticky top-0 z-10 bg-accent/90 backdrop-blur-sm">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow className="border-b-0" key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead className="h-9" key={header.id} colSpan={header.colSpan}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                  </TableHead>
-                )
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody scrollBarClassName="pt-[37px]">
-          {loading && (
-            <TableRow className="border-none">
-              <TableCell
-                colSpan={columns.length}
-                className="h-auto text-xs text-center"
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <Loader2 className="animate-spin" size={14} />
-                  Cargando...
-                </div>
-              </TableCell>
-            </TableRow>
-          )}
-          {!table?.getRowModel()?.rows?.length && !loading && (
-            <TableRow className="border-none">
-              <TableCell
-                colSpan={columns.length}
-                className="h-auto text-xs text-center"
-              >
-                No hay items
-              </TableCell>
-            </TableRow>
-          )}
-          {table?.getRowModel()?.rows?.length > 0 && table.getRowModel().rows.map((row) => (
-            <TableRow
-              key={row.id}
-              className={cn("[&:nth-last-child(2)]:border-b-0", "h-10", onRowClick && "cursor-pointer")}
-              data-state={row.getIsSelected() && "selected"}
-              onClick={() => onRowClick?.(row.original)}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(
-                    cell.column.columnDef.cell,
-                    cell.getContext()
-                  )}
+      <div className="overflow-hidden rounded-sm border border-border bg-background">
+        <ShadcnTable className="[&_td]:border-border [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
+          <TableHeader className="sticky top-0 z-10 bg-accent/90 backdrop-blur-sm">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow className="border-b" key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead className="h-9" key={header.id} colSpan={header.colSpan}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                    </TableHead>
+                  )
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {loading && (
+              <TableRow className="border-none">
+                <TableCell
+                  colSpan={columns.length}
+                  className="text-xs text-center h-10 border-b"
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="animate-spin" size={14} />
+                    Cargando...
+                  </div>
                 </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-        {footer && footer()}
-      </ShadcnTable>
+              </TableRow>
+            )}
+            {!table?.getRowModel()?.rows?.length && !loading && (
+              <TableRow className="border-none">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-auto text-xs text-center"
+                >
+                  No hay items
+                </TableCell>
+              </TableRow>
+            )}
+            {table?.getRowModel()?.rows?.length > 0 && table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                className={cn("h-10", onRowClick && "cursor-pointer")}
+                data-state={row.getIsSelected() && "selected"}
+                onClick={() => onRowClick?.(row.original)}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+          {footer && footer()}
+        </ShadcnTable>
+      </div>
       {pagination && (
         <div className="flex items-center justify-end space-x-2">
           <div className="flex-1 text-sm text-muted-foreground">

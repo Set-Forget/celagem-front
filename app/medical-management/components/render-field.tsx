@@ -1,4 +1,6 @@
 import { FieldConfig } from "@/app/medical-management/scheduler/appointment/[id]/page";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { DateField as DateFieldRac, DateInput as DateInputRac } from "@/components/ui/datefield-rac";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon, Check, ChevronsUpDown, Clock, Minus, Plus } from "lucide-react";
@@ -6,7 +8,6 @@ import { useEffect } from "react";
 import {
   Button as AriaButton,
   Input as AriaInput,
-  DateField,
   DateInput,
   DateSegment,
   Group,
@@ -25,8 +26,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../../components/ui/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { Textarea } from "../../../components/ui/textarea";
 import RenderTable from "./render-table";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { DateField as DateFieldRac, DateInput as DateInputRac } from "@/components/ui/datefield-rac";
 
 export default function RenderField({
   field,
@@ -39,6 +38,7 @@ export default function RenderField({
 
   const weight = useWatch({ control, name: "weight" }) || 0;
   const height = useWatch({ control, name: "height" }) || 0;
+  const dependentValue = useWatch({ control, name: field?.dependsOn?.field ?? "" });
 
   useEffect(() => {
     if (field.name === "imc") {
@@ -51,10 +51,6 @@ export default function RenderField({
       setValue("imc", calculateBMI(weight, height));
     }
   }, [weight, height]);
-
-
-  const dependentValue = useWatch({ control, name: field?.dependsOn?.field ?? "" });
-
 
   const options =
     field.dependsOn && field.dependsOn.filterOptions

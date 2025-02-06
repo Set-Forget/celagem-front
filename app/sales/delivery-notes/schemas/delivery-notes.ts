@@ -39,6 +39,6 @@ export const newDeliveryNoteSchema = z.object({
         .nonempty('Al menos un item es requerido'),
 });
 
-export type deliveryNote = z.infer<typeof deliveryNoteSchema>;
-export type NewdeliveryNote = z.infer<typeof newDeliveryNoteSchema>;
-export type deliveryNoteItems = z.infer<typeof deliveryNoteItemsSchema>;
+export type DeliveryNote = z.infer<typeof deliveryNoteSchema>;
+export type NewDeliveryNote = z.infer<typeof newDeliveryNoteSchema>;
+export type DeliveryNoteItems = z.infer<typeof deliveryNoteItemsSchema>;

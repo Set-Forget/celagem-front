@@ -59,7 +59,7 @@ export default function ItemsTable() {
               <TableHead className="w-9 h-9"></TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody scrollBarClassName="pt-[40px]">
+          <TableBody>
             {fields.map((item, index) => (
               <ItemRow key={item.id} index={index} remove={removeItem} />
             ))}

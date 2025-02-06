@@ -171,7 +171,7 @@ export default function ReceiptsPage() {
           </Link>
         </Button>
       </Header>
-      <div className="flex flex-col gap-4 p-4 h-[calc(100svh-99px)]">
+      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
         <DataTable
           data={data}
           columns={columns}

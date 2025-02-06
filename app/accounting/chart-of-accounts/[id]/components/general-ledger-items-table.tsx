@@ -150,7 +150,7 @@ export function GeneralLedgerItemsTable() {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody scrollBarClassName="pt-[42px]">
+          <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow

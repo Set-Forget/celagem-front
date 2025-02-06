@@ -36,7 +36,6 @@ export default function PurchaseOrderPage() {
   }
 
   const status = PURCHASE_ORDER_STATUS[data?.status as keyof typeof PURCHASE_ORDER_STATUS]
-  console.log(status)
   return (
     <>
       <Header title={data?.number}>
@@ -164,7 +163,15 @@ export default function PurchaseOrderPage() {
           <div className="p-4 flex flex-col gap-4">
             <h2 className="text-base font-medium">Productos</h2>
             <DataTable
-              data={[]}
+              data={[{
+                id: "test",
+                item_code: "test",
+                item_name: "test",
+                description: "test",
+                received_quantity: 0,
+                requested_quantity: 1,
+                price: 222,
+              }]}
               columns={columns}
               pagination={false}
               footer={() => <TableFooter />}

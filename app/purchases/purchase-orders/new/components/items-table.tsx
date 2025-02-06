@@ -1,25 +1,18 @@
-import { Plus } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-
 import { useFieldArray, useFormContext } from "react-hook-form"
-import { v4 as uuidv4 } from 'uuid'
 import { z } from "zod"
-
 import { Label } from "@/components/ui/label"
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow
 } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
+import { newPurchaseOrderSchema } from "../../schemas/purchase-orders"
 import ItemRow from "./item-row"
 import TableFooter from "./table-footer"
-import { newPurchaseOrderSchema } from "../../schemas/purchase-orders"
-import { cn } from "@/lib/utils"
 
 export default function ItemsTable({ className }: { className?: string }) {
   const { control } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()
@@ -36,7 +29,7 @@ export default function ItemsTable({ className }: { className?: string }) {
           Productos
         </Label>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col border rounded-sm overflow-hidden">
         <Table className="border-none">
           <TableHeader className="bg-sidebar">
             <TableRow>
@@ -50,7 +43,7 @@ export default function ItemsTable({ className }: { className?: string }) {
               <TableHead className="w-9 h-9"></TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody scrollBarClassName="pt-[40px]">
+          <TableBody>
             {fields.length === 0 && (
               <TableRow>
                 <TableCell colSpan={8} className="text-center">

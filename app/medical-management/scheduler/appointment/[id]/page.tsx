@@ -12,6 +12,7 @@ import { Save, Signature } from "lucide-react"
 import { Fragment } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { useParams } from "next/navigation"
 
 export type FieldType = "input" | "textarea" | "custom" | "number" | "select" | string
 
@@ -58,12 +59,12 @@ export interface FormConfig {
   sections: SectionConfig[];
 }
 
-export default function AppointmentPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const selectedTemplate = TEMPLATES.find((template) => template.id === 22)!
+export default function AppointmentPage() {
+  const params = useParams<{ id: string }>();
+
+  const id = params.id;
+
+  const selectedTemplate = TEMPLATES.find((template) => template.id === Number(id))!
   const defaultValues = getDefaultValues(selectedTemplate.sections);
 
   const schema = generateSchema(selectedTemplate.sections);
@@ -163,18 +164,18 @@ export default function AppointmentPage({
             {selectedTemplate.sections.map((section, sectionIndex) => (
               <Fragment key={sectionIndex}>
                 <div className="flex flex-col gap-4">
-                  <fieldset className="border border-input rounded-md p-4 !shadow-sm">
+                  <fieldset className="border border-input rounded-md p-4 !shadow-sm min-w-0 w-full">
                     {section.sectionName && <legend className="text-sm text-muted-foreground px-2">{section.sectionName}</legend>}
                     <div
-                      className="grid gap-4"
+                      className="grid gap-4 w-full min-w-0"
                       style={{
                         gridTemplateColumns: `repeat(1, 1fr)`,
                       }}
                     >
                       {section.columns.map((column, columnIndex) =>
-                        <Fragment key={columnIndex}>
+                        <div key={columnIndex} className="min-w-0 w-full">
                           <RenderColumn column={column} control={form.control} />
-                        </Fragment>
+                        </div>
                       )}
                     </div>
                   </fieldset>
