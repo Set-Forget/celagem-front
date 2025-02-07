@@ -1,0 +1,97 @@
+[
+  {
+    "id": 1,
+    "name": "Área de texto",
+    "type": "textarea",
+    "properties": {
+      "maxLength": 2000,
+      "defaultText": "Escribe aquí..."
+    }
+  },
+  {
+    "id": 2,
+    "name": "Texto",
+    "type": "text",
+    "properties": {
+      "maxLength": 500,
+      "defaultText": "Escribe aquí..."
+    }
+  },
+  {
+    "id": 3,
+    "name": "Titulo",
+    "type": "text",
+    "properties": null
+  },
+  {
+    "id": 4,
+    "name": "Numérico",
+    "type": "number",
+    "properties": {
+      "max": 1000000,
+      "min": 0,
+      "decimalPlaces": 2
+    }
+  },
+  {
+    "id": 5,
+    "name": "Booleano",
+    "type": "checkbox",
+    "properties": {
+      "isConditionalForNextStep": false
+    }
+  },
+  {
+    "id": 6,
+    "name": "Fecha",
+    "type": "date",
+    "properties": null
+  },
+  {
+    "id": 7,
+    "name": "Fecha/Hora",
+    "type": "datetime",
+    "properties": null
+  },
+  {
+    "id": 8,
+    "name": "Hora",
+    "type": "time",
+    "properties": null
+  },
+  {
+    "id": 9,
+    "name": "Email",
+    "type": "email",
+    "properties": {
+      "maxLength": 500,
+      "defaultText": "Escribe aquí..."
+    }
+  },
+  {
+    "id": 10,
+    "name": "Imagen predefinida",
+    "type": "file",
+    "properties": {
+      "defaultText": "Escribe aquí..."
+    }
+  },
+  {
+    "id": 11,
+    "name": "Moneda",
+    "type": "number",
+    "properties": null
+  },
+  {
+    "id": 12,
+    "name": "select",
+    "type": "select",
+    "properties": null
+  },
+  {
+    "id": 13,
+    "name": "multipleSelect",
+    "type": "select",
+    "properties": null
+  }
+]

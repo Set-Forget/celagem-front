@@ -1,0 +1,46 @@
+{
+  "name": "Ficha médica",
+  "layout": "Tabulada",
+  "type": "Clínica",
+  "description": "Descripción de la plantilla",
+  "isActive": true,
+  "createdBy": 1,
+  "sections": [
+    {
+      "name": "Datos del paciente",
+      "type": "Formulario",
+      "description": "Sección para datos básicos del paciente",
+      "isActive": true,
+      "isForPrintInColumns": true,
+      "fields": [
+        {
+          "isRule": false,
+          "isValidFormula": false,
+          "formula": "BMI = weight / (height * height)",
+          "rule": "if(age < 18) { showField(\"guardian\") }",
+          "title": "Presión Arterial",
+          "code": "BLOOD_PRESSURE_001",
+          "isAlert": false,
+          "isConditionalSection": false,
+          "isConditionalField": false,
+          "isVisible": true,
+          "isEditable": true,
+          "isRequired": false,
+          "isActive": true,
+          "sectionTemplateFormMedicalRecordId": 1,
+          "type": {
+            "values": {
+              "defaultText": "Textooooooo"
+            },
+            "id": 2
+          }
+        }
+      ]
+    }
+  ],
+  "isEpicrisis": true,
+  "isForSendEmailToInsuranceProvider": true,
+  "isForPrintIndependently": true,
+  "isForPrintWithAllTheTemplates": true,
+  "isForSendOrderToAppointmentBox": true
+}
