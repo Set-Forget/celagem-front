@@ -1,12 +1,22 @@
 {
+  "id": 1,
   "name": "Ficha médica",
   "layout": "Tabulada",
   "type": "Clínica",
   "description": "Descripción de la plantilla",
   "isActive": true,
   "createdBy": 1,
+  "createdAt": "2025-02-07T18:29:02.225Z",
+  "updatedBy": null,
+  "updatedAt": "2025-02-07T18:29:02.226Z",
+  "isEpicrisis": true,
+  "isForSendEmailToInsuranceProvider": true,
+  "isForPrintIndependently": true,
+  "isForPrintWithAllTheTemplates": true,
+  "isForSendOrderToAppointmentBox": true,
   "sections": [
     {
+      "id": 1,
       "name": "Datos del paciente",
       "type": "Formulario",
       "description": "Sección para datos básicos del paciente",
@@ -14,12 +24,13 @@
       "isForPrintInColumns": true,
       "fields": [
         {
+          "id": 1,
+          "title": "Presión Arterial",
+          "code": "BLOOD_PRESSURE_001",
           "isRule": false,
           "isValidFormula": false,
           "formula": "BMI = weight / (height * height)",
           "rule": "if(age < 18) { showField(\"guardian\") }",
-          "title": "Presión Arterial",
-          "code": "BLOOD_PRESSURE_001",
           "isAlert": false,
           "isConditionalSection": false,
           "isConditionalField": false,
@@ -29,18 +40,24 @@
           "isActive": true,
           "sectionTemplateFormMedicalRecordId": 1,
           "type": {
+            "id": 4,
+            "primitiveFieldId": 1,
             "values": {
-              "defaultText": "Textooooooo"
+              "maxLength": 2000,
+              "defaultText": "Escribe aquí..."
             },
-            "id": 2
+            "primitiveField": {
+              "id": 1,
+              "name": "Área de texto",
+              "type": "textarea",
+              "properties": {
+                "maxLength": 2000,
+                "defaultValue": "Escribe aquí..."
+              }
+            }
           }
         }
       ]
     }
-  ],
-  "isEpicrisis": true,
-  "isForSendEmailToInsuranceProvider": true,
-  "isForPrintIndependently": true,
-  "isForPrintWithAllTheTemplates": true,
-  "isForSendOrderToAppointmentBox": true
+  ]
 }

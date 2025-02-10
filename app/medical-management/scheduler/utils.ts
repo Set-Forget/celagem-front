@@ -67,3 +67,5 @@ export const groupAppointmentsByDay = (appointments: AppointmentList[] | undefin
     ?.filter((appointment) => appointment.start_date === formattedDate)
     .sort((a, b) => a.start_time.localeCompare(b.start_time));
 };
+
+

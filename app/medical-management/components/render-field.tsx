@@ -1,10 +1,7 @@
-import { FieldConfig } from "@/app/medical-management/scheduler/appointment/[id]/page";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { DateField as DateFieldRac, DateInput as DateInputRac } from "@/components/ui/datefield-rac";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarIcon, Check, ChevronsUpDown, Clock, Minus, Plus } from "lucide-react";
-import { useEffect } from "react";
+import { CalendarIcon, Clock, Minus, Plus } from "lucide-react";
 import {
   Button as AriaButton,
   Input as AriaInput,
@@ -16,8 +13,7 @@ import {
   NumberField,
   TimeField
 } from "react-aria-components";
-import { Control, useFormContext, useWatch } from "react-hook-form";
-import { MultiSelect } from "../../../components/multi-select";
+import { Control, useFormContext } from "react-hook-form";
 import { Button } from "../../../components/ui/button";
 import { Calendar } from "../../../components/ui/calendar";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../components/ui/form";
@@ -25,78 +21,51 @@ import { Input } from "../../../components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../../../components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { Textarea } from "../../../components/ui/textarea";
-import RenderTable from "./render-table";
+import { Field } from "../scheduler/schemas/templates";
 
 export default function RenderField({
   field,
   control,
 }: {
-  field: FieldConfig,
+  field: Field,
   control: Control,
 }) {
   const { setValue } = useFormContext();
 
-  const weight = useWatch({ control, name: "weight" }) || 0;
-  const height = useWatch({ control, name: "height" }) || 0;
-  const dependentValue = useWatch({ control, name: field?.dependsOn?.field ?? "" });
-
-  useEffect(() => {
-    if (field.name === "imc") {
-      const calculateBMI = (weight: number, height: number) => {
-        if (height > 0) {
-          return (weight / ((height / 100) ** 2)).toFixed(2);
-        }
-        return "";
-      };
-      setValue("imc", calculateBMI(weight, height));
-    }
-  }, [weight, height]);
-
-  const options =
-    field.dependsOn && field.dependsOn.filterOptions
-      ? field.dependsOn.filterOptions.find(
-        (filter) => filter.parentValue === dependentValue
-      )?.options || []
-      : field.options;
-
   return (
     <FormField
-      key={field.name}
+      key={field.id}
       control={control}
-      name={field.name}
+      name={field.code}
       render={({ field: formField }) => (
         <FormItem className="flex flex-col w-full">
-          {field.label && <FormLabel>{field.label}</FormLabel>}
+          {field.title && <FormLabel>{field.title}</FormLabel>}
           <FormControl>
             <>
-              {field.type === "textarea" && (
+              {field.type.primitiveField.type === "textarea" && (
                 <Textarea
                   {...formField}
-                  readOnly={field.readOnly}
-                  placeholder={field.placeholder || "Escribe aquí..."}
-                  className={`resize-none ${field.className || ""}`}
+                  {...(field.type.primitiveField.properties)}
+                  placeholder="Escribe aquí..."
+                  className="resize-none"
                 />
               )}
 
-              {field.type === "input" && (
+              {field.type.primitiveField.type === "text" && (
                 <Input
                   {...formField}
-                  readOnly={field.readOnly}
-                  placeholder={field.placeholder || "Escribe aquí..."}
-                  className={field.className || ""}
+                  {...(field.type.primitiveField.properties)}
+                  placeholder="Escribe aquí..."
                 />
               )}
 
-              {field.type === "number" && (
+              {field.type.primitiveField.type === "number" && (
                 <NumberField
-                  isReadOnly={field.readOnly}
-                  minValue={field.minValue || 0}
-                  defaultValue={field.defaultValue}
-                  className={field.className}
+                  {...(field.type.primitiveField.properties)}
                   {...formField}
                 >
                   <Label className="sr-only">
-                    {field.label}
+                    {field.title}
                   </Label>
                   <Group className="relative inline-flex h-9 w-full items-center overflow-hidden whitespace-nowrap rounded-sm border border-input text-sm shadow-sm shadow-black/5 transition-shadow data-[disabled]:opacity-50 data-[focus-within]:outline outline-1">
                     <AriaButton
@@ -116,15 +85,17 @@ export default function RenderField({
                 </NumberField>
               )}
 
-              {field.type === "select" && (
+              {field.type.primitiveField.type === "select" && (
                 <Select onValueChange={formField.onChange} defaultValue={formField.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={field.placeholder} />
+                      <SelectValue
+                        placeholder="Seleccioná una opción"
+                      />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {field.options?.map(({ label, value }) => (
+                    {field.type.primitiveField.properties?.options?.map(({ value, label }) => (
                       <SelectItem key={value} value={value}>
                         {label}
                       </SelectItem>
@@ -133,90 +104,21 @@ export default function RenderField({
                 </Select>
               )}
 
-              {field.type === "combobox" && (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        disabled={field.dependsOn && !dependentValue}
-                        role="combobox"
-                        className={cn(
-                          "justify-between",
-                          !formField.value && "text-muted-foreground"
-                        )}
-                      >
-                        {formField.value
-                          ? options?.find(
-                            (option) => option.value === formField.value
-                          )?.label
-                          : "Seleccioná una opción"}
-                        <ChevronsUpDown className="opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                    <Command>
-                      <CommandInput
-                        placeholder="Buscar..."
-                        className="h-9"
-                      />
-                      <CommandList>
-                        <CommandEmpty>
-                          No se encontraron resultados
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {options?.map((option) => (
-                            <CommandItem
-                              value={option.label}
-                              key={option.value}
-                              onSelect={() => {
-                                setValue(field.name, option.value);
-                              }}
-                            >
-                              {option.label}
-                              <Check
-                                className={cn(
-                                  "ml-auto",
-                                  option.value === formField.value
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-              )}
-
-              {field.type === "multi-select" && (
-                <MultiSelect
-                  options={field.options || []}
-                  onValueChange={formField.onChange}
-                  defaultValue={formField.value}
-                  placeholder={field.placeholder}
-                  searchPlaceholder={"Buscar..."}
-                />
-              )}
-
-              {field.type === "file" && (
+              {field.type.primitiveField.type === "file" && (
                 <Input
-                  id={field.name}
+                  {...(field.type.primitiveField.properties)}
                   type="file"
                   className="p-0 pe-3 file:me-3 file:border-0 file:border-e"
                   onChange={(event) => {
                     const file = event.target.files?.[0];
                     if (file) {
-                      setValue(field.name, file);
+                      setValue(field.code, file);
                     }
                   }}
                 />
               )}
 
-              {field.type === "time" && (
+              {field.type.primitiveField.type === "time" && (
                 <TimeField
                   value={formField.value}
                   onChange={(value) => {
@@ -224,7 +126,7 @@ export default function RenderField({
                   }}
                 >
                   <Label className="sr-only">
-                    {field.label}
+                    {field.title}
                   </Label>
                   <div className="relative">
                     <DateInput className="relative inline-flex h-9 w-full items-center overflow-hidden whitespace-nowrap rounded-sm border border-input bg-background px-3 py-2 pe-9 text-sm shadow-sm shadow-black/5 transition-shadow data-[focus-within]:border-ring data-[disabled]:opacity-50 data-[focus-within]:outline-none">
@@ -242,7 +144,7 @@ export default function RenderField({
                 </TimeField>
               )}
 
-              {field.type === "date" && (
+              {field.type.primitiveField.type === "date" && (
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -279,11 +181,7 @@ export default function RenderField({
                 </Popover>
               )}
 
-              {field.type === "table" && (
-                <RenderTable {...field} />
-              )}
-
-              {field.type === "datetime" && (
+              {field.type.primitiveField.type === "datetime" && (
                 <I18nProvider locale="es-419">
                   <DateFieldRac
                     onChange={(value) => formField.onChange(value?.toString())}
