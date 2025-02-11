@@ -18,7 +18,7 @@
     {
       "id": 1,
       "name": "Datos del paciente",
-      "type": "Formulario",
+      "type": "form",
       "description": "Sección para datos básicos del paciente",
       "isActive": true,
       "isForPrintInColumns": true,
@@ -36,7 +36,7 @@
           "isConditionalField": false,
           "isVisible": true,
           "isEditable": true,
-          "isRequired": false,
+          "isRequired": true,
           "isActive": true,
           "sectionTemplateFormMedicalRecordId": 1,
           "type": {
@@ -44,7 +44,7 @@
             "primitiveFieldId": 1,
             "values": {
               "maxLength": 2000,
-              "defaultText": "Escribe aquí..."
+              "defaultValue": "Escribe aquí..."
             },
             "primitiveField": {
               "id": 1,
@@ -53,6 +53,203 @@
               "properties": {
                 "maxLength": 2000,
                 "defaultValue": "Escribe aquí..."
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "title": "Test select",
+          "code": "test_select",
+          "isRule": false,
+          "isValidFormula": false,
+          "formula": "BMI = weight / (height * height)",
+          "rule": "if(age < 18) { showField(\"guardian\") }",
+          "isAlert": false,
+          "isConditionalSection": false,
+          "isConditionalField": false,
+          "isVisible": true,
+          "isEditable": true,
+          "isRequired": true,
+          "isActive": true,
+          "sectionTemplateFormMedicalRecordId": 1,
+          "type": {
+            "id": 5,
+            "primitiveFieldId": 12,
+            "values": {
+              "options": [
+                {
+                  "label": "test",
+                  "value": "testval"
+                }
+              ]
+            },
+            "primitiveField": {
+              "id": 12,
+              "name": "select",
+              "type": "select",
+              "properties": null
+            }
+          }
+        },
+        {
+          "id": 3,
+          "title": "number",
+          "code": "number_table",
+          "isRule": false,
+          "isValidFormula": false,
+          "formula": "BMI = weight / (height * height)",
+          "rule": "if(age < 18) { showField(\"guardian\") }",
+          "isAlert": false,
+          "isConditionalSection": false,
+          "isConditionalField": false,
+          "isVisible": true,
+          "isEditable": true,
+          "isRequired": true,
+          "isActive": true,
+          "sectionTemplateFormMedicalRecordId": 1,
+          "type": {
+            "id": 6,
+            "primitiveFieldId": 4,
+            "values": {
+              "minValue": 0
+            },
+            "primitiveField": {
+              "id": 4,
+              "name": "Numérico",
+              "type": "number",
+              "properties": {
+                "max": 1000000,
+                "min": 0,
+                "decimalPlaces": 2
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "title": "date",
+          "code": "date_test",
+          "isRule": false,
+          "isValidFormula": false,
+          "formula": "BMI = weight / (height * height)",
+          "rule": "if(age < 18) { showField(\"guardian\") }",
+          "isAlert": false,
+          "isConditionalSection": false,
+          "isConditionalField": false,
+          "isVisible": true,
+          "isEditable": true,
+          "isRequired": true,
+          "isActive": true,
+          "sectionTemplateFormMedicalRecordId": 1,
+          "type": {
+            "id": 6,
+            "primitiveFieldId": 4,
+            "values": {},
+            "primitiveField": {
+              "id": 6,
+              "name": "fecha",
+              "type": "date",
+              "properties": {
+                "max": 1000000,
+                "min": 0,
+                "decimalPlaces": 2
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "title": "tiempo",
+          "code": "time_test",
+          "isRule": false,
+          "isValidFormula": false,
+          "formula": "BMI = weight / (height * height)",
+          "rule": "if(age < 18) { showField(\"guardian\") }",
+          "isAlert": false,
+          "isConditionalSection": false,
+          "isConditionalField": false,
+          "isVisible": true,
+          "isEditable": true,
+          "isRequired": true,
+          "isActive": true,
+          "sectionTemplateFormMedicalRecordId": 1,
+          "type": {
+            "id": 6,
+            "primitiveFieldId": 4,
+            "values": {},
+            "primitiveField": {
+              "id": 6,
+              "name": "tiempo",
+              "type": "time",
+              "properties": {
+                "max": 1000000,
+                "min": 0,
+                "decimalPlaces": 2
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "title": "file",
+          "code": "file_test",
+          "isRule": false,
+          "isValidFormula": false,
+          "formula": "BMI = weight / (height * height)",
+          "rule": "if(age < 18) { showField(\"guardian\") }",
+          "isAlert": false,
+          "isConditionalSection": false,
+          "isConditionalField": false,
+          "isVisible": true,
+          "isEditable": true,
+          "isRequired": true,
+          "isActive": true,
+          "sectionTemplateFormMedicalRecordId": 1,
+          "type": {
+            "id": 6,
+            "primitiveFieldId": 4,
+            "values": {},
+            "primitiveField": {
+              "id": 6,
+              "name": "archivo",
+              "type": "file",
+              "properties": {
+                "max": 1000000,
+                "min": 0,
+                "decimalPlaces": 2
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "title": "datetime",
+          "code": "datetime_test",
+          "isRule": false,
+          "isValidFormula": false,
+          "formula": "BMI = weight / (height * height)",
+          "rule": "if(age < 18) { showField(\"guardian\") }",
+          "isAlert": false,
+          "isConditionalSection": false,
+          "isConditionalField": false,
+          "isVisible": true,
+          "isEditable": true,
+          "isRequired": true,
+          "isActive": true,
+          "sectionTemplateFormMedicalRecordId": 1,
+          "type": {
+            "id": 6,
+            "primitiveFieldId": 4,
+            "values": {},
+            "primitiveField": {
+              "id": 6,
+              "name": "datetime",
+              "type": "datetime",
+              "properties": {
+                "max": 1000000,
+                "min": 0,
+                "decimalPlaces": 2
               }
             }
           }

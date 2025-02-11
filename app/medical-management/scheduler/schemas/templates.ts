@@ -2,9 +2,9 @@ import { z } from "zod";
 
 const propertiesSchema = z.object({
   maxLength: z.number().optional(),
-  defaultText: z.string().optional() || z.number().optional(),
-  max: z.number().optional(),
-  min: z.number().optional(),
+  defaultValue: z.string().optional() || z.number().optional(),
+  maxValue: z.number().optional(),
+  minValue: z.number().optional(),
   decimalPlaces: z.number().optional(),
   isConditionalForNextStep: z.boolean().optional(),
   options: z.array(z.object({ value: z.string(), label: z.string() })).optional(),
@@ -28,6 +28,9 @@ const fieldTypeSchema = z.object({
   properties: propertiesSchema,
 });
 
+/**
+ * TODO: Eliminar "primitiveFieldId" y "primitiveField"
+*/
 const typeSchema = z.object({
   id: z.number(),
   primitiveFieldId: z.number(),
@@ -35,6 +38,9 @@ const typeSchema = z.object({
   primitiveField: fieldTypeSchema,
 });
 
+/**
+ * TODO: Cambiar "sectionTemplateFormMedicalRecordId" por "section_id"
+*/
 const fieldSchema = z.object({
   id: z.number(),
   title: z.string(),
@@ -57,7 +63,7 @@ const fieldSchema = z.object({
 const sectionSchema = z.object({
   id: z.number(),
   name: z.string(),
-  type: z.string(),
+  type: z.enum(["form", "table"]),
   description: z.string(),
   isActive: z.boolean(),
   isForPrintInColumns: z.boolean(),

@@ -12,6 +12,30 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form } from "@/components/ui/form"
 import RenderField from "@/app/medical-management/components/render-field"
+import { TimeValue, DateValue } from "react-aria-components"
+
+const isTimeValue = (value: unknown): value is TimeValue => {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "hour" in value &&
+    typeof (value as any).hour === "number" &&
+    "minute" in value &&
+    typeof (value as any).minute === "number" &&
+    "second" in value &&
+    typeof (value as any).second === "number"
+  );
+};
+
+const timeSchema = z.custom<TimeValue>(
+  (val) => isTimeValue(val),
+  { message: "Campo requerido" }
+);
+
+const dateSchema = z.custom<DateValue>(
+  (val) => val as any,
+  { message: "Campo requerido" }
+);
 
 const fieldSchemaGenerators: Record<FieldType["type"], (field: Field) => ZodTypeAny> = {
   text: (field: Field) => {
@@ -19,7 +43,7 @@ const fieldSchemaGenerators: Record<FieldType["type"], (field: Field) => ZodType
     if (field.type.values && field.type.values.maxLength) {
       schema = schema.max(
         field.type.values.maxLength,
-        { message: `El máximo permitido es ${field.type.values.maxLength} caracteres.` }
+        { message: `El máximo permitido es ${field.type.values.maxLength} caracteres` }
       );
     }
     return schema;
@@ -29,47 +53,25 @@ const fieldSchemaGenerators: Record<FieldType["type"], (field: Field) => ZodType
     if (field.type.values && field.type.values.maxLength) {
       schema = schema.max(
         field.type.values.maxLength,
-        { message: `El máximo permitido es ${field.type.values.maxLength} caracteres.` }
+        { message: `El máximo permitido es ${field.type.values.maxLength} caracteres` }
       );
     }
     return schema;
   },
-  number: (field: Field) => {
-    let schema = z.number();
-    if (field.type.values && field.type.values.min !== undefined) {
-      schema = schema.min(
-        field.type.values.min,
-        { message: `El valor mínimo es ${field.type.values.min}.` }
-      );
-    }
-    if (field.type.values && field.type.values.max !== undefined) {
-      schema = schema.max(
-        field.type.values.max,
-        { message: `El valor máximo es ${field.type.values.max}.` }
-      );
-    }
+  number: (_field: Field) => {
+    let schema = z.preprocess(
+      (val) => (val === null ? undefined : val),
+      z.number({ invalid_type_error: "Campo requerido", required_error: "Campo requerido" })
+    );
     return schema;
   },
   checkbox: (_field: Field) => z.boolean(),
-  date: (_field: Field) =>
-    z.string().refine(
-      (val) => !isNaN(Date.parse(val)),
-      { message: "Fecha inválida." }
-    ),
-  datetime: (_field: Field) =>
-    z.string().refine(
-      (val) => !isNaN(Date.parse(val)),
-      { message: "Fecha y hora inválidas." }
-    ),
-  time: (_field: Field) => z.string(), // Se puede ampliar con validaciones específicas.
-  email: (_field: Field) =>
-    z.string().email({ message: "Dirección de correo inválida." }),
-  file: (_field: Field) =>
-    // Dependiendo de la implementación, se podría validar el tipo, tamaño, etc.
-    z.instanceof(File),
-  select: (_field: Field) =>
-    // Si se dispone de opciones, se puede restringir el valor mediante z.enum o validaciones personalizadas.
-    z.string(),
+  date: (_field: Field) => dateSchema,
+  datetime: (_field: Field) => dateSchema,
+  time: (_field: Field) => timeSchema,
+  email: (_field: Field) => z.string().email({ message: "Dirección de correo inválida" }),
+  file: (_field: Field) => z.instanceof(File, { message: "Campo requerido" }),
+  select: (_field: Field) => z.string(),
 };
 
 const generateFieldSchema = (field: Field): ZodTypeAny => {
@@ -83,7 +85,7 @@ const generateFieldSchema = (field: Field): ZodTypeAny => {
   if (field.isRequired) {
     schema = schema.refine(
       (value) => value !== undefined && value !== null && value !== "",
-      { message: "Campo requerido." }
+      { message: "Campo requerido" }
     );
   } else {
     schema = schema.optional();
@@ -115,21 +117,19 @@ const generateDefaultValues = (template: Template): Record<string, unknown> => {
         case "text":
         case "textarea":
         case "email":
-        case "date":
         case "datetime":
-        case "time":
         case "select":
-          defaultValue = properties?.defaultText ?? "";
+          defaultValue = properties?.defaultValue ?? "";
           break;
         case "number":
-          defaultValue = properties?.defaultText ? Number(properties.defaultText) : undefined;
+          defaultValue = properties?.defaultValue ? Number(properties.defaultValue) : undefined;
           break;
         case "checkbox":
-          if (properties?.defaultText !== undefined) {
-            if (typeof properties.defaultText === "boolean") {
-              defaultValue = properties.defaultText;
-            } else if (typeof properties.defaultText === "string") {
-              defaultValue = properties.defaultText.toLowerCase() === "true";
+          if (properties?.defaultValue !== undefined) {
+            if (typeof properties.defaultValue === "boolean") {
+              defaultValue = properties.defaultValue;
+            } else if (typeof properties.defaultValue === "string") {
+              defaultValue = properties.defaultValue.toLowerCase() === "true";
             } else {
               defaultValue = false;
             }
@@ -159,12 +159,12 @@ export default function AppointmentPage() {
   const formSchema = generateFormSchema(parsedTemplate);
   const defaultValues = generateDefaultValues(parsedTemplate);
 
-  console.log(defaultValues);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues
   });
 
+  console.log(form.formState.errors);
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log("Formulario enviado:", data);
   };
@@ -252,12 +252,15 @@ export default function AppointmentPage() {
             <span className="text-base font-medium">{parsedTemplate.name}</span>
             {parsedTemplate.sections.map((section: Section) => (
               <div key={section.id} className="flex flex-col gap-4">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  {section.fields.map((field: Field) => (
-                    <div key={field.id} className="flex flex-col gap-1">
-                      <RenderField field={field} control={form.control} />
-                    </div>
-                  ))}
+                <div className="grid grid-cols-1 gap-4">
+                  <fieldset className="border border-input rounded-md p-4 !shadow-sm min-w-0 w-full flex flex-col gap-4">
+                    {section.name && <legend className="text-sm text-muted-foreground px-2">{section.name}</legend>}
+                    {section.fields.map((field: Field) => (
+                      <div key={field.id} className="flex flex-col gap-2">
+                        <RenderField field={field} control={form.control} />
+                      </div>
+                    ))}
+                  </fieldset>
                 </div>
               </div>
             ))}
@@ -267,3 +270,27 @@ export default function AppointmentPage() {
     </>
   )
 }
+/* 
+
+{selectedTemplate.sections.map((section, sectionIndex) => (
+              <Fragment key={sectionIndex}>
+                <div className="flex flex-col gap-4">
+                  <fieldset className="border border-input rounded-md p-4 !shadow-sm min-w-0 w-full">
+                    {section.sectionName && <legend className="text-sm text-muted-foreground px-2">{section.sectionName}</legend>}
+                    <div
+                      className="grid gap-4 w-full min-w-0"
+                      style={{
+                        gridTemplateColumns: `repeat(1, 1fr)`,
+                      }}
+                    >
+                      {section.columns.map((column, columnIndex) =>
+                        <div key={columnIndex} className="min-w-0 w-full">
+                          <RenderColumn column={column} control={form.control} />
+                        </div>
+                      )}
+                    </div>
+                  </fieldset>
+                </div>
+              </Fragment>
+            ))}
+*/
