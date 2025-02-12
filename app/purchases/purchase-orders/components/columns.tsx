@@ -13,9 +13,7 @@ import { PURCHASE_ORDER_STATUS } from "../adapters/customers"
 import { PurchaseOrderList } from "../schemas/purchase-orders"
 
 const PercentageReceivedCell = ({ row }: { row: Row<PurchaseOrderList> }) => {
-  const percentageReceived = row.original.order_lines.reduce((acc, line) => {
-    return acc + (line.qty_received / line.product_qty)
-  }, 0) / row.original.order_lines.length * 100
+  const percentageReceived = row.original.percentage_received
 
   return (
     <TooltipProvider>
@@ -38,9 +36,9 @@ export const columns: ColumnDef<PurchaseOrderList>[] = [
     cell: ({ row }) => <div className="font-medium">{row.original.number}</div>,
   },
   {
-    accessorKey: "supplier.name",
+    accessorKey: "supplier",
     header: "Proveedor",
-    cell: ({ row }) => <div>{row.original.supplier.name}</div>,
+    cell: ({ row }) => <div>{row.original.supplier}</div>,
   },
   {
     accessorKey: "status",
@@ -48,10 +46,10 @@ export const columns: ColumnDef<PurchaseOrderList>[] = [
     cell: ({ row }) => {
       const status = PURCHASE_ORDER_STATUS[row.getValue("status") as keyof typeof PURCHASE_ORDER_STATUS]
       return <Badge
-        variant="outline"
-        className={cn(`${status.bg_color} ${status.text_color} border-none rounded-sm !shadow-lg ${status.shadow_color}`)}
+        variant="custom"
+        className={cn(`${status?.bg_color} ${status?.text_color} border-none`)}
       >
-        {status.label}
+        {status?.label}
       </Badge>
     },
   },
@@ -61,11 +59,11 @@ export const columns: ColumnDef<PurchaseOrderList>[] = [
     cell: ({ row }) => <PercentageReceivedCell row={row} />,
   },
   {
-    accessorKey: "amount_total",
+    accessorKey: "price",
     header: "Total",
     cell: ({ row }) => <div className="font-medium">
-      {row.original.currency.name}{" "}
-      {row.original.amount_total}
+      {row.original.currency}{" "}
+      {row.original.price}
     </div>,
   },
   {

@@ -5,45 +5,47 @@ import {
 } from "@tanstack/react-table"
 import { PurchaseOrderItem } from "../../schemas/purchase-orders"
 
-export const columns: ColumnDef<PurchaseOrderItem>[] = [
+export const columns: ColumnDef<PurchaseOrderItem & { currency: string }>[] = [
   {
-    accessorKey: "item_code",
-    header: "Código",
+    accessorKey: "product_name",
+    header: "Nombre",
     cell: ({ row }) => (
-      <div>
-        {row.getValue("item_code")}
-      </div>
+      <span className="font-medium">
+        {row.getValue("product_name")}
+      </span>
     ),
   },
   {
-    accessorKey: "item_name",
-    header: "Nombre",
-    cell: ({ row }) => {
-      return <div>{row.getValue("item_name")}</div>
-    },
-  },
-  {
-    accessorKey: "description",
-    header: "Descripción",
-    cell: ({ row }) => <div>{row.getValue("description")}</div>,
-  },
-  {
-    accessorKey: "requested_quantity",
+    accessorKey: "product_qty",
     header: "Cantidad solicitada",
     cell: ({ row }) => {
-      return <div className="font-medium">{row.getValue("requested_quantity")}</div>
+      return <span>{row.getValue("product_qty")}</span>
     },
   },
   {
-    accessorKey: "received_quantity",
+    accessorKey: "qty_received",
     header: "Cantidad recibida",
     cell: ({ row }) => {
-      return <div className="font-medium">{row.getValue("received_quantity")}</div>
+      return <span>{row.getValue("qty_received")}</span>
     },
   },
   {
-    accessorKey: "price",
-    header: "Subtotal",
-    cell: ({ row }) => <div className="font-medium">ARS {row.getValue("price")}</div>,
+    accessorKey: "price_unit",
+    header: "Precio unitario",
+    cell: ({ row }) => {
+      return <span className="font-medium">{row.original.currency} {row.original.price_unit.toFixed(2)}</span>
+    },
+  },
+  {
+    accessorKey: "taxes",
+    header: "Impuestos",
+    cell: ({ row }) => {
+      return <span>{row.original.taxes[0].name}</span>
+    }
+  },
+  {
+    accessorKey: "price_subtotal",
+    header: "Subtotal (sin imp.)",
+    cell: ({ row }) => <span className="font-medium">{row.original.currency} {row.original.price_subtotal.toFixed(2)}</span>,
   },
 ]

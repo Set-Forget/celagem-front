@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const purchaseOrderItemSchema = z.object({
+const purchaseOrderItemSchema = z.object({
   item_code: z.string(),
   item_name: z.string(),
   description: z.string(),
@@ -10,7 +10,7 @@ export const purchaseOrderItemSchema = z.object({
   price: z.number(),
 })
 
-export const newPurchaseOrderItemSchema = z.object({
+const newPurchaseOrderItemSchema = z.object({
   item_code: z.string({ required_error: "El código del item es requerido" }),
   item_name: z.string({ required_error: "El nombre del item es requerido" }),
   description: z.string({ required_error: "La descripción del item es requerida" }),
@@ -49,41 +49,42 @@ export const purchaseOrdersSchema = z.object({
   title: z.string(),
 });
 
+//---
+
 export const purchaseOrderListSchema = z.object({
   id: z.number(),
   number: z.string(),
-  supplier: z.object({ name: z.string(), id: z.string() }),
+  supplier: z.string(),
   status: z.enum(["to-approve", "approved", "pending", "done", "cancel"]),
   required_date: z.string(),
-  amount_total: z.number(),
-  items: z.array(z.object({
-    id: z.number(),
-    product_qty: z.number(),
-    qty_received: z.number(),
-  })),
-  currency: z.object({ name: z.string(), id: z.string() }),
+  price: z.number(),
+  currency: z.string(),
+  percentage_received: z.number(),
+})
+
+export const purchaseOrderLineSchema = z.object({
+  id: z.number(),
+  product_id: z.number(),
+  product_name: z.string(),
+  product_qty: z.number(),
+  qty_received: z.number(),
+  price_unit: z.number(),
+  price_subtotal: z.number(),
+  price_tax: z.number(),
+  taxes: z.array(z.object({ id: z.number(), name: z.string(), amount: z.number() })),
 })
 
 export const purchaseOrderDetailSchema = z.object({
   id: z.number(),
   number: z.string(),
   required_date: z.string(),
-  date_order: z.string(),
-  user_id: z.object({ id: z.number(), name: z.string() }),
-  related_invoices: z.array(z.object({ id: z.number(), number: z.string() })),
-  related_receptions: z.array(z.object({ id: z.number(), number: z.string() })),
+  purchase_order_date: z.string(),
+  required_by: z.string(),
+  related_invoices: z.array(z.object({ id: z.number(), number: z.string() })).optional(),
+  related_receptions: z.array(z.object({ id: z.number(), number: z.string() })).optional(),
   status: z.enum(["to-approve", "approved", "pending", "done", "cancel"]),
-  items: z.array(z.object({
-    id: z.number(),
-    user_id: z.object({ id: z.number(), name: z.string() }),
-    product_qty: z.number(),
-    qty_received: z.number(),
-    price_unit: z.number(),
-    price_subtotal: z.number(),
-    price_tax: z.number(),
-    taxes_id: z.array(z.number()),
-  })),
-  currency: z.object({ name: z.string(), id: z.string() }),
+  items: z.array(purchaseOrderLineSchema),
+  currency: z.string(),
   supplier: z.object({
     id: z.number(),
     name: z.string(),
@@ -92,8 +93,19 @@ export const purchaseOrderDetailSchema = z.object({
   }),
 })
 
+export const purchaseOrderListResponseSchema = z.object({
+  status: z.string(),
+  data: z.array(purchaseOrderListSchema),
+});
+export const purchaseOrderDetailResponseSchema = z.object({
+  status: z.string(),
+  data: purchaseOrderDetailSchema,
+});
+
+export type PurchaseOrderItem = z.infer<typeof purchaseOrderLineSchema>;
 export type PurchaseOrderList = z.infer<typeof purchaseOrderListSchema>;
+export type PurchaseOrderListResponse = z.infer<typeof purchaseOrderListResponseSchema>;
 export type PurchaseOrderDetail = z.infer<typeof purchaseOrderDetailSchema>;
+export type PurchaseOrderDetailResponse = z.infer<typeof purchaseOrderDetailResponseSchema>;
 
 export type PurchaseOrder = z.infer<typeof purchaseOrdersSchema>;
-export type PurchaseOrderItem = z.infer<typeof purchaseOrderItemSchema>;

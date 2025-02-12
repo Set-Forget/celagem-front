@@ -1,6 +1,7 @@
 import FilterSelector, { FilterConfig } from "@/components/filter-selector";
 import { Table } from "@tanstack/react-table";
 import { CalendarFold, CircleDashed, Search } from "lucide-react";
+import { useParams, useSearchParams } from "next/navigation";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -21,6 +22,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "date_range",
     options: [
       { label: "Fecha de creación", value: "created_at" },
+      { label: "Fecha de entrega", value: "required_by" },
     ],
     label: "Rango de fecha",
     key: "date_range",
@@ -30,8 +32,8 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "search",
     label: "Buscar",
     options: [
+      { label: "Número", value: "number" },
       { label: "Proveedor", value: "supplier" },
-      { label: "Titulo", value: "title" },
     ],
     key: "search",
     icon: Search
@@ -39,6 +41,20 @@ const filtersConfig: Record<string, FilterConfig> = {
 };
 
 export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+  const searchParams = useSearchParams();
+
+  const allParams = Object.fromEntries(
+    Array.from(searchParams.entries()).map(([key, value]) => {
+      try {
+        return [key, JSON.parse(decodeURIComponent(value))];
+      } catch {
+        return [key, value];
+      }
+    })
+  );
+
+  console.log(allParams);
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex gap-4">

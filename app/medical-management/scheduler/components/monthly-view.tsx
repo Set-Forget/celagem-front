@@ -22,7 +22,7 @@ function getCalendarDates(selectedDate: Date): Date[] {
       startDate.getMonth(),
       startDate.getDate() + i
     );
-    dates.push(current);
+    dates.push(current)
   }
 
   return dates;

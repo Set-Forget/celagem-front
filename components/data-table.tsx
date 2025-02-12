@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn, placeholder } from "@/lib/utils"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -26,6 +26,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   pagination?: boolean
   loading?: boolean
+  loadingRows?: number
   onRowClick?: (row: TData) => void
   toolbar?: (props: { table: Table<TData> }) => React.ReactNode
   footer?: () => React.ReactNode
@@ -37,6 +38,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   loading,
+  loadingRows,
   pagination = true,
   onRowClick,
   toolbar,
@@ -98,24 +100,24 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {loading && (
+            {loading &&
               <TableRow className="border-none">
                 <TableCell
                   colSpan={columns.length}
                   className="text-xs text-center h-10 border-b"
                 >
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center justify-center gap-2 text-muted-foreground">
                     <Loader2 className="animate-spin" size={14} />
                     Cargando...
                   </div>
                 </TableCell>
               </TableRow>
-            )}
+            }
             {!table?.getRowModel()?.rows?.length && !loading && (
               <TableRow className="border-none">
                 <TableCell
                   colSpan={columns.length}
-                  className="h-auto text-xs text-center"
+                  className="text-xs text-center h-10 border-b"
                 >
                   No hay items
                 </TableCell>

@@ -14,7 +14,7 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn } from "@/lib/utils"
+import { cn, placeholder } from "@/lib/utils"
 import { useGetPurchaseOrderQuery } from "@/services/purchase-orders"
 import { Box, ChevronDown, Eye, House, Paperclip } from "lucide-react"
 import Link from "next/link"
@@ -22,23 +22,29 @@ import { useParams } from "next/navigation"
 import { PURCHASE_ORDER_STATUS } from "../adapters/customers"
 import { columns } from "./components/columns"
 import TableFooter from "./components/table-footer"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
 
 export default function PurchaseOrderPage() {
-  const { id } = useParams()
+  const { id } = useParams<{ id: string }>()
 
-  const { data, error, isLoading } = useGetPurchaseOrderQuery(id as string);
-
-  console.log(data, error, isLoading)
+  const { data: purchaseOrder, isLoading } = useGetPurchaseOrderQuery(id);
 
   const handleGeneratePDF = async () => {
     const { generatePurchaseOrderPDF } = await import("../templates/purchase-order")
     generatePurchaseOrderPDF()
   }
 
-  const status = PURCHASE_ORDER_STATUS[data?.status as keyof typeof PURCHASE_ORDER_STATUS]
+  const status = PURCHASE_ORDER_STATUS[purchaseOrder?.status as keyof typeof PURCHASE_ORDER_STATUS]
+
+
   return (
     <>
-      <Header title={data?.number}>
+      <Header title={
+        <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isLoading ? "blur-[4px]" : "blur-none")}>
+          {isLoading ? placeholder(7, true) : purchaseOrder?.number}
+        </h1>
+      }>
         <div className="mr-auto">
           <Badge
             variant="custom"
@@ -91,21 +97,42 @@ export default function PurchaseOrderPage() {
           </DropdownMenuContent>
         </DropdownMenu>
       </Header>
-
-      <Tabs className="mt-4" defaultValue="tab-1">
+      <div className="grid grid-cols-1 gap-4 p-4">
+        <div className="flex flex-col gap-4">
+          <h2 className="text-base font-medium">General</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="flex flex-col gap-1">
+              <label className="text-muted-foreground text-sm">Solicitado por</label>
+              <span className={cn("text-sm transition-all duration-300", isLoading ? "blur-[4px]" : "blur-none")}>
+                {isLoading ? placeholder(10) : purchaseOrder?.required_by}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-muted-foreground text-sm">Fecha de requerimiento</label>
+              <span className={cn("text-sm transition-all duration-300", isLoading ? "blur-[4px]" : "blur-none")}>
+                {isLoading ? placeholder(13) : format(purchaseOrder!.required_date, "dd MMM yyyy", { locale: es })}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-muted-foreground text-sm">Fecha de creación</label>
+              <span className={cn("text-sm transition-all duration-300", isLoading ? "blur-[4px]" : "blur-none")}>
+                {isLoading ? placeholder(13) : format(purchaseOrder!.purchase_order_date, "dd MMM yyyy", { locale: es })}
+              </span>
+            </div>
+          </div>
+        </div>
+        <DataTable
+          data={purchaseOrder?.items.map((item) => ({ ...item, currency: purchaseOrder?.currency })) ?? []}
+          loading={isLoading}
+          columns={columns}
+          loadingRows={5}
+          pagination={false}
+          footer={() => <TableFooter />}
+        />
+      </div>
+      <Tabs className="mt-4" defaultValue="tab-2">
         <ScrollArea>
           <TabsList className="relative justify-start !pl-4 h-auto w-full gap-1 bg-transparent p-0 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-border">
-            <TabsTrigger
-              value="tab-1"
-              className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
-            >
-              <House
-                className="-ms-0.5 me-1.5"
-                size={16}
-                aria-hidden="true"
-              />
-              General
-            </TabsTrigger>
             <TabsTrigger
               value="tab-2"
               className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
@@ -131,54 +158,7 @@ export default function PurchaseOrderPage() {
           </TabsList>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        <TabsContent value="tab-1" className="m-0 border-b">
-          <div className="grid grid-cols-1 gap-4 p-4">
-            <div className="flex flex-col gap-4">
-              <h2 className="text-base font-medium">General</h2>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Solicitado por</label>
-                  <span className="text-sm">Juan Perez</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Solicitado el</label>
-                  <span className="text-sm">12 de enero de 2022</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Solicitado para</label>
-                  <span className="text-sm">12 de febrero de 2022</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Número de orden</label>
-                  <span className="text-sm">OC-4500001782</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Sede</label>
-                  <span className="text-sm">Sede Central</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <Separator />
-          <div className="p-4 flex flex-col gap-4">
-            <h2 className="text-base font-medium">Productos</h2>
-            <DataTable
-              data={[{
-                id: "test",
-                item_code: "test",
-                item_name: "test",
-                description: "test",
-                received_quantity: 0,
-                requested_quantity: 1,
-                price: 222,
-              }]}
-              columns={columns}
-              pagination={false}
-              footer={() => <TableFooter />}
-            />
-          </div>
-        </TabsContent>
-        <TabsContent value="tab-2" className="m-0 border-b">
+        <TabsContent value="tab-2" className="m-0">
           <div className="p-4 flex flex-col gap-4">
             <h2 className="text-base font-medium">Datos del proveedor</h2>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -205,7 +185,7 @@ export default function PurchaseOrderPage() {
             </div>
           </div>
         </TabsContent>
-        <TabsContent value="tab-3" className="m-0 border-b">
+        <TabsContent value="tab-3" className="m-0">
           <div className="p-4 flex flex-col gap-4">
             <h2 className="text-base font-medium">Documentos</h2>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

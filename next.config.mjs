@@ -12,8 +12,16 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'http://35.192.205.48:3003/api/v1/:path*',
+        source: '/erp/api/:path*',
+        destination: `${process.env.NEXT_PUBLIC_ERP_URL}/api/v1/:path*`,
+      },
+      {
+        source: '/hc/api/:path*',
+        destination: `${process.env.NEXT_PUBLIC_HC_URL}/api/v1/:path*`,
+      },
+      {
+        source: "/erp/login",
+        destination: `${process.env.NEXT_PUBLIC_ERP_URL}/web/session/authenticate`,
       },
     ];
   },
