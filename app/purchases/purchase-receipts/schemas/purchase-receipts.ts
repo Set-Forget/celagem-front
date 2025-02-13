@@ -1,34 +1,43 @@
 import { z } from "zod";
 
-export const purchaseReceiptSchema = z.object({
-  id: z.string(),
-  purchase_order: z.string(),
-  supplier: z.string(),
-  created_at: z.string(),
-  received_at: z.string(),
-});
-
 export const purchaseReceiptItemsSchema = z.object({
-  item_code: z.string(),
-  item_name: z.string(),
-  description: z.string(),
-  received_quantity: z.number({ required_error: "La cantidad recibida es requerida" }),
-  id: z.string(),
+  product_id: z.string(),
+  display_name: z.string(),
+  product_uom_qty: z.number(),
 });
 
-export const newPurchaseReceiptSchema = z.object({
-  headquarter: z.object({
-    id: z.string({ required_error: "La sede es requerida" }),
-    name: z.string({ required_error: "La sede es requerida" }),
-  }),
-  purchase_order: z.string({ required_error: "La orden de compra es requerida" }),
-  supplier: z.string({ required_error: "El proveedor es requerido" }),
-  received_at: z.string({ required_error: "La fecha de recepción es requerida" }),
-  received_quantity: z.number({ required_error: "La cantidad recibida es requerida" }),
-  notes: z.string().optional(),
-  items: z.array(purchaseReceiptItemsSchema).nonempty("Al menos un item es requerido"),
+export const purchaseReceiptListSchema = z.object({
+  id: z.number(),
+  number: z.string(),
+  supplier: z.string(),
+  received_date: z.string(),
 });
 
-export type PurchaseReceipt = z.infer<typeof purchaseReceiptSchema>;
-export type NewPurchaseReceipt = z.infer<typeof newPurchaseReceiptSchema>;
+export const purchaseReceiptDetailSchema = z.object({
+  id: z.number(),
+  number: z.string(),
+  supplier: z.string(),
+  received_at: z.string(),
+  note: z.string(),
+  reception_location: z.string(),
+  scheduled_date: z.string(),
+  items: z.array(purchaseReceiptItemsSchema),
+});
+
+export const purchaseReceiptListResponseSchema = z.object({
+  status: z.string(),
+  data: z.array(purchaseReceiptListSchema),
+});
+
+export const purchaseReceiptDetailResponseSchema = z.object({
+  status: z.string(),
+  data: purchaseReceiptDetailSchema,
+});
+
 export type PurchaseReceiptItems = z.infer<typeof purchaseReceiptItemsSchema>;
+
+export type PurchaseReceiptList = z.infer<typeof purchaseReceiptListSchema>;
+export type PurchaseReceiptListResponse = z.infer<typeof purchaseReceiptListResponseSchema>;
+
+export type PurchaseReceiptDetail = z.infer<typeof purchaseReceiptDetailSchema>;
+export type PurchaseReceiptDetailResponse = z.infer<typeof purchaseReceiptDetailResponseSchema>;

@@ -11,7 +11,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "date_range",
     label: "Rango de fecha",
     options: [
-      { label: "Fecha de recepción", value: "reception_date" },
+      { label: "Fecha de recepción", value: "received_at" },
     ],
     key: "date_range",
     icon: CalendarFold
@@ -20,7 +20,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "search",
     label: "Buscar",
     options: [
-      { label: "Número de orden", value: "purchase_order_number" },
+      { label: "Número", value: "number" },
       { label: "Proveedor", value: "supplier" },
     ],
     key: "search",

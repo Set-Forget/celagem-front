@@ -11,6 +11,37 @@ export const newAppointmentSchema = z.object({
   notes: z.string({ required_error: "Las notas son requeridas" }).min(1, { message: "Las notas son requeridas" }).optional(),
   attention_type: z.string({ required_error: "El tipo de atención es requerido" }).min(1, { message: "El tipo de atención es requerido" }),
   mode_of_care: z.enum(["VIRTUAL", "IN_PERSON"]),
+  care_type_id: z.number(),
+})
+
+export const appointmentDetailSchema = z.object({
+  id: z.string(),
+  start_date: z.string(),
+  end_date: z.string(),
+  start_time: z.string(),
+  end_time: z.string(),
+  created_by: z.object({
+    id: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+  }),
+  doctor_id: z.object({
+    id: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+  }),
+  patient_id: z.object({
+    id: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+  }),
+  clinic_id: z.string(),
+  care_type: z.string(),
+  status: z.string(),
+  mode_of_care: z.string(),
+  notes: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
 })
 
 export const listAppointmentSchema = z.object({
@@ -49,6 +80,13 @@ export const doctorListSchema = z.object({
   modified_at: z.string(),
 })
 
+export const appointmentDetailResponseSchema = z.object({
+  status: z.string(),
+  code: z.number(),
+  message: z.string(),
+  data: appointmentDetailSchema,
+})
+
 export const patientListResponseSchema = z.object({
   status: z.string(),
   code: z.number(),
@@ -66,6 +104,9 @@ export const doctorListResponseSchema = z.object({
 export type AppointmentList = z.infer<typeof listAppointmentSchema>
 
 export type NewAppointment = z.infer<typeof newAppointmentSchema>
+export type AppointmentDetail = z.infer<typeof appointmentDetailSchema>
+export type AppointmentDetailResponse = z.infer<typeof appointmentDetailResponseSchema>
+
 export type PatientList = z.infer<typeof patientListSchema>
 export type PatientListResponse = z.infer<typeof patientListResponseSchema>
 export type DoctorList = z.infer<typeof doctorListSchema>

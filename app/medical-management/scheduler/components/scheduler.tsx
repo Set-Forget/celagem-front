@@ -1,10 +1,12 @@
 'use client';
 
-import FilterSelector, { FilterConfig, SelectedFilters } from '@/components/filter-selector';
+import FilterSelector, { FilterConfig } from '@/components/filter-selector';
 import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { setDialogsState } from '@/lib/store/dialogs-store';
 import { cn } from '@/lib/utils';
+import { useSearchAppointmentsQuery } from '@/services/appointments';
+import { format } from 'date-fns';
 import { ArrowLeftRight, ArrowRightLeft, ChevronLeft, ChevronRight, CircleDashed, Plus, Search } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
@@ -15,8 +17,6 @@ import MonthlyView from './monthly-view';
 import NewAppointmentDialog from './new-appointment-dialog';
 import TableView from './table-view';
 import WeeklyView from './weekly-view';
-import { useSearchAppointmentsQuery } from '@/services/appointments';
-import { format } from 'date-fns';
 
 const filtersConfig: Record<string, FilterConfig> = {
   search: {

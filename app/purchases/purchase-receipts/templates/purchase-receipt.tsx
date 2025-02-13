@@ -1,9 +1,9 @@
-// @ts-ignore
+// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'props' implicitly has an 'any' type.
 import html2pdf from "html2pdf.js";
 
 export const generatePurchaseReceiptPDF = () => {
-    const element = document.createElement("div");
-    element.innerHTML = `
+  const element = document.createElement("div");
+  element.innerHTML = `
 <div style="padding: 24px; font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto;">
     <!-- Header Section -->
     <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-size:12px; gap:20px;">
@@ -161,13 +161,13 @@ export const generatePurchaseReceiptPDF = () => {
 </div>
   `;
 
-    const options = {
-        margin: 0,
-        filename: `recepcion_de_compra.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-    };
+  const options = {
+    margin: 0,
+    filename: `recepcion_de_compra.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+  };
 
-    html2pdf().set(options).from(element).save();
+  html2pdf().set(options).from(element).save();
 };

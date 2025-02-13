@@ -11,10 +11,10 @@ import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 
 export default function PurchaseOrdersPage() {
-  const { data: purchaseOrders, isLoading } = useListPurchaseOrdersQuery();
-
   const pathname = usePathname()
   const router = useRouter()
+
+  const { data: purchaseOrders, isLoading } = useListPurchaseOrdersQuery();
 
   return (
     <>
