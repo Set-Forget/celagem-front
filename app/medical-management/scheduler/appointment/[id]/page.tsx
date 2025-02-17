@@ -114,34 +114,34 @@ const generateDefaultValues = (template: Template): Record<string, unknown> => {
       let defaultValue: unknown = undefined;
 
       switch (fieldType) {
-        case "text":
-        case "textarea":
-        case "email":
-        case "datetime":
-        case "select":
-          defaultValue = properties?.defaultValue ?? "";
-          break;
-        case "number":
-          defaultValue = properties?.defaultValue ? Number(properties.defaultValue) : undefined;
-          break;
-        case "checkbox":
-          if (properties?.defaultValue !== undefined) {
-            if (typeof properties.defaultValue === "boolean") {
-              defaultValue = properties.defaultValue;
-            } else if (typeof properties.defaultValue === "string") {
-              defaultValue = properties.defaultValue.toLowerCase() === "true";
-            } else {
-              defaultValue = false;
-            }
+      case "text":
+      case "textarea":
+      case "email":
+      case "datetime":
+      case "select":
+        defaultValue = properties?.defaultValue ?? "";
+        break;
+      case "number":
+        defaultValue = properties?.defaultValue ? Number(properties.defaultValue) : undefined;
+        break;
+      case "checkbox":
+        if (properties?.defaultValue !== undefined) {
+          if (typeof properties.defaultValue === "boolean") {
+            defaultValue = properties.defaultValue;
+          } else if (typeof properties.defaultValue === "string") {
+            defaultValue = properties.defaultValue.toLowerCase() === "true";
           } else {
             defaultValue = false;
           }
-          break;
-        case "file":
-          defaultValue = null;
-          break;
-        default:
-          defaultValue = undefined;
+        } else {
+          defaultValue = false;
+        }
+        break;
+      case "file":
+        defaultValue = null;
+        break;
+      default:
+        defaultValue = undefined;
       }
       defaults[field.code] = defaultValue;
     });

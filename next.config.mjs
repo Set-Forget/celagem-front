@@ -7,6 +7,11 @@ const nextConfig = {
         destination: '/dashboard',
         permanent: true,
       },
+      {
+        source: '/inventory/procedures',
+        destination: '/inventory',
+        permanent: true
+      }
     ];
   },
   async rewrites() {

@@ -1,0 +1,67 @@
+import { Procedure } from "../schema/procedure";
+
+export const proceduresMock: Procedure[] = [
+  {
+    id: 1,
+    code: 'CL-001',
+    name: 'Analisis de orina',
+    description: 'Protocolo estándar de limpieza y desinfección',
+    category: 'Analisis clinicos',
+    materials: [
+      {
+        id: 15,
+        code: 'SC-001',
+        name: 'Contenedor 100ml esterilizado',
+        qty_required: 1,
+      },
+      {
+        id: 20,
+        code: 'GL-002',
+        name: 'Guantes desechables',
+        qty_required: 4,
+      },
+    ],
+    active: true,
+    type: 'simple',
+  },
+  {
+    id: 2,
+    code: 'CL-002',
+    name: 'Control de Calidad',
+    category: 'Analisis clinicos',
+    description: 'Procedimiento de verificación de calidad del producto',
+    materials: [],
+    active: true,
+    type: 'simple',
+  },
+  {
+    id: 3,
+    code: 'PM-001',
+    name: 'Mantenimiento Preventivo',
+    category: 'Mantenimiento',
+    description: 'Rutina de mantenimiento de equipos',
+    materials: [],
+    active: true,
+    type: 'simple',
+  },
+  {
+    id: 4,
+    code: 'IM-001',
+    name: 'Gestión de Inventario',
+    category: 'Mantenimiento',
+    description: 'Procedimiento de control de existencias',
+    materials: [],
+    active: true,  
+    type: 'simple',
+  },
+  {
+    id: 5,
+    code: 'SO-001',
+    name: 'Seguridad Operativa',
+    category: 'Mantenimiento',
+    description: 'Protocolos de seguridad en el trabajo',
+    materials: [],  
+    active: true,
+    type: 'simple',
+  },
+];

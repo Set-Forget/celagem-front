@@ -3,9 +3,9 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { format } from 'date-fns';
-import { deliveryNote } from '../schemas/delivery-notes';
+import { DeliveryNote } from '../schemas/delivery-notes';
 
-export const columns: ColumnDef<deliveryNote>[] = [
+export const columns: ColumnDef<DeliveryNote>[] = [
   {
     accessorKey: 'source_document',
     header: 'Número',
