@@ -2,9 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ProcedureReceipt } from '../schema/procedure';
+import { Materials } from '../schema/job-position';
 
-export const columns: ColumnDef<ProcedureReceipt>[] = [
+export const columnsMaterials: ColumnDef<Materials>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -28,27 +28,25 @@ export const columns: ColumnDef<ProcedureReceipt>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'schema',
-    header: 'Esquema',
+    accessorKey: 'code',
+    header: 'Código',
     cell: ({ row }) => (
       <div className="capitalize flex gap-1">
-        <div>{row.original.schema}</div>
+        <div>{row.original.code}</div>
       </div>
     ),
     size: 100,
   },
   {
-    accessorKey: 'cups_code',
-    header: 'CUPS',
-    cell: ({ row }) => (
-      <div className="font-medium">{row.original.cups_code}</div>
-    ),
+    accessorKey: 'name',
+    header: 'Nombre',
+    cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
     size: 200,
   },
   {
-    accessorKey: 'description',
-    header: 'Descripción',
-    cell: ({ row }) => <div>{row.original.description}</div>,
+    accessorKey: 'category',
+    header: 'Categoría',
+    cell: ({ row }) => <div>{row.original.qty_required}</div>,
     size: 150,
   },
 ];

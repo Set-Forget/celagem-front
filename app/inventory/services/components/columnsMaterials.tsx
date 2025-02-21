@@ -1,17 +1,17 @@
-"use client"
+'use client';
 
-import { ColumnDef } from "@tanstack/react-table"
-import { Checkbox } from "@/components/ui/checkbox"
-import { InventoryList } from "../schema/inventory"
+import { ColumnDef } from '@tanstack/react-table';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Materials } from '../schema/services';
 
-export const columns: ColumnDef<InventoryList>[] = [
+export const columnsMaterials: ColumnDef<Materials>[] = [
   {
-    id: "select",
+    id: 'select',
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -28,27 +28,25 @@ export const columns: ColumnDef<InventoryList>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "code",
-    header: "Código",
+    accessorKey: 'code',
+    header: 'Código',
     cell: ({ row }) => (
       <div className="capitalize flex gap-1">
         <div>{row.original.code}</div>
       </div>
     ),
+    size: 100,
   },
   {
-    accessorKey: "name",
-    header: "Nombre",
+    accessorKey: 'name',
+    header: 'Nombre',
     cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
+    size: 200,
   },
   {
-    accessorKey: "qty_available",
-    header: "Stock",
-    cell: ({ row }) => <div>{row.original.qty_available}</div>,
+    accessorKey: 'category',
+    header: 'Categoría',
+    cell: ({ row }) => <div>{row.original.qty_required}</div>,
+    size: 150,
   },
-  {
-    accessorKey: "list_price",
-    header: "Precio de lista",
-    cell: ({ row }) => <div className="font-medium">{row.original.currency.name} {row.original.list_price}</div>,
-  }
-]
+];

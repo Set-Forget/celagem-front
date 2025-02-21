@@ -151,9 +151,30 @@ const data = {
     },
     {
       title: "Inventario",
-      url: "/inventory",
+      url: "#",
       icon: Box,
-
+      items: [
+        {
+          title: "Servicios",
+          url: "/inventory/services",
+        },
+        {
+          title: "Examenes Medicos",
+          url: "/inventory/medical-exams",
+        },
+        {
+          title: "Materiales",
+          url: "/inventory/materials",
+        },
+        {
+          title: "Procedimientos",
+          url: "/inventory/procedures",
+        },
+        {
+          title: "Trabajos",
+          url: "/inventory/job-positions",
+        },
+      ],
     },
     {
       title: "Gestión médica",

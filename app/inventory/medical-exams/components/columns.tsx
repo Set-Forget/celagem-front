@@ -2,9 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ProcedureReceipt } from '../schema/procedure';
+import { MedicalExam } from '../schema/medical-exam';
 
-export const columns: ColumnDef<ProcedureReceipt>[] = [
+export const columns: ColumnDef<MedicalExam>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -28,27 +28,49 @@ export const columns: ColumnDef<ProcedureReceipt>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'schema',
-    header: 'Esquema',
+    accessorKey: 'code',
+    header: 'Código',
     cell: ({ row }) => (
       <div className="capitalize flex gap-1">
-        <div>{row.original.schema}</div>
+        <div>{row.original.code}</div>
       </div>
     ),
     size: 100,
   },
   {
-    accessorKey: 'cups_code',
-    header: 'CUPS',
-    cell: ({ row }) => (
-      <div className="font-medium">{row.original.cups_code}</div>
-    ),
+    accessorKey: 'status',
+    header: 'Estado',
+    cell: ({ row }) => <div className="font-medium">{row.original.status}</div>,
     size: 200,
+  },
+  {
+    accessorKey: 'cup_code',
+    header: 'CUP',
+    cell: ({ row }) => <div>{row.original.cup_code}</div>,
+    size: 150,
   },
   {
     accessorKey: 'description',
     header: 'Descripción',
     cell: ({ row }) => <div>{row.original.description}</div>,
-    size: 150,
+    minSize: 300,
+  },
+  {
+    accessorKey: 'cost',
+    header: 'Costo',
+    cell: ({ row }) => <div>{row.original.cost}</div>,
+    size: 100,
+  },
+  {
+    accessorKey: 'cost',
+    header: 'Valor',
+    cell: ({ row }) => <div>{row.original.cost}</div>,
+    size: 100,
+  },
+  {
+    accessorKey: 'unit_cost',
+    header: 'Costo Unitario',
+    cell: ({ row }) => <div>{row.original.unit_cost}</div>,
+    size: 100,
   },
 ];

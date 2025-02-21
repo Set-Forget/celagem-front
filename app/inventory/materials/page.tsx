@@ -10,7 +10,8 @@ import { columns } from './components/columns';
 import { usePathname, useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { ProcedureDataTable } from './procedures/components/dataTable';
+import { ProcedureDataTable } from '../procedures/components/dataTable';
+import { materialsMock } from './mocks/materials';
 
 const data = [
   {
@@ -181,7 +182,7 @@ export default function ProductsPage() {
 
   return (
     <>
-      <Header title="Inventario">
+      <Header title="Materiales">
         <Button
           className="ml-auto"
           size="sm"
@@ -189,53 +190,19 @@ export default function ProductsPage() {
         >
           <Link href="#">
             <Plus className="w-4 h-4" />
-                        Crear producto
+            Crear material
           </Link>
         </Button>
       </Header>
-      <Tabs
-        className="mt-4"
-        defaultValue="tab-1"
-      >
-        <ScrollArea className="mt-1">
-          <TabsList className="relative justify-start !pl-4 h-auto w-full gap-1 bg-transparent p-0 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-border">
-            <TabsTrigger
-              value="tab-1"
-              className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
-            >
-                            General
-            </TabsTrigger>
-            <TabsTrigger
-              value="tab-2"
-              className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
-            >
-                            Procedimientos
-            </TabsTrigger>
-          </TabsList>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
-        <TabsContent
-          value="tab-1"
-          className="m-0 border-b"
-        >
-          <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
-            <DataTable
-              data={data}
-              columns={columns}
-              onRowClick={(row) =>
-                router.push(`${pathname}/${row.id}`)
-              }
-              toolbar={({ table }) => <Toolbar table={table} />}
-            />
-          </div>
-        </TabsContent>
-        <TabsContent
-          value="tab-2"
-          className="m-0 border-b"
-        >
-          <ProcedureDataTable />
-        </TabsContent>
-      </Tabs>
+
+      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
+        <DataTable
+          data={materialsMock}
+          columns={columns}
+          onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
+          toolbar={({ table }) => <Toolbar table={table} />}
+        />
+      </div>
     </>
   );
 }

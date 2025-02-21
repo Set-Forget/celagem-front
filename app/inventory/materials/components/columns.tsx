@@ -2,9 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ProcedureReceipt } from '../schema/procedure';
+import { Materials } from '../schema/materials';
 
-export const columns: ColumnDef<ProcedureReceipt>[] = [
+export const columns: ColumnDef<Materials>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -28,27 +28,32 @@ export const columns: ColumnDef<ProcedureReceipt>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'schema',
-    header: 'Esquema',
+    accessorKey: 'code',
+    header: 'Código',
     cell: ({ row }) => (
       <div className="capitalize flex gap-1">
-        <div>{row.original.schema}</div>
+        <div>{row.original.code}</div>
       </div>
     ),
-    size: 100,
   },
   {
-    accessorKey: 'cups_code',
-    header: 'CUPS',
-    cell: ({ row }) => (
-      <div className="font-medium">{row.original.cups_code}</div>
-    ),
-    size: 200,
+    accessorKey: 'name',
+    header: 'Nombre',
+    cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
   },
   {
-    accessorKey: 'description',
-    header: 'Descripción',
-    cell: ({ row }) => <div>{row.original.description}</div>,
-    size: 150,
+    accessorKey: 'unit',
+    header: 'Unidad',
+    cell: ({ row }) => <div>{row.original.unit}</div>,
   },
+  {
+    accessorKey: 'fraction',
+    header: 'Fracción',
+    cell: ({ row }) => <div>{row.original.fraction}</div>,
+  },
+  {
+    accessorKey: 'average_price',
+    header: 'Precio promedio',
+    cell: ({ row }) => <div>{row.original.average_price}</div>,
+  }
 ];

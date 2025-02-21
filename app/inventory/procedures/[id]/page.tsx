@@ -1,5 +1,4 @@
 import Header from '@/components/header';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -8,163 +7,198 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
-import { Box, ChevronDown, Eye, House, Paperclip } from 'lucide-react';
-import Link from 'next/link';
+import { ChevronDown } from 'lucide-react';
+import { ProcedureReceiptsItemsTable } from './components/procedure-receipt-items-table';
 import { proceduresMock } from '../mocks/proceduresMock';
-import { DataTable } from '@/components/data-table';
-import { columnsMaterials } from '../components/columnsMaterials';
+import { jobPositionsMock } from '../../job-positions/mocks/jobPositionsMock';
+import { servicesMock } from '../../services/mocks/servicesMock';
+import { medicalExamsMock } from '../../medical-exams/mocks/medicalExamsMock';
+import { materialsMock } from '../../materials/mocks/materials';
+import { columnsJobPositions } from './components/columns-job-positions';
+import { columnsServices } from './components/columns-services';
+import { columnsMedicalExams } from './components/columns-medical-exams';
+import { columnsMaterials } from './components/columns-materials';
+import { JobPosition } from '../../job-positions/schema/job-position';
 
-export default async function ProductPage({
+export default async function PurchaseRequestPage({
   params,
 }: {
-    params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
+  const procedureId = (await params).id;
 
-  const procedure = proceduresMock.find((proc) => proc.id === parseInt(id));
+  // const handleGeneratePDF = async () => {
+  //   const { generatePurchaseReceiptPDF } = await import("../templates/purchase-receipt")
+  //   generatePurchaseReceiptPDF()
+  // }
+
+  const procedure = proceduresMock.find(
+    (procedure) => procedure.id === parseInt(procedureId)
+  );
+
+  const procedureJobPositionsIds = procedure?.job_description
+    ? procedure?.job_description.map(({ id }) => id)
+    : [];
+
+  const procedureJobPositions: JobPosition[] = jobPositionsMock.filter(
+    (jobPosition) => procedureJobPositionsIds.includes(jobPosition.id)
+  );
+
+  const procedureServicesIds = procedure?.services
+    ? procedure?.services.map(({ id }) => id)
+    : [];
+
+  const procedureServices = servicesMock.filter((service) =>
+    procedureServicesIds.includes(service.id)
+  );
+
+  const procedureMedicalExamsIds = procedure?.medical_exams
+    ? procedure?.medical_exams.map(({ id }) => id)
+    : [];
+
+  const procedureMedicalExams = medicalExamsMock.filter((medicalExam) =>
+    procedureMedicalExamsIds.includes(medicalExam.id)
+  );
+
+  const procedureMaterialsIds = procedure?.materials
+    ? procedure?.materials.map(({ id }) => id)
+    : [];
+
+  const procedureMaterials = materialsMock.filter((material) =>
+    procedureMaterialsIds.includes(material.id)
+  );
 
   return (
     <>
-      <Header
-        title={
-          procedure?.code + ' - ' + procedure?.name || 'Procedimiento'
-        }
-      >
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="ml-auto" size="sm">
-              Crear
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/purchases/purchase-receipts/new">
-                  Recepciones
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Registro de pago
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Nota de débito
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
-      </Header>
-      <Tabs
-        className="mt-4"
-        defaultValue="tab-1"
-      >
-        <ScrollArea>
-          <TabsList className="relative justify-start !pl-4 h-auto w-full gap-1 bg-transparent p-0 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-border">
-            <TabsTrigger
-              value="tab-1"
-              className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
-            >
-              <House
-                className="-ms-0.5 me-1.5"
-                size={16}
-                aria-hidden="true"
-              />
-                            General
-            </TabsTrigger>
-            <TabsTrigger
-              value="tab-2"
-              className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
-            >
-              <Box
-                className="-ms-0.5 me-1.5"
-                size={16}
-                aria-hidden="true"
-              />
-                            Materiales
-            </TabsTrigger>
-          </TabsList>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
-        <TabsContent
-          value="tab-1"
-          className="m-0 border-b"
-        >
-          <div className="grid grid-cols-1 gap-4 p-4">
-            <div className="flex flex-col gap-4">
-              <h2 className="text-base font-medium">General</h2>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                                        Código
-                  </label>
-                  <span className="text-sm">
-                    {procedure?.code}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                                        Nombre
-                  </label>
-                  <span className="text-sm">
-                    {procedure?.name}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                                        Categoría
-                  </label>
-                  <span className="text-sm">
-                    {procedure?.category}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                                        Descripción
-                  </label>
-                  <span className="text-sm">
-                    {procedure?.description}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </TabsContent>
-        <TabsContent
-          value="tab-2"
-          className="m-0 border-b"
-        >
-          <div className="p-4 flex flex-col gap-4">
-            <h2 className="text-base font-medium">
-                            Materiales necesarios
-            </h2>
-            <div className="flex flex-col w-100">
-              {procedure?.materials?.map((material, index) => (
-                <div
-                  key={index}
-                  className="flex flex-row gap-3"
+      <Header title={procedure?.cups_code + ' - ' + procedure?.description}>
+        <div className="ml-auto flex gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+              >
+                Acciones
+                <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            {/* <DropdownMenuContent align="end">
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={() => ''}
                 >
-                  <span className=" text-muted-foreground text-sm w-24">
-                    {material.code}
-                  </span>
-                  <label className="text-sm w-64">
-                    {material.name}
-                  </label>
-                  <span className="text-muted-foreground text-sm w-38">
-                                        Cantidad requerida:
-                  </span>{' '}
-                  <span className="text-sm">
-                    {material.qty_required}
-                  </span>
-                </div>
-              ))}
+                  Generar PDF
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent> */}
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm">
+                Crear
+                <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            {/* <DropdownMenuContent align="end">
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  Devolución de compra
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  Factura de compra
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent> */}
+          </DropdownMenu>
+        </div>
+      </Header>
+      <div className="flex flex-col gap-4 py-4">
+        <div className="px-4 flex flex-col gap-4">
+          <h2 className="text-base font-medium">General</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="flex flex-col gap-1">
+              <label className="text-muted-foreground text-sm">Esquema</label>
+              <span className="text-sm">{procedure?.schema}</span>
             </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-muted-foreground text-sm">
+                Descripcion
+              </label>
+              <span className="text-sm">{procedure?.description}</span>
+            </div>
+            {procedure?.cups_code && (
+              <div className="flex flex-col gap-1">
+                <label className="text-muted-foreground text-sm">
+                  Código CUSP
+                </label>
+                <span className="text-sm">{procedure?.cups_code}</span>
+              </div>
+            )}
           </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+        <Separator />
+        {procedureJobPositions.length > 0 && (
+          <>
+            <div className="px-4 flex flex-col gap-4 flex-1">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base font-medium">Puestos de trabajo</h2>
+              </div>
+              <ProcedureReceiptsItemsTable
+                props={{
+                  data: procedureJobPositions,
+                  columns: columnsJobPositions,
+                }}
+              />
+            </div>
+          </>
+        )}
+        {procedureServices.length > 0 && (
+          <>
+            <div className="px-4 flex flex-col gap-4 flex-1">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base font-medium">Servicios</h2>
+              </div>
+              <ProcedureReceiptsItemsTable
+                props={{
+                  data: procedureServices,
+                  columns: columnsServices,
+                }}
+              />
+            </div>
+          </>
+        )}
+        {procedureMedicalExams.length > 0 && (
+          <>
+            <div className="px-4 flex flex-col gap-4 flex-1">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base font-medium">Examenes médicos</h2>
+              </div>
+              <ProcedureReceiptsItemsTable
+                props={{
+                  data: procedureMedicalExams,
+                  columns: columnsMedicalExams,
+                }}
+              />
+            </div>
+          </>
+        )}
+        {procedureMaterials.length > 0 && (
+          <>
+            <div className="px-4 flex flex-col gap-4 flex-1">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base font-medium">Materiales</h2>
+              </div>
+              <ProcedureReceiptsItemsTable
+                props={{
+                  data: procedureMaterials,
+                  columns: columnsMaterials,
+                }}
+              />
+            </div>
+          </>
+        )}
+      </div>
     </>
   );
 }
