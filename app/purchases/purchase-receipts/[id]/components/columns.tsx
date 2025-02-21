@@ -7,40 +7,19 @@ import { PurchaseReceiptItems } from "../../schemas/purchase-receipts"
 
 export const columns: ColumnDef<PurchaseReceiptItems>[] = [
   {
-    accessorKey: "item_code",
-    header: "Código",
+    accessorKey: "display_name",
+    header: "Producto",
     cell: ({ row }) => (
-      <div>
-        {row.getValue("item_code")}
+      <div className="font-medium">
+        {row.getValue("display_name")}
       </div>
     ),
   },
   {
-    accessorKey: "received_quantity",
+    accessorKey: "product_uom_qty",
     header: "Cantidad recibida",
     cell: ({ row }) => {
-      return <div>{row.getValue("received_quantity")}</div>
-    },
-  },
-  {
-    accessorKey: "item_name",
-    header: "Nombre",
-    cell: ({ row }) => {
-      return <div>{row.getValue("item_name")}</div>
-    },
-  },
-  {
-    accessorKey: "description",
-    header: "Descripción",
-    cell: ({ row }) => <div>{row.getValue("description")}</div>,
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: () => {
-      return (
-        <></>
-      )
+      return <div>{row.getValue("product_uom_qty")}</div>
     },
   },
 ]

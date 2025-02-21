@@ -12,18 +12,17 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn, placeholder } from "@/lib/utils"
 import { useGetPurchaseOrderQuery } from "@/services/purchase-orders"
-import { Box, ChevronDown, Eye, House, Paperclip } from "lucide-react"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
+import { Box, ChevronDown, Eye, Paperclip } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { PURCHASE_ORDER_STATUS } from "../adapters/customers"
 import { columns } from "./components/columns"
 import TableFooter from "./components/table-footer"
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
 
 export default function PurchaseOrderPage() {
   const { id } = useParams<{ id: string }>()
@@ -36,7 +35,6 @@ export default function PurchaseOrderPage() {
   }
 
   const status = PURCHASE_ORDER_STATUS[purchaseOrder?.status as keyof typeof PURCHASE_ORDER_STATUS]
-
 
   return (
     <>
@@ -125,7 +123,6 @@ export default function PurchaseOrderPage() {
           data={purchaseOrder?.items.map((item) => ({ ...item, currency: purchaseOrder?.currency })) ?? []}
           loading={isLoading}
           columns={columns}
-          loadingRows={5}
           pagination={false}
           footer={() => <TableFooter />}
         />

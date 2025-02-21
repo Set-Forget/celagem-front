@@ -1,4 +1,4 @@
-import { AppointmentList, DoctorListResponse, NewAppointment, PatientListResponse } from '@/app/medical-management/scheduler/schemas/appointments';
+import { AppointmentDetailResponse, AppointmentList, NewAppointment, PatientListResponse } from '@/app/medical-management/scheduler/schemas/appointments';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
@@ -12,7 +12,7 @@ export const medicalManagementApi = createApi({
     searchAppointments: builder.query<AppointmentList[], { start_date: string }>({
       query: ({ start_date }) => `appointments/search?start_date=${start_date}`,
     }),
-    createAppointment: builder.mutation<void, NewAppointment & { start_time: string, end_time: string }>({
+    createAppointment: builder.mutation<AppointmentDetailResponse, Omit<NewAppointment, "attention_type"> & { start_time: string, end_time: string }>({
       query: (body) => ({
         url: 'appointment',
         method: 'POST',

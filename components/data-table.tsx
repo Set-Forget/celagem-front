@@ -1,6 +1,6 @@
 "use client"
 
-import { cn, placeholder } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -26,19 +26,17 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   pagination?: boolean
   loading?: boolean
-  loadingRows?: number
   onRowClick?: (row: TData) => void
   toolbar?: (props: { table: Table<TData> }) => React.ReactNode
   footer?: () => React.ReactNode
 }
 
-const PAGE_SIZE = 20
+const pageSize = 20
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   loading,
-  loadingRows,
   pagination = true,
   onRowClick,
   toolbar,
@@ -54,7 +52,7 @@ export function DataTable<TData, TValue>({
     columns,
     initialState: {
       pagination: {
-        pageSize: PAGE_SIZE,
+        pageSize: pageSize,
       },
     },
     state: {
@@ -117,7 +115,7 @@ export function DataTable<TData, TValue>({
               <TableRow className="border-none">
                 <TableCell
                   colSpan={columns.length}
-                  className="text-xs text-center h-10 border-b"
+                  className="text-xs text-center h-10 border-b text-muted-foreground"
                 >
                   No hay items
                 </TableCell>

@@ -1,15 +1,5 @@
 import { z } from "zod";
 
-const purchaseOrderItemSchema = z.object({
-  item_code: z.string(),
-  item_name: z.string(),
-  description: z.string(),
-  requested_quantity: z.number(),
-  received_quantity: z.number(),
-  id: z.string(),
-  price: z.number(),
-})
-
 const newPurchaseOrderItemSchema = z.object({
   item_code: z.string({ required_error: "El código del item es requerido" }),
   item_name: z.string({ required_error: "El nombre del item es requerido" }),
@@ -97,15 +87,16 @@ export const purchaseOrderListResponseSchema = z.object({
   status: z.string(),
   data: z.array(purchaseOrderListSchema),
 });
+
 export const purchaseOrderDetailResponseSchema = z.object({
   status: z.string(),
   data: purchaseOrderDetailSchema,
 });
 
 export type PurchaseOrderItem = z.infer<typeof purchaseOrderLineSchema>;
+
 export type PurchaseOrderList = z.infer<typeof purchaseOrderListSchema>;
 export type PurchaseOrderListResponse = z.infer<typeof purchaseOrderListResponseSchema>;
+
 export type PurchaseOrderDetail = z.infer<typeof purchaseOrderDetailSchema>;
 export type PurchaseOrderDetailResponse = z.infer<typeof purchaseOrderDetailResponseSchema>;
-
-export type PurchaseOrder = z.infer<typeof purchaseOrdersSchema>;

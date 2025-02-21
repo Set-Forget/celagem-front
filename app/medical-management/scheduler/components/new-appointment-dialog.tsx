@@ -11,21 +11,22 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { cn } from "@/lib/utils";
-import { medicalManagementApi } from "@/services/appointments";
+import { medicalManagementApi, useCreateAppointmentMutation } from "@/services/appointments";
 import { store } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, Check, ChevronsUpDown, Plus } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown, Loader2Icon, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { newAppointmentSchema } from "../schemas/appointments";
 import TEMPLATES from "../templates/templates.json";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import omit from "lodash/omit";
 
 const clinics = [
   {
-    value: "10194dcb5-24e0-76cf-a07f-62eb78f8b296",
+    value: "0194dcb5-24e0-76cf-a07f-62eb78f8b296",
     label: "Prueba 1",
   },
 ]
@@ -42,11 +43,14 @@ export default function NewAppointmentDialog() {
 
   const selectedDate = dialogState.payload?.date
 
+  const [createAppointment, { isLoading }] = useCreateAppointmentMutation()
+
   const newAppointmentForm = useForm<z.infer<typeof newAppointmentSchema>>({
     resolver: zodResolver(newAppointmentSchema),
     defaultValues: {
-      created_by: "0194cd16-08cb-7146-b224-52417ab62d3",
-      status_id: 4
+      created_by: "0194cd16-08cb-7146-b224-52417ab62d3b",
+      status_id: 4,
+      care_type_id: 5
     }
   });
 
@@ -67,8 +71,23 @@ export default function NewAppointmentDialog() {
     field.onChange(newDate.toISOString());
   }
 
-  function onSubmit(data: z.infer<typeof newAppointmentSchema>) {
-    console.log(data)
+  async function onSubmit(data: z.infer<typeof newAppointmentSchema>) {
+    try {
+      const filteredData = omit(data, ["attention_type"])
+      const response = await createAppointment({
+        ...filteredData,
+        start_date: format(new Date(filteredData.start_date), "yyyy-MM-dd"),
+        end_date: format(new Date(filteredData.end_date), "yyyy-MM-dd"),
+        start_time: format(new Date(filteredData.start_date), "HH:mm"),
+        end_time: format(new Date(filteredData.end_date), "HH:mm"),
+      }).unwrap();
+
+      if (response.status === "SUCCESS") {
+        closeDialogs()
+      }
+    } catch (error) {
+      console.error("Error al crear turno:", error)
+    }
   }
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -328,7 +347,7 @@ export default function NewAppointmentDialog() {
                         label="Profesional"
                         triggerClassName="!w-full"
                         placeholder="Seleccionar un profesional"
-                        fetcher={async (query) => {
+                        fetcher={async () => {
                           return doctors
                           /*                      await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 100))
                                                if (query) {
@@ -363,7 +382,7 @@ export default function NewAppointmentDialog() {
                         label="Paciente"
                         triggerClassName="!w-full"
                         placeholder="Seleccionar paciente"
-                        fetcher={async (query) => {
+                        fetcher={async () => {
                           //const params = query ? { search: { query } } : {};
                           try {
                             const patients = await store
@@ -570,7 +589,13 @@ export default function NewAppointmentDialog() {
               )}
             />
             <DialogFooter>
-              <Button size="sm">Crear turno</Button>
+              <Button
+                disabled={isLoading}
+                size="sm"
+              >
+                {isLoading && <Loader2Icon className="animate-spin" />}
+                Crear turno
+              </Button>
             </DialogFooter>
           </form>
         </Form>
