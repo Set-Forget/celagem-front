@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ProcedureReceipt } from '../schema/procedure';
 
-export const columns: ColumnDef<ProcedureReceipt>[] = [
+export const proceduresColumns: ColumnDef<ProcedureReceipt>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -26,6 +26,7 @@ export const columns: ColumnDef<ProcedureReceipt>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+    size: 10,
   },
   {
     accessorKey: 'schema',
@@ -35,7 +36,6 @@ export const columns: ColumnDef<ProcedureReceipt>[] = [
         <div>{row.original.schema}</div>
       </div>
     ),
-    size: 100,
   },
   {
     accessorKey: 'cups_code',
@@ -43,12 +43,10 @@ export const columns: ColumnDef<ProcedureReceipt>[] = [
     cell: ({ row }) => (
       <div className="font-medium">{row.original.cups_code}</div>
     ),
-    size: 200,
   },
   {
     accessorKey: 'description',
     header: 'Descripción',
     cell: ({ row }) => <div>{row.original.description}</div>,
-    size: 150,
   },
 ];

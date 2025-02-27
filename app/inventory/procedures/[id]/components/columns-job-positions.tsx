@@ -7,8 +7,10 @@ export const columnsJobPositions: ColumnDef<JobPosition>[] = [
   {
     accessorKey: 'code',
     header: 'Código',
-    cell: ({ row }) => <div>{row.getValue('code')}</div>,
-    maxSize: 400,
+    cell: ({ row }) => (
+      <div>{row.getValue('code')}</div>
+    ),
+    size: 100
   },
   {
     accessorKey: 'unit',

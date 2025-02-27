@@ -11,7 +11,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { Trash2 } from 'lucide-react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { z } from 'zod';
-import { newPurchaseOrderSchema } from '../../schemas/procedures';
+import { materialsSchema } from '../../../materials/schema/materials';
 import {
   Select,
   SelectContent,
@@ -27,22 +27,22 @@ export default function ItemRow({
   index: number;
   remove: (index: number) => void;
 }) {
-  const { control } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>();
+  const { control } = useFormContext<z.infer<typeof materialsSchema>>();
 
-  const quantity = useWatch({
-    control,
-    name: `items.${index}.quantity`,
-  });
+  // const quantity = useWatch({
+  //   control,
+  //   name: `items.${index}.quantity`,
+  // });
 
-  const price = useWatch({
-    control,
-    name: `items.${index}.price`,
-  });
+  // const price = useWatch({
+  //   control,
+  //   name: `items.${index}.price`,
+  // });
 
-  const currency = useWatch({
-    control: control,
-    name: 'currency',
-  });
+  // const currency = useWatch({
+  //   control: control,
+  //   name: 'currency',
+  // });
 
   const subtotal = quantity * Number(price);
 

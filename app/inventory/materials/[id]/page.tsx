@@ -29,7 +29,7 @@ export default async function MaterialPage({
 
   return (
     <>
-      <Header title={material?.name ?? 'Cargando...'}>
+      <Header title={material?.code + ' - ' + material?.name || 'Material'}>
         {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="ml-auto" size="sm">

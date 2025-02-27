@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Materials } from '../schema/materials';
 
-export const columns: ColumnDef<Materials>[] = [
+export const materialsColumns: ColumnDef<Materials>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -26,6 +26,7 @@ export const columns: ColumnDef<Materials>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+    size: 10,
   },
   {
     accessorKey: 'code',
@@ -55,5 +56,5 @@ export const columns: ColumnDef<Materials>[] = [
     accessorKey: 'average_price',
     header: 'Precio promedio',
     cell: ({ row }) => <div>{row.original.average_price}</div>,
-  }
+  },
 ];

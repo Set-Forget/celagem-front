@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Scroll } from 'lucide-react';
 import Link from 'next/link';
 import Toolbar from './components/toolbar';
-import { columns } from './components/columns';
+import { jobPositionsColumns } from './components/columns';
 import { usePathname, useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -35,7 +35,7 @@ export default function JobPositionsPage() {
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
         <DataTable
           data={jobPositionsMock}
-          columns={columns}
+          columns={jobPositionsColumns}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
         />

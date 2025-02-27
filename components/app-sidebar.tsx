@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import {
   AudioWaveform,
@@ -11,11 +11,12 @@ import {
   LayoutDashboard,
   ShoppingBag,
   ShoppingCart,
-  Stethoscope
-} from "lucide-react"
-import * as React from "react"
+  Stethoscope,
+  Building,
+} from 'lucide-react';
+import * as React from 'react';
 
-import { NavUser } from "@/components/nav-user"
+import { NavUser } from '@/components/nav-user';
 import {
   Sidebar,
   SidebarContent,
@@ -26,179 +27,198 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
-  SidebarMenuSubItem
-} from "@/components/ui/sidebar"
+  SidebarMenuSubItem,
+} from '@/components/ui/sidebar';
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+} from '@/components/ui/collapsible';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const data = {
   user: {
-    name: "Agustin Delgado",
-    email: "m@example.com",
+    name: 'Agustin Delgado',
+    email: 'm@example.com',
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: 'Acme Inc',
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      plan: 'Enterprise',
     },
     {
-      name: "Acme Corp.",
+      name: 'Acme Corp.',
       logo: AudioWaveform,
-      plan: "Startup",
+      plan: 'Startup',
     },
     {
-      name: "Evil Corp.",
+      name: 'Evil Corp.',
       logo: Command,
-      plan: "Free",
+      plan: 'Free',
     },
   ],
   navMain: [
     {
-      title: "Ventas",
-      url: "#",
+      title: 'Ventas',
+      url: '#',
       icon: ShoppingBag,
       isActive: true,
       items: [
         {
-          title: "Facturas",
-          url: "/sales/invoices",
+          title: 'Facturas',
+          url: '/sales/invoices',
         },
         {
-          title: "Notas de crédito",
-          url: "/sales/credit-notes",
+          title: 'Notas de crédito',
+          url: '/sales/credit-notes',
         },
         {
-          title: "Notas de débito",
-          url: "/sales/debit-notes",
+          title: 'Notas de débito',
+          url: '/sales/debit-notes',
         },
         {
-          title: "Remitos",
-          url: "/sales/delivery-notes",
+          title: 'Remitos',
+          url: '/sales/delivery-notes',
         },
         {
-          title: "Clientes",
-          url: "/sales/customers",
+          title: 'Clientes',
+          url: '/sales/customers',
         },
       ],
     },
     {
-      title: "Compras",
-      url: "#",
+      title: 'Compras',
+      url: '#',
       icon: ShoppingCart,
       items: [
         {
-          title: "Solicitudes de pedido",
-          url: "/purchases/purchase-requests",
+          title: 'Solicitudes de pedido',
+          url: '/purchases/purchase-requests',
         },
         {
-          title: "Ordenes de compra",
-          url: "/purchases/purchase-orders",
+          title: 'Ordenes de compra',
+          url: '/purchases/purchase-orders',
         },
         {
-          title: "Recepciones",
-          url: "/purchases/purchase-receipts",
+          title: 'Recepciones',
+          url: '/purchases/purchase-receipts',
         },
         {
-          title: "Facturas",
-          url: "/purchases/bills",
+          title: 'Facturas',
+          url: '/purchases/bills',
         },
         {
-          title: "Proveedores",
-          url: "/purchases/vendors",
-        }
+          title: 'Proveedores',
+          url: '/purchases/vendors',
+        },
       ],
     },
     {
-      title: "Contabilidad",
-      url: "#",
+      title: 'Contabilidad',
+      url: '#',
       icon: FileText,
       items: [
         {
-          title: "Plan de cuentas",
-          url: "/accounting/chart-of-accounts",
+          title: 'Plan de cuentas',
+          url: '/accounting/chart-of-accounts',
         },
         {
-          title: "Asientos contables",
-          url: "/accounting/journal-entries",
+          title: 'Asientos contables',
+          url: '/accounting/journal-entries',
         },
         {
-          title: "Centros de costos",
-          url: "/accounting/cost-centers",
+          title: 'Centros de costos',
+          url: '/accounting/cost-centers',
         },
       ],
     },
     {
-      title: "Tesorería",
-      url: "#",
+      title: 'Tesorería',
+      url: '#',
       icon: Landmark,
       items: [
         {
-          title: "Pagos",
-          url: "/banking/payments",
+          title: 'Pagos',
+          url: '/banking/payments',
         },
         {
-          title: "Cobros",
-          url: "/banking/receipts",
+          title: 'Cobros',
+          url: '/banking/receipts',
         },
       ],
     },
     {
-      title: "Inventario",
-      url: "#",
+      title: 'Maestros',
+      url: '#',
+      icon: Building,
+      items: [
+        {
+          title: 'Puestos de trabajo',
+          url: '/inventory/job-positions',
+        },
+        {
+          title: 'Servicios',
+          url: '/inventory/services',
+        },
+        {
+          title: 'Examenes Medicos',
+          url: '/inventory/medical-exams',
+        },
+        {
+          title: 'Materiales',
+          url: '/inventory/materials',
+        },
+        {
+          title: 'Actos Clinicos',
+          url: '/inventory/procedures',
+        },
+      ],
+    },
+    {
+      title: 'Inventario',
+      url: '#',
       icon: Box,
       items: [
         {
-          title: "Servicios",
-          url: "/inventory/services",
+          title: 'Productos',
+          url: '/inventory/products',
         },
         {
-          title: "Examenes Medicos",
-          url: "/inventory/medical-exams",
-        },
-        {
-          title: "Materiales",
-          url: "/inventory/materials",
-        },
-        {
-          title: "Procedimientos",
-          url: "/inventory/procedures",
-        },
-        {
-          title: "Trabajos",
-          url: "/inventory/job-positions",
+          title: 'Almacenes',
+          url: '/inventory/warehouses',
         },
       ],
     },
     {
-      title: "Gestión médica",
-      url: "#",
+      title: 'Gestión médica',
+      url: '#',
       icon: Stethoscope,
       items: [
         {
-          title: "Agenda",
-          url: "/medical-management/scheduler",
+          title: 'Agenda',
+          url: '/medical-management/scheduler',
         },
         {
-          title: "Pacientes",
-          url: "/medical-management/patients",
+          title: 'Pacientes',
+          url: '/medical-management/patients',
         },
       ],
-    }
+    },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
-    <Sidebar variant="inset" collapsible="icon" {...props}>
+    <Sidebar
+      variant="inset"
+      collapsible="icon"
+      {...props}
+    >
       <SidebarHeader>
         <NavUser user={data.user} />
       </SidebarHeader>
@@ -206,7 +226,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem key="Dashboard">
-              <SidebarMenuButton asChild tooltip="Dashboard">
+              <SidebarMenuButton
+                asChild
+                tooltip="Dashboard"
+              >
                 <Link href="/dashboard">
                   <LayoutDashboard />
                   Tablero
@@ -230,7 +253,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <Link href={item.url}>
                         {item.icon && <item.icon />}
                         <span>{item.title}</span>
-                        {item.items && <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />}
+                        {item.items && (
+                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        )}
                       </Link>
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
@@ -259,5 +284,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

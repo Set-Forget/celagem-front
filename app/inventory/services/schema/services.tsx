@@ -5,7 +5,8 @@ export const servicesSchema = z.object({
   code: z.string(),
   total_cost: z.number(),
   unit_cost: z.number(),
-  unit: z.enum(['Minutos'])
+  unit: z.enum(['Minutos']),
+  qty: z.number().optional(),
 });
 
 export type Services = z.infer<typeof servicesSchema>;

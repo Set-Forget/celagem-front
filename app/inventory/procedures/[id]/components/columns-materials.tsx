@@ -14,6 +14,7 @@ export const columnsMaterials: ColumnDef<Materials>[] = [
         {row.getValue("code")}
       </div>
     ),
+    size: 100
   },
   {
     accessorKey: "name",
@@ -23,9 +24,19 @@ export const columnsMaterials: ColumnDef<Materials>[] = [
     },
   },
   {
-    accessorKey: "description",
-    header: "Descripción",
-    cell: ({ row }) => <div>{row.getValue("description")}</div>,
+    accessorKey: "unit",
+    header: "Unidad",
+    cell: ({ row }) => <div>{row.getValue("unit")}</div>,
+  },
+  {
+    accessorKey: "fraction",
+    header: "Fracción",
+    cell: ({ row }) => <div>{row.getValue("fraction")}</div>,
+  },
+  {
+    accessorKey: "average_price",
+    header: "Precio promedio",
+    cell: ({ row }) => <div>{row.getValue("average_price")}</div>,
   },
   {
     id: "actions",

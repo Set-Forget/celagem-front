@@ -3,6 +3,17 @@ import * as React from "react";
 
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
   ({ className, type, ...props }, ref) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (type === "number" || type === "tel") {
+        const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", "Enter"];
+        const isNumber = /^[0-9]$/;
+        
+        if (!isNumber.test(e.key) && !allowedKeys.includes(e.key)) {
+          e.preventDefault();
+        }
+      }
+    };
+
     return (
       <input
         type={type}
@@ -14,12 +25,12 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
           "p-0 pr-3 text-muted-foreground file:me-3 file:h-full file:border-0 file:border-r file:border-solid file:border-input file:bg-transparent file:px-3 file:text-sm file:font-medium file:not-italic file:text-foreground",
           className,
         )}
+        onKeyDown={handleKeyDown}
         ref={ref}
         {...props}
       />
     );
   },
-);
-Input.displayName = "Input";
+);Input.displayName = "Input";
 
 export { Input };

@@ -8,6 +8,7 @@ export const medicalExamSchema = z.object({
   description: z.string().optional(),
   type: z.string(),
   cost: z.number(),
-  unit_cost: z.number()
+  unit_cost: z.number(),
+  qty: z.number().optional(),
 });
 export type MedicalExam = z.infer<typeof medicalExamSchema>;

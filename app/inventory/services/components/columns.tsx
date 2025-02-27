@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Services } from '../schema/services';
 
-export const columns: ColumnDef<Services>[] = [
+export const servicesColumns: ColumnDef<Services>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -26,6 +26,7 @@ export const columns: ColumnDef<Services>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+    size: 10,
   },
   {
     accessorKey: 'code',
@@ -35,28 +36,22 @@ export const columns: ColumnDef<Services>[] = [
         <div>{row.original.code}</div>
       </div>
     ),
-    size: 100,
   },
   {
     accessorKey: 'total_cost',
     header: 'Costo total',
-    cell: ({ row }) => <div className="font-medium">{row.original.total_cost}</div>,
-    size: 200,
+    cell: ({ row }) => (
+      <div className="font-medium">{row.original.total_cost}</div>
+    ),
   },
   {
     accessorKey: 'unit_cost',
     header: 'Costo unitario',
     cell: ({ row }) => <div>{row.original.unit_cost}</div>,
-    size: 150,
   },
   {
     accessorKey: 'unit',
     header: 'Unidad',
-    cell: ({ row }) => (
-      <div>
-        {row.original.unit}
-      </div>
-    ),
-    minSize: 300,
+    cell: ({ row }) => <div>{row.original.unit}</div>,
   },
 ];

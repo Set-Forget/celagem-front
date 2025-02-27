@@ -2,14 +2,13 @@ import Header from '@/components/header';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
+  // DropdownMenuContent,
+  // DropdownMenuGroup,
+  // DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { ChevronDown } from 'lucide-react';
-import { ProcedureReceiptsItemsTable } from './components/procedure-receipt-items-table';
 import { proceduresMock } from '../mocks/proceduresMock';
 import { jobPositionsMock } from '../../job-positions/mocks/jobPositionsMock';
 import { servicesMock } from '../../services/mocks/servicesMock';
@@ -20,6 +19,7 @@ import { columnsServices } from './components/columns-services';
 import { columnsMedicalExams } from './components/columns-medical-exams';
 import { columnsMaterials } from './components/columns-materials';
 import { JobPosition } from '../../job-positions/schema/job-position';
+import { DataTable } from '@/components/data-table';
 
 export default async function PurchaseRequestPage({
   params,
@@ -144,11 +144,10 @@ export default async function PurchaseRequestPage({
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-medium">Puestos de trabajo</h2>
               </div>
-              <ProcedureReceiptsItemsTable
-                props={{
-                  data: procedureJobPositions,
-                  columns: columnsJobPositions,
-                }}
+              <DataTable
+                data={procedureJobPositions}
+                columns={columnsJobPositions}
+                pagination={false}
               />
             </div>
           </>
@@ -159,11 +158,10 @@ export default async function PurchaseRequestPage({
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-medium">Servicios</h2>
               </div>
-              <ProcedureReceiptsItemsTable
-                props={{
-                  data: procedureServices,
-                  columns: columnsServices,
-                }}
+              <DataTable
+                data={procedureServices}
+                columns={columnsServices}
+                pagination={false}
               />
             </div>
           </>
@@ -174,11 +172,10 @@ export default async function PurchaseRequestPage({
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-medium">Examenes médicos</h2>
               </div>
-              <ProcedureReceiptsItemsTable
-                props={{
-                  data: procedureMedicalExams,
-                  columns: columnsMedicalExams,
-                }}
+              <DataTable
+                data={procedureMedicalExams}
+                columns={columnsMedicalExams}
+                pagination={false}
               />
             </div>
           </>
@@ -189,11 +186,10 @@ export default async function PurchaseRequestPage({
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-medium">Materiales</h2>
               </div>
-              <ProcedureReceiptsItemsTable
-                props={{
-                  data: procedureMaterials,
-                  columns: columnsMaterials,
-                }}
+              <DataTable
+                data={procedureMaterials}
+                columns={columnsMaterials}
+                pagination={false}
               />
             </div>
           </>

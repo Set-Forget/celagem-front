@@ -1,36 +1,21 @@
 import Header from '@/components/header';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
-import { Box, ChevronDown, Eye, House, Paperclip } from 'lucide-react';
-import Link from 'next/link';
-import { proceduresMock } from '../mocks/jobPositionsMock';
-import { DataTable } from '@/components/data-table';
-import { columnsMaterials } from '../components/columnsMaterials';
 
-export default async function ProductPage({
+import { jobPositionsMock } from '../mocks/jobPositionsMock';
+
+
+export default async function JobPositionPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
 
-  const procedure = proceduresMock.find((proc) => proc.id === parseInt(id));
+  const jobPosition = jobPositionsMock.find((proc) => proc.id === parseInt(id));
 
   return (
     <>
       <Header
-        title={procedure?.code + ' - ' + procedure?.name || 'Procedimiento'}
+        title={jobPosition?.code || 'Puesto de trabajo'}
       >
         {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -63,44 +48,25 @@ export default async function ProductPage({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 w-100">
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">Código</label>
-              <span className="text-sm">{procedure?.code}</span>
+              <span className="text-sm">{jobPosition?.code}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Nombre</label>
-              <span className="text-sm">{procedure?.name}</span>
+              <label className="text-muted-foreground text-sm">Costo total</label>
+              <span className="text-sm">{jobPosition?.total_cost}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Categoría</label>
-              <span className="text-sm">{procedure?.category}</span>
+              <label className="text-muted-foreground text-sm">Unidad</label>
+              <span className="text-sm">{jobPosition?.unit}</span>
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">
-                Descripción
+                Costo por Unidad
               </label>
-              <span className="text-sm">{procedure?.description}</span>
+              <span className="text-sm">{jobPosition?.unit_cost}</span>
             </div>
           </div>
         </div>
-        <div className="p-4 flex flex-col gap-4">
-          <h2 className="text-base font-medium">Materiales necesarios</h2>
-          <div className="flex flex-col w-100">
-            {procedure?.materials?.map((material, index) => (
-              <div
-                key={index}
-                className="flex flex-row gap-3"
-              >
-                <span className=" text-muted-foreground text-sm w-24">
-                  {material.code}
-                </span>
-                <label className="text-sm w-64">{material.name}</label>
-                <span className="text-muted-foreground text-sm w-38">
-                  Cantidad requerida:
-                </span>{' '}
-                <span className="text-sm">{material.qty_required}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        
       </div>
     </>
   );

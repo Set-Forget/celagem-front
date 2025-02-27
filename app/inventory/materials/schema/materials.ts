@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-export const MaterialsSchema = z.object({
+export const materialsSchema = z.object({
   id: z.number(),
   location: z.enum(['Sede Asistencial Bogotá']),
   code: z.string(),
@@ -8,6 +8,7 @@ export const MaterialsSchema = z.object({
   unit: z.string(),
   fraction: z.string(),
   average_price: z.number(),
-})
+  qty: z.number().optional(),
+});
 
-export type Materials = z.infer<typeof MaterialsSchema>
+export type Materials = z.infer<typeof materialsSchema>;

@@ -14,6 +14,7 @@ export const columnsMedicalExams: ColumnDef<MedicalExam>[] = [
         {row.getValue("code")}
       </div>
     ),
+    size: 100
   },
   {
     accessorKey: "description",
