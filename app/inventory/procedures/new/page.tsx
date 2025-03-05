@@ -73,6 +73,7 @@ import { materialsMock } from '../../materials/mocks/materials';
 import { Input } from '@/components/ui/input';
 import { DataTable } from '@/components/data-table';
 import { jobPositionsColumns } from '../../job-positions/components/columns';
+import { useRef } from 'react';
 
 // const companies = [
 //   { label: 'Google', value: '30-67890123-4' },
@@ -128,13 +129,31 @@ export default function NewProcedureReceiptPage() {
     },
   });
 
+  // const jobPositionConsumedFieldSchema = z.object({
+  //   field: jobPositionConsumedSchema,
+  // });
+
   const jobPositionForm = useForm<z.infer<typeof jobPositionConsumedSchema>>({
     resolver: zodResolver(jobPositionConsumedSchema),
-    defaultValues: {},
   });
 
   const onSubmit = (data: z.infer<typeof procedureReceiptSchema>) => {
     console.log(data);
+  };
+
+  const jobPositionOnSubmit = (
+    data: z.infer<typeof jobPositionConsumedSchema>
+  ) => {
+    // jobPositionForm.handleSubmit((data) => {
+    //   console.log(data);
+    newProcedureReceiptForm.setValue('job_description', [
+      ...newProcedureReceiptForm.watch('job_description'),
+      data,
+    ]);
+    //   console.log(newProcedureReceiptForm.watch('job_description'));
+    // })();
+    jobPositionForm.resetField('id');
+    jobPositionForm.resetField('qty');
   };
 
   const jobPositionsColumnsExtended = [
@@ -281,73 +300,75 @@ export default function NewProcedureReceiptPage() {
           value="tab-2"
           className="m-0"
         >
-          <div className="grid grid-cols-1 gap-4  p-4">
-            <FormLabel className="w-fit">Puestos de trabajo</FormLabel>
+          <FormLabel className="w-fit">Puestos de trabajo</FormLabel>
+          <div className="grid grid-cols-3 gap-4  p-4">
             <FormField
               control={jobPositionForm.control}
               name="id"
               render={({ field }) => (
-                <FormItem className="flex flex-col w-full">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            'w-full justify-between pl-3 font-normal',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          {field.value
-                            ? jobPositions.find(
+                <div className="flex flex-row gap-4 items-center justify-center">
+                  <FormItem className="flex flex-col w-full">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              'w-full justify-between pl-3 font-normal',
+                              !field.value && 'text-muted-foreground'
+                            )}
+                          >
+                            {field.value
+                              ? jobPositions.find(
                                 (jobPosition) =>
                                   field.value === jobPosition.value
                               )?.label
-                            : 'Selecciona un puesto de trabajo'}
-                          <ChevronsUpDown className="opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0">
-                      <Command>
-                        <CommandInput
-                          placeholder="Buscar puestos de trabajo..."
-                          className="h-9"
-                        />
-                        <CommandList>
-                          <CommandEmpty>
-                            No se encontraron puestos de trabajo.
-                          </CommandEmpty>
-                          <CommandGroup>
-                            {jobPositions.map((jobPosition) => (
-                              <CommandItem
-                                value={jobPosition.label}
-                                key={jobPosition.value}
-                                onSelect={() => {
-                                  jobPositionForm.setValue(
-                                    'id',
-                                    jobPosition.value
-                                  );
-                                }}
-                              >
-                                {jobPosition.label}
-                                <Check
-                                  className={cn(
-                                    'ml-auto',
-                                    field.value === jobPosition.value
-                                      ? 'opacity-100'
-                                      : 'opacity-0'
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                </FormItem>
+                              : 'Selecciona un puesto de trabajo'}
+                            <ChevronsUpDown className="opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[200px] p-0">
+                        <Command>
+                          <CommandInput
+                            placeholder="Buscar puestos de trabajo..."
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>
+                              No se encontraron puestos de trabajo.
+                            </CommandEmpty>
+                            <CommandGroup>
+                              {jobPositions.map((jobPosition) => (
+                                <CommandItem
+                                  value={jobPosition.label}
+                                  key={jobPosition.value}
+                                  onSelect={() => {
+                                    jobPositionForm.setValue(
+                                      'id',
+                                      jobPosition.value
+                                    );
+                                  }}
+                                >
+                                  {jobPosition.label}
+                                  <Check
+                                    className={cn(
+                                      'ml-auto',
+                                      field.value === jobPosition.value
+                                        ? 'opacity-100'
+                                        : 'opacity-0'
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormItem>
+                </div>
               )}
             />
             <FormField
@@ -359,7 +380,7 @@ export default function NewProcedureReceiptPage() {
                     placeholder="Cantidad"
                     type="tel"
                     {...field}
-                    value={jobPositionForm.watch('qty')}
+                    value={jobPositionForm.getValues().qty ?? ''}
                   />
                 </FormItem>
               )}
@@ -367,21 +388,16 @@ export default function NewProcedureReceiptPage() {
             <Button
               type="submit"
               size="sm"
-              className="mt-2"
+              // className="mt-2"
               onClick={() => {
-                jobPositionForm.handleSubmit((data) => {
-                  newProcedureReceiptForm.setValue('job_description', [
-                    ...newProcedureReceiptForm.watch('job_description'),
-                    data,
-                  ]);
-                })();
-                jobPositionForm.reset({id: undefined, qty: undefined});
+                jobPositionOnSubmit(jobPositionForm.getValues());
               }}
             >
               Agregar
             </Button>
-            <pre>{JSON.stringify(jobPositionForm.watch())}</pre>
           </div>
+          <pre>{JSON.stringify(jobPositionForm.watch())}</pre>
+          <pre>{JSON.stringify(newProcedureReceiptForm.watch())}</pre>
           <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-full">
             <DataTable
               data={jobPositionsMock
