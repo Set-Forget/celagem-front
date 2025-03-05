@@ -4,8 +4,9 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
+import { PatientList } from "../schema/patients"
 
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<PatientList>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -29,14 +30,14 @@ export const columns: ColumnDef<any>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "name",
+    header: "Nombre",
+    cell: ({ row }) => <div>{row.original.first_name + " " + row.original.first_last_name}</div>,
+  },
+  {
     accessorKey: "id_number",
     header: "Número de documento",
     cell: ({ row }) => <div className="font-medium">{row.getValue("id_number")}</div>,
-  },
-  {
-    accessorKey: "name",
-    header: "Nombre",
-    cell: ({ row }) => <div>{row.original.name + " " + row.original.lastname}</div>,
   },
   {
     accessorKey: "user_type",

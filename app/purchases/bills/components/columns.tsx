@@ -7,21 +7,12 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
-import { INVOICE_STATUSES } from "../adapters/invoices"
+import { BillList } from "../schemas/bills"
+import { billStatus } from "../utils"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
 
-export type Invoice = {
-  company_name: string;
-  number: string;
-  status: "paid" | "overdue" | "pending" | "in_process";
-  type: "FA" | "OC" | "NC" | "ND";
-  issue_date: string;
-  due_date: string;
-  amount: number;
-  currency: "USD" | "ARS" | "EUR" | "CLP";
-  description: string;
-};
-
-export const columns: ColumnDef<Invoice>[] = [
+export const columns: ColumnDef<BillList>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -47,60 +38,52 @@ export const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "number",
     header: "Número",
-    cell: ({ row }) => (
-      <div className="capitalize flex gap-1">
-        <div className="font-medium">{row.original.type}</div> {row.getValue("number")}
-      </div>
-    ),
+    cell: ({ row }) => <div className="font-medium">{row.original.number}</div>
   },
   {
-    accessorKey: "company_name",
+    accessorKey: "supplier",
     header: "Proveedor",
-    cell: ({ row }) => <div>{row.getValue("company_name")}</div>,
+    cell: ({ row }) => <div>{row.original.supplier}</div>,
   },
   {
     accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      const status = INVOICE_STATUSES[row.getValue("status") as keyof typeof INVOICE_STATUSES]
+      const status = billStatus[row.getValue("status") as keyof typeof billStatus]
       return <Badge
         variant="outline"
-        className={cn(`${status.bg_color} ${status.text_color} border-none rounded-sm`)}
+        className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
       >
-        {status.label}
+        {status?.label}
       </Badge>
     },
   },
   {
-    accessorKey: "issue_date",
+    accessorKey: "date",
     header: "Fecha de emisión",
     cell: ({ row }) => {
-      const formattedDate = new Date(row.getValue("issue_date")).toLocaleDateString("es-AR")
-      return <div>{formattedDate}</div>
+      return <div>
+        {format(new Date(row.getValue("date")), "dd MMM yyyy", { locale: es })}
+      </div>
     },
   },
   {
     accessorKey: "due_date",
     header: "Fecha de vencimiento",
     cell: ({ row }) => {
-      const formattedDate = new Date(row.getValue("due_date")).toLocaleDateString("es-AR")
-      return <div>{formattedDate}</div>
+      return <div>
+        {format(new Date(row.getValue("due_date")), "dd MMM yyyy", { locale: es })}
+      </div>
     }
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right pr-4">Importe</div>,
+    accessorKey: "amount_total",
+    header: () => <div className="text-right pr-4">Total</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-      const currency = row.original.currency
-
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        currencyDisplay: "code",
-      }).format(amount)
-
-      return <div className="text-right font-medium pr-4">{formatted}</div>
+      return <div className="text-right font-medium pr-4">
+        {row.original.currency}{" "}
+        {row.original.amount_total}
+      </div>
     },
   },
 ]

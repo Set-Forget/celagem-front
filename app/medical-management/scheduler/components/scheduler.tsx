@@ -3,20 +3,22 @@
 import FilterSelector, { FilterConfig } from '@/components/filter-selector';
 import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { useSearchAppointmentsQuery } from '@/lib/services/appointments';
 import { setDialogsState } from '@/lib/store/dialogs-store';
 import { cn } from '@/lib/utils';
-import { useSearchAppointmentsQuery } from '@/services/appointments';
 import { format } from 'date-fns';
 import { ArrowLeftRight, ArrowRightLeft, ChevronLeft, ChevronRight, CircleDashed, Plus, Search } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import Header from '../../../../components/header';
+import { getRangeForView } from '../utils';
 import AppointmentDetailsDialog from './appointment-details-dialog';
 import DailyView from './daily-view';
 import MonthlyView from './monthly-view';
 import NewAppointmentDialog from './new-appointment-dialog';
 import TableView from './table-view';
 import WeeklyView from './weekly-view';
+import EditAppointmentDialog from './edit-appointment-dialog';
 
 const filtersConfig: Record<string, FilterConfig> = {
   search: {
@@ -46,77 +48,64 @@ export default function Scheduler() {
 
   const [selectedDate, setSelectedDate] = React.useState(new Date());
 
-  const { data: appointments } = useSearchAppointmentsQuery({
-    start_date: format(selectedDate, 'yyyy-MM-dd'),
-  });
-
   const view = searchParams.get('view') || 'month';
 
-  const adaptedSelectedDate = (() => {
+  const range = getRangeForView(view, selectedDate)
+
+  const { data: appointments, isLoading: isAppointmentLoading } = useSearchAppointmentsQuery({
+    range_start_date: format(range.start, 'yyyy-MM-dd'),
+    range_end_date: format(range.end, 'yyyy-MM-dd'),
+  });
+
+  const adaptSelectedDate = () => {
     if (view === 'month' || view === 'table') {
-      return selectedDate.toLocaleString('es-AR', {
-        month: 'long',
-        year: 'numeric',
-      }).charAt(0).toUpperCase() + selectedDate.toLocaleString('es-AR', { month: 'long', year: 'numeric' }).slice(1);
-    } else if (view === 'week') {
-      const startOfWeek = new Date(selectedDate);
-      startOfWeek.setDate(selectedDate.getDate() - selectedDate.getDay());
-
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-      const startYear = startOfWeek.getFullYear();
-      const endYear = endOfWeek.getFullYear();
-
-      return startYear === endYear
-        ? `${startOfWeek.toLocaleDateString('es-AR', { month: 'short', day: 'numeric' })} - ${endOfWeek.toLocaleDateString('es-AR', { month: 'short', day: 'numeric' })} ${startYear}`
-        : `${startOfWeek.toLocaleDateString('es-AR', { month: 'short', day: 'numeric' })} ${startYear} - ${endOfWeek.toLocaleDateString('es-AR', { month: 'short', day: 'numeric' })} ${endYear}`;
-    } else {
-      return selectedDate.toLocaleDateString('es-AR', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      });
+      const monthYear = range.start.toLocaleString('es-AR', { month: 'long', year: 'numeric' });
+      return monthYear.charAt(0).toUpperCase() + monthYear.slice(1);
     }
-  })();
+
+    if (view === 'week') {
+      const startYear = range.start.getFullYear();
+      const endYear = range.end.getFullYear();
+      return startYear === endYear
+        ? `${range.start.toLocaleDateString('es-AR', { month: 'short', day: 'numeric' })} - ${range.end.toLocaleDateString('es-AR', { month: 'short', day: 'numeric' })} ${startYear}`
+        : `${range.start.toLocaleDateString('es-AR', { month: 'short', day: 'numeric' })} ${startYear} - ${range.end.toLocaleDateString('es-AR', { month: 'short', day: 'numeric' })} ${endYear}`;
+    }
+
+    return selectedDate.toLocaleDateString('es-AR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  }
 
   const handlePrev = () => {
     if (view === 'month' || view === 'table') {
-      setSelectedDate(
-        new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1)
-      );
+      setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1));
     } else if (view === 'week') {
-      setSelectedDate(
-        new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() - 7)
-      );
+      setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() - 7));
     } else if (view === 'day') {
-      setSelectedDate(
-        new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() - 1)
-      );
+      setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() - 1));
     }
   };
 
   const handleNext = () => {
     if (view === 'month' || view === 'table') {
-      setSelectedDate(
-        new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1)
-      );
+      setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1));
     } else if (view === 'week') {
-      setSelectedDate(
-        new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 7)
-      );
+      setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 7));
     } else if (view === 'day') {
-      setSelectedDate(
-        new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1)
-      );
+      setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1));
     }
   };
 
   const handleSelectView = (view: string) => {
     if (!view) return;
     window.history.pushState({}, '', `?view=${view}`);
+    setSelectedDate(new Date());
   };
+
+  const adaptedSelectedDate = adaptSelectedDate();
 
   return (
     <>
@@ -140,15 +129,15 @@ export default function Scheduler() {
         </Button>
       </Header>
       <div className={cn('flex justify-between p-4 border-b')}>
-        <FilterSelector
-          filtersConfig={filtersConfig}
-        />
-
+        <FilterSelector filtersConfig={filtersConfig} />
         <div className='flex items-center gap-2'>
-          <div className={cn('flex items-center justify-between gap-2 border rounded-sm pl-4 h-7 overflow-hidden',
-            (view === 'month' || view === 'week' || view === "table") && 'w-[250px]',
-            view === 'day' && 'w-[300px]'
-          )}>
+          <div
+            className={cn(
+              'flex items-center justify-between gap-2 border rounded-sm pl-4 h-7 overflow-hidden',
+              (view === 'month' || view === 'week' || view === 'table') && 'w-[250px]',
+              view === 'day' && 'w-[300px]'
+            )}
+          >
             <span className='font-medium mr-2 text-xs'>
               {adaptedSelectedDate}
             </span>
@@ -161,27 +150,30 @@ export default function Scheduler() {
               </Button>
             </div>
           </div>
-          {view !== 'table' &&
+          {view !== 'table' && (
             <ToggleGroup type="single" value={view} onValueChange={handleSelectView}>
-              <ToggleGroupItem className='h-7 text-xs rounded-sm' variant="outline" value="month" >
+              <ToggleGroupItem className='h-7 text-xs rounded-sm' variant="outline" value="month">
                 Mes
               </ToggleGroupItem>
               <ToggleGroupItem className='h-7 text-xs rounded-sm' variant="outline" value="week">
                 Semana
               </ToggleGroupItem>
+              {/*
               <ToggleGroupItem className='h-7 text-xs rounded-sm' variant="outline" value="day">
                 Día
               </ToggleGroupItem>
+              */}
             </ToggleGroup>
-          }
+          )}
         </div>
       </div>
-      {view === 'month' && <MonthlyView selectedDate={selectedDate} appointments={appointments} />}
-      {view === 'week' && <WeeklyView selectedDate={selectedDate} appointments={appointments} />}
-      {view === 'day' && <DailyView selectedDate={selectedDate} appointments={appointments} />}
-      {view === 'table' && <TableView appointments={appointments} />}
+      {view === 'month' && <MonthlyView selectedDate={selectedDate} appointments={appointments?.data} />}
+      {view === 'week' && <WeeklyView selectedDate={selectedDate} appointments={appointments?.data} />}
+      {view === 'day' && <DailyView selectedDate={selectedDate} appointments={appointments?.data} />}
+      {view === 'table' && <TableView appointments={appointments?.data} isLoading={isAppointmentLoading} />}
       <NewAppointmentDialog />
       <AppointmentDetailsDialog />
+      <EditAppointmentDialog />
     </>
   );
 }

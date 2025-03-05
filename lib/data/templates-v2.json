@@ -5,7 +5,7 @@
   "type": "Clínica",
   "description": "Descripción de la plantilla",
   "isActive": true,
-  "createdBy": 1,
+  "createdBy": "1",
   "createdAt": "2025-02-07T18:29:02.225Z",
   "updatedBy": null,
   "updatedAt": "2025-02-07T18:29:02.226Z",

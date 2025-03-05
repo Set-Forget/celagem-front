@@ -1,23 +1,26 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { purchaseOrdersApi } from './services/purchase-orders'
-import { medicalManagementApi } from './services/appointments'
-import { purchaseReceiptsApi } from './services/purchase-receipts'
+import { erpApi } from './lib/apis/erp-api'
+import { hcApi } from './lib/apis/hc-api'
+import { usersApi } from './lib/apis/users-api'
+import { googleApi } from './lib/apis/google.api'
 
 export const store = configureStore({
   reducer: {
     // Add the generated reducer as a specific top-level slice
-    [purchaseOrdersApi.reducerPath]: purchaseOrdersApi.reducer,
-    [medicalManagementApi.reducerPath]: medicalManagementApi.reducer,
-    [purchaseReceiptsApi.reducerPath]: purchaseReceiptsApi.reducer,
+    [erpApi.reducerPath]: erpApi.reducer,
+    [hcApi.reducerPath]: hcApi.reducer,
+    [usersApi.reducerPath]: usersApi.reducer,
+    [googleApi.reducerPath]: googleApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
-      purchaseOrdersApi.middleware,
-      medicalManagementApi.middleware,
-      purchaseReceiptsApi.middleware
+      erpApi.middleware,
+      hcApi.middleware,
+      usersApi.middleware,
+      googleApi.middleware
     ),
 })
 

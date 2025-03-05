@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, act } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Check, ChevronsUpDown, Search, Loader2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -26,7 +26,7 @@ export interface Option {
   icon?: React.ReactNode;
 }
 
-export interface AsyncSelectProps<T> {
+export interface AsyncSelectProps<T, V = string> {
   /** Async function to fetch options */
   fetcher: (query?: string) => Promise<T[]>;
   /** Preload all data ahead of time */
@@ -36,7 +36,7 @@ export interface AsyncSelectProps<T> {
   /** Function to render each option */
   renderOption: (option: T) => React.ReactNode;
   /** Function to get the value from an option */
-  getOptionValue: (option: T) => string;
+  getOptionValue: (option: T) => V;
   /** Function to get the display value for the selected option */
   getDisplayValue: (option: T) => React.ReactNode;
   /** Custom not found message */
@@ -44,9 +44,9 @@ export interface AsyncSelectProps<T> {
   /** Custom loading skeleton */
   loadingSkeleton?: React.ReactNode;
   /** Currently selected value */
-  value: string;
+  value: V;
   /** Callback when selection changes */
-  onChange: (value: string) => void;
+  onChange: (value: V) => void;
   /** Label for the select field */
   label: string;
   /** Placeholder text when no selection */
@@ -65,9 +65,14 @@ export interface AsyncSelectProps<T> {
   clearable?: boolean;
   modal?: boolean;
   actionButton?: React.ReactNode;
+  /**
+   * Función opcional para obtener un identificador único en formato string para cada opción.
+   * Si no se provee, se convertirá a string el resultado de getOptionValue.
+   */
+  getOptionKey?: (option: T) => string;
 }
 
-export function AsyncSelect<T>({
+export function AsyncSelect<T, V>({
   fetcher,
   preload,
   filterFn,
@@ -87,13 +92,14 @@ export function AsyncSelect<T>({
   noResultsMessage,
   clearable = true,
   actionButton,
-}: AsyncSelectProps<T>) {
+  getOptionKey,
+}: AsyncSelectProps<T, V>) {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedValue, setSelectedValue] = useState(value);
+  const [selectedValue, setSelectedValue] = useState<V>(value);
   const [selectedOption, setSelectedOption] = useState<T | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, preload ? 0 : 300);
@@ -125,20 +131,54 @@ export function AsyncSelect<T>({
       fetchOptions();
     } else if (preload) {
       if (debouncedSearchTerm) {
-        setOptions(originalOptions.filter((option) => filterFn ? filterFn(option, debouncedSearchTerm) : true));
+        setOptions(
+          originalOptions.filter((option) =>
+            filterFn ? filterFn(option, debouncedSearchTerm) : true
+          )
+        );
       } else {
         setOptions(originalOptions);
       }
     }
-  }, [fetcher, debouncedSearchTerm, mounted, preload, filterFn]);
+  }, [debouncedSearchTerm, mounted, preload, filterFn]);
 
-  const handleSelect = useCallback((currentValue: string) => {
-    const newValue = clearable && currentValue === selectedValue ? "" : currentValue;
-    setSelectedValue(newValue);
-    setSelectedOption(options.find((option) => getOptionValue(option) === newValue) || null);
-    onChange(newValue);
-    setOpen(false);
-  }, [selectedValue, onChange, clearable, options, getOptionValue]);
+  useEffect(() => {
+    if (options.length && value) {
+      const matchingOption = options.find((option) => {
+        const key = getOptionKey ? getOptionKey(option) : String(getOptionValue(option));
+        return key === String(value);
+      });
+      if (matchingOption) {
+        setSelectedOption(matchingOption);
+      }
+    }
+  }, [options, value, getOptionKey, getOptionValue]);
+
+  const handleSelect = useCallback(
+    (selectedKey: string) => {
+      const selectedOpt = options.find((option) => {
+        const key = getOptionKey ? getOptionKey(option) : String(getOptionValue(option));
+        return key === selectedKey;
+      });
+      if (selectedOpt) {
+        const newKey = getOptionKey ? getOptionKey(selectedOpt) : String(getOptionValue(selectedOpt));
+        const currentKey = selectedOption
+          ? getOptionKey
+            ? getOptionKey(selectedOption)
+            : String(getOptionValue(selectedOption))
+          : "";
+        const newValue =
+          clearable && newKey === currentKey
+            ? ("" as unknown as V)
+            : getOptionValue(selectedOpt);
+        setSelectedValue(newValue);
+        setSelectedOption(selectedOpt);
+        onChange(newValue);
+      }
+      setOpen(false);
+    },
+    [options, getOptionKey, getOptionValue, clearable, selectedOption, onChange]
+  );
 
   return (
     <Popover modal={modal} open={open} onOpenChange={setOpen}>
@@ -155,29 +195,26 @@ export function AsyncSelect<T>({
           )}
           disabled={disabled}
         >
-          {selectedOption ? (
-            getDisplayValue(selectedOption)
-          ) : (
-            placeholder
-          )}
+          {selectedOption ? getDisplayValue(selectedOption) : placeholder}
           <ChevronsUpDown className="opacity-50" size={10} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("p-0", className)}>
+      <PopoverContent className={cn("w-[--radix-popover-trigger-width] p-0", className)}>
         <Command>
           <div className="relative border-b w-full">
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            {loading && options?.length > 0 ? (
+              <div className="absolute left-2 top-1/2 transform -translate-y-1/2 flex items-center">
+                <Loader2 className="h-4 w-4 animate-spin" />
+              </div>
+            ) : (
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            )}
             <Input
               placeholder={`Buscar ${label.toLowerCase()}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="focus-visible:ring-0 rounded-b-none border-none pl-8 flex-1"
             />
-            {loading && options.length > 0 && (
-              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center">
-                <Loader2 className="h-4 w-4 animate-spin" />
-              </div>
-            )}
           </div>
           <CommandList>
             {error && (
@@ -185,28 +222,30 @@ export function AsyncSelect<T>({
                 {error}
               </div>
             )}
-            {loading && options.length === 0 && (
-              loadingSkeleton || <DefaultLoadingSkeleton />
-            )}
-            {!loading && !error && options.length === 0 && (
+            {loading && options?.length === 0 && (loadingSkeleton || <DefaultLoadingSkeleton />)}
+            {!loading && !error && options?.length === 0 && (
               notFound || <CommandEmpty>{noResultsMessage ?? `No ${label.toLowerCase()} found.`}</CommandEmpty>
             )}
             <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={getOptionValue(option)}
-                  value={getOptionValue(option)}
-                  onSelect={handleSelect}
-                >
-                  {renderOption(option)}
-                  <Check
-                    className={cn(
-                      "ml-auto h-3 w-3",
-                      selectedValue === getOptionValue(option) ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                </CommandItem>
-              ))}
+              {options?.map((option) => {
+                const optionKey = getOptionKey ? getOptionKey(option) : String(getOptionValue(option));
+                return (
+                  <CommandItem key={optionKey} value={optionKey} onSelect={handleSelect}>
+                    {renderOption(option)}
+                    <Check
+                      className={cn(
+                        "ml-auto h-3 w-3",
+                        selectedOption &&
+                          (getOptionKey
+                            ? getOptionKey(selectedOption)
+                            : String(getOptionValue(selectedOption))) === optionKey
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />
+                  </CommandItem>
+                );
+              })}
             </CommandGroup>
           </CommandList>
           {actionButton && actionButton}

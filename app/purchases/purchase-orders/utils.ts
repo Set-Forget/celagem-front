@@ -1,6 +1,6 @@
 
 
-export const PURCHASE_ORDER_STATUS = {
+export const purchaseOrderStatus = {
   draft: {
     label: "Borrador",
     bg_color: "bg-gray-100",

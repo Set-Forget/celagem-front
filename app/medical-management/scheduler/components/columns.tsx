@@ -9,30 +9,41 @@ import {
 } from "@tanstack/react-table";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Ban, MoreHorizontal } from "lucide-react";
-import { appointment_states, modes_of_care } from "../adapters/appointments";
+import { Ban, MoreHorizontal, SquarePen } from "lucide-react";
 import { AppointmentList } from "../schemas/appointments";
+import { appointmentStates, modesOfCare } from "../utils";
+import { setDialogsState } from "@/lib/store/dialogs-store";
 
 export const columns: ColumnDef<AppointmentList>[] = [
   {
-    accessorKey: "doctor_id",
+    accessorKey: "doctor.id",
     header: "Profesional",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("doctor_id")}</div>,
+    cell: ({ row }) =>
+      <span className="font-medium">
+        {row.original.doctor.first_name} {row.original.doctor.last_name}
+      </span>
   },
   {
-    accessorKey: "patient_id",
+    accessorKey: "patient.id",
     header: "Paciente",
-    cell: ({ row }) => <div>{row.getValue("patient_id")}</div>,
+    cell: ({ row }) => <div>{row.original.patient.first_name} {row.original.patient.last_name}</div>,
   },
   {
     accessorKey: "start_date",
     header: "Fecha",
+    sortingFn: (rowA, rowB) => {
+      // Construimos el Date combinando start_date y start_time para cada fila
+      const a = new Date(`${rowA.original.start_date}T${rowA.original.start_time}`);
+      const b = new Date(`${rowB.original.start_date}T${rowB.original.start_time}`);
+      // Para ordenar de la más reciente a la más antigua, restamos b - a
+      return b.getTime() - a.getTime();
+    },
     cell: ({ row }) => {
       const startDateTime = new Date(`${row.original.start_date}T${row.original.start_time}`);
       const endDateTime = new Date(`${row.original.start_date}T${row.original.end_time}`);
 
       const formattedDate = format(startDateTime, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es });
-      const formattedTime = `${format(startDateTime, 'hh:mmaaa', { locale: es })} a ${format(endDateTime, 'hh:mmaaa', { locale: es })}`;
+      const formattedTime = `${format(startDateTime, 'hh:mm aaa', { locale: es })} a ${format(endDateTime, 'hh:mm aaa', { locale: es })}`;
 
       return (
         <div className="flex flex-col">
@@ -46,7 +57,7 @@ export const columns: ColumnDef<AppointmentList>[] = [
     accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      const status = appointment_states[row.getValue("status") as keyof typeof appointment_states]
+      const status = appointmentStates[row.getValue("status") as keyof typeof appointmentStates]
 
       return <Badge
         variant="custom"
@@ -60,15 +71,14 @@ export const columns: ColumnDef<AppointmentList>[] = [
     accessorKey: "mode_of_care",
     header: "Modo de atención",
     cell: ({ row }) => {
-      const modeOfCare = modes_of_care[row.getValue("mode_of_care") as keyof typeof modes_of_care]
-      return <span className="text-sm">{modeOfCare.label}</span>
+      const modeOfCare = modesOfCare[row.original.mode_of_care as keyof typeof modesOfCare]
+      return <span className="text-sm">{modeOfCare}</span>
     }
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -78,6 +88,15 @@ export const columns: ColumnDef<AppointmentList>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={e => {
+                e.stopPropagation()
+                setDialogsState({ open: "edit-appointment", payload: { appointment: row.original } })
+              }}
+            >
+              <SquarePen />
+              Editar turno
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={e => e.stopPropagation()}
               className="text-destructive focus:text-destructive"

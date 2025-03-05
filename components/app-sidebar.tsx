@@ -168,6 +168,10 @@ const data = {
           title: "Pacientes",
           url: "/medical-management/patients",
         },
+        {
+          title: "Plantillas",
+          url: "/medical-management/templates",
+        }
       ],
     }
   ],

@@ -20,9 +20,17 @@ const nextConfig = {
         destination: `${process.env.NEXT_PUBLIC_HC_URL}/api/v1/:path*`,
       },
       {
+        source: '/users/api/:path*',
+        destination: `${process.env.NEXT_PUBLIC_USERS_URL}/api/v1/:path*`,
+      },
+      {
         source: "/erp/login",
         destination: `${process.env.NEXT_PUBLIC_ERP_URL}/web/session/authenticate`,
       },
+      {
+        source: "/google/places",
+        destination: `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${process.env.GOOGLE_PLACES_API}`,
+      }
     ];
   },
 };

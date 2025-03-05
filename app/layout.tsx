@@ -1,10 +1,9 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Provider } from "react-redux";
-import { store } from "@/store";
 import StoreProvider from "./store-provider";
 
 const geistSans = localFont({
@@ -38,6 +37,7 @@ export default function RootLayout({
             <AppSidebar />
             <SidebarInset>
               {children}
+              <Toaster />
             </SidebarInset>
           </SidebarProvider>
         </StoreProvider>

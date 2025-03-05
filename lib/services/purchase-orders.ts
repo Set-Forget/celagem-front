@@ -1,18 +1,7 @@
 import { PurchaseOrderDetail, PurchaseOrderDetailResponse, PurchaseOrderListResponse } from '@/app/purchases/purchase-orders/schemas/purchase-orders';
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { erpApi } from '@/lib/apis/erp-api';
 
-export const purchaseOrdersApi = createApi({
-  reducerPath: 'purchaseOrdersApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: `/erp/api/`,
-    prepareHeaders(headers) {
-      const token = ""
-      if (token) {
-        headers.set('authorization', `${token}`)
-      }
-      return headers
-    },
-  }),
+export const purchaseOrdersApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
     listPurchaseOrders: builder.query<PurchaseOrderListResponse, void>({
       query: () => 'purchase_orders',

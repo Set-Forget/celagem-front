@@ -75,12 +75,7 @@ export const purchaseOrderDetailSchema = z.object({
   status: z.enum(["to-approve", "approved", "pending", "done", "cancel"]),
   items: z.array(purchaseOrderLineSchema),
   currency: z.string(),
-  supplier: z.object({
-    id: z.number(),
-    name: z.string(),
-    phone: z.string(),
-    email: z.string(),
-  }),
+  supplier: z.string(),
 })
 
 export const purchaseOrderListResponseSchema = z.object({

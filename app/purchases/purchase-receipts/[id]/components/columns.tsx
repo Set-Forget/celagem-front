@@ -9,6 +9,7 @@ export const columns: ColumnDef<PurchaseReceiptItems>[] = [
   {
     accessorKey: "display_name",
     header: "Producto",
+    size: 300,
     cell: ({ row }) => (
       <div className="font-medium">
         {row.getValue("display_name")}

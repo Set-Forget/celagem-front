@@ -53,8 +53,6 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
     })
   );
 
-  console.log(allParams);
-
   return (
     <div className="flex items-center justify-between">
       <div className="flex gap-4">

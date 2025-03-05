@@ -15,7 +15,7 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
         outline: "text-foreground",
-        custom: "text-foreground",
+        custom: "text-foreground border-none",
       },
     },
     defaultVariants: {
@@ -33,7 +33,7 @@ function Badge({ className = "", variant, ...props }: BadgeProps) {
   if (variant === "custom" && className) {
     const bgMatch = className.match(/bg-([\w-]+)/);
     if (bgMatch) {
-      dynamicShadow = `!shadow-${bgMatch[1]} !shadow-lg`;
+      dynamicShadow = `transition-shadow !shadow-${bgMatch[1]} !shadow-lg hover:!shadow-md hover:!shadow-${bgMatch[1]}`;
     }
   }
   return (

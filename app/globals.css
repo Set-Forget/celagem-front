@@ -89,7 +89,6 @@
 
     * {
         @apply border-border;
-        @apply !shadow-none;
     }
 
     * {
@@ -119,5 +118,16 @@
     body {
         @apply bg-background text-foreground;
         font-family: var(--font-geist-sans);
+    }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
     }
 }

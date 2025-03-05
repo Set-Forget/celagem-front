@@ -8,10 +8,12 @@ const config: Config = {
 		"./app/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	safelist: [
-		'bg-gray-100 !shadow-gray-100 text-gray-800',
-		'bg-amber-100 !shadow-amber-100 text-amber-800',
-		'bg-green-100 !shadow-green-100 text-green-800',
-		'bg-red-100 !shadow-red-100 text-red-800',
+		'bg-gray-100 !shadow-gray-100 text-gray-800 hover:!shadow-gray-100',
+		'bg-amber-100 !shadow-amber-100 text-amber-800 hover:!shadow-amber-100',
+		'bg-green-100 !shadow-green-100 text-green-800 hover:!shadow-green-100',
+		'bg-red-100 !shadow-red-100 text-red-800 hover:!shadow-red-100',
+		'bg-indigo-100 text-indigo-800 !shadow-indigo-100 hover:!shadow-indigo-100',
+		'bg-blue-100 text-blue-800 !shadow-blue-100 hover:!shadow-blue-100',
 	],
 	theme: {
 		extend: {

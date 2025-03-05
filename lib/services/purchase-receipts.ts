@@ -1,18 +1,7 @@
 import { PurchaseReceiptDetail, PurchaseReceiptDetailResponse, PurchaseReceiptListResponse } from '@/app/purchases/purchase-receipts/schemas/purchase-receipts';
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { erpApi } from '@/lib/apis/erp-api';
 
-export const purchaseReceiptsApi = createApi({
-  reducerPath: 'purchaseReceiptsApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: `/erp/api/`,
-    prepareHeaders(headers) {
-      const token = ""
-      if (token) {
-        headers.set('authorization', `${token}`)
-      }
-      return headers
-    },
-  }),
+export const purchaseReceiptsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
     listPurchaseReceipts: builder.query<PurchaseReceiptListResponse, void>({
       query: () => 'receptions',

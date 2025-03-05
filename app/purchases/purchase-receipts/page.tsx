@@ -3,7 +3,7 @@
 import { DataTable } from "@/components/data-table";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
-import { useListPurchaseReceiptsQuery } from "@/services/purchase-receipts";
+import { useListPurchaseReceiptsQuery } from "@/lib/services/purchase-receipts";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";

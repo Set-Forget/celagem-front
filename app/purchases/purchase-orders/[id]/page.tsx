@@ -14,13 +14,13 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn, placeholder } from "@/lib/utils"
-import { useGetPurchaseOrderQuery } from "@/services/purchase-orders"
+import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { Box, ChevronDown, Eye, Paperclip } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { PURCHASE_ORDER_STATUS } from "../adapters/customers"
+import { purchaseOrderStatus } from "../utils"
 import { columns } from "./components/columns"
 import TableFooter from "./components/table-footer"
 
@@ -34,7 +34,7 @@ export default function PurchaseOrderPage() {
     generatePurchaseOrderPDF()
   }
 
-  const status = PURCHASE_ORDER_STATUS[purchaseOrder?.status as keyof typeof PURCHASE_ORDER_STATUS]
+  const status = purchaseOrderStatus[purchaseOrder?.status as keyof typeof purchaseOrderStatus]
 
   return (
     <>
@@ -161,23 +161,25 @@ export default function PurchaseOrderPage() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-1">
                 <label className="text-muted-foreground text-sm">Proveedor</label>
-                <span className="text-sm">Guantes S.A.</span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-muted-foreground text-sm">Nombre del contacto</label>
-                <span className="text-sm">Juan Perez</span>
+                <span className={cn("text-sm transition-all duration-300", isLoading ? "blur-[4px]" : "blur-none")}>
+                  {isLoading ? placeholder(10) : purchaseOrder?.supplier}
+                </span>
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-muted-foreground text-sm">Email del contacto</label>
                 <span className="text-sm">juan@gmail.com</span>
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-muted-foreground text-sm">Teléfono del contacto</label>
-                <span className="text-sm">+54 9 11 1234 5678</span>
+                <label className="text-muted-foreground text-sm">Correo electrónico</label>
+                <span className="text-sm">xxxxxxxxxxxx</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-muted-foreground text-sm">Número de teléfono</label>
+                <span className="text-sm">xxxxxxxxxxx</span>
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-muted-foreground text-sm">Dirección</label>
-                <span className="text-sm">Av. Corrientes 1234</span>
+                <span className="text-sm">xxxxxxxxxxxx</span>
               </div>
             </div>
           </div>
@@ -189,7 +191,7 @@ export default function PurchaseOrderPage() {
               <div className="flex flex-col gap-1">
                 <label className="text-muted-foreground text-sm">Facturas de compra</label>
                 <div className="flex gap-2 items-center group w-fit">
-                  <span className="text-sm font-medium">FC-4500001782</span>
+                  <span className="text-sm font-medium">xxxxxxxxx</span>
                   <Button variant="outline" size="icon" className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Eye />
                   </Button>
@@ -198,7 +200,7 @@ export default function PurchaseOrderPage() {
               <div className="flex flex-col gap-1">
                 <label className="text-muted-foreground text-sm">Recepciones de compra</label>
                 <div className="flex gap-2 items-center group w-fit">
-                  <span className="text-sm font-medium">RC-4500001782</span>
+                  <span className="text-sm font-medium">xxxxxxxxxx</span>
                   <Button variant="outline" size="icon" className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Eye />
                   </Button>

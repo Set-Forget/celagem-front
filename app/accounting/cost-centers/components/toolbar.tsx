@@ -27,7 +27,7 @@ const filtersConfig: Record<string, FilterConfig> = {
   },
 };
 
-export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+export default function Toolbar<TData>({ /* table */ }: DataTableToolbarProps<TData>) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex gap-4">

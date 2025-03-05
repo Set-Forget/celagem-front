@@ -1,6 +1,6 @@
 import { AppointmentList } from '../schemas/appointments';
-import DailyViewHeader from './daily-view-header';
 import DayColumn from './day-column';
+import TimeSlots from './time-slots';
 
 export default function DailyView({ selectedDate, appointments }: { selectedDate: Date; appointments?: AppointmentList[]; }) {
   const formattedDate = selectedDate.toLocaleDateString('es-AR', {
@@ -19,8 +19,8 @@ export default function DailyView({ selectedDate, appointments }: { selectedDate
         </div>
       </div>
 
-      <div className="grid grid-cols-[150px_1fr] h-full">
-        <DailyViewHeader />
+      <div className="grid grid-cols-[150px_1fr]">
+        <TimeSlots />
         <DayColumn
           day={selectedDate}
           appointments={appointments}

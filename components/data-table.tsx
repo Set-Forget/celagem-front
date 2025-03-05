@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils"
 import {
   ColumnDef,
   ColumnFiltersState,
+  OnChangeFn,
   SortingState,
   Table,
   VisibilityState,
@@ -26,6 +27,8 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   pagination?: boolean
   loading?: boolean
+  sorting?: SortingState
+  setSorting?: OnChangeFn<SortingState>
   onRowClick?: (row: TData) => void
   toolbar?: (props: { table: Table<TData> }) => React.ReactNode
   footer?: () => React.ReactNode
@@ -37,6 +40,8 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   loading,
+  sorting,
+  setSorting,
   pagination = true,
   onRowClick,
   toolbar,
@@ -45,7 +50,6 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [sorting, setSorting] = React.useState<SortingState>([])
 
   const table = useReactTable({
     data,
@@ -77,7 +81,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4 flex flex-col justify-between">
       {toolbar && toolbar({ table })}
-      <div className="overflow-hidden rounded-sm border border-border bg-background">
+      <div className="overflow-hidden rounded-sm border border-border bg-background shadow-sm">
         <ShadcnTable className="[&_td]:border-border [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
           <TableHeader className="sticky top-0 z-10 bg-accent/90 backdrop-blur-sm">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -144,8 +148,23 @@ export function DataTable<TData, TValue>({
       </div>
       {pagination && (
         <div className="flex items-center justify-end space-x-2">
-          <div className="flex-1 text-sm text-muted-foreground">
-            Mostrando {table.getRowModel().rows.length} de {table.getRowCount()} items.
+          <div className="flex grow justify-start whitespace-nowrap text-sm text-muted-foreground">
+            <p className="whitespace-nowrap text-sm text-muted-foreground" aria-live="polite">
+              Mostrando{" "}
+              <span className="text-foreground">
+                {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}-
+                {Math.min(
+                  Math.max(
+                    table.getState().pagination.pageIndex * table.getState().pagination.pageSize +
+                    table.getState().pagination.pageSize,
+                    0,
+                  ),
+                  table.getRowCount(),
+                )}
+              </span>{" "}
+              de{" "}<span className="text-foreground">{table.getRowCount().toString()}</span>
+              {" "}resultados
+            </p>
           </div>
           <div className="space-x-2 flex items-center">
             {table.getFilteredSelectedRowModel().rows.length > 0 && (

@@ -1,6 +1,7 @@
 'use client'
 
 import { AsyncSelect } from "@/components/async-select";
+import CustomSonner from "@/components/custom-sonner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -8,35 +9,24 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useCreateAppointmentMutation } from "@/lib/services/appointments";
+import { useListBusinessUnitsQuery } from "@/lib/services/business-units";
+import { useLazyListPatientsQuery } from "@/lib/services/patients";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { cn } from "@/lib/utils";
-import { medicalManagementApi, useCreateAppointmentMutation } from "@/services/appointments";
-import { store } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, Check, ChevronsUpDown, Loader2Icon, Plus } from "lucide-react";
+import omit from "lodash/omit";
+import { CalendarIcon, Check, ChevronsUpDown, Clock, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { ControllerRenderProps, useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { newAppointmentSchema } from "../schemas/appointments";
 import TEMPLATES from "../templates/templates.json";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import omit from "lodash/omit";
-
-const clinics = [
-  {
-    value: "0194dcb5-24e0-76cf-a07f-62eb78f8b296",
-    label: "Prueba 1",
-  },
-]
-
-const doctors = [
-  {
-    label: "Dr. Juan Pérez",
-    value: "0194cd16-08cb-7146-b224-52417ab62d3b",
-  }
-]
+import { useLazyListUsersQuery } from "@/lib/services/users";
 
 export default function NewAppointmentDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
@@ -45,30 +35,81 @@ export default function NewAppointmentDialog() {
 
   const [createAppointment, { isLoading }] = useCreateAppointmentMutation()
 
+  const { data: businessUnits } = useListBusinessUnitsQuery()
+
+  const [getPatients] = useLazyListPatientsQuery()
+  const [getDoctors] = useLazyListUsersQuery()
+
   const newAppointmentForm = useForm<z.infer<typeof newAppointmentSchema>>({
     resolver: zodResolver(newAppointmentSchema),
     defaultValues: {
       created_by: "0194cd16-08cb-7146-b224-52417ab62d3b",
-      status_id: 4,
-      care_type_id: 5
+      status_id: 1,
+      care_type_id: 1,
+      start_date: "",
+      start_time: "",
+      end_date: "",
+      end_time: "",
+      doctor_id: "",
+      patient_id: "",
+      clinic_id: "",
+      notes: "",
+      attention_type: "",
+      mode_of_care: "IN_PERSON",
     }
   });
-
-  console.log(newAppointmentForm.formState.errors)
 
   const onOpenChange = () => {
     closeDialogs()
     newAppointmentForm.reset()
   }
 
-  function handleTimeChange(type: "hour" | "minute", value: string, field: any) {
-    const newDate = new Date(newAppointmentForm.getValues(field.name));
-    if (type === "hour") {
-      newDate.setHours(parseInt(value));
-    } else if (type === "minute") {
-      newDate.setMinutes(parseInt(value));
+  const handleTimeChange = (type: "hour" | "minute", value: string, field: ControllerRenderProps<z.infer<typeof newAppointmentSchema>>) => {
+    const currentValue = newAppointmentForm.getValues(field.name);
+    let newDate: Date;
+
+    if (currentValue && !isNaN(new Date(currentValue).getTime())) {
+      newDate = new Date(currentValue);
+    } else if (startDate) {
+      newDate = new Date(startDate);
+    } else {
+      newDate = new Date();
     }
+
+    if (type === "hour") {
+      newDate.setHours(parseInt(value, 10));
+      newDate.setMinutes(0);
+    } else if (type === "minute") {
+      newDate.setMinutes(parseInt(value, 10));
+    }
+
     field.onChange(newDate.toISOString());
+  };
+
+  const handleGetPatients = async () => {
+    try {
+      const patients = await getPatients().unwrap()
+      return patients.data.map((patient) => ({
+        label: `${patient.first_name} ${patient.first_last_name}`,
+        value: patient.id,
+      }))
+    } catch (error) {
+      console.error("Error al obtener pacientes:", error)
+      return []
+    }
+  }
+
+  const handleGetDoctors = async () => {
+    try {
+      const doctors = await getDoctors().unwrap()
+      return doctors.data.map((doctor) => ({
+        label: `${doctor.first_name} ${doctor.last_name}`,
+        value: doctor.id,
+      }))
+    } catch (error) {
+      console.error("Error al obtener doctores:", error)
+      return []
+    }
   }
 
   async function onSubmit(data: z.infer<typeof newAppointmentSchema>) {
@@ -76,22 +117,26 @@ export default function NewAppointmentDialog() {
       const filteredData = omit(data, ["attention_type"])
       const response = await createAppointment({
         ...filteredData,
-        start_date: format(new Date(filteredData.start_date), "yyyy-MM-dd"),
-        end_date: format(new Date(filteredData.end_date), "yyyy-MM-dd"),
-        start_time: format(new Date(filteredData.start_date), "HH:mm"),
-        end_time: format(new Date(filteredData.end_date), "HH:mm"),
+        start_date: format(new Date(data.start_date), "yyyy-MM-dd"),
+        end_date: format(new Date(data.end_date), "yyyy-MM-dd"),
+        start_time: format(new Date(data.start_time), "HH:mm"),
+        end_time: format(new Date(data.end_time), "HH:mm"),
       }).unwrap();
 
       if (response.status === "SUCCESS") {
-        closeDialogs()
+        onOpenChange()
+        toast.custom((t) => <CustomSonner t={t} description="Turno creado correctamente" />)
       }
-    } catch (error) {
-      console.error("Error al crear turno:", error)
+    } catch {
+      toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear el turno" variant="error" />)
     }
   }
 
-  const hours = Array.from({ length: 24 }, (_, i) => i);
+  const hours = Array.from({ length: 12 }, (_, i) => i + 7);
+  const minutes = [0, 30];
+
   const startDate = useWatch({ control: newAppointmentForm.control, name: "start_date" });
+  const endDate = useWatch({ control: newAppointmentForm.control, name: "end_date" });
 
   useEffect(() => {
     const subscription = dialogsStateObservable.subscribe(setDialogState)
@@ -103,6 +148,8 @@ export default function NewAppointmentDialog() {
   useEffect(() => {
     if (selectedDate) {
       newAppointmentForm.setValue("start_date", selectedDate.toISOString())
+      if (!selectedDate.getHours()) return
+      newAppointmentForm.setValue("start_time", selectedDate.toISOString())
     }
   }, [selectedDate])
 
@@ -120,7 +167,7 @@ export default function NewAppointmentDialog() {
         </DialogHeader>
         <Form {...newAppointmentForm}>
           <form onSubmit={newAppointmentForm.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={newAppointmentForm.control}
                 name="start_date"
@@ -131,7 +178,7 @@ export default function NewAppointmentDialog() {
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
-                            variant={"outline"}
+                            variant="outline"
                             className={cn(
                               "pl-3 text-left font-normal",
                               !field.value && "text-muted-foreground"
@@ -139,7 +186,7 @@ export default function NewAppointmentDialog() {
                           >
                             <p className="truncate w-full">
                               {field.value ? (
-                                format(new Date(field.value), "PPP - hh:mm a")
+                                format(new Date(field.value), "PPP")
                               ) : (
                                 <span>Seleccionar fecha</span>
                               )}
@@ -149,67 +196,119 @@ export default function NewAppointmentDialog() {
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
-                        <div className="sm:flex">
-                          <Calendar
-                            mode="single"
-                            selected={field.value ? new Date(field.value) : undefined}
-                            onSelect={(date) => field.onChange(date?.toISOString())}
-                            initialFocus
-                          />
-                          <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x">
-                            <ScrollArea className="w-64 sm:w-auto h-[300px]">
-                              <div className="flex sm:flex-col-reverse p-2">
-                                {hours.map((hour) => {
-                                  const isDisabled = !field.value;
-                                  return (
-                                    <Button
-                                      key={hour}
-                                      size="icon"
-                                      variant={
-                                        new Date(field.value) &&
-                                          new Date(field.value).getHours() === hour
-                                          ? "default"
-                                          : "ghost"
-                                      }
-                                      className={cn("sm:w-full shrink-0 aspect-square")}
-                                      disabled={isDisabled}
-                                      onClick={() =>
-                                        !isDisabled && handleTimeChange("hour", hour.toString(), field)
-                                      }
-                                    >
-                                      {hour < 10 ? `0${hour}` : hour}
-                                    </Button>
-                                  );
-                                })}
-                              </div>
-                            </ScrollArea>
-                            <ScrollArea className="w-64 sm:w-auto h-[300px]">
-                              <div className="flex sm:flex-col p-2">
-                                {Array.from({ length: 2 }, (_, i) => i * 30).map((minute) => {
-                                  const isDisabled = !field.value;
-                                  return (
-                                    <Button
-                                      key={minute}
-                                      size="icon"
-                                      variant={
-                                        new Date(field.value) &&
-                                          new Date(field.value).getMinutes() === minute
-                                          ? "default"
-                                          : "ghost"
-                                      }
-                                      className={cn("sm:w-full shrink-0 aspect-square")}
-                                      disabled={isDisabled}
-                                      onClick={() =>
-                                        !isDisabled && handleTimeChange("minute", minute.toString(), field)
-                                      }
-                                    >
-                                      {minute.toString().padStart(2, "0")}
-                                    </Button>
-                                  );
-                                })}
-                              </div>
-                            </ScrollArea>
-                          </div>
+                        <Calendar
+                          mode="single"
+                          selected={field.value ? new Date(field.value) : undefined}
+                          onSelect={(date) => {
+                            field.onChange(date?.toISOString())
+                            newAppointmentForm.setValue("end_date", "")
+                            newAppointmentForm.setValue("end_time", "")
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={newAppointmentForm.control}
+                name="start_time"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col w-full">
+                    <FormLabel className="w-fit">Hora de inicio</FormLabel>
+                    <Popover modal>
+                      <PopoverTrigger disabled={!startDate} asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(new Date(field.value), "hh:mm a")
+                            ) : (
+                              <span>Seleccionar hora</span>
+                            )}
+                            <Clock className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x">
+                          <ScrollArea className="w-64 sm:w-auto h-[300px]">
+                            <div className="flex flex-col p-2">
+                              {hours.map((hour) => {
+                                const isSameDay = new Date(startDate).toDateString() === new Date(field.value).toDateString();
+                                const startHour = new Date(startDate).getHours();
+
+                                let isDisabled: boolean = false
+                                if (isSameDay) {
+                                  isDisabled = hour < startHour;
+                                }
+                                return (
+                                  <Button
+                                    key={hour}
+                                    size="icon"
+                                    variant={
+                                      field.value &&
+                                        new Date(field.value).getHours() === hour
+                                        ? "default"
+                                        : "ghost"
+                                    }
+                                    className={cn("sm:w-full shrink-0 aspect-square")}
+                                    disabled={isDisabled}
+                                    onClick={() => {
+                                      handleTimeChange("hour", hour.toString(), field)
+                                      newAppointmentForm.setValue("end_time", "")
+                                    }}
+                                  >
+                                    {hour < 10 ? `0${hour}` : hour}
+                                  </Button>
+                                );
+                              }
+                              )}
+                            </div>
+                          </ScrollArea>
+                          <ScrollArea className="w-64 sm:w-auto h-[300px]">
+                            <div className="flex sm:flex-col p-2">
+                              {minutes.map((minute) => {
+                                const isSameDay = new Date(startDate).toDateString() === new Date(field.value).toDateString();
+                                const isSameHour = isSameDay && new Date(field.value).getHours() === new Date(startDate).getHours();
+
+                                let isDisabled = !field.value;
+                                if (isSameHour && minute < new Date(startDate).getMinutes()) {
+                                  isDisabled = true;
+                                }
+                                if (field.value) {
+                                  const selectedHour = new Date(field.value).getHours();
+                                  if (selectedHour === 18 && minute > 0) {
+                                    isDisabled = true;
+                                  }
+                                }
+                                return (
+                                  <Button
+                                    key={minute}
+                                    size="icon"
+                                    variant={
+                                      field.value &&
+                                        new Date(field.value).getMinutes() === minute
+                                        ? "default"
+                                        : "ghost"
+                                    }
+                                    className={cn("sm:w-full shrink-0 aspect-square")}
+                                    disabled={isDisabled}
+                                    onClick={() => handleTimeChange("minute", minute.toString(), field)}
+                                  >
+                                    {minute.toString().padStart(2, "0")}
+                                  </Button>
+                                );
+                              })}
+                            </div>
+                          </ScrollArea>
                         </div>
                       </PopoverContent>
                     </Popover>
@@ -224,20 +323,17 @@ export default function NewAppointmentDialog() {
                   <FormItem className="flex flex-col w-full">
                     <FormLabel className="w-fit">Fecha de fin</FormLabel>
                     <Popover modal>
-                      <PopoverTrigger
-                        disabled={!startDate}
-                        asChild
-                      >
+                      <PopoverTrigger disabled={!startDate} asChild>
                         <FormControl>
                           <Button
-                            variant={"outline"}
+                            variant="outline"
                             className={cn(
                               "pl-3 text-left font-normal",
                               !field.value && "text-muted-foreground"
                             )}
                           >
                             {field.value ? (
-                              format(new Date(field.value), "PPP - hh:mm a")
+                              format(new Date(field.value), "PPP")
                             ) : (
                               <span>Seleccionar fecha</span>
                             )}
@@ -246,45 +342,95 @@ export default function NewAppointmentDialog() {
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
-                        <div className="sm:flex">
-                          <Calendar
-                            mode="single"
-                            selected={field.value ? new Date(field.value) : undefined}
-                            onSelect={(date) => field.onChange(date?.toISOString())}
-                            disabled={(date) => {
-                              if (!startDate) return false;
-                              const startDateOnly = new Date(startDate);
-                              startDateOnly.setHours(0, 0, 0, 0);
-                              const currentDateOnly = new Date(date);
-                              currentDateOnly.setHours(0, 0, 0, 0);
-                              return currentDateOnly < startDateOnly;
-                            }}
-                            initialFocus
-                          />
+                        <Calendar
+                          mode="single"
+                          selected={field.value ? new Date(field.value) : undefined}
+                          onSelect={(date) => field.onChange(date?.toISOString())}
+                          disabled={(date) => {
+                            if (!startDate) return false;
+                            const startOnly = new Date(startDate);
+                            startOnly.setHours(0, 0, 0, 0);
+                            const currentOnly = new Date(date);
+                            currentOnly.setHours(0, 0, 0, 0);
+                            return currentOnly < startOnly;
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={newAppointmentForm.control}
+                name="end_time"
+                render={({ field }) => {
+                  const endTimeDate =
+                    field.value && !isNaN(new Date(field.value).getTime())
+                      ? new Date(field.value)
+                      : endDate
+                        ? new Date(endDate)
+                        : new Date(startDate);
+
+                  const startTimeValue = newAppointmentForm.getValues("start_time");
+                  const startTimeDate =
+                    startTimeValue && !isNaN(new Date(startTimeValue).getTime())
+                      ? new Date(startTimeValue)
+                      : new Date(startDate);
+
+                  const startDay = new Date(startDate).setHours(0, 0, 0, 0);
+                  const endDay = endDate
+                    ? new Date(endDate).setHours(0, 0, 0, 0)
+                    : new Date(startDate).setHours(0, 0, 0, 0);
+                  const isSameDay = startDay === endDay;
+
+                  const startHour = startTimeDate.getHours();
+                  const startMinute = startTimeDate.getMinutes();
+
+                  return (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel className="w-fit">Hora de fin</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger disabled={!endDate} asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(new Date(field.value), "hh:mm a")
+                              ) : (
+                                <span>Seleccionar hora</span>
+                              )}
+                              <Clock className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
                           <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x">
                             <ScrollArea className="w-64 sm:w-auto h-[300px]">
-                              <div className="flex sm:flex-col-reverse p-2">
+                              <div className="flex flex-col p-2">
                                 {hours.map((hour) => {
-                                  const isSameDay =
-                                    new Date(startDate).toDateString() ===
-                                    new Date(field.value).toDateString();
-                                  const isDisabled = (isSameDay && hour < new Date(startDate).getHours() || !field.value)
+                                  const isDisabled = isSameDay && hour < startHour;
                                   return (
                                     <Button
                                       key={hour}
                                       size="icon"
                                       variant={
-                                        new Date(field.value) &&
+                                        field.value &&
                                           new Date(field.value).getHours() === hour
                                           ? "default"
                                           : "ghost"
                                       }
-                                      className={cn(
-                                        "sm:w-full shrink-0 aspect-square",
-                                      )}
+                                      className={cn("sm:w-full shrink-0 aspect-square")}
                                       disabled={isDisabled}
                                       onClick={() =>
-                                        !isDisabled && handleTimeChange("hour", hour.toString(), field)
+                                        !isDisabled &&
+                                        handleTimeChange("hour", hour.toString(), field)
                                       }
                                     >
                                       {hour < 10 ? `0${hour}` : hour}
@@ -295,21 +441,24 @@ export default function NewAppointmentDialog() {
                             </ScrollArea>
                             <ScrollArea className="w-64 sm:w-auto h-[300px]">
                               <div className="flex sm:flex-col p-2">
-                                {Array.from({ length: 2 }, (_, i) => i * 30).map((minute) => {
-                                  const isSameDay =
-                                    new Date(startDate).toDateString() ===
-                                    new Date(field.value).toDateString();
-                                  const isSameHour =
-                                    isSameDay &&
-                                    new Date(field.value).getHours() ===
-                                    new Date(startDate).getHours();
-                                  const isDisabled = (isSameHour && minute < new Date(startDate).getMinutes() || !field.value)
+                                {minutes.map((minute) => {
+                                  let isDisabled = false;
+
+                                  if (isSameDay && endTimeDate.getHours() === startHour) {
+                                    isDisabled = minute < startMinute;
+                                  }
+                                  if (field.value) {
+                                    const selectedHour = new Date(field.value).getHours();
+                                    if (selectedHour === 18 && minute > 0) {
+                                      isDisabled = true;
+                                    }
+                                  }
                                   return (
                                     <Button
                                       key={minute}
                                       size="icon"
                                       variant={
-                                        new Date(field.value) &&
+                                        field.value &&
                                           new Date(field.value).getMinutes() === minute
                                           ? "default"
                                           : "ghost"
@@ -317,7 +466,8 @@ export default function NewAppointmentDialog() {
                                       className={cn("sm:w-full shrink-0 aspect-square")}
                                       disabled={isDisabled}
                                       onClick={() =>
-                                        !isDisabled && handleTimeChange("minute", minute.toString(), field)
+                                        !isDisabled &&
+                                        handleTimeChange("minute", minute.toString(), field)
                                       }
                                     >
                                       {minute.toString().padStart(2, "0")}
@@ -327,15 +477,13 @@ export default function NewAppointmentDialog() {
                               </div>
                             </ScrollArea>
                           </div>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
               <FormField
                 control={newAppointmentForm.control}
                 name="doctor_id"
@@ -343,21 +491,11 @@ export default function NewAppointmentDialog() {
                   <FormItem className="flex flex-col w-full">
                     <FormLabel>Profesional</FormLabel>
                     <FormControl>
-                      <AsyncSelect<{ label: string, value: string }>
+                      <AsyncSelect<{ label: string, value: string }, string>
                         label="Profesional"
                         triggerClassName="!w-full"
                         placeholder="Seleccionar un profesional"
-                        fetcher={async () => {
-                          return doctors
-                          /*                      await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 100))
-                                               if (query) {
-                                                 const lowercaseQuery = query.toLowerCase()
-                                                 return PATIENT_DATA.filter(user =>
-                                                   user.name.toLowerCase().includes(lowercaseQuery)
-                                                 ).slice(0, 10)
-                                               }
-                                               return PATIENT_DATA.slice(0, 10) */
-                        }}
+                        fetcher={handleGetDoctors}
                         getDisplayValue={(item) => item.label}
                         getOptionValue={(item) => item.value}
                         renderOption={(item) => <div>{item.label}</div>}
@@ -378,28 +516,11 @@ export default function NewAppointmentDialog() {
                   <FormItem className="flex flex-col w-full">
                     <FormLabel>Paciente</FormLabel>
                     <FormControl>
-                      <AsyncSelect<{ label: string, value: string }>
+                      <AsyncSelect<{ label: string, value: string }, string>
                         label="Paciente"
                         triggerClassName="!w-full"
                         placeholder="Seleccionar paciente"
-                        fetcher={async () => {
-                          //const params = query ? { search: { query } } : {};
-                          try {
-                            const patients = await store
-                              .dispatch(medicalManagementApi.endpoints.listPatients.initiate(/* params */))
-                              .unwrap();
-
-                            const formattedPatients = patients.data.map((patient) => ({
-                              label: `${patient.first_name} ${patient.first_last_name}`,
-                              value: patient.id,
-                            }));
-
-                            return formattedPatients;
-                          } catch (error) {
-                            console.error("Error al obtener pacientes:", error);
-                            return [];
-                          }
-                        }}
+                        fetcher={handleGetPatients}
                         getDisplayValue={(item) => item.label}
                         getOptionValue={(item) => item.value}
                         renderOption={(item) => <div>{item.label}</div>}
@@ -407,20 +528,12 @@ export default function NewAppointmentDialog() {
                         value={field.value}
                         noResultsMessage="No se encontraron pacientes"
                         modal
-                        actionButton={
-                          <Button size="sm" variant="outline" className="border-0 border-t rounded-none">
-                            <Plus />
-                            Crear paciente
-                          </Button>
-                        }
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
               <FormField
                 control={newAppointmentForm.control}
                 name="attention_type"
@@ -463,7 +576,7 @@ export default function NewAppointmentDialog() {
                                   value={template.template}
                                   key={template.id}
                                   onSelect={() => {
-                                    newAppointmentForm.setValue("attention_type", template.template)
+                                    newAppointmentForm.setValue("attention_type", template.template, { shouldValidate: true })
                                   }}
                                 >
                                   {template.template}
@@ -504,9 +617,9 @@ export default function NewAppointmentDialog() {
                             )}
                           >
                             {field.value
-                              ? clinics.find(
-                                (clinic) => clinic.value === field.value
-                              )?.label
+                              ? businessUnits?.data.find(
+                                (businessUnit) => businessUnit.id === field.value
+                              )?.name
                               : "Seleccionar sede"}
                             <ChevronsUpDown className="opacity-50" />
                           </Button>
@@ -521,19 +634,19 @@ export default function NewAppointmentDialog() {
                           <CommandList>
                             <CommandEmpty>No se encontraron resultados</CommandEmpty>
                             <CommandGroup>
-                              {clinics.map((clinic) => (
+                              {businessUnits?.data.map((businessUnit) => (
                                 <CommandItem
-                                  value={clinic.label}
-                                  key={clinic.value}
+                                  value={businessUnit.id}
+                                  key={businessUnit.id}
                                   onSelect={() => {
-                                    newAppointmentForm.setValue("clinic_id", clinic.value)
+                                    newAppointmentForm.setValue("clinic_id", businessUnit.id, { shouldValidate: true })
                                   }}
                                 >
-                                  {clinic.label}
+                                  {businessUnit.name}
                                   <Check
                                     className={cn(
                                       "ml-auto",
-                                      clinic.value === field.value
+                                      businessUnit.id === field.value
                                         ? "opacity-100"
                                         : "opacity-0"
                                     )}
@@ -575,7 +688,7 @@ export default function NewAppointmentDialog() {
               control={newAppointmentForm.control}
               name="notes"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>Notas</FormLabel>
                   <FormControl>
                     <Textarea

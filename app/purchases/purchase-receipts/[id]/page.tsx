@@ -13,7 +13,7 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn, placeholder } from "@/lib/utils"
-import { useGetPurchaseReceiptQuery } from "@/services/purchase-receipts"
+import { useGetPurchaseReceiptQuery } from "@/lib/services/purchase-receipts"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { ChevronDown, Eye, Paperclip, StickyNote } from "lucide-react"
@@ -82,25 +82,25 @@ export default function PurchaseReceiptPage() {
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">Proveedor</label>
               <span className={cn("text-sm transition-all duration-300", isLoading ? "blur-[4px]" : "blur-none")}>
-                {isLoading ? placeholder(10) : purchaseReceipt?.supplier}
+                {!purchaseReceipt ? placeholder(10) : purchaseReceipt?.supplier}
               </span>
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">Lugar de recepción</label>
               <span className={cn("text-sm transition-all duration-300", isLoading ? "blur-[4px]" : "blur-none")}>
-                {isLoading ? placeholder(10) : purchaseReceipt?.reception_location}
+                {!purchaseReceipt ? placeholder(10) : purchaseReceipt?.reception_location}
               </span>
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">Fecha de requerimiento</label>
               <span className={cn("text-sm transition-all duration-300", isLoading ? "blur-[4px]" : "blur-none")}>
-                {isLoading ? placeholder(13) : format(purchaseReceipt!.scheduled_date, "dd MMM yyyy", { locale: es })}
+                {!purchaseReceipt ? placeholder(13) : format(purchaseReceipt?.scheduled_date, "dd MMM yyyy", { locale: es })}
               </span>
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">Fecha de recepción</label>
               <span className={cn("text-sm transition-all duration-300", isLoading ? "blur-[4px]" : "blur-none")}>
-                {isLoading ? placeholder(13) : format(purchaseReceipt!.received_at, "dd MMM yyyy", { locale: es })}
+                {!purchaseReceipt ? placeholder(13) : format(purchaseReceipt?.received_at, "dd MMM yyyy", { locale: es })}
               </span>
             </div>
           </div>

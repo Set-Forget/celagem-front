@@ -1,5 +1,5 @@
 
-export const INVOICE_STATUSES = {
+export const billStatus = {
   "paid": {
     label: "Paga",
     bg_color: "bg-green-100",

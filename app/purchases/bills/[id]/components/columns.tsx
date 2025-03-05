@@ -7,25 +7,13 @@ import { BillItem } from "../../schemas/bills"
 
 export const columns: ColumnDef<BillItem>[] = [
   {
-    accessorKey: "item_code",
-    header: "Código",
-    cell: ({ row }) => (
-      <div>
-        {row.getValue("item_code")}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "item_name",
+    accessorKey: "product_name",
     header: "Nombre",
     cell: ({ row }) => {
-      return <div>{row.getValue("item_name")}</div>
+      return <span className="font-medium">
+        {row.getValue("product_name")}
+      </span>
     },
-  },
-  {
-    accessorKey: "description",
-    header: "Descripción",
-    cell: ({ row }) => <div>{row.getValue("description")}</div>,
   },
   {
     accessorKey: "quantity",
@@ -35,13 +23,22 @@ export const columns: ColumnDef<BillItem>[] = [
     },
   },
   {
-    accessorKey: "tax",
-    header: "Impuesto",
-    cell: ({ row }) => <div>{row.getValue("tax")}%</div>,
+    accessorKey: "price_unit",
+    header: "Precio unitario",
+    cell: ({ row }) => {
+      return <span className="font-medium">{row.original.currency} {row.original.price_unit.toFixed(2)}</span>
+    },
   },
   {
-    accessorKey: "price",
-    header: "Subtotal",
-    cell: ({ row }) => <div className="font-medium">ARS {row.getValue("price")}</div>,
+    accessorKey: "taxes",
+    header: "Impuestos",
+    cell: ({ row }) => {
+      return <span>{row.original.taxes[0].name}</span>
+    }
+  },
+  {
+    accessorKey: "price_subtotal",
+    header: "Subtotal (sin imp.)",
+    cell: ({ row }) => <span className="font-medium">{row.original.currency} {row.original.price_subtotal.toFixed(2)}</span>,
   },
 ]

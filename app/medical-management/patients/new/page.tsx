@@ -1,75 +1,22 @@
 "use client"
 
+import { AsyncSelect } from "@/components/async-select"
 import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
+import { useLazyGetAutocompleteQuery } from "@/lib/services/google-places"
+import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Check, ChevronsUpDown } from "lucide-react"
 import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { newPatientSchema } from "../schema/patients"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { format } from "date-fns"
-import { Calendar } from "@/components/ui/calendar"
-import { Switch } from "@/components/ui/switch"
-
-const APPOINTMENT_TYPES = [
-  {
-    value: "ovo-contributor",
-    label: "Ovo-Aportante",
-  },
-  {
-    value: "pregnant",
-    label: "Gestante",
-  },
-  {
-    value: "semen-contributor",
-    label: "Aportante de semen",
-  },
-] as const
-
-const HEADQUARTERS = [
-  {
-    value: "1",
-    label: "Sede Asistencial Bogotá",
-  },
-  {
-    value: "2",
-    label: "Sede Asistencial Bucamaranga",
-  },
-  {
-    value: "3",
-    label: "Sede Medellín",
-  },
-]
-
-const LINK_TYPES = [
-  {
-    value: "subsidized",
-    label: "Subsidiado",
-  },
-  {
-    value: "contributor",
-    label: "Cotizante",
-  },
-  {
-    value: "beneficiary",
-    label: "Beneficiario",
-  },
-  {
-    value: "additional",
-    label: "Adicional",
-  },
-  {
-    value: "particular",
-    label: "Particular",
-  },
-] as const
+import { useListClassesQuery } from "@/lib/services/users"
 
 const DOCUMENT_TYPES = [
   {
@@ -148,21 +95,6 @@ const GENDER_IDENTITY_TYPES = [
   },
 ] as const
 
-const CITIES = [
-  {
-    value: "1",
-    label: "Bogotá",
-  },
-  {
-    value: "2",
-    label: "Bucaramanga",
-  },
-  {
-    value: "3",
-    label: "Medellín",
-  },
-]
-
 const DISABILITY_TYPES = [
   {
     value: "visual",
@@ -207,23 +139,46 @@ export default function NewPatientPage() {
     resolver: zodResolver(newPatientSchema),
   })
 
+  const [searchPlace] = useLazyGetAutocompleteQuery();
+  const { data: classes } = useListClassesQuery()
+
   const onSubmit = (data: z.infer<typeof newPatientSchema>) => {
     console.log(data)
   }
 
-  const hasDisability = useWatch({
-    control: newPatientForm.control,
-    name: "disability",
-  })
+  const handleSearchPlace = async (query?: string) => {
+    if (!query) return [];
+    try {
+      const place = await searchPlace(query).unwrap();
+      return place.predictions.map((prediction) => ({
+        formatted_address: prediction.description,
+        place_id: prediction.place_id,
+      }));
+    } catch (error) {
+      console.error("Error al buscar lugar:", error);
+      return [];
+    }
+  }
 
   const isCompany = useWatch({
     control: newPatientForm.control,
-    name: "customer_type",
+    name: "fiscal.customer_type",
   }) === "company"
+
+  console.log(newPatientForm.watch())
 
   return (
     <>
-      <Header title="Nuevo paciente" />
+      <Header title="Nuevo paciente">
+        <Button
+          type="submit"
+          onClick={newPatientForm.handleSubmit(onSubmit)}
+          size="sm"
+          className="ml-auto"
+        >
+          Crear paciente
+        </Button>
+      </Header>
       <div className="flex flex-col h-full justify-between">
         <Form {...newPatientForm}>
           <form onSubmit={newPatientForm.handleSubmit(onSubmit)} className="flex flex-col">
@@ -242,19 +197,13 @@ export default function NewPatientPage() {
                           placeholder="Juan"
                         />
                       </FormControl>
-                      {newPatientForm.formState.errors.first_name ? (
-                        <FormMessage />
-                      ) :
-                        <FormDescription>
-                          Este será el nombre del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={newPatientForm.control}
-                  name="last_name"
+                  name="first_last_name"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
                       <FormLabel className="w-fit">Apellido(s)</FormLabel>
@@ -264,17 +213,11 @@ export default function NewPatientPage() {
                           placeholder="Pérez"
                         />
                       </FormControl>
-                      {newPatientForm.formState.errors.last_name ? (
-                        <FormMessage />
-                      ) :
-                        <FormDescription>
-                          Este será el apellido del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField
+                {/*                 <FormField
                   control={newPatientForm.control}
                   name="link_type"
                   render={({ field }) => (
@@ -342,10 +285,10 @@ export default function NewPatientPage() {
                       }
                     </FormItem>
                   )}
-                />
+                /> */}
                 <FormField
                   control={newPatientForm.control}
-                  name="biological_sex"
+                  name="sex"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
                       <FormLabel className="w-fit">Sexo biológico</FormLabel>
@@ -383,7 +326,7 @@ export default function NewPatientPage() {
                                     value={type.label}
                                     key={type.value}
                                     onSelect={() => {
-                                      newPatientForm.setValue("biological_sex", type.value)
+                                      newPatientForm.setValue("sex", type.value)
                                     }}
                                   >
                                     {type.label}
@@ -402,13 +345,7 @@ export default function NewPatientPage() {
                           </Command>
                         </PopoverContent>
                       </Popover>
-                      {newPatientForm.formState.errors.link_type ? (
-                        <FormMessage />
-                      ) :
-                        <FormDescription>
-                          Este será el sexo biológico del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -431,7 +368,7 @@ export default function NewPatientPage() {
                             >
                               {field.value
                                 ? GENDER_IDENTITY_TYPES.find(
-                                  (language) => language.value === field.value
+                                  (type) => type.value === field.value
                                 )?.label
                                 : "Seleccionar identidad de género"}
                               <ChevronsUpDown className="opacity-50" />
@@ -471,13 +408,11 @@ export default function NewPatientPage() {
                           </Command>
                         </PopoverContent>
                       </Popover>
-                      <FormDescription>
-                        Este será la identidad de género del cliente que se registrará.
-                      </FormDescription>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField
+                {/*              <FormField
                   control={newPatientForm.control}
                   name="birthdate"
                   render={({ field }) => (
@@ -522,104 +457,65 @@ export default function NewPatientPage() {
                       }
                     </FormItem>
                   )}
-                />
+                /> */}
                 <FormField
                   control={newPatientForm.control}
                   name="birth_place"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
                       <FormLabel className="w-fit">Lugar de nacimiento</FormLabel>
-                      <Popover modal>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              className={cn(
-                                "justify-between font-normal pl-3",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value
-                                ? CITIES.find(
-                                  (language) => language.value === field.value
-                                )?.label
-                                : "Seleccionar lugar de nacimiento"}
-                              <ChevronsUpDown className="opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent align="start" className="p-0">
-                          <Command>
-                            <CommandInput
-                              placeholder="Buscar..."
-                              className="h-8"
-                            />
-                            <CommandList>
-                              <CommandEmpty>No se encontraron resultados</CommandEmpty>
-                              <CommandGroup>
-                                {CITIES.map((city) => (
-                                  <CommandItem
-                                    value={city.label}
-                                    key={city.value}
-                                    onSelect={() => {
-                                      newPatientForm.setValue("birth_place", city.value)
-                                    }}
-                                  >
-                                    {city.label}
-                                    <Check
-                                      className={cn(
-                                        "ml-auto",
-                                        city.value === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      {newPatientForm.formState.errors.birth_place ? (
-                        <FormMessage />
-                      ) :
-                        <FormDescription>
-                          Este será el lugar de nacimiento del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormControl>
+                        <AsyncSelect<{ formatted_address: string, place_id: string }, { formatted_address: string, place_id: string }>
+                          label="Lugar de nacimiento"
+                          triggerClassName="!w-full"
+                          placeholder="Seleccionar lugar de nacimiento"
+                          fetcher={handleSearchPlace}
+                          getDisplayValue={(item) => item.formatted_address}
+                          getOptionValue={(item) => item}
+                          renderOption={(item) => <div>{item.formatted_address}</div>}
+                          onChange={field.onChange}
+                          value={field.value}
+                          getOptionKey={(item) => item.place_id}
+                          noResultsMessage="No se encontraron resultados"
+                          modal
+                        />
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={newPatientForm.control}
-                  name="residence_address"
+                  name="address"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
                       <FormLabel className="w-fit">Dirección de residencia</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Calle 123 # 123-45"
+                        <AsyncSelect<{ formatted_address: string, place_id: string }, { formatted_address: string, place_id: string }>
+                          label="Dirección de residencia"
+                          triggerClassName="!w-full"
+                          placeholder="Seleccionar dirección de residencia"
+                          fetcher={handleSearchPlace}
+                          getDisplayValue={(item) => item.formatted_address}
+                          getOptionValue={(item) => item}
+                          renderOption={(item) => <div>{item.formatted_address}</div>}
+                          onChange={field.onChange}
+                          value={field.value}
+                          getOptionKey={(item) => item.place_id}
+                          noResultsMessage="No se encontraron resultados"
+                          modal
                         />
                       </FormControl>
-                      {newPatientForm.formState.errors.residence_address ? (
-                        <FormMessage />
-                      ) :
-                        <FormDescription>
-                          Este será la dirección de residencia del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={newPatientForm.control}
-                  name="residence_city_id"
+                  name="disability_type"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Ciudad de residencia</FormLabel>
+                    <FormItem className="flex flex-col w-full mt-0.5">
+                      <FormLabel className="w-fit">Discapacidad</FormLabel>
                       <Popover modal>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -632,10 +528,10 @@ export default function NewPatientPage() {
                               )}
                             >
                               {field.value
-                                ? CITIES.find(
-                                  (language) => language.value === field.value
+                                ? DISABILITY_TYPES.find(
+                                  (type) => type.value === field.value
                                 )?.label
-                                : "Seleccionar ciudad de residencia"}
+                                : "Seleccionar tipo de discapacidad"}
                               <ChevronsUpDown className="opacity-50" />
                             </Button>
                           </FormControl>
@@ -649,19 +545,19 @@ export default function NewPatientPage() {
                             <CommandList>
                               <CommandEmpty>No se encontraron resultados</CommandEmpty>
                               <CommandGroup>
-                                {CITIES.map((city) => (
+                                {DISABILITY_TYPES.map((type) => (
                                   <CommandItem
-                                    value={city.label}
-                                    key={city.value}
+                                    value={type.label}
+                                    key={type.value}
                                     onSelect={() => {
-                                      newPatientForm.setValue("residence_city_id", city.value)
+                                      newPatientForm.setValue("disability_type", type.value)
                                     }}
                                   >
-                                    {city.label}
+                                    {type.label}
                                     <Check
                                       className={cn(
                                         "ml-auto",
-                                        city.value === field.value
+                                        type.value === field.value
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
@@ -673,108 +569,11 @@ export default function NewPatientPage() {
                           </Command>
                         </PopoverContent>
                       </Popover>
-                      {newPatientForm.formState.errors.residence_city_id ? (
-                        <FormMessage />
-                      ) :
-                        <FormDescription>
-                          Este será la ciudad de residencia del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
-                <div className="flex flex-col">
-                  <FormField
-                    control={newPatientForm.control}
-                    name="disability"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="flex items-center justify-between">
-                          <FormLabel>
-                            ¿Discapacidad?
-                          </FormLabel>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                  {/* cambiar por otra cosa, queda un poco raro así, quizás simplemente meter en las opciones, una que diga sin discapacidad y marcarla como default */}
-                  <FormField
-                    control={newPatientForm.control}
-                    name="disability_type_id"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col w-full mt-0.5">
-                        <Popover modal>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                disabled={!hasDisability}
-                                variant="outline"
-                                role="combobox"
-                                className={cn(
-                                  "justify-between font-normal pl-3",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value
-                                  ? DISABILITY_TYPES.find(
-                                    (language) => language.value === field.value
-                                  )?.label
-                                  : "Seleccionar tipo de discapacidad"}
-                                <ChevronsUpDown className="opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent align="start" className="p-0">
-                            <Command>
-                              <CommandInput
-                                placeholder="Buscar..."
-                                className="h-8"
-                              />
-                              <CommandList>
-                                <CommandEmpty>No se encontraron resultados</CommandEmpty>
-                                <CommandGroup>
-                                  {DISABILITY_TYPES.map((type) => (
-                                    <CommandItem
-                                      value={type.label}
-                                      key={type.value}
-                                      onSelect={() => {
-                                        newPatientForm.setValue("disability_type_id", type.value)
-                                      }}
-                                    >
-                                      {type.label}
-                                      <Check
-                                        className={cn(
-                                          "ml-auto",
-                                          type.value === field.value
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                      />
-                                    </CommandItem>
-                                  ))}
-                                </CommandGroup>
-                              </CommandList>
-                            </Command>
-                          </PopoverContent>
-                        </Popover>
-                        {newPatientForm.formState.errors.disability_type_id ? (
-                          <FormMessage />
-                        ) :
-                          <FormDescription>
-                            Este será el tipo de discapacidad del cliente que se registrará.
-                          </FormDescription>
-                        }
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
+                {/*                 <FormField
                   control={newPatientForm.control}
                   name="headquarter_id"
                   render={({ field }) => (
@@ -842,7 +641,7 @@ export default function NewPatientPage() {
                       }
                     </FormItem>
                   )}
-                />
+                /> */}
                 <FormField
                   control={newPatientForm.control}
                   name="document_type"
@@ -902,13 +701,7 @@ export default function NewPatientPage() {
                           </Command>
                         </PopoverContent>
                       </Popover>
-                      {newPatientForm.formState.errors.document_type ? (
-                        <FormMessage />
-                      ) :
-                        <FormDescription>
-                          Este será el tipo de documento del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -924,13 +717,7 @@ export default function NewPatientPage() {
                           placeholder="1234567890"
                         />
                       </FormControl>
-                      {newPatientForm.formState.errors.document_number ? (
-                        <FormMessage />
-                      ) :
-                        <FormDescription>
-                          Este será el número de documento del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -946,15 +733,7 @@ export default function NewPatientPage() {
                           placeholder="+1 123 456 7890"
                         />
                       </FormControl>
-                      {newPatientForm.formState.errors.phone_number ? (
-                        <FormMessage>
-                          {newPatientForm.formState.errors.phone_number.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Este será el número de teléfono del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -970,24 +749,16 @@ export default function NewPatientPage() {
                           placeholder="ventas@guantes.com"
                         />
                       </FormControl>
-                      {newPatientForm.formState.errors.email ? (
-                        <FormMessage>
-                          {newPatientForm.formState.errors.email.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Este será el correo electrónico del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={newPatientForm.control}
-                  name="role"
+                  name="class_id"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Rol</FormLabel>
+                      <FormLabel className="w-fit">Clase</FormLabel>
                       <Popover modal>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -999,11 +770,7 @@ export default function NewPatientPage() {
                                 !field.value && "text-muted-foreground"
                               )}
                             >
-                              {field.value
-                                ? APPOINTMENT_TYPES.find(
-                                  (language) => language.value === field.value
-                                )?.label
-                                : "Seleccionar rol"}
+                              {field.value ? classes?.data?.find((c) => c.id === field.value)?.name : "Seleccionar clase"}
                               <ChevronsUpDown className="opacity-50" />
                             </Button>
                           </FormControl>
@@ -1017,19 +784,19 @@ export default function NewPatientPage() {
                             <CommandList>
                               <CommandEmpty>No se encontraron resultados</CommandEmpty>
                               <CommandGroup>
-                                {APPOINTMENT_TYPES.map((headquarter) => (
+                                {classes?.data?.map((c) => (
                                   <CommandItem
-                                    value={headquarter.label}
-                                    key={headquarter.value}
+                                    value={c.name}
+                                    key={c.id}
                                     onSelect={() => {
-                                      newPatientForm.setValue("role", headquarter.value)
+                                      newPatientForm.setValue("class_id", c.id)
                                     }}
                                   >
-                                    {headquarter.label}
+                                    {c.name}
                                     <Check
                                       className={cn(
                                         "ml-auto",
-                                        headquarter.value === field.value
+                                        c.id === field.value
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
@@ -1041,20 +808,14 @@ export default function NewPatientPage() {
                           </Command>
                         </PopoverContent>
                       </Popover>
-                      {newPatientForm.formState.errors.role ? (
-                        <FormMessage />
-                      ) :
-                        <FormDescription>
-                          Este será el rol del paciente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
             </div>
             <Separator />
-            <div className="flex flex-col gap-4 p-4">
+            {/*             <div className="flex flex-col gap-4 p-4">
               <span className="text-base font-medium">Acompañante</span>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField
@@ -1130,7 +891,7 @@ export default function NewPatientPage() {
                             >
                               {field.value
                                 ? CITIES.find(
-                                  (language) => language.value === field.value
+                                  (class) => language.value === field.value
                                 )?.label
                                 : "Seleccionar ciudad de residencia"}
                               <ChevronsUpDown className="opacity-50" />
@@ -1327,14 +1088,14 @@ export default function NewPatientPage() {
                   )}
                 />
               </div>
-            </div>
-            <Separator />
+            </div> */}
+            {/* <Separator /> */}
             <div className="flex flex-col gap-4 p-4">
               <span className="text-base font-medium">Fiscal</span>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField
                   control={newPatientForm.control}
-                  name="customer_type"
+                  name="fiscal.customer_type"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
                       <FormLabel className="w-fit">
@@ -1360,21 +1121,13 @@ export default function NewPatientPage() {
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      {newPatientForm.formState.errors.customer_type ? (
-                        <FormMessage>
-                          {newPatientForm.formState.errors.customer_type.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Este será el tipo de cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={newPatientForm.control}
-                  name="registered_name"
+                  name="fiscal.registered_name"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
                       <FormLabel className="w-fit">Razón social</FormLabel>
@@ -1385,45 +1138,29 @@ export default function NewPatientPage() {
                           placeholder="Guantes S.A."
                         />
                       </FormControl>
-                      {newPatientForm.formState.errors.registered_name ? (
-                        <FormMessage>
-                          {newPatientForm.formState.errors.registered_name.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Esta será la razón social del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={newPatientForm.control}
-                  name="cuit"
+                  name="fiscal.tax_id"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">CUIT/CUIL</FormLabel>
+                      <FormLabel className="w-fit">Número de identificación fiscal</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           placeholder="30-12345678-9"
                         />
                       </FormControl>
-                      {newPatientForm.formState.errors.cuit ? (
-                        <FormMessage>
-                          {newPatientForm.formState.errors.cuit.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Este será el CUIT/CUIL del cliente que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={newPatientForm.control}
-                  name="fiscal_category"
+                  name="fiscal.fiscal_category"
                   render={({ field }) => (
                     <FormItem className="flex flex-col w-full">
                       <FormLabel className="w-fit">
@@ -1452,30 +1189,13 @@ export default function NewPatientPage() {
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      {newPatientForm.formState.errors.fiscal_category ? (
-                        <FormMessage>
-                          {newPatientForm.formState.errors.fiscal_category.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Este será el tipo de pago que se registrará.
-                        </FormDescription>
-                      }
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
             </div>
           </form>
-          <div className="flex justify-end gap-2 mt-4 p-4">
-            <Button
-              type="submit"
-              onClick={newPatientForm.handleSubmit(onSubmit)}
-              size="sm"
-            >
-              Crear paciente
-            </Button>
-          </div>
         </Form>
       </div>
     </>

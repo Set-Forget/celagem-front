@@ -9,7 +9,7 @@ import {
   Row
 } from "@tanstack/react-table"
 import { format } from "date-fns"
-import { PURCHASE_ORDER_STATUS } from "../adapters/customers"
+import { purchaseOrderStatus } from "../utils"
 import { PurchaseOrderList } from "../schemas/purchase-orders"
 
 const PercentageReceivedCell = ({ row }: { row: Row<PurchaseOrderList> }) => {
@@ -44,7 +44,7 @@ export const columns: ColumnDef<PurchaseOrderList>[] = [
     accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      const status = PURCHASE_ORDER_STATUS[row.getValue("status") as keyof typeof PURCHASE_ORDER_STATUS]
+      const status = purchaseOrderStatus[row.getValue("status") as keyof typeof purchaseOrderStatus]
       return <Badge
         variant="custom"
         className={cn(`${status?.bg_color} ${status?.text_color} border-none`)}

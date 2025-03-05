@@ -2,8 +2,10 @@
 
 import { setDialogsState } from '@/lib/store/dialogs-store';
 import { cn } from '@/lib/utils';
-import { useListAppointmentsQuery } from '@/services/appointments';
 import { AppointmentList } from '../schemas/appointments';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { appointmentStates } from '../utils';
+import { format, parse } from 'date-fns';
 
 function getCalendarDates(selectedDate: Date): Date[] {
   const year = selectedDate.getFullYear();
@@ -52,19 +54,13 @@ export default function MonthlyView({ selectedDate, appointments }: { selectedDa
           </div>
         ))}
       </div>
-
       <div className='grid grid-cols-7 h-full'>
         {calendarDates.map((cellDate, index) => {
           const dayNum = cellDate.getDate();
           const cellMonth = cellDate.getMonth();
           const cellYear = cellDate.getFullYear();
-          const isToday =
-            new Date().toDateString() === cellDate.toDateString();
-
-          const isCurrentMonth =
-            cellMonth === selectedDate.getMonth() &&
-            cellYear === selectedDate.getFullYear();
-
+          const isToday = new Date().toDateString() === cellDate.toDateString();
+          const isCurrentMonth = cellMonth === selectedDate.getMonth() && cellYear === selectedDate.getFullYear();
           const dayAppointments = getAppointmentsForDay(cellDate);
 
           return (
@@ -75,7 +71,8 @@ export default function MonthlyView({ selectedDate, appointments }: { selectedDa
                 index % 7 === 6 && 'border-r-0',
                 !isCurrentMonth && 'text-gray-400 bg-accent/50'
               )}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setDialogsState({
                   open: "new-appointment",
                   payload: { date: cellDate },
@@ -95,33 +92,75 @@ export default function MonthlyView({ selectedDate, appointments }: { selectedDa
                 {dayAppointments?.slice(0, 3).map((appointment) => (
                   <div
                     key={appointment.id}
-                    className={cn("appointment text-xs px-1.5 py-0.5 w-full truncate flex items-center gap-1 cursor-pointer hover:bg-accent transition-colors"
-                    )}
+                    className={cn("appointment text-xs px-1.5 py-0.5 w-full truncate flex items-center gap-1 cursor-pointer hover:bg-accent transition-colors")}
                     onMouseOver={(e) => e.stopPropagation()}
                     onClick={(e) => {
                       e.stopPropagation();
                       setDialogsState({
                         open: 'appointment-details',
-                        payload: dayAppointments.find((a) => a.id === appointment.id),
+                        payload: {
+                          appointment: dayAppointments.find((a) => a.id === appointment.id)
+                        },
                       });
                     }}
                   >
                     <div
                       className={cn(
-                        "w-2 h-2 border border-primary bg-primary/15 rounded-full mr-1 shrink-0 !shadow-sm !shadow-primary/50",
+                        "w-2 h-2 border border-primary bg-primary/15 rounded-full mr-1 shrink-0 !shadow-sm",
+                        appointmentStates[appointment?.status as keyof typeof appointmentStates]?.bg_color,
+                        appointmentStates[appointment?.status as keyof typeof appointmentStates]?.border_color,
+                        appointmentStates[appointment?.status as keyof typeof appointmentStates]?.shadow_color,
                         !isCurrentMonth && "border-border bg-accent/25 shadow-border"
                       )}
                     />
-                    <span>{appointment.start_time}</span>
-                    <p className="font-semibold ml-0.5 truncate">User {appointment.created_by}</p>
+                    <span>{format(parse(appointment?.start_time ?? "", 'HH:mm', new Date()), "hh:mm a")}</span>
+                    <p className="font-semibold ml-0.5 truncate">
+                      {appointment?.patient?.first_name} {appointment?.patient?.last_name}
+                    </p>
                   </div>
                 ))}
                 {dayAppointments && dayAppointments.length > 3 && (
-                  <span
-                    className="appointment font-medium text-xs px-1.5 py-0.5 w-full truncate flex items-center gap-1 cursor-pointer hover:bg-accent transition-colors mt-auto"
-                  >
-                    ... {dayAppointments.length - 3} más
-                  </span>
+                  <Popover>
+                    <PopoverTrigger
+                      onClick={(e) => e.stopPropagation()}
+                      asChild
+                    >
+                      <span
+                        className="appointment font-medium text-xs px-1.5 py-0.5 w-full truncate flex items-center gap-1 cursor-pointer hover:bg-accent transition-colors mt-auto"
+                      >
+                        ... {dayAppointments.length - 3} más
+                      </span>
+                    </PopoverTrigger>
+                    <PopoverContent className="max-w-[280px] p-2 shadow-none" side="top">
+                      {dayAppointments.slice(3).map((appointment) => (
+                        <div
+                          key={appointment.id}
+                          className={cn("appointment text-xs px-1.5 py-0.5 w-full truncate flex items-center gap-1 cursor-pointer hover:bg-accent transition-colors")}
+                          onMouseOver={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDialogsState({
+                              open: 'appointment-details',
+                              payload: {
+                                appointment: dayAppointments.find((a) => a.id === appointment.id)
+                              },
+                            });
+                          }}
+                        >
+                          <div
+                            className={cn(
+                              "w-2 h-2 border border-primary bg-primary/15 rounded-full mr-1 shrink-0 !shadow-sm !shadow-primary/50",
+                              !isCurrentMonth && "border-border bg-accent/25 shadow-border"
+                            )}
+                          />
+                          <span>{format(parse(appointment?.start_time ?? "", 'HH:mm', new Date()), "hh:mm a")}</span>
+                          <p className="font-semibold ml-0.5 truncate">
+                            {appointment?.patient?.first_name} {appointment?.patient?.last_name}
+                          </p>
+                        </div>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
                 )}
               </div>
             </button>
