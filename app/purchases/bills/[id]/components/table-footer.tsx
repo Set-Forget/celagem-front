@@ -1,8 +1,7 @@
-import { TableCell, TableFooter as ShadcnTableFooter, TableRow } from "@/components/ui/table";
-import { columns } from "./columns";
-import { useParams } from "next/navigation";
-import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
+import { TableFooter as ShadcnTableFooter, TableCell, TableRow } from "@/components/ui/table";
 import { useGetBillQuery } from "@/lib/services/bills";
+import { useParams } from "next/navigation";
+import { columns } from "./columns";
 
 export default function TableFooter() {
   const { id } = useParams<{ id: string }>()
