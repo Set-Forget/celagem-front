@@ -157,23 +157,23 @@ const data = {
       items: [
         {
           title: 'Puestos de trabajo',
-          url: '/inventory/job-positions',
+          url: '/register/job-positions',
         },
         {
           title: 'Servicios',
-          url: '/inventory/services',
+          url: '/register/services',
         },
         {
           title: 'Examenes Medicos',
-          url: '/inventory/medical-exams',
+          url: '/register/medical-exams',
         },
         {
           title: 'Materiales',
-          url: '/inventory/materials',
+          url: '/register/materials',
         },
         {
           title: 'Actos Clinicos',
-          url: '/inventory/procedures',
+          url: '/register/procedures',
         },
       ],
     },
@@ -183,8 +183,8 @@ const data = {
       icon: Box,
       items: [
         {
-          title: 'Productos',
-          url: '/inventory/products',
+          title: 'Materiales',
+          url: '/inventory/materials',
         },
         {
           title: 'Almacenes',

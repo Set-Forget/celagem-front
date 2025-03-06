@@ -6,17 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import Toolbar from './components/toolbar';
-import { materialsInventoryEntriesColumns } from './components/columns';
+import { jobPositionsColumns } from './components/columns';
 import { usePathname, useRouter } from 'next/navigation';
-import { materialsInventoryMock } from './mocks/materials-inventory';
+import { jobPositionsMock } from './mocks/jobPositionsMock';
 
-export default function ProductsPage() {
+export default function JobPositionsPage() {
   const pathname = usePathname();
   const router = useRouter();
 
   return (
     <>
-      <Header title="Inventario de Materiales">
+      <Header title="Puestos de trabajo">
         <Button
           className="ml-auto"
           size="sm"
@@ -24,15 +24,15 @@ export default function ProductsPage() {
         >
           <Link href={`${pathname}/new`}>
             <Plus className="w-4 h-4" />
-            Crear entrada  
+            Crear puesto de trabajo
           </Link>
         </Button>
       </Header>
 
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
         <DataTable
-          data={materialsInventoryMock}
-          columns={materialsInventoryEntriesColumns}
+          data={jobPositionsMock}
+          columns={jobPositionsColumns}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
         />

@@ -14,27 +14,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { Box, ChevronDown, Eye, House, Paperclip } from 'lucide-react';
 import Link from 'next/link';
-import { materialsInventoryMock } from '../mocks/materials-inventory';
+import { materialsMock } from '../mocks/materials';
 
-export default async function MaterialInventoryEntryPage({
+export default async function MaterialPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const materialId = (await params).id;
 
-  const materialInventoryEntry = materialsInventoryMock.find(
+  const material = materialsMock.find(
     (material) => material.id === parseInt(materialId)
   );
 
   return (
     <>
-      <Header
-        title={
-          materialInventoryEntry?.code + ' - ' + materialInventoryEntry?.name ||
-          'Material'
-        }
-      >
+      <Header title={material?.code + ' - ' + material?.name || 'Material'}>
         {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="ml-auto" size="sm">
@@ -65,43 +60,26 @@ export default async function MaterialInventoryEntryPage({
           <h2 className="text-base font-medium">General</h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Código</label>
-              <span className="text-sm">{materialInventoryEntry?.code}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Marca</label>
-              <span className="text-sm">{materialInventoryEntry?.brand}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Fracción</label>
+              <label className="text-muted-foreground text-sm">
+                Código
+              </label>
               <span className="text-sm">
-                {materialInventoryEntry?.fraction}
+                {material?.code}
               </span>
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">
-                Número de lote
+                Nombre
               </label>
               <span className="text-sm">
-                {materialInventoryEntry?.lot_number}
+                ${material?.name}
               </span>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Cantidad</label>
-              <span className="text-sm">{materialInventoryEntry?.qty}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Ubicación</label>
-              <span className="text-sm">
-                {materialInventoryEntry?.location}
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Stock</label>
-              <span className="text-sm">
-                {materialInventoryEntry?.qty}
-              </span>
+              <label className="text-muted-foreground text-sm">
+                Stock disponible
+              </label>
+              <span className="text-sm">20 unidades</span>
             </div>
           </div>
         </div>
