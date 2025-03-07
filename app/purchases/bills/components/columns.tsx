@@ -49,9 +49,14 @@ export const columns: ColumnDef<BillList>[] = [
     accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      const status = billStatus[row.getValue("status") as keyof typeof billStatus]
+      let rawStatus = row.getValue("status")
+      if (rawStatus === "posted" && new Date(row.original.due_date) < new Date()) {
+        rawStatus = "overdue"
+      }
+
+      const status = billStatus[rawStatus as keyof typeof billStatus]
       return <Badge
-        variant="outline"
+        variant="custom"
         className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
       >
         {status?.label}

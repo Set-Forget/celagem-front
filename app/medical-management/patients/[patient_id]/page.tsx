@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "@/components/ui/button"
 import {
   ResizableHandle,
@@ -9,6 +11,10 @@ import { Separator } from "@/components/ui/separator"
 import Header from "@/components/header"
 import { ChevronDown, Pencil, Plus, X } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useParams } from "next/navigation"
+import { useGetPatientQuery } from "@/lib/services/patients"
+import { cn, placeholder } from "@/lib/utils"
+import { format } from "date-fns"
 
 const notes = [
   { id: 1, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc." },
@@ -17,12 +23,13 @@ const notes = [
   { id: 4, content: "Sed pretium tortor nec ipsum interdum dictum. Aliquam erat volutpat. Phasellus pulvinar velit arcu, at interdum ligula volutpat id. Nulla et tellus vel ipsum scelerisque auctor eu non massa. Duis laoreet vel magna eu sodales. Maecenas bibendum nisl neque, quis auctor arcu pharetra commodo. Proin sit amet facilisis libero. Fusce sagittis purus ut aliquam accumsan. Fusce vel mauris nisi. Vestibulum lobortis." },
 ]
 
-export default function PatientPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
+export default function PatientPage() {
+  const params = useParams<{ patient_id: string }>();
 
+  const patientId = params.patient_id
+
+  const { data: patient, isLoading: isPatientLoading } = useGetPatientQuery(patientId);
+  console.log(patient)
   return (
     <>
       <Header title="Detalles del paciente">
@@ -59,48 +66,50 @@ export default function PatientPage({
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Nombre</label>
-                  <span className="text-sm">Juan Perez</span>
+                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
+                    {isPatientLoading ? placeholder(14) : patient?.first_name + " " + patient?.first_last_name}
+                  </span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Tipo de vinculación</label>
                   <span className="text-sm">
-                    Particular
+                    xxxxxx
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Rol</label>
+                  <label className="text-muted-foreground text-sm">Clase</label>
                   <span className="text-sm">
-                    Donante de semen
+                    xxxxxx
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Sexo biológico</label>
-                  <span className="text-sm">
-                    Masculino
+                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
+                    {isPatientLoading ? placeholder(14) : patient?.biological_sex}
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">
                     Identidad de género
                   </label>
-                  <span className="text-sm">
-                    Cisgénero
+                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
+                    {isPatientLoading ? placeholder(14) : patient?.gender_identity}
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">
                     Fecha de nacimiento
                   </label>
-                  <span className="text-sm">
-                    01/01/1990
+                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
+                    {isPatientLoading ? placeholder(14) : patient?.birth_date && format(patient?.birth_date, "dd/MM/yyyy")}
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">
                     Lugar de nacimiento
                   </label>
-                  <span className="text-sm">
-                    Buenos Aires
+                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
+                    {isPatientLoading ? placeholder(14) : patient?.birth_place}
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
@@ -108,15 +117,15 @@ export default function PatientPage({
                     Dirección de residencia
                   </label>
                   <span className="text-sm">
-                    Av. Corrientes 1234
+                    xxxxxx
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">
                     Discapacidad
                   </label>
-                  <span className="text-sm">
-                    Sin discapacidad
+                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
+                    {isPatientLoading ? placeholder(14) : patient?.disability_type}
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
@@ -124,7 +133,7 @@ export default function PatientPage({
                     Sede
                   </label>
                   <span className="text-sm">
-                    Sede Asistencial Bogotá
+                    xxxxxx
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
@@ -132,52 +141,42 @@ export default function PatientPage({
                     Documento
                   </label>
                   <span className="text-sm">
-                    CC 123456789
+                    xxxxxx
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Número de teléfono</label>
-                  <span className="text-sm">+54 9 11 1234 5678</span>
+                  <span className="text-sm">
+                    xxxxxx
+                  </span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Email</label>
-                  <span className="text-sm">set@forget.com</span>
+                  <span className="text-sm">
+                    xxxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">
+                    Entidad/IPS remitente
+                  </label>
+                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
+                    {isPatientLoading ? placeholder(14) : patient?.referring_entity}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">
+                    Aseguradora
+                  </label>
+                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
+                    {isPatientLoading ? placeholder(14) : patient?.insurance_provider}
+                  </span>
                 </div>
               </div>
             </div>
             <Separator />
             <div className="px-4 flex flex-col gap-4">
               <h2 className="text-base font-medium">Acompañante</h2>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Nombre</label>
-                  <span className="text-sm">Juan Pérez</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Dirección de residencia
-                  </label>
-                  <span className="text-sm">
-                    Av. Corrientes 1234
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Ciudad de residencia
-                  </label>
-                  <span className="text-sm">
-                    Buenos Aires
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Parentesco
-                  </label>
-                  <span className="text-sm">
-                    Conyuge
-                  </span>
-                </div>
-              </div>
             </div>
             <Separator />
             <div className="px-4 flex flex-col gap-4">
@@ -186,20 +185,6 @@ export default function PatientPage({
             <Separator />
             <div className="px-4 flex flex-col gap-4">
               <h2 className="text-base font-medium">Fiscal</h2>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Tipo de cliente</label>
-                  <span className="text-sm">Particular</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">CUIT/CUIL</label>
-                  <span className="text-sm">20-12345678-9</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Condición frente al IVA</label>
-                  <span className="text-sm">Responsable Inscripto</span>
-                </div>
-              </div>
             </div>
           </div>
         </ResizablePanel>

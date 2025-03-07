@@ -69,6 +69,28 @@ export const patientListSchema = z.object({
   first_name: z.string(),
 })
 
+export const patientDetailSchema = z.object({
+  id: z.string(),
+  user_id: z.string(),
+  research_participant: z.boolean(),
+  first_name: z.string(),
+  first_last_name: z.string(),
+  second_last_name: z.string(),
+  biological_sex: z.string(),
+  gender_identity: z.string(),
+  birth_date: z.string(),
+  birth_place: z.string(),
+  disability_type: z.string(),
+  socioeconomic_level: z.string(),
+  residence_zone: z.string(),
+  father_name: z.string(),
+  mother_name: z.string(),
+  insurance_provider: z.string(),
+  referring_entity: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+})
+
 export const patientListResponseSchema = z.object({
   status: z.string(),
   code: z.number(),
@@ -76,5 +98,15 @@ export const patientListResponseSchema = z.object({
   data: z.array(patientListSchema),
 })
 
+export const patientDetailResponseSchema = z.object({
+  status: z.string(),
+  code: z.number(),
+  message: z.string(),
+  data: patientDetailSchema,
+})
+
 export type PatientList = z.infer<typeof patientListSchema>;
 export type PatientListResponse = z.infer<typeof patientListResponseSchema>;
+
+export type PatientDetail = z.infer<typeof patientDetailSchema>;
+export type PatientDetailResponse = z.infer<typeof patientDetailResponseSchema>;

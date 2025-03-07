@@ -192,29 +192,6 @@ export default function NewPurchaseOrderPage() {
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={newPurchaseOrderForm.control}
-              name="contacts_name"
-              render={({ field }) => (
-                <FormItem className="flex flex-col w-full">
-                  <FormLabel className="w-fit">Contactos</FormLabel>
-                  <MultiSelect
-                    options={contacts}
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    placeholder="Selecciona contactos..."
-                    searchPlaceholder="Buscar contactos..."
-                  />
-                  {newPurchaseOrderForm.formState.errors.contacts_name ? (
-                    <FormMessage />
-                  ) :
-                    <FormDescription>
-                      Estos serán los contactos a los que se les enviará la orden de compra.
-                    </FormDescription>
-                  }
-                </FormItem>
-              )}
-            /> */}
             <FormField
               control={newPurchaseOrderForm.control}
               name="required_by"

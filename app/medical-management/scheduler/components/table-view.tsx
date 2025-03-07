@@ -17,7 +17,7 @@ export default function TableView({ appointments, isLoading }: { appointments?: 
         data={appointments || []}
         columns={columns}
         loading={isLoading}
-        onRowClick={(row) => router.push(`${pathname}/appointment/${row.id}`)}
+        onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
         sorting={sorting}
         setSorting={setSorting}
       />

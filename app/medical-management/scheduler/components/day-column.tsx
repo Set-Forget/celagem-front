@@ -73,7 +73,7 @@ export default function DayColumn({
               setDialogsState({
                 open: "appointment-details",
                 payload: {
-                  appointment: appointments?.find((a) => a.id === appointment.id),
+                  appointment_id: appointment.id,
                 },
               });
             }}

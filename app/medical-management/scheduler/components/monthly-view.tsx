@@ -99,7 +99,7 @@ export default function MonthlyView({ selectedDate, appointments }: { selectedDa
                       setDialogsState({
                         open: 'appointment-details',
                         payload: {
-                          appointment: dayAppointments.find((a) => a.id === appointment.id)
+                          appointment_id: appointment.id,
                         },
                       });
                     }}
@@ -142,7 +142,7 @@ export default function MonthlyView({ selectedDate, appointments }: { selectedDa
                             setDialogsState({
                               open: 'appointment-details',
                               payload: {
-                                appointment: dayAppointments.find((a) => a.id === appointment.id)
+                                appointment_id: appointment.id,
                               },
                             });
                           }}

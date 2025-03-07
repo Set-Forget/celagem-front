@@ -1,26 +1,29 @@
+import StatusDot from "@/components/status-dot";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useGetAppointmentQuery, useUpdateAppointmentMutation } from "@/lib/services/appointments";
 import { closeDialogs, DialogsState, dialogsStateObservable, setDialogsState as setMasterDialogsState } from "@/lib/store/dialogs-store";
-import { cn } from "@/lib/utils";
-import { useUpdateAppointmentMutation } from "@/lib/services/appointments";
+import { cn, placeholder } from "@/lib/utils";
 import { format, formatISO, parse } from "date-fns";
 import { es } from "date-fns/locale";
-import { Ban, Hospital, Loader2, MapPin, Microscope, Pencil, Stethoscope } from "lucide-react";
-import { useEffect, useState } from "react";
-import { AppointmentList } from "../schemas/appointments";
-import { appointmentStates, modesOfCare } from "../utils";
+import { ChevronDown, Hospital, MapPin, Microscope, Pencil, Stethoscope } from "lucide-react";
 import { useRouter } from "next/navigation";
-
+import { useEffect, useState } from "react";
+import { appointmentStates, modesOfCare } from "../utils";
 
 export default function AppointmentDetailsDialog() {
   const router = useRouter()
 
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
-  const appointment = dialogState?.payload?.appointment as AppointmentList
+  const appointmentId = dialogState?.payload?.appointment_id as string
 
-  const [updateAppointment, { isLoading }] = useUpdateAppointmentMutation()
+  const { data: appointment, isFetching: isAppointmentFetching } = useGetAppointmentQuery(appointmentId,
+    { skip: !appointmentId }
+  )
+  const [updateAppointment] = useUpdateAppointmentMutation()
 
   const startDateTimeISO = appointment ? formatISO(parse(`${appointment?.start_date} ${appointment?.start_time}`, 'yyyy-MM-dd HH:mm', new Date())) : '';
   const endDateTimeISO = appointment ? formatISO(parse(`${appointment?.end_date} ${appointment?.end_time}`, 'yyyy-MM-dd HH:mm', new Date())) : '';
@@ -28,17 +31,12 @@ export default function AppointmentDetailsDialog() {
   const onOpenChange = () => {
     closeDialogs()
   }
-
-  const handleUpdateAppointment = async () => {
+  const handleUpdateAppointment = async ({ status_id }: { status_id: number }) => {
     try {
-      const response = await updateAppointment({
+      await updateAppointment({
         id: appointment?.id as string,
-        body: { status_id: 3 }
-      })
-
-      if (response.data?.status === 'SUCCESS') {
-        closeDialogs()
-      }
+        body: { status_id }
+      }).unwrap()
     } catch (error) {
       console.error(error)
     }
@@ -58,19 +56,38 @@ export default function AppointmentDetailsDialog() {
       <DialogContent className="w-[500px] gap-6">
         <DialogHeader className="gap-1">
           <div className="flex items-center gap-2">
-            <DialogTitle>
-              {appointment?.patient?.first_name} {appointment?.patient?.last_name}
+            <DialogTitle className={cn("transition-all duration-300", isAppointmentFetching ? "blur-[4px]" : "blur-none")}>
+              {isAppointmentFetching ? placeholder(12) : appointment?.patient?.first_name} {appointment?.patient?.last_name}
             </DialogTitle>
-            <Badge
-              variant="custom"
-              className={
-                cn(
-                  appointmentStates[appointment?.status as keyof typeof appointmentStates]?.bg_color,
-                  appointmentStates[appointment?.status as keyof typeof appointmentStates]?.text_color
-                )}
-            >
-              {appointmentStates[appointment?.status as keyof typeof appointmentStates]?.label}
-            </Badge>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Badge
+                  variant="custom"
+                  className={
+                    cn(
+                      appointmentStates[appointment?.status as keyof typeof appointmentStates]?.bg_color,
+                      appointmentStates[appointment?.status as keyof typeof appointmentStates]?.text_color
+                    )}
+                >
+                  {appointmentStates[appointment?.status as keyof typeof appointmentStates]?.label}
+                  <ChevronDown className="h-3.5 w-3.5 ml-1" />
+                </Badge>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="min-w-32">
+                <DropdownMenuItem
+                  onSelect={() => handleUpdateAppointment({ status_id: 1 })}
+                >
+                  <StatusDot className="text-primary !h-2 !w-2 shadow-md rounded-full shadow-primary/50" />
+                  <span>Pendiente</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => handleUpdateAppointment({ status_id: 3 })}
+                >
+                  <StatusDot className="text-red-500 !h-2 !w-2 shadow-md rounded-full shadow-red-500/50" />
+                  <span>Cancelado</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <DialogDescription>
             {appointment && (() => {
@@ -85,25 +102,25 @@ export default function AppointmentDetailsDialog() {
         </DialogHeader>
         <div className="grid grid-cols-2 gap-4 mt-2">
           <div className="flex gap-2">
-            <Hospital className="h-5 w-5" />
+            <Hospital className="h-5 w-5 shrink-0" />
             <span className="text-sm">
-              {appointment?.clinic_id}
+              xxxxx
             </span>
           </div>
           <div className="flex gap-2">
-            <Stethoscope className="h-5 w-5" />
+            <Stethoscope className="h-5 w-5 shrink-0" />
             <span className="text-sm">
               Dr. {appointment?.doctor?.first_name} {appointment?.doctor?.last_name}
             </span>
           </div>
           <div className="flex gap-2">
-            <MapPin className="h-5 w-5" />
+            <MapPin className="h-5 w-5 shrink-0" />
             <span className="text-sm">
               {modesOfCare[appointment?.mode_of_care as keyof typeof modesOfCare]}
             </span>
           </div>
           <div className="flex gap-2">
-            <Microscope className="h-5 w-5" />
+            <Microscope className="h-5 w-5 shrink-0" />
             <span className="text-sm">
               {appointment?.care_type}
             </span>
@@ -114,38 +131,26 @@ export default function AppointmentDetailsDialog() {
             {appointment?.notes || 'No se adjuntaron notas a este turno.'}
           </span>
         </div>
-        <div className="flex items-center gap-2 justify-between">
+        <div className="flex gap-2 ml-auto">
           <Button
-            variant="ghost"
-            size="sm"
-            className="text-destructive hover:text-destructive"
-            disabled={isLoading || appointment?.status === "CANCELLED"}
-            onClick={handleUpdateAppointment}
+            variant="outline"
+            size="icon"
+            className="w-8 h-8"
+            onClick={() => {
+              setMasterDialogsState({ open: "edit-appointment", payload: { appointment } })
+            }}
           >
-            {isLoading ? <Loader2 className="animate-spin" /> : <Ban />}
-            Cancelar
+            <Pencil />
           </Button>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              className="w-8 h-8"
-              onClick={() => {
-                setMasterDialogsState({ open: "edit-appointment", payload: { appointment } })
-              }}
-            >
-              <Pencil />
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => {
-                closeDialogs()
-                router.push(`/medical-management/scheduler/appointment/${appointment?.id}`)
-              }}
-            >
-              Iniciar visita
-            </Button>
-          </div>
+          <Button
+            size="sm"
+            onClick={() => {
+              closeDialogs()
+              router.push(`/medical-management/scheduler/${appointment?.id}`)
+            }}
+          >
+            Iniciar visita
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
