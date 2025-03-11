@@ -24,31 +24,7 @@ export default async function ProductPage({
 
   return (
     <>
-      <Header title="LAP-001 Laptop Dell XPS 15">
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="ml-auto" size="sm">
-              Crear
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/purchases/purchase-receipts/new">
-                  Recepciones
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Registro de pago
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Nota de débito
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
-      </Header>
+      <Header title="LAP-001 Laptop Dell XPS 15" />
       <Tabs className="mt-4" defaultValue="tab-1">
         <ScrollArea>
           <TabsList className="relative justify-start !pl-4 h-auto w-full gap-1 bg-transparent p-0 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-border">

@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils"
 import { ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { columns } from "./components/columns"
+import { usePathname, useRouter } from "next/navigation"
 
 const data = [
   {
@@ -27,12 +28,9 @@ const data = [
   },
 ]
 
-export default function PurchaseRequestPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  //const customerId = (await params).id
+export default function PurchaseRequestPage() {
+  const pathname = usePathname()
+  const router = useRouter()
 
   const handleGeneratePDF = async () => {
     const { generatePurchaseRequestPDF } = await import("../templates/purchase-request")
@@ -82,10 +80,10 @@ export default function PurchaseRequestPage({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/purchases/purchase-orders/new">
-                  Orden de compra
-                </Link>
+              <DropdownMenuItem
+                onClick={() => router.push(`${pathname}/new`)}
+              >
+                Orden de compra
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

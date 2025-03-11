@@ -1,6 +1,6 @@
 "use client"
 
-import { CalendarIcon, Check, CheckIcon, ChevronsUpDown } from "lucide-react"
+import { CalendarIcon, Check, ChevronsUpDown, Ellipsis, House, Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -26,25 +26,24 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { newBillSchema } from "../schemas/bills"
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import ItemsTable from "./components/items-table"
+import { AsyncSelect } from "@/components/async-select"
+import FormTable from "@/components/form-table"
 import Header from "@/components/header"
-import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
+import { useLazyListPurchaseOrdersQuery } from "@/lib/services/purchase-orders"
+import { useLazyListSuppliersQuery } from "@/lib/services/suppliers"
+import { columns } from "./components/columns"
+import TableFooter from "./components/table-footer"
+import { useCreateBillMutation } from "@/lib/services/bills"
+import { useRouter } from "next/navigation"
+import CustomSonner from "@/components/custom-sonner"
+import { toast } from "sonner"
 
-const companies = [
-  { label: "Google", value: "30-67890123-4" },
-  { label: "Facebook", value: "30-12345678-9" },
-  { label: "Microsoft", value: "33-98765432-1" },
-  { label: "Apple", value: "33-11223344-5" },
-  { label: "Amazon", value: "34-55667788-0" },
-  { label: "Tesla", value: "30-99887766-3" },
-  { label: "Netflix", value: "31-44556677-2" },
-  { label: "Twitter", value: "31-77665544-8" },
-  { label: "Spotify", value: "32-33445566-7" },
-  { label: "Adobe", value: "33-22334455-9" },
-] as const;
-
+// ! Debe traerse de la API
 const accounts = [
   { number: "11", name: "EFECTIVO Y EQUIVALENTES AL EFECTIVO" },
   { number: "1101", name: "EFECTIVO" },
@@ -68,6 +67,7 @@ const accounts = [
   { number: "12", name: "INVERSIONES E INSTRUMENTOS DERIVADOS" }
 ];
 
+// ! Debe traerse de la API
 const cost_centers = [
   {
     "id": "CC-2040",
@@ -115,517 +115,594 @@ const cost_centers = [
   },
 ]
 
+// ! Debe traerse de la API
+const currencies = [
+  { label: "ARS (Peso argentino)", value: "ARS", id: 1 },
+  { label: "COP (Peso colombiano)", value: "COP", id: 2 },
+  { label: "USD (Dólar estadounidense)", value: "USD", id: 3 },
+] as const;
+
 export default function NewBillPage() {
+  const router = useRouter()
+
+  const [searchSuppliers] = useLazyListSuppliersQuery()
+  const [searchPurchaseOrders] = useLazyListPurchaseOrdersQuery()
+  const [createBill, { isLoading: isCreatingBill }] = useCreateBillMutation()
+
   const newBillForm = useForm<z.infer<typeof newBillSchema>>({
     resolver: zodResolver(newBillSchema),
     defaultValues: {
-      items: []
+      items: [],
+      date: "",
+      accounting_date: "",
+      number: "",
+      accounting_account: "",
+      cost_center: "",
+      notes: ""
     }
   })
 
-  const onSubmit = (data: z.infer<typeof newBillSchema>) => {
-    console.log(data)
+  const onSubmit = async (data: z.infer<typeof newBillSchema>) => {
+    try {
+      const response = await createBill({
+        ...data,
+        currency: 1,
+        payment_term: 2,
+        items: data.items.map((item) => ({
+          ...item,
+          taxes_id: [2]
+        }))
+      }).unwrap()
+
+      if (response.status === "success") {
+        router.push(`/purchases/bills/${response.data.id}`)
+        toast.custom((t) => <CustomSonner t={t} description="Factura de compra creada exitosamente" />)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la factura de compra" variant="error" />)
+    }
   }
 
+  const handleSearchPurchaseOrder = async (query?: string) => {
+    try {
+      const response = await searchPurchaseOrders({ number: query }).unwrap()
+      return response.data?.map(purchaseOrder => ({
+        id: purchaseOrder.id,
+        number: purchaseOrder.number
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
+  }
+
+  const handleSearchSupplier = async (query?: string) => {
+    try {
+      const response = await searchSuppliers({ name: query }).unwrap()
+      return response.data?.map(supplier => ({
+        id: supplier.id,
+        name: supplier.name
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
+  }
+
+  console.log(newBillForm.watch())
+  console.log(newBillForm.formState.errors)
+
   return (
-    <>
-      <Header />
-      <div className="flex flex-col h-full justify-between">
-        <Form {...newBillForm}>
-          <form onSubmit={newBillForm.handleSubmit(onSubmit)} className="flex flex-col">
-            <div className="flex flex-col gap-4 p-4">
-              <span className="text-base font-medium">General</span>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField
-                  control={newBillForm.control}
-                  name="supplier"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Proveedor</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              className={cn(
-                                "w-full justify-between pl-3 font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value
-                                ? companies.find(
-                                  (company) => company.value === field.value
-                                )?.label
-                                : "Selecciona un proveedor"}
-                              <ChevronsUpDown className="opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                          <Command>
-                            <CommandInput
-                              placeholder="Buscar proveedores..."
-                              className="h-9"
-                            />
-                            <CommandList>
-                              <CommandEmpty>
-                                No se encontraron proveedores.
-                              </CommandEmpty>
-                              <CommandGroup>
-                                {companies.map((company) => (
-                                  <CommandItem
-                                    value={company.label}
-                                    key={company.value}
-                                    onSelect={() => {
-                                      newBillForm.setValue("supplier", company.value)
-                                    }}
-                                  >
-                                    {company.label}
-                                    <Check
-                                      className={cn(
-                                        "ml-auto",
-                                        company.value === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      {newBillForm.formState.errors.supplier ? (
-                        <FormMessage>
-                          {newBillForm.formState.errors.supplier.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Proveedor que figura en la factura.
-                        </FormDescription>
-                      }
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={newBillForm.control}
-                  name="invoice_date"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Fecha de emisión</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Seleccioná una fecha</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value ? new Date(field.value) : undefined}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      {newBillForm.formState.errors.invoice_date ? (
-                        <FormMessage>
-                          {newBillForm.formState.errors.invoice_date.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Fecha en la que se emitió la factura.
-                        </FormDescription>
-                      }
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={newBillForm.control}
-                  name="invoice_number"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Número de factura</FormLabel>
+    <Form {...newBillForm}>
+      <Header title="Nueva factura de compra">
+        <div className="flex gap-2 p-4 ml-auto">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+          >
+            Previsualizar
+          </Button>
+          <Button
+            type="submit"
+            onClick={newBillForm.handleSubmit(onSubmit)}
+            size="sm"
+            loading={isCreatingBill}
+          >
+            Crear factura de compra
+          </Button>
+        </div>
+      </Header>
+      <Tabs className="mt-4" defaultValue="tab-1">
+        <ScrollArea>
+          <TabsList className="relative justify-start !pl-4 h-auto w-full gap-1 bg-transparent p-0 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-border">
+            <TabsTrigger
+              value="tab-1"
+              className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
+            >
+              <House
+                className="-ms-0.5 me-1.5"
+                size={16}
+                aria-hidden="true"
+              />
+              General
+            </TabsTrigger>
+            <TabsTrigger
+              value="tab-2"
+              className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
+            >
+              <Ellipsis
+                className="-ms-0.5 me-1.5"
+                size={16}
+                aria-hidden="true"
+              />
+              Otros
+            </TabsTrigger>
+          </TabsList>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+        <TabsContent value="tab-1" className="m-0">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
+            <FormField
+              control={newBillForm.control}
+              name="supplier"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel className="w-fit">Proveedor</FormLabel>
+                  <AsyncSelect<{ id: number, name: string }, number>
+                    label="Proveedor"
+                    triggerClassName="!w-full"
+                    placeholder="Seleccionar proveedor..."
+                    fetcher={handleSearchSupplier}
+                    getDisplayValue={(item) => item.name}
+                    getOptionValue={(item) => item.id}
+                    renderOption={(item) => <div>{item.name}</div>}
+                    onChange={field.onChange}
+                    value={field.value}
+                    getOptionKey={(item) => String(item.id)}
+                    noResultsMessage="No se encontraron resultados"
+                  />
+                  {newBillForm.formState.errors.supplier ? (
+                    <FormMessage />
+                  ) :
+                    <FormDescription>
+                      Proveedor que figura en la factura.
+                    </FormDescription>
+                  }
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newBillForm.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel className="w-fit">Fecha de emisión</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Número de factura"
-                        />
-                      </FormControl>
-                      {newBillForm.formState.errors.invoice_number ? (
-                        <FormMessage>
-                          {newBillForm.formState.errors.invoice_number.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Número de factura que figura en el documento.
-                        </FormDescription>
-                      }
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={newBillForm.control}
-                  name="order_number"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Número de orden de compra</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Número de orden de compra"
-                        />
-                      </FormControl>
-                      {newBillForm.formState.errors.order_number ? (
-                        <FormMessage>
-                          {newBillForm.formState.errors.order_number.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Número de orden de compra que figura en la factura.
-                        </FormDescription>
-                      }
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={newBillForm.control}
-                  name="accounting_date"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Fecha de contabilización</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Seleccioná una fecha</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value ? new Date(field.value) : undefined}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      {newBillForm.formState.errors.accounting_date ? (
-                        <FormMessage>
-                          {newBillForm.formState.errors.accounting_date.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Fecha en la que se registrará la factura en la contabilización.
-                        </FormDescription>
-                      }
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            <Separator />
-            <div className="flex flex-col gap-4 p-4">
-              <span className="text-base font-medium">Fiscal</span>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField
-                  control={newBillForm.control}
-                  name="currency"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Moneda</FormLabel>
-                      <FormControl>
-                        <Select onValueChange={field.onChange}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Moneda" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="ARS">
-                              ARS (Peso argentino)
-                            </SelectItem>
-                            <SelectItem value="COP">
-                              COP (Peso colombiano)
-                            </SelectItem>
-                            <SelectItem value="USD">
-                              USD (Dólar estadounidense)
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      {newBillForm.formState.errors.currency ? (
-                        <FormMessage>
-                          {newBillForm.formState.errors.currency.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Moneda que figura en la factura de compra.
-                        </FormDescription>
-                      }
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={newBillForm.control}
-                  name="payment_terms"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">
-                        Condición de pago
-                      </FormLabel>
-                      <FormControl>
-                        <Select
-                          value={field.value}
-                          onValueChange={field.onChange}
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
                         >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Condición de pago" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="anticipo">
-                              Anticipo
-                            </SelectItem>
-                            <SelectItem value="7_dias">
-                              7 días
-                            </SelectItem>
-                            <SelectItem value="15_dias">
-                              15 días
-                            </SelectItem>
-                            <SelectItem value="30_dias">
-                              30 días
-                            </SelectItem>
-                            <SelectItem value="60_dias">
-                              60 días
-                            </SelectItem>
-                            <SelectItem value="90_dias">
-                              90 días
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Seleccioná una fecha</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
                       </FormControl>
-                      {newBillForm.formState.errors.payment_terms ? (
-                        <FormMessage>
-                          {newBillForm.formState.errors.payment_terms.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Este será el tipo de pago que se registrará.
-                        </FormDescription>
-                      }
-                    </FormItem>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value ? new Date(field.value) : undefined}
+                        onSelect={(date) => {
+                          if (!date) return
+                          newBillForm.setValue("date", date?.toISOString(), { shouldValidate: true })
+                        }}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  {newBillForm.formState.errors.date ? (
+                    <FormMessage />
+                  ) :
+                    <FormDescription>
+                      Fecha en la que se emitió la factura.
+                    </FormDescription>
+                  }
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newBillForm.control}
+              name="number"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel className="w-fit">Número de factura</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Número de factura"
+                    />
+                  </FormControl>
+                  {newBillForm.formState.errors.number ? (
+                    <FormMessage />
+                  ) :
+                    <FormDescription>
+                      Número de factura que figura en el documento.
+                    </FormDescription>
+                  }
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newBillForm.control}
+              name="accounting_date"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel className="w-fit">Fecha de contabilización</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Seleccioná una fecha</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value ? new Date(field.value) : undefined}
+                        onSelect={(date) => {
+                          if (!date) return
+                          newBillForm.setValue("accounting_date", date?.toISOString(), { shouldValidate: true })
+                        }}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  {newBillForm.formState.errors.accounting_date ? (
+                    <FormMessage />
+                  ) :
+                    <FormDescription>
+                      Fecha en la que se registrará la factura en la contabilización.
+                    </FormDescription>
+                  }
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newBillForm.control}
+              name="accounting_account"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel className="w-fit">Cuenta contable</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-full justify-between pl-3 font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? accounts.find(
+                              (account) => account.number === field.value
+                            )?.name
+                            : "Selecciona una cuenta contable"}
+                          <ChevronsUpDown className="opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Buscar cuentas..."
+                          className="h-9"
+                        />
+                        <CommandList>
+                          <CommandEmpty>
+                            No se encontraron cuentas.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {accounts.map((account) => (
+                              <CommandItem
+                                value={account.number}
+                                key={account.number}
+                                onSelect={() => {
+                                  newBillForm.setValue("accounting_account", account.number, { shouldValidate: true })
+                                }}
+                              >
+                                <div className="flex flex-col">
+                                  {account.name}
+                                  <span className="text-xs text-muted-foreground">{account.number}</span>
+                                </div>
+                                <Check
+                                  className={cn(
+                                    "ml-auto",
+                                    account.number === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  {newBillForm.formState.errors.accounting_account ? (
+                    <FormMessage />
+                  ) :
+                    <FormDescription>
+                      Cuenta contable a la que se cargará la factura.
+                    </FormDescription>
+                  }
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newBillForm.control}
+              name="currency"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel className="w-fit">Moneda</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Moneda" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {currencies.map((currency) => (
+                          <SelectItem
+                            key={currency.id}
+                            value={String(currency.id)}
+                          >
+                            {currency.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  {newBillForm.formState.errors.currency ? (
+                    <FormMessage />
+                  ) :
+                    <FormDescription>
+                      Moneda que figura en la factura de compra.
+                    </FormDescription>
+                  }
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newBillForm.control}
+              name="payment_term"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel className="w-fit">
+                    Condición de pago
+                  </FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Condición de pago" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="0">
+                          Anticipo
+                        </SelectItem>
+                        <SelectItem value="1">
+                          7 días
+                        </SelectItem>
+                        <SelectItem value="2">
+                          15 días
+                        </SelectItem>
+                        <SelectItem value="3">
+                          30 días
+                        </SelectItem>
+                        <SelectItem value="4">
+                          60 días
+                        </SelectItem>
+                        <SelectItem value="5">
+                          90 días
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  {newBillForm.formState.errors.payment_term ? (
+                    <FormMessage />
+                  ) :
+                    <FormDescription>
+                      Este será el tipo de pago que se registrará.
+                    </FormDescription>
+                  }
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newBillForm.control}
+              name="items"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full col-span-2">
+                  <FormLabel className="w-fit">Items</FormLabel>
+                  <FormControl>
+                    <FormTable<z.infer<typeof newBillSchema>>
+                      columns={columns}
+                      footer={({ append }) => <TableFooter append={append} />}
+                      name="items"
+                      className="col-span-2"
+                    />
+                  </FormControl>
+                  {newBillForm.formState.errors.items?.message && (
+                    <p className="text-destructive text-[12.8px] mt-1 font-medium">
+                      {newBillForm.formState.errors.items.message}
+                    </p>
                   )}
-                />
-              </div>
-            </div>
-            <Separator />
-            <div className="flex flex-col gap-4 p-4">
-              <span className="text-base font-medium">Contabilidad</span>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField
-                  control={newBillForm.control}
-                  name="account"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Cuenta</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              className={cn(
-                                "w-full justify-between pl-3 font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value
-                                ? accounts.find(
-                                  (company) => company.number === field.value
-                                )?.name
-                                : "Selecciona una cuenta"}
-                              <ChevronsUpDown className="opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                          <Command>
-                            <CommandInput
-                              placeholder="Buscar cuentas..."
-                              className="h-9"
-                            />
-                            <CommandList>
-                              <CommandEmpty>
-                                No se encontraron cuentas.
-                              </CommandEmpty>
-                              <CommandGroup>
-                                {accounts.map((account) => (
-                                  <CommandItem
-                                    value={account.number}
-                                    key={account.number}
-                                    onSelect={() => {
-                                      newBillForm.setValue("account", account.number)
-                                    }}
-                                  >
-                                    <div className="flex flex-col">
-                                      {account.name}
-                                      <span className="text-xs text-muted-foreground">{account.number}</span>
-                                    </div>
-                                    <Check
-                                      className={cn(
-                                        "ml-auto",
-                                        account.number === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      {newBillForm.formState.errors.account ? (
-                        <FormMessage>
-                          {newBillForm.formState.errors.account.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Cuenta contable a la que se cargará la factura.
-                        </FormDescription>
-                      }
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={newBillForm.control}
-                  name="cost_center"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <FormLabel className="w-fit">Centro de costos</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              className={cn(
-                                "w-full justify-between pl-3 font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value
-                                ? cost_centers.find(
-                                  (cost_center) => cost_center.id === field.value
-                                )?.name
-                                : "Selecciona un centro de costos"}
-                              <ChevronsUpDown className="opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                          <Command>
-                            <CommandInput
-                              placeholder="Buscar centros de costos..."
-                              className="h-9"
-                            />
-                            <CommandList>
-                              <CommandEmpty>
-                                No se encontraron centros de costos.
-                              </CommandEmpty>
-                              <CommandGroup>
-                                {cost_centers.map((cost_center) => (
-                                  <CommandItem
-                                    value={cost_center.id}
-                                    key={cost_center.id}
-                                    onSelect={() => {
-                                      newBillForm.setValue("cost_center", cost_center.id)
-                                    }}
-                                  >
-                                    {cost_center.name}
-                                    <Check
-                                      className={cn(
-                                        "ml-auto",
-                                        cost_center.id === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      {newBillForm.formState.errors.cost_center ? (
-                        <FormMessage>
-                          {newBillForm.formState.errors.cost_center.message}
-                        </FormMessage>
-                      ) :
-                        <FormDescription>
-                          Centro de costos al que se cargará la factura.
-                        </FormDescription>
-                      }
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            <Separator />
-            <div className="flex flex-col gap-4 p-4">
-              <span className="text-base font-medium">Items de la factura</span>
-              <ItemsTable />
-            </div>
-          </form>
-          <div className="flex justify-end gap-2 p-4">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-            >
-              Previsualizar
-            </Button>
-            <Button
-              type="submit"
-              onClick={newBillForm.handleSubmit(onSubmit)}
-              size="sm"
-            >
-              Crear Factura
-            </Button>
+                </FormItem>
+              )}
+            />
           </div>
-        </Form>
-      </div>
-    </>
+        </TabsContent>
+        <TabsContent value="tab-2" className="m-0">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
+            <FormField
+              control={newBillForm.control}
+              name="purchase_order"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel className="w-fit">Orden de compra</FormLabel>
+                  <FormControl>
+                    <AsyncSelect<{ id: number, number: string }, number | undefined>
+                      label="Orden de compra"
+                      triggerClassName="!w-full"
+                      placeholder="Seleccionar orden de compra..."
+                      fetcher={handleSearchPurchaseOrder}
+                      getDisplayValue={(item) => item.number}
+                      getOptionValue={(item) => item.id}
+                      renderOption={(item) => <div>{item.number}</div>}
+                      onChange={field.onChange}
+                      value={field.value}
+                      getOptionKey={(item) => String(item.id)}
+                      noResultsMessage="No se encontraron resultados"
+                    />
+                  </FormControl>
+                  {newBillForm.formState.errors.purchase_order ? (
+                    <FormMessage />
+                  ) :
+                    <FormDescription>
+                      Número de orden de compra que figura en la factura.
+                    </FormDescription>
+                  }
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newBillForm.control}
+              name="cost_center"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel className="w-fit">Centro de costos</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-full justify-between pl-3 font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? cost_centers.find(
+                              (cost_center) => cost_center.id === field.value
+                            )?.name
+                            : "Selecciona un centro de costos"}
+                          <ChevronsUpDown className="opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Buscar centros de costos..."
+                          className="h-9"
+                        />
+                        <CommandList>
+                          <CommandEmpty>
+                            No se encontraron centros de costos.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {cost_centers.map((cost_center) => (
+                              <CommandItem
+                                value={cost_center.id}
+                                key={cost_center.id}
+                                onSelect={() => {
+                                  newBillForm.setValue("cost_center", cost_center.id)
+                                }}
+                              >
+                                {cost_center.name}
+                                <Check
+                                  className={cn(
+                                    "ml-auto",
+                                    cost_center.id === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  {newBillForm.formState.errors.cost_center ? (
+                    <FormMessage />
+                  ) :
+                    <FormDescription>
+                      Centro de costos al que se cargará la factura.
+                    </FormDescription>
+                  }
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newBillForm.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full col-span-2">
+                  <FormLabel className="w-fit">Notas</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Notas"
+                    />
+                  </FormControl>
+                  {newBillForm.formState.errors.notes ? (
+                    <FormMessage />
+                  ) :
+                    <FormDescription>
+                      Notas adicionales sobre la factura.
+                    </FormDescription>
+                  }
+                </FormItem>
+              )}
+            />
+          </div>
+        </TabsContent>
+      </Tabs>
+    </Form>
   )
 }

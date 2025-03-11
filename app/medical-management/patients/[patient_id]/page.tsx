@@ -29,7 +29,6 @@ export default function PatientPage() {
   const patientId = params.patient_id
 
   const { data: patient, isLoading: isPatientLoading } = useGetPatientQuery(patientId);
-  console.log(patient)
   return (
     <>
       <Header title="Detalles del paciente">

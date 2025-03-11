@@ -19,6 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface AccountItem {
   id: string
@@ -32,6 +33,8 @@ interface NestedAccountTableProps {
 }
 
 const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data }) => {
+  const router = useRouter()
+
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 365),
@@ -115,11 +118,9 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data }) => {
                 size="sm"
                 variant="ghost"
                 className='h-6'
-                asChild
+                onClick={() => router.push(`/accounting/chart-of-accounts/${currentNumber}`)}
               >
-                <Link href={`/accounting/chart-of-accounts/${currentNumber}`}>
-                  {item.name}
-                </Link>
+                {item.name}
               </Button>
             </TableCell>
             <TableCell className="p-2 text-sm text-right">ARS {item.balance.toFixed(2)}</TableCell>

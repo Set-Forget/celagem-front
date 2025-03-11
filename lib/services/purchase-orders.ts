@@ -3,8 +3,12 @@ import { erpApi } from '@/lib/apis/erp-api';
 
 export const purchaseOrdersApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listPurchaseOrders: builder.query<PurchaseOrderListResponse, void>({
-      query: () => 'purchase_orders',
+    listPurchaseOrders: builder.query<PurchaseOrderListResponse, { number?: string } | void>({
+      query: (data) => ({
+        url: '/purchase_orders',
+        params: data || {},
+      }),
+      providesTags: ['PurchaseOrder'],
     }),
     getPurchaseOrder: builder.query<PurchaseOrderDetail, string>({
       query: (id) => `/purchase_orders/${id}`,
@@ -16,6 +20,7 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
 export const {
   useListPurchaseOrdersQuery,
   useGetPurchaseOrderQuery,
+  useLazyListPurchaseOrdersQuery,
 } = purchaseOrdersApi;
 
 

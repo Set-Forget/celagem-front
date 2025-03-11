@@ -1,12 +1,12 @@
 "use client"
 
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Supplier } from "../schema/suppliers"
+import { SupplierList } from "../schema/suppliers"
 
-export const columns: ColumnDef<Supplier>[] = [
+export const columns: ColumnDef<SupplierList>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -30,19 +30,24 @@ export const columns: ColumnDef<Supplier>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "supplier_name",
+    accessorKey: "name",
     header: "Proveedor",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("supplier_name")}</div>,
+    cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "cuit",
-    header: "CUIT",
-    cell: ({ row }) => <div>{row.getValue("cuit")}</div>,
+    accessorKey: "email",
+    header: "Correo electrónico",
+    cell: ({ row }) => <div>{row.getValue("email")}</div>,
   },
   {
-    accessorKey: "address",
+    accessorKey: "tax_id",
+    header: "Identificación fiscal",
+    cell: ({ row }) => <div>{row.getValue("tax_id")}</div>,
+  },
+  {
+    accessorKey: "contact_address_inline",
     header: "Dirección",
-    cell: ({ row }) => <div>{row.getValue("address")}</div>,
+    cell: ({ row }) => <div>{row.getValue("contact_address_inline")}</div>,
   },
   {
     id: "actions",

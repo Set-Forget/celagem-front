@@ -1,23 +1,22 @@
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 
+import { billStatus } from "@/app/purchases/bills/utils"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Separator } from "@/components/ui/separator"
 import {
   TableCell,
   TableRow
 } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 import { Check, ChevronsUpDown, Trash2 } from "lucide-react"
+import { Fragment } from "react"
 import { useFormContext, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { newPaymentSchema } from "../../schemas/payments"
-import { Badge } from "@/components/ui/badge"
-import { INVOICE_STATUSES } from "@/app/purchases/bills/adapters/invoices"
-import { cn } from "@/lib/utils"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Separator } from "@/components/ui/separator"
-import { Fragment } from "react"
 
 const bills = [
   {
@@ -267,7 +266,7 @@ export default function ItemRow({ index, remove }: { index: number, remove: (ind
     name: `invoices.${index}.provider`,
   })
 
-  const status = INVOICE_STATUSES[invoice_status as keyof typeof INVOICE_STATUSES]
+  const status = billStatus[invoice_status as keyof typeof billStatus]
   const filtered_bills = selected_provider ? bills.filter((bill) => bill.provider === selected_provider) : bills
 
   return (
@@ -306,7 +305,7 @@ export default function ItemRow({ index, remove }: { index: number, remove: (ind
                       </CommandEmpty>
                       <CommandGroup>
                         {filtered_bills.map((bill, bills_index) => {
-                          const status = INVOICE_STATUSES[bill.status as keyof typeof INVOICE_STATUSES]
+                          const status = billStatus[bill.status as keyof typeof billStatus]
                           const provider = suppliers.find((supplier) => supplier.id === bill.provider)?.name
                           return (
                             <Fragment key={bill.id}>

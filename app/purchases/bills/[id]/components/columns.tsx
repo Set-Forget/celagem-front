@@ -33,6 +33,8 @@ export const columns: ColumnDef<BillItem>[] = [
     accessorKey: "taxes",
     header: "Impuestos",
     cell: ({ row }) => {
+      // ! Debe mostrar mas de un impuesto, por ahora solo muestra el primero. 
+      // ! La idea es mapear los que vienen y mostrarlos en badges como se hace en el componente MultiSelect.
       return <span>{row.original.taxes[0].name}</span>
     }
   },

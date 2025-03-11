@@ -80,29 +80,4 @@ export const columns: ColumnDef<JournalEntry>[] = [
       return <div className="font-medium">{formatted}</div>
     },
   },
-  /*   {
-      id: "actions",
-      enableHiding: false,
-      cell: () => {
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Link href="/accounting/journal-entries/333">
-                  Ver detalles
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
-      },
-    }, */
 ]

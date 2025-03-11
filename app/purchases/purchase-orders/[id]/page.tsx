@@ -13,18 +13,19 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn, placeholder } from "@/lib/utils"
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
+import { cn, placeholder } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { Box, ChevronDown, Eye, Paperclip } from "lucide-react"
-import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useParams, usePathname, useRouter } from "next/navigation"
 import { purchaseOrderStatus } from "../utils"
 import { columns } from "./components/columns"
 import TableFooter from "./components/table-footer"
 
 export default function PurchaseOrderPage() {
+  const pathname = usePathname()
+  const router = useRouter()
   const { id } = useParams<{ id: string }>()
 
   const { data: purchaseOrder, isLoading } = useGetPurchaseOrderQuery(id);
@@ -83,10 +84,10 @@ export default function PurchaseOrderPage() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/purchases/purchase-receipts/new">
-                  Recepciones
-                </Link>
+              <DropdownMenuItem
+                onClick={() => router.push(`${pathname}/new`)}
+              >
+                Recepciones
               </DropdownMenuItem>
               <DropdownMenuItem>
                 Factura de compra

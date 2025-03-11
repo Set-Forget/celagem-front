@@ -35,7 +35,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
 const data = {
   user: {
@@ -185,6 +185,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
+  const router = useRouter()
 
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>
@@ -195,11 +196,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem key="Dashboard">
-              <SidebarMenuButton asChild tooltip="Dashboard">
-                <Link href="/dashboard">
-                  <LayoutDashboard />
-                  Tablero
-                </Link>
+              <SidebarMenuButton
+                tooltip="Dashboard"
+                onClick={() => router.push("/dashboard")}
+              >
+                <LayoutDashboard />
+                Tablero
               </SidebarMenuButton>
             </SidebarMenuItem>
             {data.navMain.map((item) => {
@@ -218,30 +220,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton
                         isActive={parentIsActive}
-                        asChild
+                        onClick={() => router.push(item.url)}
                         tooltip={item.title}
                       >
-                        <Link href={item.url}>
-                          {item.icon && <item.icon />}
-                          <span>{item.title}</span>
-                          {item.items && (
-                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                          )}
-                        </Link>
+                        {item.icon && <item.icon />}
+                        <span>{item.title}</span>
+                        {item.items && (
+                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        )}
                       </SidebarMenuButton>
                     </CollapsibleTrigger>
                     {item.items && (
                       <CollapsibleContent>
                         <SidebarMenuSub>
                           {item.items.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.title}>
+                            <SidebarMenuSubItem role="button" key={subItem.title}>
                               <SidebarMenuSubButton
                                 isActive={pathname.includes(subItem.url)}
-                                asChild
+                                onClick={() => router.push(subItem.url)}
                               >
-                                <Link href={subItem.url}>
-                                  <span>{subItem.title}</span>
-                                </Link>
+                                <span>{subItem.title}</span>
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                           ))}

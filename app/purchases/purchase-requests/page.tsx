@@ -182,12 +182,10 @@ export default function PurchaseRequestsPage() {
         <Button
           className="ml-auto"
           size="sm"
-          asChild
+          onClick={() => router.push(`${pathname}/new`)}
         >
-          <Link href="/purchases/purchase-requests/new">
-            <Plus className="w-4 h-4" />
-            Crear solicitud
-          </Link>
+          <Plus className="w-4 h-4" />
+          Crear solicitud
         </Button>
       </Header>
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">

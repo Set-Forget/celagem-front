@@ -26,11 +26,10 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { newInvoiceSchema } from "../schemas/invoices"
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import ItemsTable from "./components/items-table"
 import Header from "@/components/header"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-import { INVOICE_STATUSES } from "@/app/purchases/bills/adapters/invoices"
+import ItemsTable from "./components/items-table"
 
 const companies = [
   { label: "Google", value: "30-67890123-4" },

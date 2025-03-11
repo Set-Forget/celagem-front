@@ -163,12 +163,10 @@ export default function PurchaseReceiptsPage() {
 				<Button
 					className="ml-auto"
 					size="sm"
-					asChild
+					onClick={() => router.push(`${pathname}/new`)}
 				>
-					<Link href="/sales/delivery-notes/new">
-						<Plus className="w-4 h-4" />
-						Crear remito
-					</Link>
+					<Plus className="w-4 h-4" />
+					Crear remito
 				</Button>
 			</Header>
 			<div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">

@@ -17,6 +17,7 @@ import { ChevronDown, Eye } from "lucide-react"
 import Link from "next/link"
 import { columns } from "./components/columns"
 import TableFooter from "./components/table-footer"
+import { usePathname, useRouter } from "next/navigation"
 
 const data = [
   {
@@ -30,12 +31,8 @@ const data = [
   },
 ]
 
-export default function InvoicePage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  //const customerId = (await params).id
+export default function InvoicePage() {
+  const router = useRouter()
 
   const handleGeneratePDF = async () => {
     const { generateInvoicePDF } = await import("../templates/invoice")
@@ -82,15 +79,15 @@ export default function InvoicePage({
               <DropdownMenuItem>
                 Registro de pago
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/sales/debit-notes/new">
-                  Nota de débito
-                </Link>
+              <DropdownMenuItem
+                onClick={() => router.push("/sales/debit-notes/new")}
+              >
+                Nota de débito
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/sales/credit-notes/new">
-                  Nota de crédito
-                </Link>
+              <DropdownMenuItem
+                onClick={() => router.push("/sales/credit-notes/new")}
+              >
+                Nota de crédito
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

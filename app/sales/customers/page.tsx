@@ -283,12 +283,10 @@ export default function CustomersPage() {
         <Button
           className="ml-auto"
           size="sm"
-          asChild
+          onClick={() => router.push(`${pathname}/new`)}
         >
-          <Link href="/sales/customers/new">
-            <Plus className="w-4 h-4" />
-            Crear cliente
-          </Link>
+          <Plus className="w-4 h-4" />
+          Crear cliente
         </Button>
       </Header>
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">

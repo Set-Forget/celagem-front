@@ -8,15 +8,16 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
 import { cn, placeholder } from "@/lib/utils"
-import { Box, ChevronDown, Eye, FileText, Paperclip } from "lucide-react"
+import { Box, Check, ChevronDown, Edit, Ellipsis, Eye, FileText, Paperclip, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { DataTable } from "@/components/data-table"
-import { useGetBillQuery } from "@/lib/services/bills"
-import { useParams } from "next/navigation"
+import { useDeleteBillMutation, useGetBillQuery, useUpdateBillMutation } from "@/lib/services/bills"
+import { useParams, useRouter } from "next/navigation"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { columns } from "./components/columns"
@@ -24,13 +25,50 @@ import TableFooter from "./components/table-footer"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { billStatus } from "../utils"
+import { toast } from "sonner"
+import CustomSonner from "@/components/custom-sonner"
 
 export default function BillPage() {
+  const router = useRouter()
   const { id } = useParams<{ id: string }>()
 
   const { data: bill, isLoading } = useGetBillQuery(id);
 
+  const [updateBill, { isLoading: isBillUpdating }] = useUpdateBillMutation();
+  const [deleteBill, { isLoading: isBillDeleting }] = useDeleteBillMutation();
+
   const status = billStatus[bill?.status as keyof typeof billStatus]
+
+  const handleConfirmBill = async () => {
+    try {
+      const response = await updateBill({
+        id: Number(id),
+        status: "posted"
+      }).unwrap()
+
+      if (response.status === "success") {
+        toast.custom((t) => <CustomSonner t={t} description="Factura de compra confirmada" />)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al confirmar la factura de compra" variant="error" />)
+    }
+  }
+
+  const handleDeteleBill = async (e: Event) => {
+    e.preventDefault()
+    try {
+      const response = await deleteBill(Number(id)).unwrap()
+
+      if (response.status === "success") {
+        router.push("/purchases/bills")
+        toast.custom((t) => <CustomSonner t={t} description="Factura de compra eliminada" />)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al eliminar la factura de compra" variant="error" />)
+    }
+  }
 
   return (
     <>
@@ -47,29 +85,88 @@ export default function BillPage() {
             {status?.label}
           </Badge>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="sm">
-              Crear
-              <ChevronDown />
+        {bill?.status === "draft" ? (
+          <div className="flex gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="icon" variant="outline" className="h-8 w-8">
+                  <Ellipsis />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <FileText />
+                    Previsualizar
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Edit />
+                    Editar
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    loading={isBillDeleting}
+                    className="text-destructive focus:text-destructive"
+                    onSelect={handleDeteleBill}
+                  >
+                    <Trash2 className={cn(isBillDeleting && "hidden")} />
+                    Eliminar
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button
+              size="sm"
+              onClick={handleConfirmBill}
+              loading={isBillUpdating}
+            >
+              <Check className={cn(isBillUpdating && "hidden")} />
+              Confirmar
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/purchases/purchase-receipts/new">
-                  Recepciones
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Registro de pago
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Nota de débito
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="icon" variant="outline" className="h-8 w-8">
+                  <Ellipsis />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <FileText />
+                    Previsualizar
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm">
+                  Crear
+                  <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    onClick={() => router.push(`/purchases/purchase-receipts/new`)}
+                  >
+                    Recepciones
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    Registro de pago
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    Nota de débito
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+        )}
       </Header>
       <div className="grid grid-cols-1 gap-4 p-4">
         <div className="flex flex-col gap-4">
@@ -182,20 +279,26 @@ export default function BillPage() {
               <div className="flex flex-col gap-1">
                 <label className="text-muted-foreground text-sm">Proveedor</label>
                 <span className={cn("text-sm transition-all duration-300", isLoading ? "blur-[4px]" : "blur-none")}>
-                  {isLoading ? placeholder(10) : bill?.supplier}
+                  {isLoading ? placeholder(10) : bill?.supplier.name}
                 </span>
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-muted-foreground text-sm">Correo electrónico</label>
-                <span className="text-sm">xxxxxxxxxxxx</span>
+                <span className="text-sm">
+                  {isLoading ? placeholder(10) : bill?.supplier.email}
+                </span>
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-muted-foreground text-sm">Número de teléfono</label>
-                <span className="text-sm">xxxxxxxxxxx</span>
+                <span className="text-sm">
+                  {isLoading ? placeholder(10) : bill?.supplier.phone}
+                </span>
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-muted-foreground text-sm">Dirección</label>
-                <span className="text-sm">xxxxxxxxxxxx</span>
+                <span className="text-sm">
+                  {isLoading ? placeholder(10) : bill?.supplier.address}
+                </span>
               </div>
             </div>
           </div>
