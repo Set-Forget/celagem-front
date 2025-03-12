@@ -43,8 +43,18 @@ export const materialsColumns: ColumnDef<Materials>[] = [
     cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
   },
   {
-    accessorKey: 'unit',
-    header: 'Unidad',
+    accessorKey: 'purchase_unit',
+    header: 'Unidad de compra',
+    cell: ({ row }) => <div>{row.original.purchase_unit}</div>,
+  },
+  {
+    accessorKey: 'convertion_rate_purchase_to_cost_unit',
+    header: 'Tasa de conversión',
+    cell: ({ row }) => <div>{row.original.convertion_rate_purchase_to_cost_unit}</div>,
+  },
+  {
+    accessorKey: 'cost_unit',
+    header: 'Unidad de costo',
     cell: ({ row }) => <div>{row.original.cost_unit}</div>,
   },
   {

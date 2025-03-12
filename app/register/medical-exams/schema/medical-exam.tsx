@@ -4,7 +4,7 @@ export const medicalExamSchema = z.object({
   id: z.number(),
   code: z.string(),
   status: z.enum(['INTERNO', 'EXTERNO']),
-  cup_code: z.string().optional(),
+  cups_code: z.string().optional(),
   description: z.string().optional(),
   type: z.string(),
   cost: z.number(),

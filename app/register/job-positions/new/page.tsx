@@ -30,8 +30,9 @@ import {
 import { Input } from '@/components/ui/input';
 
 import { jobPositionSchema } from '../schema/job-position';
+import { jobPositionsMock } from '../mocks/jobPositionsMock';
 
-export default function NewJobPositionPage() {
+export default function NewJobPositionPage({ id }: { id: string }) {
   const newJobPositionForm = useForm<z.infer<typeof jobPositionSchema>>({
     resolver: zodResolver(jobPositionSchema),
     defaultValues: {
@@ -39,13 +40,28 @@ export default function NewJobPositionPage() {
     },
   });
 
+  if (id) {
+    const jobPosition = jobPositionsMock.find(
+      (jobPosition) => jobPosition.id === parseInt(id)
+    );
+
+    if (jobPosition) {
+      newJobPositionForm.setValue('code', jobPosition?.code);
+      newJobPositionForm.setValue('unit', jobPosition?.unit);
+      newJobPositionForm.setValue('unit_cost', jobPosition?.unit_cost);
+      newJobPositionForm.setValue('total_cost', jobPosition?.total_cost);
+    } else {
+      return <div>No se encontró el puesto de trabajo</div>;
+    }
+  }
+
   const onSubmit = (data: z.infer<typeof jobPositionSchema>) => {
     console.log(data);
   };
 
   return (
     <Form {...newJobPositionForm}>
-      <Header title="Nuevo puesto de trabajo">
+      <Header title={id ? "Editar puesto de trabajo" : "Nuevo puesto de trabajo"}>
         <div className="flex justify-end gap-2 ml-auto">
           {/* <Button
             type="button"
@@ -59,7 +75,7 @@ export default function NewJobPositionPage() {
             onClick={newJobPositionForm.handleSubmit(onSubmit)}
             size="sm"
           >
-            Crear puesto de trabajo
+            {id ? 'Guardar cambios' : 'Crear puesto de trabajo'}
           </Button>
         </div>
       </Header>

@@ -43,9 +43,9 @@ export const medicalExamsColumns: ColumnDef<MedicalExam>[] = [
     cell: ({ row }) => <div className="font-medium">{row.original.status}</div>,
   },
   {
-    accessorKey: 'cup_code',
-    header: 'CUP',
-    cell: ({ row }) => <div>{row.original.cup_code}</div>,
+    accessorKey: 'cups_code',
+    header: 'CUPS',
+    cell: ({ row }) => <div>{row.original.cups_code}</div>,
   },
   {
     accessorKey: 'description',

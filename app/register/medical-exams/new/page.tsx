@@ -49,8 +49,9 @@ import {
 // import { MultiSelect } from '@/components/multi-select';
 import { Input } from '@/components/ui/input';
 import { medicalExamSchema } from '../schema/medical-exam';
+import { medicalExamsMock } from '../mocks/medicalExamsMock';
 
-export default function NewMedicalExamPage() {
+export default function NewMedicalExamPage({id}: {id: string}) {
   const newMedicalExamForm = useForm<z.infer<typeof medicalExamSchema>>({
     resolver: zodResolver(medicalExamSchema),
     defaultValues: {
@@ -58,13 +59,26 @@ export default function NewMedicalExamPage() {
     },
   });
 
+  if (id) {
+    const medicalExam = medicalExamsMock.find((medicalExam) => medicalExam.id === parseInt(id));
+
+    if (medicalExam) {
+      newMedicalExamForm.setValue('code', medicalExam.code);
+      newMedicalExamForm.setValue('status', medicalExam.status);
+      newMedicalExamForm.setValue('cups_code', medicalExam.cups_code);
+      newMedicalExamForm.setValue('description', medicalExam.description);
+      newMedicalExamForm.setValue('cost', medicalExam.cost);
+      newMedicalExamForm.setValue('unit_cost', medicalExam.unit_cost);
+    }
+  }
+
   const onSubmit = (data: z.infer<typeof medicalExamSchema>) => {
     console.log(data);
   };
 
   return (
     <Form {...newMedicalExamForm}>
-      <Header title="Nuevo examen medico">
+      <Header title={id ? "Editar examen medico" : "Nuevo examen medico"}>
         <div className="flex justify-end gap-2 ml-auto">
           {/* <Button
             type="button"
@@ -78,7 +92,7 @@ export default function NewMedicalExamPage() {
             onClick={newMedicalExamForm.handleSubmit(onSubmit)}
             size="sm"
           >
-            Crear examen medico
+            {id ? 'Guardar cambios' : 'Crear examen medico'}
           </Button>
         </div>
       </Header>
@@ -201,18 +215,18 @@ export default function NewMedicalExamPage() {
             />
             <FormField
               control={newMedicalExamForm.control}
-              name="cup_code"
+              name="cups_code"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full p-4">
-                  <FormLabel className="w-fit">Código CUP</FormLabel>
+                  <FormLabel className="w-fit">Código CUPS</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Código CUP"
+                      placeholder="Código CUPS"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Esta será el codigo CUP asociado al examen medico.
+                    Esta será el código CUPS asociado al examen medico.
                   </FormDescription>
                 </FormItem>
               )}

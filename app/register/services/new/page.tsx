@@ -25,8 +25,9 @@ import {
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { servicesSchema } from '../schema/services';
+import { servicesMock } from '../mocks/servicesMock';
 
-export default function NewServicePage() {
+export default function NewServicePage({ id }: { id: string }) {
   const newServiceForm = useForm<z.infer<typeof servicesSchema>>({
     resolver: zodResolver(servicesSchema),
     defaultValues: {
@@ -34,13 +35,24 @@ export default function NewServicePage() {
     },
   });
 
+  if (id) {
+    const service = servicesMock.find((service) => service.id === parseInt(id));
+
+    if (service) {
+      newServiceForm.setValue('code', service.code);
+      newServiceForm.setValue('unit', service.unit);
+      newServiceForm.setValue('unit_cost', service.unit_cost);
+      newServiceForm.setValue('total_cost', service.total_cost);
+    }
+  }
+
   const onSubmit = (data: z.infer<typeof servicesSchema>) => {
     console.log(data);
   };
 
   return (
     <Form {...newServiceForm}>
-      <Header title="Nuevo servicio">
+      <Header title={id ? "Editar servicio" : "Nuevo servicio"}>
         <div className="flex justify-end gap-2 ml-auto">
           {/* <Button
             type="button"
@@ -54,7 +66,7 @@ export default function NewServicePage() {
             onClick={newServiceForm.handleSubmit(onSubmit)}
             size="sm"
           >
-            Crear servicio
+            {id ? 'Guardar cambios' : 'Crear servicio'}
           </Button>
         </div>
       </Header>

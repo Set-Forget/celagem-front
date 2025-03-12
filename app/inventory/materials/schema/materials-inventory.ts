@@ -1,15 +1,11 @@
 import { z } from 'zod';
 
-export const materialsInventoryEntrySchema = z.object({
+export const materialsInventorySchema = z.object({
   id: z.number(),
-  location: z.enum(['Sede Asistencial Bogotá']),
   code: z.string(),
-  brand: z.string().optional(),
-  name: z.string(),
-  fraction: z.string(),
-  detail: z.string().optional(),
+  cost_unit_price: z.number(),
   lot_number: z.string().optional(),
-  qty: z.number().optional(),
+  qty: z.number(),
 });
 
-export type MaterialsInventoryEntry = z.infer<typeof materialsInventoryEntrySchema>;
+export type MaterialsInventory = z.infer<typeof materialsInventorySchema>;

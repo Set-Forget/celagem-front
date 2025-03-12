@@ -30,11 +30,31 @@ import {
 // import { MultiSelect } from '@/components/multi-select';
 import { Input } from '@/components/ui/input';
 import { materialsSchema } from '../schema/materials';
+import { materialsMock } from '../mocks/materials';
 
-export default function NewMaterialPage() {
+export default function NewMaterialPage({id}: {id: string}) {
+
+
+  
   const newMaterialForm = useForm<z.infer<typeof materialsSchema>>({
     resolver: zodResolver(materialsSchema),
   });
+  
+  if (id) {
+    const material = materialsMock.find((material) => material.id === parseInt(id)); 
+
+    newMaterialForm.setValue('code', material?.code || '');
+    newMaterialForm.setValue('name', material?.name || '');
+    newMaterialForm.setValue('location', material?.location || 'Sede Asistencial Bogotá');
+    newMaterialForm.setValue('brand', material?.brand || '');
+    newMaterialForm.setValue('average_price', material?.average_price || 0);
+    newMaterialForm.setValue('fraction', material?.fraction || '');
+    newMaterialForm.setValue('purchase_unit', material?.purchase_unit || '');
+    newMaterialForm.setValue('purchase_unit_price', material?.purchase_unit_price || 0);
+    newMaterialForm.setValue('convertion_rate_purchase_to_cost_unit', material?.convertion_rate_purchase_to_cost_unit || 0);
+    newMaterialForm.setValue('cost_unit', material?.cost_unit || '');
+    newMaterialForm.setValue('cost_unit_price', material?.cost_unit_price || 0);
+  }
 
   const onSubmit = (data: z.infer<typeof materialsSchema>) => {
     console.log(data);
@@ -42,7 +62,7 @@ export default function NewMaterialPage() {
 
   return (
     <Form {...newMaterialForm}>
-      <Header title="Nuevo material">
+      <Header title={ id ? 'Editando' : 'Nuevo Material'} >
         <div className="flex justify-end gap-2 ml-auto">
           {/* <Button
             type="button"
@@ -56,7 +76,7 @@ export default function NewMaterialPage() {
             onClick={newMaterialForm.handleSubmit(onSubmit)}
             size="sm"
           >
-            Crear material
+            { id ? 'Guardar cambios' : 'Crear material' }
           </Button>
         </div>
       </Header>
@@ -243,25 +263,7 @@ export default function NewMaterialPage() {
             />
             <FormField
               control={newMaterialForm.control}
-              name="purchase_tax"
-              render={({ field }) => (
-                <FormItem className="flex flex-col w-full p-4">
-                  <FormLabel className="w-fit">Impuesto de compra</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Impuesto de compra"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Esta será el impuesto de compra asociado al material.
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={newMaterialForm.control}
-              name="purchase_price"
+              name="purchase_unit_price"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full p-4">
                   <FormLabel className="w-fit">Precio de compra</FormLabel>
@@ -273,6 +275,26 @@ export default function NewMaterialPage() {
                   </FormControl>
                   <FormDescription>
                     Esta será el precio de compra asociado al material.
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newMaterialForm.control}
+              name="convertion_rate_purchase_to_cost_unit"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full p-4">
+                  <FormLabel className="w-fit">
+                    Tasa de conversión de unidad compra a unidad costo
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Tasa de conversión de unidad compra a unidad costo"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Esta será la tasa de conversión de unidad compra a unidad costo asociada al material.
                   </FormDescription>
                 </FormItem>
               )}
@@ -304,25 +326,7 @@ export default function NewMaterialPage() {
             />
             <FormField
               control={newMaterialForm.control}
-              name="cost_tax"
-              render={({ field }) => (
-                <FormItem className="flex flex-col w-full p-4">
-                  <FormLabel className="w-fit">Impuesto de costo</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Impuesto de costo"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Esta será el impuesto de costo asociado al material.
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={newMaterialForm.control}
-              name="cost_price"
+              name="cost_unit_price"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full p-4">
                   <FormLabel className="w-fit">Precio de costo</FormLabel>

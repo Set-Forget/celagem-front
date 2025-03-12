@@ -1,43 +1,37 @@
+'use client';
 import Header from '@/components/header';
 import { medicalExamsMock } from '../mocks/medicalExamsMock';
+import { Button } from '@/components/ui/button';
+import { useParams, usePathname } from 'next/navigation';
+import Link from 'next/link';
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+export default function ProductPage() {
+  const { id } = useParams();
+  const pathname = usePathname();
 
-  const medicalExam = medicalExamsMock.find((proc) => proc.id === parseInt(id));
+  const medicalExam = medicalExamsMock.find(
+    (proc) => proc.id === parseInt(id as string)
+  );
 
   return (
     <>
       <Header
-        title={medicalExam?.code + ' - ' + medicalExam?.description || 'Examen Medico'}
+        title={
+          medicalExam?.code + ' - ' + medicalExam?.description ||
+          'Examen Medico'
+        }
       >
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="ml-auto" size="sm">
-              Crear
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/purchases/purchase-receipts/new">
-                  Recepciones
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Registro de pago
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Nota de débito
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
+        <div className="ml-auto flex gap-2">
+          <Button
+            type="submit"
+            size="sm"
+          >
+            <Link href={`${pathname}/edit`}>
+              {/* <Plus className="w-4 h-4" /> */}
+              Editar examen medico
+            </Link>
+          </Button>
+        </div>
       </Header>
 
       <div className="grid grid-cols-1 gap-4 p-4">
@@ -52,10 +46,14 @@ export default async function ProductPage({
               <label className="text-muted-foreground text-sm">Estado</label>
               <span className="text-sm">{medicalExam?.status}</span>
             </div>
-            {medicalExam?.cup_code && <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">CUPS</label>
-              <span className="text-sm">{medicalExam?.cup_code}</span>
-            </div>}
+            {medicalExam?.cups_code && (
+              <div className="flex flex-col gap-1">
+                <label className="text-muted-foreground text-sm">
+                  Código CUPS
+                </label>
+                <span className="text-sm">{medicalExam?.cups_code}</span>
+              </div>
+            )}
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">
                 Descripción
@@ -63,9 +61,7 @@ export default async function ProductPage({
               <span className="text-sm">{medicalExam?.description}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Costo
-              </label>
+              <label className="text-muted-foreground text-sm">Costo</label>
               <span className="text-sm">{medicalExam?.cost}</span>
             </div>
             <div className="flex flex-col gap-1">

@@ -1,45 +1,32 @@
+'use client';
+
 import Header from '@/components/header';
 
 import { jobPositionsMock } from '../mocks/jobPositionsMock';
+import { Button } from '@/components/ui/button';
 
+import { useParams, usePathname } from 'next/navigation';
+import Link from 'next/link';
 
-export default async function JobPositionPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+export default function JobPositionPage() {
+  const { id } = useParams();
+  const pathname = usePathname()
 
-  const jobPosition = jobPositionsMock.find((proc) => proc.id === parseInt(id));
+  const jobPosition = jobPositionsMock.find(
+    (proc) => proc.id === parseInt(id as string)
+  );
 
   return (
     <>
-      <Header
-        title={jobPosition?.code || 'Puesto de trabajo'}
-      >
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="ml-auto" size="sm">
-              Crear
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/purchases/purchase-receipts/new">
-                  Recepciones
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Registro de pago
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Nota de débito
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
+      <Header title={jobPosition?.code || 'Puesto de trabajo'}>
+        <div className="ml-auto flex gap-2">
+          <Button
+            type="submit"
+            size="sm"
+          >
+            <Link href={`${pathname}/edit`}>Editar puesto de trabajo</Link>
+          </Button>
+        </div>
       </Header>
 
       <div className="grid grid-cols-1 gap-4 p-4">
@@ -51,7 +38,9 @@ export default async function JobPositionPage({
               <span className="text-sm">{jobPosition?.code}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Costo total</label>
+              <label className="text-muted-foreground text-sm">
+                Costo total
+              </label>
               <span className="text-sm">{jobPosition?.total_cost}</span>
             </div>
             <div className="flex flex-col gap-1">
@@ -66,7 +55,6 @@ export default async function JobPositionPage({
             </div>
           </div>
         </div>
-        
       </div>
     </>
   );

@@ -70,6 +70,7 @@ import { servicesColumns } from '../../services/components/columns';
 import { medicalExamsColumns } from '../../medical-exams/components/columns';
 import { materialsColumns } from '../../materials/components/columns';
 import { JobPosition } from '../../job-positions/schema/job-position';
+import { proceduresMock } from '../mocks/proceduresMock';
 
 const services = servicesMock.map((service) => ({
   label: service.code,
@@ -86,18 +87,39 @@ const materials = materialsMock.map((material) => ({
   value: material.id,
 }));
 
-export default function NewProcedureReceiptPage() {
+export default function NewProcedureReceiptPage({ id }: { id: string }) {
+  const defaultProcedure = {
+    job_description: [],
+    services: [],
+    medical_exams: [],
+    materials: [],
+  } as unknown as z.infer<typeof procedureReceiptSchema>;
+
+  if (id) {
+    const procedure = proceduresMock.find(
+      (procedure) => procedure.id === parseInt(id)
+    );
+
+    if (procedure) {
+      defaultProcedure.cups_code = procedure?.cups_code;
+      defaultProcedure.schema = procedure?.schema;
+      defaultProcedure.description = procedure?.description;
+      defaultProcedure.materials = [...procedure?.materials];
+      defaultProcedure.medical_exams = [...procedure?.medical_exams];
+      defaultProcedure.services = [...procedure?.services];
+      defaultProcedure.job_description = [...procedure?.job_description];
+
+    }
+  }
+
   const newProcedureReceiptForm = useForm<
     z.infer<typeof procedureReceiptSchema>
   >({
     resolver: zodResolver(procedureReceiptSchema),
-    defaultValues: {
-      job_description: [],
-      services: [],
-      medical_exams: [],
-      materials: [],
-    },
+    defaultValues: defaultProcedure,
   });
+
+  
 
   const onSubmit = (data: z.infer<typeof procedureReceiptSchema>) => {
     console.log(data);
@@ -307,21 +329,14 @@ export default function NewProcedureReceiptPage() {
 
   return (
     <Form {...newProcedureReceiptForm}>
-      <Header title="Nuevo acto clinico">
+      <Header title={id ? 'Editar acto clinico' : 'Nuevo acto clinico'}>
         <div className="flex justify-end gap-2 ml-auto">
-          {/* <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-          >
-            Previsualizar
-          </Button> */}
           <Button
             type="submit"
             onClick={newProcedureReceiptForm.handleSubmit(onSubmit)}
             size="sm"
           >
-            Crear acto clinico
+            {id ? 'Guardar cambios' : 'Crear acto clinico'}
           </Button>
         </div>
       </Header>
@@ -399,7 +414,7 @@ export default function NewProcedureReceiptPage() {
               name="cups_code"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full p-4">
-                  <FormLabel className="w-fit">Código CUP</FormLabel>
+                  <FormLabel className="w-fit">Código CUPS</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="890223"
@@ -407,7 +422,7 @@ export default function NewProcedureReceiptPage() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Esta será el codigo CUP al que se asociará el acto clinico.
+                    Esta será el código CUPS al que se asociará el acto clinico.
                   </FormDescription>
                 </FormItem>
               )}
@@ -432,8 +447,8 @@ export default function NewProcedureReceiptPage() {
                           >
                             {field.value
                               ? procedureSchemas.find(
-                                (schema) => field.value === schema
-                              )
+                                  (schema) => field.value === schema
+                                )
                               : 'Selecciona un esquema'}
                             <ChevronsUpDown className="opacity-50" />
                           </Button>
@@ -529,9 +544,9 @@ export default function NewProcedureReceiptPage() {
                           >
                             {field.value
                               ? jobPositions.find(
-                                (jobPosition) =>
-                                  field.value === jobPosition.value
-                              )?.label
+                                  (jobPosition) =>
+                                    field.value === jobPosition.value
+                                )?.label
                               : 'Selecciona un puesto de trabajo'}
                             <ChevronsUpDown className="opacity-50" />
                           </Button>
@@ -653,8 +668,8 @@ export default function NewProcedureReceiptPage() {
                           >
                             {field.value
                               ? services.find(
-                                (service) => field.value === service.value
-                              )?.label
+                                  (service) => field.value === service.value
+                                )?.label
                               : 'Selecciona un servicio'}
                             <ChevronsUpDown className="opacity-50" />
                           </Button>
@@ -773,9 +788,9 @@ export default function NewProcedureReceiptPage() {
                           >
                             {field.value
                               ? medicalExams.find(
-                                (medicalExam) =>
-                                  field.value === medicalExam.value
-                              )?.label
+                                  (medicalExam) =>
+                                    field.value === medicalExam.value
+                                )?.label
                               : 'Selecciona un examen medico'}
                             <ChevronsUpDown className="opacity-50" />
                           </Button>
@@ -898,8 +913,8 @@ export default function NewProcedureReceiptPage() {
                           >
                             {field.value
                               ? materials.find(
-                                (material) => field.value === material.value
-                              )?.label
+                                  (material) => field.value === material.value
+                                )?.label
                               : 'Selecciona un material'}
                             <ChevronsUpDown className="opacity-50" />
                           </Button>

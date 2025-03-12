@@ -2,7 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { MaterialsInventoryEntry } from '../schema/materials-inventory';
+import { MaterialsInventoryEntry } from '../schema/materials-inventory-entry';
 
 export const materialsInventoryEntriesColumns: ColumnDef<MaterialsInventoryEntry>[] =
   [
@@ -41,7 +41,7 @@ export const materialsInventoryEntriesColumns: ColumnDef<MaterialsInventoryEntry
     {
       accessorKey: 'brand',
       header: 'Marca',
-      cell: ({ row }) => <div>{row.original.brand}</div>,
+      cell: ({ row }) => <div>{row.original.brand ?? 'Generico'}</div>,
     },
     {
       accessorKey: 'name',
@@ -49,18 +49,38 @@ export const materialsInventoryEntriesColumns: ColumnDef<MaterialsInventoryEntry
       cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
     },
     {
-      accessorKey: 'fraction',
-      header: 'Fracción',
-      cell: ({ row }) => <div>{row.original.fraction}</div>,
-    },
-    {
       accessorKey: 'lot_number',
       header: 'Número de lote',
       cell: ({ row }) => <div>{row.original.lot_number}</div>,
     },
     {
+      accessorKey: 'purchase_unit',
+      header: 'Unidad de compra',
+      cell: ({ row }) => <div>{row.original.purchase_unit}</div>,
+    },
+    {
+      accessorKey: 'convertion_rate_purchase_to_cost_unit',
+      header: 'Tasa de conversión',
+      cell: ({ row }) => <div>{row.original.convertion_rate_purchase_to_cost_unit}</div>,
+    },
+    {
+      accessorKey: 'cost_unit',
+      header: 'Unidad de costo',
+      cell: ({ row }) => <div>{row.original.cost_unit}</div>,
+    },
+    {
+      accessorKey: 'cost_unit_price',
+      header: 'Precio unitario',
+      cell: ({ row }) => <div>{row.original.cost_unit_price}</div>,
+    },
+    {
       accessorKey: 'qty',
       header: 'Cantidad',
       cell: ({ row }) => <div>{row.original.qty}</div>,
+    },
+    {
+      // accessorKey: 'qty',
+      header: 'Inventario valuado',
+      cell: ({ row }) => <div>${(row.original?.qty * row.original?.cost_unit_price).toFixed(2)}</div>,
     },
   ];

@@ -1,43 +1,31 @@
+'use client';
+
 import Header from '@/components/header';
 import { servicesMock } from '../mocks/servicesMock';
+import { Button } from '@/components/ui/button';
+import { useParams, usePathname } from 'next/navigation';
+import Link from 'next/link';
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+export default function ProductPage() {
+  
+  const { id } = useParams();
+  const pathname = usePathname()
 
-  const service = servicesMock.find((proc) => proc.id === parseInt(id));
+  const service = servicesMock.find((proc) => proc.id === parseInt(id as string));
 
   return (
     <>
-      <Header
-        title={service?.code || 'Servicio'}
-      >
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="ml-auto" size="sm">
-              Crear
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/purchases/purchase-receipts/new">
-                  Recepciones
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Registro de pago
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Nota de débito
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
+      <Header title={service?.code || 'Servicio'}>
+        <div className="ml-auto flex gap-2">
+          <Button
+            type="submit"
+            size="sm"
+          >
+            <Link href={`${pathname}/edit`}>
+              Editar servicio
+            </Link>
+          </Button>
+        </div>
       </Header>
 
       <div className="grid grid-cols-1 gap-4 p-4">
@@ -49,7 +37,9 @@ export default async function ProductPage({
               <span className="text-sm">{service?.code}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Costo Total</label>
+              <label className="text-muted-foreground text-sm">
+                Costo Total
+              </label>
               <span className="text-sm">{service?.total_cost}</span>
             </div>
             <div className="flex flex-col gap-1">

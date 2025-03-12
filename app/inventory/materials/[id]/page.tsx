@@ -1,19 +1,4 @@
 import Header from '@/components/header';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
-import { Box, ChevronDown, Eye, House, Paperclip } from 'lucide-react';
-import Link from 'next/link';
 import { materialsInventoryMock } from '../mocks/materials-inventory';
 
 export default async function MaterialInventoryEntryPage({
@@ -70,7 +55,7 @@ export default async function MaterialInventoryEntryPage({
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">Marca</label>
-              <span className="text-sm">{materialInventoryEntry?.brand}</span>
+              <span className="text-sm">{materialInventoryEntry?.brand ?? 'Generico'}</span>
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">Fracción</label>

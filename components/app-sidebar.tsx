@@ -151,7 +151,7 @@ const data = {
       ],
     },
     {
-      title: 'Maestros',
+      title: 'Hojas de ruta',
       url: '#',
       icon: Building,
       items: [

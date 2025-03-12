@@ -1,14 +1,8 @@
+'use client'
+
 import Header from '@/components/header';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  // DropdownMenuContent,
-  // DropdownMenuGroup,
-  // DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
-import { ChevronDown } from 'lucide-react';
 import { proceduresMock } from '../mocks/proceduresMock';
 import { jobPositionsMock } from '../../job-positions/mocks/jobPositionsMock';
 import { servicesMock } from '../../services/mocks/servicesMock';
@@ -20,18 +14,14 @@ import { columnsMedicalExams } from './components/columns-medical-exams';
 import { columnsMaterials } from './components/columns-materials';
 import { JobPosition } from '../../job-positions/schema/job-position';
 import { DataTable } from '@/components/data-table';
+import Link from 'next/link';
+import { useParams, usePathname } from 'next/navigation';
 
-export default async function PurchaseRequestPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const procedureId = (await params).id;
+export default function PurchaseRequestPage() {
 
-  // const handleGeneratePDF = async () => {
-  //   const { generatePurchaseReceiptPDF } = await import("../templates/purchase-receipt")
-  //   generatePurchaseReceiptPDF()
-  // }
+  const pathname = usePathname()
+  const params = useParams()
+  const procedureId = params.id as string;
 
   const procedure = proceduresMock.find(
     (procedure) => procedure.id === parseInt(procedureId)
@@ -72,45 +62,17 @@ export default async function PurchaseRequestPage({
   return (
     <>
       <Header title={procedure?.cups_code + ' - ' + procedure?.description}>
+        
         <div className="ml-auto flex gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                size="sm"
-                variant="ghost"
-              >
-                Acciones
-                <ChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            {/* <DropdownMenuContent align="end">
-              <DropdownMenuGroup>
-                <DropdownMenuItem
-                  onClick={() => ''}
-                >
-                  Generar PDF
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent> */}
-          </DropdownMenu>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="sm">
-                Crear
-                <ChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            {/* <DropdownMenuContent align="end">
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  Devolución de compra
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  Factura de compra
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent> */}
-          </DropdownMenu>
+          <Button
+            type="submit"
+            size="sm"
+          >
+            <Link href={`${pathname}/edit`}>
+              {/* <Plus className="w-4 h-4" /> */}
+              Editar acto clinico
+            </Link>
+          </Button>
         </div>
       </Header>
       <div className="flex flex-col gap-4 py-4">
@@ -130,7 +92,7 @@ export default async function PurchaseRequestPage({
             {procedure?.cups_code && (
               <div className="flex flex-col gap-1">
                 <label className="text-muted-foreground text-sm">
-                  Código CUSP
+                  Código CUPS
                 </label>
                 <span className="text-sm">{procedure?.cups_code}</span>
               </div>

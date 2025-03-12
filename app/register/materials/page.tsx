@@ -10,7 +10,7 @@ import { materialsColumns } from './components/columns';
 import { usePathname, useRouter } from 'next/navigation';
 import { materialsMock } from './mocks/materials';
 
-export default function ProductsPage() {
+export default function MaterialsPage() {
   const pathname = usePathname();
   const router = useRouter();
 
