@@ -24,16 +24,23 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { UserList } from "@/lib/schemas/users"
+import { cn, placeholder } from "@/lib/utils"
+import { useRouter } from "next/navigation"
+import Cookies from "js-cookie"
 
 export function NavUser({
   user,
 }: {
-  user: {
-    name: string
-    email: string
-  }
+  user: UserList | undefined
 }) {
+  const router = useRouter()
   const { isMobile } = useSidebar()
+
+  const handleLogout = () => {
+    Cookies.remove('sessionToken');
+    router.push('/sign-in');
+  }
 
   return (
     <SidebarMenu>
@@ -45,11 +52,19 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className={cn("rounded-lg")}>
+                  <span className={cn(!user ? "blur-[4px]" : "blur-none")}>
+                    {user ? user.first_name[0] + user.last_name[0] : "CN"}
+                  </span>
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className={cn("truncate font-semibold transition-all duration-300", !user ? "blur-[4px]" : "blur-none")}>
+                  {!user ? `${placeholder(6)} ${placeholder(9)}` : `${user?.first_name} ${user?.last_name}`}
+                </span>
+                <span className={cn("truncate text-xs transition-all duration-300", !user ? "blur-[4px]" : "blur-none")}>
+                  {!user ? placeholder(18) : user?.email}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -63,16 +78,23 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className={cn("rounded-lg")}>
+                    <span className={cn(!user ? "blur-[4px]" : "blur-none")}>
+                      {user ? user.first_name[0] + user.last_name[0] : "CN"}
+                    </span>
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">{user?.first_name} {user?.last_name}</span>
+                  <span className="truncate text-xs">{user?.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onClick={handleLogout}
+            >
               <LogOut />
               Log out
             </DropdownMenuItem>

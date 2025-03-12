@@ -1,4 +1,4 @@
-import { PatientDetail, PatientDetailResponse, PatientListResponse } from '@/app/medical-management/patients/schema/patients';
+import { PatientDetail, PatientDetailResponse, PatientListResponse } from '@/app/(private)/medical-management/patients/schema/patients';
 import { hcApi } from '@/lib/apis/hc-api';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs

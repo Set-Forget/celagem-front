@@ -1,4 +1,4 @@
-import { BillDetail, BillDetailResponse, BillListResponse, NewBill, NewBillResponse } from '@/app/purchases/bills/schemas/bills';
+import { BillDetail, BillDetailResponse, BillListResponse, NewBill, NewBillResponse } from '@/app/(private)/purchases/bills/schemas/bills';
 import { erpApi } from '@/lib/apis/erp-api';
 
 export const billsApi = erpApi.injectEndpoints({

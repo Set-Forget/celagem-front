@@ -115,8 +115,10 @@
         background: var(--scroll-background); 
       }
 
+    html,  
     body {
         @apply bg-background text-foreground;
+        @apply h-full;
         font-family: var(--font-geist-sans);
     }
 }

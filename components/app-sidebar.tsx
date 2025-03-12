@@ -34,31 +34,15 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import Link from "next/link"
+import { useGetProfileQuery } from "@/lib/services/auth"
 
 const data = {
   user: {
     name: "Agustin Delgado",
     email: "m@example.com",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
       title: "Ventas",
@@ -187,10 +171,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
   const router = useRouter()
 
+  const { data: userProfile } = useGetProfileQuery()
+
+  console.log(userProfile)
+
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>
       <SidebarHeader>
-        <NavUser user={data.user} />
+        <NavUser user={userProfile?.data} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -237,9 +225,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             <SidebarMenuSubItem role="button" key={subItem.title}>
                               <SidebarMenuSubButton
                                 isActive={pathname.includes(subItem.url)}
-                                onClick={() => router.push(subItem.url)}
+                                asChild
                               >
-                                <span>{subItem.title}</span>
+                                <Link href={subItem.url}>
+                                  {subItem.title}
+                                </Link>
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                           ))}

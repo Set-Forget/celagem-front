@@ -1,4 +1,4 @@
-import { NewSupplier, NewSupplierResponse, SupplierDetail, SupplierDetailResponse, SupplierListResponse } from '@/app/purchases/vendors/schema/suppliers';
+import { NewSupplier, NewSupplierResponse, SupplierDetail, SupplierDetailResponse, SupplierListResponse } from '@/app/(private)/purchases/vendors/schema/suppliers';
 import { erpApi } from '../apis/erp-api';
 
 export const suppliersApi = erpApi.injectEndpoints({

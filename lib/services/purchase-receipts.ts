@@ -1,4 +1,4 @@
-import { PurchaseReceiptDetail, PurchaseReceiptDetailResponse, PurchaseReceiptListResponse } from '@/app/purchases/purchase-receipts/schemas/purchase-receipts';
+import { PurchaseReceiptDetail, PurchaseReceiptDetailResponse, PurchaseReceiptListResponse } from '@/app/(private)/purchases/purchase-receipts/schemas/purchase-receipts';
 import { erpApi } from '@/lib/apis/erp-api';
 
 export const purchaseReceiptsApi = erpApi.injectEndpoints({
