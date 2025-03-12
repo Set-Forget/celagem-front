@@ -39,10 +39,6 @@ import Link from "next/link"
 import { useGetProfileQuery } from "@/lib/services/auth"
 
 const data = {
-  user: {
-    name: "Agustin Delgado",
-    email: "m@example.com",
-  },
   navMain: [
     {
       title: "Ventas",
@@ -172,8 +168,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter()
 
   const { data: userProfile } = useGetProfileQuery()
-
-  console.log(userProfile)
 
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>

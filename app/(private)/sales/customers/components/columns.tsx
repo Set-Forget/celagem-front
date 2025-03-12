@@ -1,21 +1,20 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+import { cn } from "@/lib/utils"
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Customer } from "../schema/customers"
-import { CUSTOMER_TYPE, SALES_CONDITION } from "../adapters/customers"
+import { CustomerList } from "../schema/customers"
+import { customerStatus } from "../utils"
 
-export const columns: ColumnDef<Customer>[] = [
+export const columns: ColumnDef<CustomerList>[] = [
   {
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
@@ -31,38 +30,33 @@ export const columns: ColumnDef<Customer>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "customer_name",
-    header: "Proveedor",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("customer_name")}</div>,
+    accessorKey: "name",
+    header: "Cliente",
+    cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "customer_type",
-    header: "Tipo",
+    accessorKey: "email",
+    header: "Correo electrónico",
+    cell: ({ row }) => <div>{row.getValue("email")}</div>,
+  },
+  {
+    accessorKey: "tax_id",
+    header: "Identificación fiscal",
+    cell: ({ row }) => <div>{row.getValue("tax_id")}</div>,
+  },
+  {
+    accessorKey: "status",
+    header: "",
     cell: ({ row }) => {
-      const customerType = CUSTOMER_TYPE[row.getValue("customer_type") as keyof typeof CUSTOMER_TYPE]
-      return <div>{customerType}</div>
-    }
-  },
-  {
-    accessorKey: "fiscal_category",
-    header: "Condición frente al IVA",
-    cell: ({ row }) => {
-      const salesCondition = SALES_CONDITION[row.getValue("fiscal_category") as keyof typeof SALES_CONDITION]
-      return <div>{salesCondition}</div>
-    }
-  },
-  {
-    accessorKey: "address",
-    header: "Dirección",
-    cell: ({ row }) => <div>{row.getValue("address")}</div>,
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
+      const status = customerStatus[row.getValue("status") as keyof typeof customerStatus];
       return (
-        <></>
-      )
+        <Badge
+          variant="custom"
+          className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
+        >
+          {status?.label}
+        </Badge>
+      );
     },
-  },
+  }
 ]

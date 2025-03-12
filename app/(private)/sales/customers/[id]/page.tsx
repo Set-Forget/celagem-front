@@ -1,3 +1,6 @@
+'use client'
+
+import Header from "@/components/header"
 import { StatusIndicator } from "@/components/status-indicator"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -6,11 +9,14 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import Header from "@/components/header"
-import { Pencil, Plus, X } from "lucide-react"
-import { ContactsTable } from "./components/contacts-table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useGetCustomerQuery } from "@/lib/services/customers"
+import { cn, placeholder } from "@/lib/utils"
+import { Calculator, Edit, House, Pencil, Plus, X } from "lucide-react"
+import { useParams } from "next/navigation"
+import { customerStatus } from "../utils"
 
 const notes = [
   { id: 1, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc." },
@@ -24,115 +30,216 @@ const tags = [
   { id: 3, name: "VIP" },
 ]
 
-export default async function CustomerPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  //const customerId = (await params).id
+export default function CustomerPage() {
+  const { id } = useParams<{ id: string }>()
+
+  const { data: customer, isLoading: isCustomerLoading } = useGetCustomerQuery(Number(id))
+
+  const status = customerStatus[String(customer?.status) as keyof typeof customerStatus];
 
   return (
-    <div>
-      <Header>
+    <>
+      <Header title={
+        <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+          {isCustomerLoading ? placeholder(13, true) : customer?.name}
+        </h1>
+      }>
+        <div className="mr-auto">
+          <Badge
+            variant="custom"
+            className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
+          >
+            {status?.label}
+          </Badge>
+        </div>
         <Button className="ml-auto" size="sm">
-          <Pencil className="w-4 h-4" />
+          <Edit />
           Editar cliente
         </Button>
       </Header>
-      <ResizablePanelGroup className="flex !h-auto !w-auto" direction="horizontal">
+      <ResizablePanelGroup className="flex !h-full !w-auto" direction="horizontal">
         <ResizablePanel defaultSize={70}>
-          <div className="flex flex-col gap-4 py-4">
-            <div className="px-4 flex flex-col gap-4">
-              <h2 className="text-base font-medium">General</h2>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <Tabs className="mt-4" defaultValue="tab-1">
+            <ScrollArea>
+              <TabsList className="relative justify-start !pl-4 h-auto w-full gap-1 bg-transparent p-0 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-border">
+                <TabsTrigger
+                  value="tab-1"
+                  className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
+                >
+                  <House
+                    className="-ms-0.5 me-1.5"
+                    size={16}
+                    aria-hidden="true"
+                  />
+                  General
+                </TabsTrigger>
+                <TabsTrigger
+                  value="tab-2"
+                  className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
+                >
+                  <Calculator
+                    className="-ms-0.5 me-1.5"
+                    size={16}
+                    aria-hidden="true"
+                  />
+                  Fiscal y contable
+                </TabsTrigger>
+              </TabsList>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+            <TabsContent value="tab-1" className="m-0">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
                 <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Nombre</label>
-                  <span className="text-sm">Johnson Group</span>
+                  <label className="text-muted-foreground text-sm">Email</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    {isCustomerLoading ? placeholder(16) : customer?.email || "No especificado"}
+                  </span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-muted-foreground text-sm">Número de teléfono</label>
-                  <span className="text-sm">+54 9 11 1234 5678</span>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
                 </div>
+                {/* 
+                  // ! Falta country, city, state, zip_code que deberían venir en el place_id del address (actualmente es un string address).
+                */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Email</label>
-                  <span className="text-sm">set@forget.com</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Ciudad</label>
-                  <span className="text-sm">Buenos Aires</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Calle</label>
-                  <span className="text-sm">Av. Corrientes 1234</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">País</label>
-                  <span className="text-sm">Argentina</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Provincia</label>
-                  <span className="text-sm">Buenos Aires</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Código postal</label>
-                  <span className="text-sm">1234</span>
+                  <label className="text-muted-foreground text-sm">Dirección</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    {isCustomerLoading ? placeholder(30) : customer?.contact_address_inline || "No especificado"}
+                  </span>
                 </div>
               </div>
-            </div>
-            <Separator />
-            <div className="px-4 flex flex-col gap-4">
-              <h2 className="text-base font-medium">Estado de cuenta</h2>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Saldo pendiente</label>
-                  <div className="flex gap-1.5 items-center">
-                    <StatusIndicator status="busy" size="sm" />
-                    <span className="text-md font-medium">$1234.56</span>
+              <Separator />
+              <div className="p-4 flex flex-col gap-4">
+                <h2 className="text-base font-medium">Estado de cuenta</h2>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-muted-foreground text-sm">Total facturado</label>
+                    <div className="flex gap-1.5 items-center">
+                      <StatusIndicator status="online" size="sm" />
+                      <span className={cn("text-sm font-medium transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                        {isCustomerLoading ? placeholder(4) : customer?.total_invoiced}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-muted-foreground text-sm">Saldo pendiente</label>
+                    <div className="flex gap-1.5 items-center">
+                      <StatusIndicator status="away" size="sm" />
+                      <span className={cn("text-sm font-medium transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                        xxxxx
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-muted-foreground text-sm">Saldo vencido</label>
+                    <div className="flex gap-1.5 items-center">
+                      <StatusIndicator status="busy" size="sm" />
+                      <span className={cn("text-sm font-medium transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                        xxxxx
+                      </span>
+                    </div>
                   </div>
                 </div>
+              </div>
+            </TabsContent>
+            <TabsContent value="tab-2" className="m-0">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
                 <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Facturado en el año</label>
-                  <span className="text-md font-medium">$1234.56</span>
+                  <label className="text-muted-foreground text-sm">Nombre registrado</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    {isCustomerLoading ? placeholder(12) : customer?.commercial_company_name || "No especificado"}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Moneda</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Tipo de documento</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Identificación fiscal</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    {isCustomerLoading ? placeholder(13) : customer?.tax_id}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Condición de pago</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    {isCustomerLoading ? placeholder(15) : customer?.property_payment_term || "No especificado"}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Método de pago</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Régimen tributario</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Régimen fiscal</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Información tributaria</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Responsabilidad fiscal</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Actividad económica</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Tipo de persona</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Tipo de nacionalidad</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">¿Es residente?</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-muted-foreground text-sm">Cuenta contable</label>
+                  <span className={cn("text-sm transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+                    xxxxx
+                  </span>
                 </div>
               </div>
-            </div>
-            <Separator />
-            <div className="px-4 flex flex-col gap-4">
-              <h2 className="text-base font-medium">Fiscal</h2>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Razón social</label>
-                  <span className="text-sm">N/A</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">CUIL</label>
-                  <span className="text-sm">20-12345678-9</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Condición frente al IVA</label>
-                  <span className="text-sm">Responsable Inscripto</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Tipo</label>
-                  <span className="text-sm">Persona física</span>
-                </div>
-              </div>
-            </div>
-            <Separator />
-            <div className="px-4 flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base font-medium">Contactos</h2>
-                <Button
-                  size="sm"
-                  variant="outline"
-                >
-                  <Plus className="w-4 h-4" />
-                  Agregar contacto
-                </Button>
-              </div>
-              <ContactsTable />
-            </div>
-          </div>
+            </TabsContent>
+          </Tabs>
         </ResizablePanel>
         <ResizableHandle disabled />
         <ResizablePanel className="!flex-none w-[350px]" defaultSize={30}>
@@ -196,6 +303,6 @@ export default async function CustomerPage({
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-    </div>
+    </>
   )
 }

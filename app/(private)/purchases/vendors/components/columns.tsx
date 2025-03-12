@@ -48,14 +48,5 @@ export const columns: ColumnDef<SupplierList>[] = [
     accessorKey: "contact_address_inline",
     header: "Dirección",
     cell: ({ row }) => <div>{row.getValue("contact_address_inline")}</div>,
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      return (
-        <></>
-      )
-    },
-  },
+  }
 ]

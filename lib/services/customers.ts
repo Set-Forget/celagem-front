@@ -1,4 +1,4 @@
-import { CustomerListResponse } from '@/app/(private)/sales/customers/schema/customers';
+import { CustomerDetail, CustomerDetailResponse, CustomerListResponse, NewCustomer, NewCustomerResponse } from '@/app/(private)/sales/customers/schema/customers';
 import { erpApi } from '../apis/erp-api';
 
 export const customersApi = erpApi.injectEndpoints({
@@ -10,10 +10,25 @@ export const customersApi = erpApi.injectEndpoints({
       }),
       providesTags: ['Customer']
     }),
+    getCustomer: builder.query<CustomerDetail, number>({
+      query: (id) => `/customers/${id}`,
+      transformResponse: (response: CustomerDetailResponse) => response.data,
+      providesTags: ['Customer']
+    }),
+    createCustomer: builder.mutation<NewCustomerResponse, Omit<NewCustomer, 'property_payment_term'> & { property_payment_term: number }>({
+      query: (data) => ({
+        url: '/customers',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Customer']
+    }),
   }),
 });
 
 export const {
   useListCustomersQuery,
   useLazyListCustomersQuery,
+  useCreateCustomerMutation,
+  useGetCustomerQuery,
 } = customersApi;

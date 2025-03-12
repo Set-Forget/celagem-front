@@ -33,7 +33,7 @@ export default function SupplierPage() {
   const { id } = useParams<{ id: string }>()
 
   const { data: supplier, isLoading: isSupplierLoading } = useGetSupplierQuery(Number(id))
-  console.log(supplier)
+
   return (
     <>
       <Header title={
