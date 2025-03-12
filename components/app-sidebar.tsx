@@ -168,6 +168,16 @@ const data = {
       title: 'Inventario',
       url: '#',
       icon: Box,
+      items: [
+        {
+          title: 'Materiales',
+          url: '/inventory/materials',
+        },
+        {
+          title: 'Almacenes',
+          url: '/inventory/warehouses',
+        },
+      ],
     },
     {
       title: 'Gestión médica',
