@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import {
   AudioWaveform,
@@ -11,11 +11,12 @@ import {
   LayoutDashboard,
   ShoppingBag,
   ShoppingCart,
-  Stethoscope
-} from "lucide-react"
-import * as React from "react"
+  Stethoscope,
+  Building,
+} from 'lucide-react';
+import * as React from 'react';
 
-import { NavUser } from "@/components/nav-user"
+import { NavUser } from '@/components/nav-user';
 import {
   Sidebar,
   SidebarContent,
@@ -26,8 +27,8 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
-  SidebarMenuSubItem
-} from "@/components/ui/sidebar"
+  SidebarMenuSubItem,
+} from '@/components/ui/sidebar';
 
 import {
   Collapsible,
@@ -41,71 +42,71 @@ import { useGetProfileQuery } from "@/lib/services/auth"
 const data = {
   navMain: [
     {
-      title: "Ventas",
-      url: "#",
+      title: 'Ventas',
+      url: '#',
       icon: ShoppingBag,
       items: [
         {
-          title: "Facturas",
-          url: "/sales/invoices",
+          title: 'Facturas',
+          url: '/sales/invoices',
         },
         {
-          title: "Notas de crédito",
-          url: "/sales/credit-notes",
+          title: 'Notas de crédito',
+          url: '/sales/credit-notes',
         },
         {
-          title: "Notas de débito",
-          url: "/sales/debit-notes",
+          title: 'Notas de débito',
+          url: '/sales/debit-notes',
         },
         {
-          title: "Remitos",
-          url: "/sales/delivery-notes",
+          title: 'Remitos',
+          url: '/sales/delivery-notes',
         },
         {
-          title: "Clientes",
-          url: "/sales/customers",
+          title: 'Clientes',
+          url: '/sales/customers',
         },
       ],
     },
     {
-      title: "Compras",
-      url: "#",
+      title: 'Compras',
+      url: '#',
       icon: ShoppingCart,
       items: [
         {
-          title: "Solicitudes de pedido",
-          url: "/purchases/purchase-requests",
+          title: 'Solicitudes de pedido',
+          url: '/purchases/purchase-requests',
         },
         {
-          title: "Ordenes de compra",
-          url: "/purchases/purchase-orders",
+          title: 'Ordenes de compra',
+          url: '/purchases/purchase-orders',
         },
         {
-          title: "Recepciones",
-          url: "/purchases/purchase-receipts",
+          title: 'Recepciones',
+          url: '/purchases/purchase-receipts',
         },
         {
-          title: "Facturas",
-          url: "/purchases/bills",
+          title: 'Facturas',
+          url: '/purchases/bills',
         },
         {
-          title: "Proveedores",
-          url: "/purchases/vendors",
-        }
+          title: 'Proveedores',
+          url: '/purchases/vendors',
+        },
       ],
     },
     {
-      title: "Contabilidad",
-      url: "#",
+      title: 'Contabilidad',
+      url: '#',
       icon: FileText,
       items: [
         {
-          title: "Plan de cuentas",
-          url: "/accounting/chart-of-accounts",
+          title: 'Plan de cuentas',
+          url: '/accounting/chart-of-accounts',
         },
         {
-          title: "Asientos contables",
-          url: "/accounting/journal-entries",
+          title: 'Asientos contables',
+          url: '/accounting/journal-entries',
         },
         {
           title: "Centros de costos",
@@ -122,46 +123,73 @@ const data = {
       ],
     },
     {
-      title: "Tesorería",
-      url: "#",
+      title: 'Tesorería',
+      url: '#',
       icon: Landmark,
       items: [
         {
-          title: "Pagos",
-          url: "/banking/payments",
+          title: 'Pagos',
+          url: '/banking/payments',
         },
         {
-          title: "Cobros",
-          url: "/banking/receipts",
+          title: 'Cobros',
+          url: '/banking/receipts',
         },
       ],
     },
     {
-      title: "Inventario",
-      url: "/inventory",
+      title: 'Hojas de ruta',
+      url: '#',
+      icon: Building,
+      items: [
+        {
+          title: 'Puestos de trabajo',
+          url: '/register/job-positions',
+        },
+        {
+          title: 'Servicios',
+          url: '/register/services',
+        },
+        {
+          title: 'Examenes Medicos',
+          url: '/register/medical-exams',
+        },
+        {
+          title: 'Materiales',
+          url: '/register/materials',
+        },
+        {
+          title: 'Actos Clinicos',
+          url: '/register/procedures',
+        },
+      ],
+    },
+    {
+      title: 'Inventario',
+      url: '#',
       icon: Box,
     },
     {
-      title: "Gestión médica",
-      url: "#",
+      title: 'Gestión médica',
+      url: '#',
       icon: Stethoscope,
       items: [
         {
-          title: "Agenda",
-          url: "/medical-management/scheduler",
+          title: 'Agenda',
+          url: '/medical-management/scheduler',
         },
         {
-          title: "Pacientes",
-          url: "/medical-management/patients",
+          title: 'Pacientes',
+          url: '/medical-management/patients',
         },
         {
           title: "Plantillas",
           url: "/medical-management/templates",
         }
       ],
-    }
+    },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
@@ -170,7 +198,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userProfile } = useGetProfileQuery()
 
   return (
-    <Sidebar variant="inset" collapsible="icon" {...props}>
+    <Sidebar
+      variant="inset"
+      collapsible="icon"
+      {...props}
+    >
       <SidebarHeader>
         <NavUser user={userProfile?.data} />
       </SidebarHeader>
@@ -238,5 +270,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

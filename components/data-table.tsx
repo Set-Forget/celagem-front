@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
               <TableRow className="border-b" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead className="h-9 text-nowrap" key={header.id} colSpan={header.colSpan}>
+                    <TableHead style={{ width: header.getSize() }} className="h-9 text-nowrap" key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
