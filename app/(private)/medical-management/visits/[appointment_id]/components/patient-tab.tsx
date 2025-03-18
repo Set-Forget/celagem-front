@@ -1,0 +1,150 @@
+import { useParams } from "next/navigation";
+import { biologicalSexTypes, disabilityTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "../../../patients/utils";
+import { useGetPatientQuery } from "@/lib/services/patients";
+import { FieldDefinition } from "../../../patients/[patient_id]/components/general-tab";
+import { PatientDetail } from "../../../patients/schema/patients";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { cn, placeholder } from "@/lib/utils";
+import { useGetAppointmentQuery } from "@/lib/services/appointments";
+
+export default function PatientTab() {
+  const params = useParams<{ appointment_id: string }>();
+
+  const appointmentId = params.appointment_id
+
+  const { data: appointment } = useGetAppointmentQuery(appointmentId)
+
+  const patientId = appointment?.patient.id;
+  const { data: patient, isLoading: isPatientLoading } = useGetPatientQuery(patientId!, {
+    skip: !patientId,
+  });
+
+  const fields: FieldDefinition<PatientDetail>[] = [
+    {
+      label: "Nombre",
+      placeholderLength: 14,
+      getValue: (p) => p.first_name + " " + p.first_last_name,
+    },
+    {
+      label: "Tipo de vinculación",
+      placeholderLength: 14,
+      getValue: (p) =>
+        linkageTypes.find((l) => l.value === p.linkage)?.label || "No aplica",
+    },
+    {
+      label: "Clase",
+      placeholderLength: 14,
+      getValue: (p) => p.class?.name,
+    },
+    {
+      label: "Sexo biológico",
+      placeholderLength: 14,
+      getValue: (p) =>
+        biologicalSexTypes.find((b) => b.value === p.biological_sex)?.label || "No aplica",
+    },
+    {
+      label: "Identidad de género",
+      placeholderLength: 14,
+      getValue: (p) =>
+        genderIdentityTypes.find((g) => g.value === p.gender_identity)?.label || "No aplica",
+    },
+    {
+      label: "Fecha de nacimiento",
+      placeholderLength: 13,
+      getValue: (p) => p.birth_date ? format(p.birth_date, "PPP", { locale: es }) : 'No aplica',
+    },
+    {
+      label: "Lugar de nacimiento",
+      placeholderLength: 14,
+      getValue: (p) => p.birth_place?.formatted_address,
+    },
+    {
+      label: "Dirección de residencia",
+      placeholderLength: 14,
+      getValue: (p) => p.address?.formatted_address,
+    },
+    {
+      label: "Discapacidad",
+      placeholderLength: 14,
+      getValue: (p) =>
+        disabilityTypes.find((d) => d.value === p.disability_type)?.label || "No aplica",
+    },
+    {
+      label: "Sede",
+      placeholderLength: 14,
+      getValue: (p) => p.company_id,
+    },
+    {
+      label: "Tipo de documento",
+      placeholderLength: 14,
+      getValue: (p) => p.document_type,
+    },
+    {
+      label: "Número de documento",
+      placeholderLength: 14,
+      getValue: (p) => p.document_number,
+    },
+    {
+      label: "Número de teléfono",
+      placeholderLength: 10,
+      getValue: (p) => p.phone_number,
+    },
+    {
+      label: "Email",
+      placeholderLength: 14,
+      getValue: (p) => p.email,
+    },
+    {
+      label: "Nombre del padre",
+      placeholderLength: 14,
+      getValue: (p) => p.father_name,
+    },
+    {
+      label: "Nombre de la madre",
+      placeholderLength: 14,
+      getValue: (p) => p.mother_name,
+    },
+    {
+      label: "Estado civil",
+      placeholderLength: 14,
+      getValue: (p) =>
+        maritalStatusTypes.find((m) => m.value === p.marital_status)?.label || "No aplica",
+    },
+    {
+      label: "Entidad/IPS remitente",
+      placeholderLength: 14,
+      getValue: (p) => p.referring_entity,
+    },
+    {
+      label: "Aseguradora",
+      placeholderLength: 14,
+      getValue: (p) => p.insurance_provider || "No aplica",
+    },
+  ];
+
+  return (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      {fields.map((field) => {
+        const displayValue = isPatientLoading
+          ? placeholder(field.placeholderLength)
+          : field.getValue(patient!) ?? "";
+        return (
+          <div className="flex flex-col gap-1" key={field.label}>
+            <label className="text-muted-foreground text-sm">
+              {field.label}
+            </label>
+            <span
+              className={cn(
+                "text-sm transition-all duration-300",
+                isPatientLoading ? "blur-[4px]" : "blur-none"
+              )}
+            >
+              {displayValue}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}

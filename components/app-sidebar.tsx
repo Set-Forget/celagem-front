@@ -51,14 +51,6 @@ const data = {
           url: '/sales/invoices',
         },
         {
-          title: 'Notas de crédito',
-          url: '/sales/credit-notes',
-        },
-        {
-          title: 'Notas de débito',
-          url: '/sales/debit-notes',
-        },
-        {
           title: 'Remitos',
           url: '/sales/delivery-notes',
         },

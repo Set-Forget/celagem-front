@@ -12,6 +12,7 @@ import { ChevronDown, Hospital, MapPin, Microscope, Pencil, Stethoscope } from "
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { appointmentStates, modesOfCare } from "../utils";
+import { useGetTemplateQuery } from "@/lib/services/templates";
 
 export default function AppointmentDetailsDialog() {
   const router = useRouter()
@@ -20,9 +21,9 @@ export default function AppointmentDetailsDialog() {
 
   const appointmentId = dialogState?.payload?.appointment_id as string
 
-  const { data: appointment, isFetching: isAppointmentFetching } = useGetAppointmentQuery(appointmentId,
-    { skip: !appointmentId }
-  )
+  const { data: appointment, isFetching: isAppointmentFetching } = useGetAppointmentQuery(appointmentId, { skip: !appointmentId })
+  const { data: template, isFetching: isTemplateFetching } = useGetTemplateQuery(appointment?.template_id as number, { skip: !appointment?.template_id })
+
   const [updateAppointment] = useUpdateAppointmentMutation()
 
   const startDateTimeISO = appointment ? formatISO(parse(`${appointment?.start_date} ${appointment?.start_time}`, 'yyyy-MM-dd HH:mm', new Date())) : '';
@@ -31,11 +32,12 @@ export default function AppointmentDetailsDialog() {
   const onOpenChange = () => {
     closeDialogs()
   }
-  const handleUpdateAppointment = async ({ status_id }: { status_id: number }) => {
+
+  const handleUpdateAppointment = async ({ status }: { status: "SCHEDULED" | "CANCELLED" }) => {
     try {
       await updateAppointment({
         id: appointment?.id as string,
-        body: { status_id }
+        body: { status }
       }).unwrap()
     } catch (error) {
       console.error(error)
@@ -75,13 +77,13 @@ export default function AppointmentDetailsDialog() {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="min-w-32">
                 <DropdownMenuItem
-                  onSelect={() => handleUpdateAppointment({ status_id: 1 })}
+                  onSelect={() => handleUpdateAppointment({ status: "SCHEDULED" })}
                 >
                   <StatusDot className="text-primary !h-2 !w-2 shadow-md rounded-full shadow-primary/50" />
                   <span>Pendiente</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onSelect={() => handleUpdateAppointment({ status_id: 3 })}
+                  onSelect={() => handleUpdateAppointment({ status: "CANCELLED" })}
                 >
                   <StatusDot className="text-red-500 !h-2 !w-2 shadow-md rounded-full shadow-red-500/50" />
                   <span>Cancelado</span>
@@ -104,7 +106,7 @@ export default function AppointmentDetailsDialog() {
           <div className="flex gap-2">
             <Hospital className="h-5 w-5 shrink-0" />
             <span className="text-sm">
-              xxxxx
+              {appointment?.clinic?.name}
             </span>
           </div>
           <div className="flex gap-2">
@@ -121,8 +123,8 @@ export default function AppointmentDetailsDialog() {
           </div>
           <div className="flex gap-2">
             <Microscope className="h-5 w-5 shrink-0" />
-            <span className="text-sm">
-              {appointment?.care_type}
+            <span className={cn("text-sm transition-all duration-300", !template || isTemplateFetching ? "blur-[4px]" : "blur-none")}>
+              {!template || isTemplateFetching ? placeholder(18) : template?.name || "No especificado"}
             </span>
           </div>
         </div>
@@ -146,7 +148,7 @@ export default function AppointmentDetailsDialog() {
             size="sm"
             onClick={() => {
               closeDialogs()
-              router.push(`/medical-management/scheduler/${appointment?.id}`)
+              router.push(`/medical-management/visits/${appointment?.id}`)
             }}
           >
             Iniciar visita

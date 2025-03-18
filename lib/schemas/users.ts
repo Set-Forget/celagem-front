@@ -24,6 +24,19 @@ export const classListSchema = z.object({
   modified_at: z.string(),
 })
 
+export const companiesListSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+})
+
+export const companiesListResponseSchema = z.object({
+  status: z.string(),
+  code: z.number(),
+  message: z.string(),
+  data: z.array(companiesListSchema),
+})
+
 export const classListResponseSchema = z.object({
   status: z.string(),
   code: z.number(),
@@ -36,3 +49,6 @@ export type ClassListResponse = z.infer<typeof classListResponseSchema>;
 
 export type UserList = z.infer<typeof userListSchema>;
 export type UserListResponse = z.infer<typeof userListResponseSchema>;
+
+export type CompaniesList = z.infer<typeof companiesListSchema>;
+export type CompaniesListResponse = z.infer<typeof companiesListResponseSchema>;

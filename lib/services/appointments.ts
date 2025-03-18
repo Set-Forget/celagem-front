@@ -18,10 +18,7 @@ export const appointmentsApi = hcApi.injectEndpoints({
       providesTags: ['Appointment'],
     }),
     //---
-    createAppointment: builder.mutation<
-      AppointmentDetailResponse,
-      Omit<NewAppointment, "attention_type"> & { start_time: string, end_time: string }
-    >({
+    createAppointment: builder.mutation<AppointmentDetailResponse, Omit<NewAppointment, "attention_type"> & { start_time: string, end_time: string }>({
       query: (body) => ({
         url: 'appointment',
         method: 'POST',

@@ -153,7 +153,6 @@ export default function TemplatePage() {
         ...data.template,
         sections: finalSectionIds,
       };
-      console.log(templateToUpdate)
       await updateTemplate(templateToUpdate).unwrap();
     } catch (err) {
       console.error("Error actualizando template:", err);

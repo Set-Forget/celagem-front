@@ -13,7 +13,6 @@ const initalState: DialogsState = {
 const dialogsState$ = new BehaviorSubject(initalState)
 
 export const setDialogsState = (state: DialogsState) => {
-  console.log('setDialogsState', state)
   dialogsState$.next(state)
 }
 

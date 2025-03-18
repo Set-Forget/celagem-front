@@ -26,6 +26,8 @@ export interface Option {
   icon?: React.ReactNode;
 }
 
+// ! Tremenda refactorización hay que hacerle a este componente
+
 export interface AsyncSelectProps<T, V = string> {
   /** Async function to fetch options */
   fetcher: (query?: string) => Promise<T[]>;
@@ -70,6 +72,11 @@ export interface AsyncSelectProps<T, V = string> {
    * Si no se provee, se convertirá a string el resultado de getOptionValue.
    */
   getOptionKey?: (option: T) => string;
+  /**
+ * Opciones iniciales que se muestran antes de que el usuario busque.
+ * Ideal para mostrar un valor por defecto.
+ */
+  initialOptions?: T[];
 }
 
 export function AsyncSelect<T, V>({
@@ -90,20 +97,21 @@ export function AsyncSelect<T, V>({
   className,
   triggerClassName,
   noResultsMessage,
-  clearable = true,
+  clearable = false,
   actionButton,
   getOptionKey,
+  initialOptions,
 }: AsyncSelectProps<T, V>) {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState<T[]>([]);
+  const [options, setOptions] = useState<T[]>(initialOptions || []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedValue, setSelectedValue] = useState<V>(value);
   const [selectedOption, setSelectedOption] = useState<T | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, preload ? 0 : 300);
-  const [originalOptions, setOriginalOptions] = useState<T[]>([]);
+  const [originalOptions, setOriginalOptions] = useState<T[]>(initialOptions || []);
 
   useEffect(() => {
     setMounted(true);
@@ -180,6 +188,22 @@ export function AsyncSelect<T, V>({
     [options, getOptionKey, getOptionValue, clearable, selectedOption, onChange]
   );
 
+  useEffect(() => {
+    setOriginalOptions(initialOptions || []);
+    setOptions(initialOptions || []);
+  }, [initialOptions]);
+
+  useEffect(() => {
+    if (options.length && value) {
+      const matchingOption = options.find((option) => {
+        return option === value;
+      });
+      if (matchingOption) {
+        setSelectedOption(matchingOption);
+      }
+    }
+  }, [options, value]);
+
   return (
     <Popover modal={modal} open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -195,7 +219,9 @@ export function AsyncSelect<T, V>({
           )}
           disabled={disabled}
         >
-          {selectedOption ? getDisplayValue(selectedOption) : placeholder}
+          <p className="truncate">
+            {selectedOption ? getDisplayValue(selectedOption) : placeholder}
+          </p>
           <ChevronsUpDown className="opacity-50" size={10} />
         </Button>
       </PopoverTrigger>

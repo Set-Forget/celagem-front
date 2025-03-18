@@ -1,27 +1,15 @@
 "use client"
 
-import {
-  ColumnDef
-} from "@tanstack/react-table"
-
+import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
-import { INVOICE_STATUSES } from "../adapters/invoices";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
+import { DebitNotesList } from "../schemas/debit-notes"
+import { debitNoteStatus } from "../utils"
 
-export type DebitNote = {
-  company_name: string;
-  number: string;
-  status: "paid" | "overdue" | "pending" | "in_process";
-  type: "FA" | "OC" | "NC" | "ND";
-  issue_date: string;
-  due_date: string;
-  amount: number;
-  currency: "USD" | "ARS" | "EUR" | "CLP";
-  description: string;
-};
-
-export const columns: ColumnDef<DebitNote>[] = [
+export const columns: ColumnDef<DebitNotesList>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -47,51 +35,56 @@ export const columns: ColumnDef<DebitNote>[] = [
   {
     accessorKey: "number",
     header: "Número",
-    cell: ({ row }) => (
-      <div className="capitalize flex gap-1">
-        <div className="font-medium">{row.original.type}</div> {row.getValue("number")}
-      </div>
-    ),
+    cell: ({ row }) => <div className="font-medium">{row.original.number}</div>,
   },
   {
-    accessorKey: "company_name",
-    header: "Cliente",
-    cell: ({ row }) => <div>{row.getValue("company_name")}</div>,
+    accessorKey: "partner",
+    header: "Cliente/Proveedor",
+    cell: ({ row }) => <div>{row.getValue("partner")}</div>,
   },
   {
     accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      const status = INVOICE_STATUSES[row.getValue("status") as keyof typeof INVOICE_STATUSES]
-      return <Badge
-        variant="outline"
-        className={cn(`${status.bg_color} ${status.text_color} border-none rounded-sm`)}
-      >
-        {status.label}
-      </Badge>
+      const status = debitNoteStatus[
+        row.getValue("status") === "posted" && new Date(row.original.due_date) < new Date()
+          ? "overdue"
+          : row.getValue("status") as keyof typeof debitNoteStatus
+      ];
+
+      return (
+        <Badge
+          variant="custom"
+          className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
+        >
+          {status?.label}
+        </Badge>
+      );
     },
   },
   {
-    accessorKey: "issue_date",
+    accessorKey: "date",
     header: "Fecha de emisión",
     cell: ({ row }) => {
-      const formattedDate = new Date(row.getValue("issue_date")).toLocaleDateString("es-AR")
-      return <div>{formattedDate}</div>
+      return <div>
+        {format(new Date(row.getValue("date")), "dd MMM yyyy", { locale: es })}
+      </div>
     },
   },
   {
     accessorKey: "due_date",
     header: "Fecha de vencimiento",
     cell: ({ row }) => {
-      const formattedDate = new Date(row.getValue("due_date")).toLocaleDateString("es-AR")
-      return <div>{formattedDate}</div>
+      return <div>
+        {format(new Date(row.getValue("due_date")), "dd MMM yyyy", { locale: es })}
+      </div>
     }
   },
   {
-    accessorKey: "amount",
+    accessorKey: "amount_total",
     header: () => <div>Importe</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
+      const amount = -parseFloat(row.getValue("amount_total"))
       const currency = row.original.currency
 
       const formatted = new Intl.NumberFormat("en-US", {

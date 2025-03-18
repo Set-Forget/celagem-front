@@ -74,6 +74,7 @@ export const templatesApi = hcApi.injectEndpoints({
 export const {
   useListTemplatesQuery,
   useGetTemplateQuery,
+  useLazyListTemplatesQuery,
 
   useCreateSectionMutation,
   useUpdateSectionMutation,

@@ -127,7 +127,7 @@ const selectSchema = baseTypeSchema.extend({
     defaultValue: z.string().optional(),
     options: z.array(z.object({ value: z.string(), label: z.string() })).nonempty({
       message: "Debe ingresar al menos una opción para este tipo de campo",
-    }),
+    }).default([{ value: "0", label: "Seleccione una opción" }]),
   })
 });
 
@@ -273,7 +273,7 @@ export const templateDetailSchema = z.object({
   createdBy: z.string(),
   createdAt: z.string().datetime(),
   updatedBy: z.string().nullable(),
-  updatedAt: z.string().datetime(),
+  updatedAt: z.string().datetime().nullable(),
   isEpicrisis: z.boolean(),
   isForSendEmailToInsuranceProvider: z.boolean(),
   isForPrintIndependently: z.boolean(),

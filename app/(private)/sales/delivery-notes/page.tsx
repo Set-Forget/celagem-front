@@ -152,7 +152,7 @@ const data: DeliveryNote[] = [
   },
 ];
 
-export default function PurchaseReceiptsPage() {
+export default function DeliveryNotesPage() {
   const pathname = usePathname();
   const router = useRouter();
 

@@ -52,6 +52,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
     "react-hook-form": "^7.53.2",
+    "react-phone-number-input": "^3.4.11",
     "react-redux": "^9.2.0",
     "react-resizable-panels": "^2.1.7",
     "react-virtuoso": "^4.12.5",

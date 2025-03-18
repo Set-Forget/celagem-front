@@ -1,11 +1,11 @@
 'use client';
 
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { setDialogsState } from '@/lib/store/dialogs-store';
 import { cn } from '@/lib/utils';
-import { AppointmentList } from '../schemas/appointments';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { appointmentStates } from '../utils';
 import { format, parse } from 'date-fns';
+import { AppointmentList } from '../schemas/appointments';
+import MonthlyAppointmentCard from './montly-appointment-card';
 
 function getCalendarDates(selectedDate: Date): Date[] {
   const year = selectedDate.getFullYear();
@@ -87,37 +87,13 @@ export default function MonthlyView({ selectedDate, appointments }: { selectedDa
               >
                 {dayNum}
               </div>
-
               <div className="flex flex-col items-start w-full overflow-hidden absolute top-8 mt-2">
                 {dayAppointments?.slice(0, 3).map((appointment) => (
-                  <div
+                  <MonthlyAppointmentCard
                     key={appointment.id}
-                    className={cn("appointment text-xs px-1.5 py-0.5 w-full truncate flex items-center gap-1 cursor-pointer hover:bg-accent transition-colors")}
-                    onMouseOver={(e) => e.stopPropagation()}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDialogsState({
-                        open: 'appointment-details',
-                        payload: {
-                          appointment_id: appointment.id,
-                        },
-                      });
-                    }}
-                  >
-                    <div
-                      className={cn(
-                        "w-2 h-2 border border-primary bg-primary/15 rounded-full mr-1 shrink-0 !shadow-sm",
-                        appointmentStates[appointment?.status as keyof typeof appointmentStates]?.bg_color,
-                        appointmentStates[appointment?.status as keyof typeof appointmentStates]?.border_color,
-                        appointmentStates[appointment?.status as keyof typeof appointmentStates]?.shadow_color,
-                        !isCurrentMonth && "border-border bg-accent/25 shadow-border"
-                      )}
-                    />
-                    <span>{format(parse(appointment?.start_time ?? "", 'HH:mm', new Date()), "hh:mm a")}</span>
-                    <p className="font-semibold ml-0.5 truncate">
-                      {appointment?.patient?.first_name} {appointment?.patient?.last_name}
-                    </p>
-                  </div>
+                    appointment={appointment}
+                    isCurrentMonth={isCurrentMonth}
+                  />
                 ))}
                 {dayAppointments && dayAppointments.length > 3 && (
                   <Popover>

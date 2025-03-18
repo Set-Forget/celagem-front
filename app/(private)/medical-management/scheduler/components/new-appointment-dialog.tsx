@@ -27,6 +27,8 @@ import { z } from "zod";
 import { newAppointmentSchema } from "../schemas/appointments";
 import TEMPLATES from "../templates/templates.json";
 import { useLazyListUsersQuery } from "@/lib/services/users";
+import { useGetProfileQuery } from "@/lib/services/auth";
+import { useLazyListTemplatesQuery } from "@/lib/services/templates";
 
 export default function NewAppointmentDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
@@ -36,15 +38,17 @@ export default function NewAppointmentDialog() {
   const [createAppointment, { isLoading }] = useCreateAppointmentMutation()
 
   const { data: businessUnits } = useListBusinessUnitsQuery()
+  const { data: userProfile } = useGetProfileQuery()
 
   const [getPatients] = useLazyListPatientsQuery()
   const [getDoctors] = useLazyListUsersQuery()
+  const [getTemplates] = useLazyListTemplatesQuery()
 
   const newAppointmentForm = useForm<z.infer<typeof newAppointmentSchema>>({
     resolver: zodResolver(newAppointmentSchema),
     defaultValues: {
-      created_by: "0194cd16-08cb-7146-b224-52417ab62d3b",
-      status_id: 1,
+      created_by: "",
+      status: "SCHEDULED",
       care_type_id: 1,
       start_date: "",
       start_time: "",
@@ -54,7 +58,6 @@ export default function NewAppointmentDialog() {
       patient_id: "",
       clinic_id: "",
       notes: "",
-      attention_type: "",
       mode_of_care: "IN_PERSON",
     }
   });
@@ -86,6 +89,19 @@ export default function NewAppointmentDialog() {
     field.onChange(newDate.toISOString());
   };
 
+  const handleGetTemplates = async () => {
+    try {
+      const templates = await getTemplates().unwrap()
+      return templates.data.map((template) => ({
+        label: template.name,
+        value: template.id,
+      }))
+    } catch (error) {
+      console.error("Error al obtener plantillas:", error)
+      return []
+    }
+  }
+
   const handleGetPatients = async () => {
     try {
       const patients = await getPatients().unwrap()
@@ -114,9 +130,8 @@ export default function NewAppointmentDialog() {
 
   async function onSubmit(data: z.infer<typeof newAppointmentSchema>) {
     try {
-      const filteredData = omit(data, ["attention_type"])
       const response = await createAppointment({
-        ...filteredData,
+        ...data,
         start_date: format(new Date(data.start_date), "yyyy-MM-dd"),
         end_date: format(new Date(data.end_date), "yyyy-MM-dd"),
         start_time: format(new Date(data.start_time), "HH:mm"),
@@ -152,6 +167,12 @@ export default function NewAppointmentDialog() {
       newAppointmentForm.setValue("start_time", selectedDate.toISOString())
     }
   }, [selectedDate])
+
+  useEffect(() => {
+    if (userProfile) {
+      newAppointmentForm.setValue("created_by", userProfile.data.id)
+    }
+  }, [userProfile])
 
   return (
     <Dialog
@@ -536,65 +557,23 @@ export default function NewAppointmentDialog() {
               />
               <FormField
                 control={newAppointmentForm.control}
-                name="attention_type"
+                name="template_id"
                 render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel className="w-fit">Tipo de atención</FormLabel>
-                    <Popover modal>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "justify-between font-normal pl-3",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            <p className="truncate">
-                              {field.value
-                                ? TEMPLATES.find(
-                                  (template) => template.template === field.value
-                                )?.template
-                                : "Seleccionar tipo de atención"}
-                            </p>
-                            <ChevronsUpDown className="opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent align="start" className="p-0">
-                        <Command>
-                          <CommandInput
-                            placeholder="Buscar..."
-                            className="h-8"
-                          />
-                          <CommandList>
-                            <CommandEmpty>No se encontraron resultados</CommandEmpty>
-                            <CommandGroup>
-                              {TEMPLATES.map((template) => (
-                                <CommandItem
-                                  value={template.template}
-                                  key={template.id}
-                                  onSelect={() => {
-                                    newAppointmentForm.setValue("attention_type", template.template, { shouldValidate: true })
-                                  }}
-                                >
-                                  {template.template}
-                                  <Check
-                                    className={cn(
-                                      "ml-auto",
-                                      template.template === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  />
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
+                    <AsyncSelect<{ label: string, value: number }, number>
+                      label="Plantilla"
+                      triggerClassName="!w-full"
+                      placeholder="Seleccionar plantilla"
+                      fetcher={handleGetTemplates}
+                      getDisplayValue={(item) => item.label}
+                      getOptionValue={(item) => item.value}
+                      renderOption={(item) => <div>{item.label}</div>}
+                      onChange={field.onChange}
+                      value={field.value}
+                      noResultsMessage="No se encontraron plantillas"
+                      modal
+                    />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -703,10 +682,9 @@ export default function NewAppointmentDialog() {
             />
             <DialogFooter>
               <Button
-                disabled={isLoading}
+                loading={isLoading}
                 size="sm"
               >
-                {isLoading && <Loader2Icon className="animate-spin" />}
                 Crear turno
               </Button>
             </DialogFooter>

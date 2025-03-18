@@ -1,51 +1,60 @@
-import { TableCell, TableRow, TableFooter } from "@/components/ui/table";
+import { TableFooter as ShadcnTableFooter, TableCell, TableRow } from "@/components/ui/table";
+import { useGetCreditNoteQuery } from "@/lib/services/credit-notes";
+import { useParams } from "next/navigation";
 import { columns } from "./columns";
 
+export default function TableFooter() {
+  const { id } = useParams<{ id: string }>()
 
-export default function CustomTableFooter() {
+  const { data: creditNote } = useGetCreditNoteQuery(id)
+
+  const subtotal = creditNote?.items.reduce((acc, item) => acc + item.price_subtotal, 0) ?? 0
+  //const taxes = creditNote?.items.reduce((acc, item) => acc + item.price_tax, 0) ?? 0
+  const total = subtotal// + taxes
 
   return (
-    <TableFooter>
-      <TableRow className="!border-b bg-background">
-        <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-medium py-0">
-          <span>Subtotal</span>
+    <ShadcnTableFooter>
+      <TableRow className="!border-solid !border-b bg-background h-6" />
+      <TableRow className="bg-background">
+        <TableCell colSpan={columns.length - 1} className="h-6 text-xs py-0 text-end">
+          <span>Subtotal (sin imp.)</span>
         </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0">
-          <span>ARS 400.93</span>
+        <TableCell className="h-6 text-xs py-0">
+          <span>{creditNote?.currency} {subtotal.toFixed(2)}</span>
         </TableCell>
       </TableRow>
-      <TableRow className="!border-b bg-background">
-        <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-medium py-0">
+      <TableRow className="bg-background">
+        <TableCell colSpan={columns.length - 1} className="h-6 text-xs py-0 text-end">
           <span>Impuestos</span>
         </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0">
-          <span>ARS 84.00</span>
+        <TableCell className="h-6 text-xs py-0">
+          <span>{creditNote?.currency} xxxxx {/* {taxes.toFixed(2)} */}</span>
         </TableCell>
       </TableRow>
-      <TableRow className="!border-b">
-        <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-medium py-0">
+      <TableRow className="bg-background">
+        <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-semibold py-0 text-end bg-muted/50">
           <span>Total nota de crédito</span>
         </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0">
-          <span>-ARS 484.93</span>
+        <TableCell className="h-6 text-xs font-semibold py-0 bg-muted/50">
+          <span>{creditNote?.currency} -{total.toFixed(2)}</span>
         </TableCell>
       </TableRow>
-      <TableRow className="!border-b">
-        <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-medium py-0">
+      <TableRow className="bg-background">
+        <TableCell colSpan={columns.length - 1} className="h-6 text-xs py-0 text-end">
           <span>Total factura</span>
         </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0">
-          <span>ARS 484.93</span>
+        <TableCell className="h-6 text-xs py-0">
+          <span>{creditNote?.currency} xxxxx</span>
         </TableCell>
       </TableRow>
-      <TableRow>
-        <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-medium py-0">
+      <TableRow className="bg-background">
+        <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-semibold py-0 text-end bg-muted/50">
           <span>Saldo pendiente</span>
         </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0">
-          <span>ARS 0.00</span>
+        <TableCell className="h-6 text-xs font-semibold py-0 bg-muted/50">
+          <span>{creditNote?.currency} xxxxx</span>
         </TableCell>
       </TableRow>
-    </TableFooter>
+    </ShadcnTableFooter>
   )
 }

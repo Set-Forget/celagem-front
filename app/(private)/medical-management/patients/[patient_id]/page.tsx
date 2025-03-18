@@ -1,6 +1,9 @@
 'use client'
 
+import DataTabs from "@/components/data-tabs"
+import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -8,13 +11,16 @@ import {
 } from "@/components/ui/resizable"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import Header from "@/components/header"
-import { ChevronDown, Pencil, Plus, X } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useParams } from "next/navigation"
 import { useGetPatientQuery } from "@/lib/services/patients"
 import { cn, placeholder } from "@/lib/utils"
-import { format } from "date-fns"
+import { Building, ChevronDown, House, Pencil, Plus, Shield, Users, Wallet, X } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
+import { useState } from "react"
+import CareCompanyTab from "./components/care_company-tab"
+import CaregiverTab from "./components/caregiver-tab"
+import CompanionTab from "./components/companion-tab"
+import FiscalTab from "./components/fiscal-tab"
+import GeneralTab from "./components/general-tab"
 
 const notes = [
   { id: 1, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc." },
@@ -23,19 +29,56 @@ const notes = [
   { id: 4, content: "Sed pretium tortor nec ipsum interdum dictum. Aliquam erat volutpat. Phasellus pulvinar velit arcu, at interdum ligula volutpat id. Nulla et tellus vel ipsum scelerisque auctor eu non massa. Duis laoreet vel magna eu sodales. Maecenas bibendum nisl neque, quis auctor arcu pharetra commodo. Proin sit amet facilisis libero. Fusce sagittis purus ut aliquam accumsan. Fusce vel mauris nisi. Vestibulum lobortis." },
 ]
 
-export default function PatientPage() {
+const tabs = [
+  {
+    value: "tab-1",
+    label: "General",
+    icon: <House className="mr-1.5" size={16} />,
+    content: <GeneralTab />
+  },
+  {
+    value: "tab-2",
+    label: "Acompañante",
+    icon: <Users className="mr-1.5" size={16} />,
+    content: <CompanionTab />
+  },
+  {
+    value: "tab-3",
+    label: "Responsable",
+    icon: <Shield className="mr-1.5" size={16} />,
+    content: <CaregiverTab />
+  },
+  {
+    value: "tab-4",
+    label: "Empresa responsable",
+    icon: <Building className="mr-1.5" size={16} />,
+    content: <CareCompanyTab />
+  },
+  {
+    value: "tab-5",
+    label: "Fiscal",
+    icon: <Wallet className="mr-1.5" size={16} />,
+    content: <FiscalTab />
+  },
+];
+
+export default function Page() {
+  const router = useRouter()
   const params = useParams<{ patient_id: string }>();
 
-  const patientId = params.patient_id
+  const patientId = params.patient_id;
 
   const { data: patient, isLoading: isPatientLoading } = useGetPatientQuery(patientId);
+
+  const [tab, setTab] = useState("tab-1")
+
   return (
     <>
       <Header title="Detalles del paciente">
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="ghost">
+              <Button size="sm" variant="outline">
                 Acciones
                 <ChevronDown />
               </Button>
@@ -51,141 +94,24 @@ export default function PatientPage() {
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button size="sm">
+          <Button
+            onClick={() => router.push(`/medical-management/patients/edit/${patientId}`)}
+            size="sm"
+          >
             <Pencil className="w-4 h-4" />
             Editar paciente
           </Button>
         </div>
       </Header>
-      <ResizablePanelGroup className="flex !h-full !w-auto" direction="horizontal">
+      <ResizablePanelGroup className="flex !h-full !w-full" direction="horizontal">
         <ResizablePanel defaultSize={70}>
-          <div className="flex flex-col gap-4 py-4">
-            <div className="px-4 flex flex-col gap-4">
-              <h2 className="text-base font-medium">General</h2>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Nombre</label>
-                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
-                    {isPatientLoading ? placeholder(14) : patient?.first_name + " " + patient?.first_last_name}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Tipo de vinculación</label>
-                  <span className="text-sm">
-                    xxxxxx
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Clase</label>
-                  <span className="text-sm">
-                    xxxxxx
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Sexo biológico</label>
-                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
-                    {isPatientLoading ? placeholder(14) : patient?.biological_sex}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Identidad de género
-                  </label>
-                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
-                    {isPatientLoading ? placeholder(14) : patient?.gender_identity}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Fecha de nacimiento
-                  </label>
-                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
-                    {isPatientLoading ? placeholder(14) : patient?.birth_date && format(patient?.birth_date, "dd/MM/yyyy")}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Lugar de nacimiento
-                  </label>
-                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
-                    {isPatientLoading ? placeholder(14) : patient?.birth_place}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Dirección de residencia
-                  </label>
-                  <span className="text-sm">
-                    xxxxxx
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Discapacidad
-                  </label>
-                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
-                    {isPatientLoading ? placeholder(14) : patient?.disability_type}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Sede
-                  </label>
-                  <span className="text-sm">
-                    xxxxxx
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Documento
-                  </label>
-                  <span className="text-sm">
-                    xxxxxx
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Número de teléfono</label>
-                  <span className="text-sm">
-                    xxxxxx
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">Email</label>
-                  <span className="text-sm">
-                    xxxxxx
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Entidad/IPS remitente
-                  </label>
-                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
-                    {isPatientLoading ? placeholder(14) : patient?.referring_entity}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-muted-foreground text-sm">
-                    Aseguradora
-                  </label>
-                  <span className={cn("text-sm transition-all duration-300", isPatientLoading ? "blur-[4px]" : "blur-none")}>
-                    {isPatientLoading ? placeholder(14) : patient?.insurance_provider}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <Separator />
-            <div className="px-4 flex flex-col gap-4">
-              <h2 className="text-base font-medium">Acompañante</h2>
-            </div>
-            <Separator />
-            <div className="px-4 flex flex-col gap-4">
-              <h2 className="text-base font-medium">Responsable</h2>
-            </div>
-            <Separator />
-            <div className="px-4 flex flex-col gap-4">
-              <h2 className="text-base font-medium">Fiscal</h2>
-            </div>
-          </div>
+          <DataTabs
+            tabs={tabs}
+            activeTab={tab}
+            onTabChange={setTab}
+            triggerClassName="mt-4"
+            contentClassName="p-4"
+          />
         </ResizablePanel>
         <ResizableHandle disabled />
         <ResizablePanel className="!flex-none w-[350px]" defaultSize={30}>
@@ -227,12 +153,39 @@ export default function PatientPage() {
           <div className="p-4 flex flex-col gap-4">
             <h2 className="text-base font-medium">Actividad</h2>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Creado por <strong className="font-medium">John Doe</strong></label>
-              <span className="text-sm">Hace 3 días</span>
+              <label className="text-muted-foreground text-sm">
+                Creado por{" "}
+                <span className="font-medium">
+                  John Doe
+                </span>
+              </label>
+              <span
+                className={cn(
+                  "text-sm transition-all duration-300",
+                  isPatientLoading ? "blur-[4px]" : "blur-none"
+                )}
+              >
+                {isPatientLoading ? placeholder(13) : "Hace 3 días"}
+              </span>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Editado por <strong className="font-medium">Jane Doe</strong></label>
-              <span className="text-sm">Hace 2 días</span>
+              <label className="text-muted-foreground text-sm">
+                Editado por{" "}
+                <span className={cn(
+                  "font-medium transition-all duration-300",
+                  isPatientLoading ? "blur-[4px]" : "blur-none"
+                )}>
+                  {isPatientLoading ? placeholder(13) : patient?.updated_by?.first_name + " " + patient?.updated_by?.last_name}
+                </span>
+              </label>
+              <span
+                className={cn(
+                  "text-sm transition-all duration-300",
+                  isPatientLoading ? "blur-[4px]" : "blur-none"
+                )}
+              >
+                Hace 2 días
+              </span>
             </div>
           </div>
         </ResizablePanel>

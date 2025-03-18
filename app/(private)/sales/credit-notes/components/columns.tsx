@@ -1,24 +1,15 @@
 "use client"
 
-import {
-  ColumnDef
-} from "@tanstack/react-table"
-
+import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
+import { CreditNotesList } from "../schemas/credit-notes"
+import { Badge } from "@/components/ui/badge"
+import { creditNoteStatus } from "../utils"
+import { cn } from "@/lib/utils"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
 
-export type CreditNote = {
-  company_name: string;
-  number: string;
-  status: "paid" | "overdue" | "pending" | "in_process";
-  type: "FA" | "OC" | "NC" | "ND";
-  issue_date: string;
-  due_date: string;
-  amount: number;
-  currency: "USD" | "ARS" | "EUR" | "CLP";
-  description: string;
-};
-
-export const columns: ColumnDef<CreditNote>[] = [
+export const columns: ColumnDef<CreditNotesList>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -44,30 +35,56 @@ export const columns: ColumnDef<CreditNote>[] = [
   {
     accessorKey: "number",
     header: "Número",
-    cell: ({ row }) => (
-      <div className="capitalize flex gap-1">
-        <div className="font-medium">{row.original.type}</div> {row.getValue("number")}
-      </div>
-    ),
+    cell: ({ row }) => <div className="font-medium">{row.original.number}</div>,
   },
   {
-    accessorKey: "company_name",
-    header: "Cliente",
-    cell: ({ row }) => <div>{row.getValue("company_name")}</div>,
+    accessorKey: "partner",
+    header: "Cliente/Proveedor",
+    cell: ({ row }) => <div>{row.getValue("partner")}</div>,
   },
   {
-    accessorKey: "issue_date",
-    header: "Fecha de emisión",
+    accessorKey: "status",
+    header: "Estado",
     cell: ({ row }) => {
-      const formattedDate = new Date(row.getValue("issue_date")).toLocaleDateString("es-AR")
-      return <div>{formattedDate}</div>
+      const status = creditNoteStatus[
+        row.getValue("status") === "posted" && new Date(row.original.due_date) < new Date()
+          ? "overdue"
+          : row.getValue("status") as keyof typeof creditNoteStatus
+      ];
+
+      return (
+        <Badge
+          variant="custom"
+          className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
+        >
+          {status?.label}
+        </Badge>
+      );
     },
   },
   {
-    accessorKey: "amount",
+    accessorKey: "date",
+    header: "Fecha de emisión",
+    cell: ({ row }) => {
+      return <div>
+        {format(new Date(row.getValue("date")), "dd MMM yyyy", { locale: es })}
+      </div>
+    },
+  },
+  {
+    accessorKey: "due_date",
+    header: "Fecha de vencimiento",
+    cell: ({ row }) => {
+      return <div>
+        {format(new Date(row.getValue("due_date")), "dd MMM yyyy", { locale: es })}
+      </div>
+    }
+  },
+  {
+    accessorKey: "amount_total",
     header: () => <div>Importe</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
+      const amount = -parseFloat(row.getValue("amount_total"))
       const currency = row.original.currency
 
       const formatted = new Intl.NumberFormat("en-US", {
@@ -76,7 +93,7 @@ export const columns: ColumnDef<CreditNote>[] = [
         currencyDisplay: "code",
       }).format(amount)
 
-      return <div className="font-medium">-{formatted}</div>
+      return <div className="font-medium">{formatted}</div>
     },
   },
 ]

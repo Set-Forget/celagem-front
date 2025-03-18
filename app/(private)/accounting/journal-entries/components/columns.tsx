@@ -3,19 +3,8 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import Link from "next/link"
 import { JournalEntry } from "../schemas/journal-entries"
 
 export const columns: ColumnDef<JournalEntry>[] = [
