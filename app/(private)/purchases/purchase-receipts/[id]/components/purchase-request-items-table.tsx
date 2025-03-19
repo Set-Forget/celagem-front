@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils"
 import { columns } from "./columns"
 import { PurchaseReceiptItems } from "../../schemas/purchase-receipts"
 
-const data: PurchaseReceiptItems[] = [
+const data = [
   {
     "item_code": "ITEM-7882",
     "item_name": "Answer",
@@ -74,7 +74,7 @@ export function PurchaseRequestItemsTable() {
   const [rowSelection, setRowSelection] = React.useState({})
 
   const table = useReactTable({
-    data: data ?? [],
+    data: data as any ?? [],
     columns: columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
