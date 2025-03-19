@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+/* import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
   Table,
@@ -192,4 +192,4 @@ export default function RenderTable({ ...fields }: { tableColumns?: ColumnConfig
       </div>
     </div>
   );
-}
+} */
