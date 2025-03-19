@@ -27,12 +27,12 @@ import {
 } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
+import { usePathname, useSearchParams } from "next/navigation"
 import { DateRange } from "react-day-picker"
 import { ActiveFilterChip } from "./active-filter-chip"
 import { Calendar } from "./ui/calendar"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 type DateRangeFilter = { field: string, from: Date; to: Date };
 type SearchFilter = { field: string; query: string };
