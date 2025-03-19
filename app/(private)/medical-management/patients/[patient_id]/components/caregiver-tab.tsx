@@ -19,7 +19,7 @@ export default function CaregiverTab() {
     {
       label: "Dirección",
       placeholderLength: 30,
-      // @ts-expect-error - caregiver must be defined later
+      // @ts-expect-error - must be defined later
       getValue: (p) => p.caregiver?.address,
     },
     {

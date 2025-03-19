@@ -19,6 +19,7 @@ export default function CompanionTab() {
     {
       label: "Dirección",
       placeholderLength: 30,
+      // @ts-expect-error - must be defined later
       getValue: (p) => p.companion?.address,
     },
     {
