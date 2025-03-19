@@ -32,10 +32,8 @@ export const columns: ColumnDef<AppointmentList>[] = [
     accessorKey: "start_date",
     header: "Fecha",
     sortingFn: (rowA, rowB) => {
-      // Construimos el Date combinando start_date y start_time para cada fila
       const a = new Date(`${rowA.original.start_date}T${rowA.original.start_time}`);
       const b = new Date(`${rowB.original.start_date}T${rowB.original.start_time}`);
-      // Para ordenar de la más reciente a la más antigua, restamos b - a
       return b.getTime() - a.getTime();
     },
     cell: ({ row }) => {

@@ -1,4 +1,4 @@
-import { NewField, NewFieldResponse, NewSection, NewSectionResponse, NewTemplate, NewTemplateResponse, TemplateDetail, TemplateDetailResponse, TemplateListResponse } from '@/app/(private)/medical-management/scheduler/schemas/templates';
+import { NewField, NewFieldResponse, NewSection, NewSectionResponse, NewTemplate, NewTemplateResponse, SectionDetail, SectionDetailResponse, SectionListResponse, TemplateDetail, TemplateDetailResponse, TemplateListResponse } from '@/app/(private)/medical-management/scheduler/schemas/templates';
 import { hcApi } from '@/lib/apis/hc-api';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
@@ -44,6 +44,7 @@ export const templatesApi = hcApi.injectEndpoints({
         method: 'POST',
         body: newSection
       }),
+      invalidatesTags: ['Section']
     }),
     updateSection: builder.mutation<NewSectionResponse, Omit<NewSection, 'id'> & { id: number }>({
       query: ({ id, ...newSection }) => ({
@@ -51,6 +52,16 @@ export const templatesApi = hcApi.injectEndpoints({
         method: 'PATCH',
         body: newSection
       }),
+      invalidatesTags: ['Section']
+    }),
+    listSections: builder.query<SectionListResponse, void>({
+      query: () => 'section',
+      providesTags: ['Section']
+    }),
+    getSections: builder.query<SectionDetail, number>({
+      query: (id) => `section/${id}`,
+      transformResponse: (response: SectionDetailResponse) => response.data,
+      providesTags: ['Section']
     }),
 
     //--- Fields ---
@@ -60,6 +71,7 @@ export const templatesApi = hcApi.injectEndpoints({
         method: 'POST',
         body: newField
       }),
+      invalidatesTags: ['Field']
     }),
     updateField: builder.mutation<NewFieldResponse, Omit<NewField, 'id'> & { id: number }>({
       query: ({ id, section_id, ...newField }) => ({
@@ -67,6 +79,7 @@ export const templatesApi = hcApi.injectEndpoints({
         method: 'PATCH',
         body: newField
       }),
+      invalidatesTags: ['Field']
     }),
   })
 });
@@ -76,8 +89,10 @@ export const {
   useGetTemplateQuery,
   useLazyListTemplatesQuery,
 
+  useLazyListSectionsQuery,
   useCreateSectionMutation,
   useUpdateSectionMutation,
+  useLazyGetSectionsQuery,
 
   useCreateFieldMutation,
   useUpdateFieldMutation,

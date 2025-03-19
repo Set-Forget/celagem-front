@@ -54,7 +54,8 @@ export default function AppointmentDetailsDialog() {
   return (
     <Dialog
       open={dialogState.open === "appointment-details"}
-      onOpenChange={onOpenChange}>
+      onOpenChange={onOpenChange}
+    >
       <DialogContent className="w-[500px] gap-6">
         <DialogHeader className="gap-1">
           <div className="flex items-center gap-2">

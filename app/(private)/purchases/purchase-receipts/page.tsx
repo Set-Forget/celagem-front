@@ -28,7 +28,7 @@ export default function PurchaseReceiptsPage() {
           Crear recepción de compra
         </Button>
       </Header>
-      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
+      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
         <DataTable
           data={purchaseReceipts?.data ?? []}
           columns={columns}

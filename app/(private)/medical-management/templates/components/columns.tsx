@@ -4,10 +4,9 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 import { TemplateList } from "../../scheduler/schemas/templates"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { MoreHorizontal } from "lucide-react"
-import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
+import { templateStatus } from "../utils"
 
 export const columns: ColumnDef<TemplateList>[] = [
   {
@@ -15,27 +14,22 @@ export const columns: ColumnDef<TemplateList>[] = [
     header: "Nombre",
     cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
   },
-  /*   {
-      id: "actions",
-      enableHiding: false,
-      cell: ({ row }) => {
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
-      },
-    } */
+  {
+    accessorKey: "sections",
+    header: "Secciones",
+    cell: ({ row }) => <div>{row.original.sections.length}</div>
+  },
+  {
+    accessorKey: "isActive",
+    header: "Estado",
+    cell: ({ row }) => {
+      const status = templateStatus[String(row.getValue("isActive")) as keyof typeof templateStatus]
+      return <Badge
+        variant="custom"
+        className={cn(`${status.bg_color} ${status.text_color} border-none rounded-sm`)}
+      >
+        {status.label}
+      </Badge>
+    },
+  }
 ]

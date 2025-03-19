@@ -27,14 +27,11 @@ export interface Option {
 }
 
 // ! Tremenda refactorización hay que hacerle a este componente
+// ? (ya no tanta)
 
 export interface AsyncSelectProps<T, V = string> {
   /** Async function to fetch options */
   fetcher: (query?: string) => Promise<T[]>;
-  /** Preload all data ahead of time */
-  preload?: boolean;
-  /** Function to filter options */
-  filterFn?: (option: T, query: string) => boolean;
   /** Function to render each option */
   renderOption: (option: T) => React.ReactNode;
   /** Function to get the value from an option */
@@ -64,7 +61,6 @@ export interface AsyncSelectProps<T, V = string> {
   /** Custom no results message */
   noResultsMessage?: string;
   /** Allow clearing the selection */
-  clearable?: boolean;
   modal?: boolean;
   actionButton?: React.ReactNode;
   /**
@@ -72,17 +68,12 @@ export interface AsyncSelectProps<T, V = string> {
    * Si no se provee, se convertirá a string el resultado de getOptionValue.
    */
   getOptionKey?: (option: T) => string;
-  /**
- * Opciones iniciales que se muestran antes de que el usuario busque.
- * Ideal para mostrar un valor por defecto.
- */
+  /** Initial options to show */
   initialOptions?: T[];
 }
 
 export function AsyncSelect<T, V>({
   fetcher,
-  preload,
-  filterFn,
   renderOption,
   getOptionValue,
   getDisplayValue,
@@ -97,112 +88,94 @@ export function AsyncSelect<T, V>({
   className,
   triggerClassName,
   noResultsMessage,
-  clearable = false,
   actionButton,
   getOptionKey,
   initialOptions,
 }: AsyncSelectProps<T, V>) {
-  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState<T[]>(initialOptions || []);
+  const [options, setOptions] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedValue, setSelectedValue] = useState<V>(value);
   const [selectedOption, setSelectedOption] = useState<T | null>(null);
+
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, preload ? 0 : 300);
-  const [originalOptions, setOriginalOptions] = useState<T[]>(initialOptions || []);
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  useEffect(() => {
-    setMounted(true);
-    setSelectedValue(value);
-  }, [value]);
+  const handleFetch = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-  useEffect(() => {
-    const fetchOptions = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await fetcher(debouncedSearchTerm);
-        setOriginalOptions(data);
-        setOptions(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch options');
-      } finally {
-        setLoading(false);
+    try {
+      const fetched = await fetcher(searchTerm);
+
+      if (selectedOption) {
+        const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
+        const selKey = keyFn(selectedOption);
+        const alreadyIncluded = fetched.some((o) => keyFn(o) === selKey);
+        if (!alreadyIncluded) {
+          fetched.unshift(selectedOption);
+        }
       }
-    };
 
-    if (!mounted) {
-      fetchOptions();
-    } else if (!preload && debouncedSearchTerm) {
-      fetchOptions();
-    } else if (preload) {
-      if (debouncedSearchTerm) {
-        setOptions(
-          originalOptions.filter((option) =>
-            filterFn ? filterFn(option, debouncedSearchTerm) : true
-          )
-        );
-      } else {
-        setOptions(originalOptions);
-      }
+      setOptions(fetched);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error obteniendo opciones");
+    } finally {
+      setLoading(false);
     }
-  }, [debouncedSearchTerm, mounted, preload, filterFn]);
+  }, [searchTerm, selectedOption]);
+
 
   useEffect(() => {
-    if (options.length && value) {
-      const matchingOption = options.find((option) => {
-        const key = getOptionKey ? getOptionKey(option) : String(getOptionValue(option));
-        return key === String(value);
-      });
-      if (matchingOption) {
-        setSelectedOption(matchingOption);
-      }
+    if (!searchTerm) return;
+    void handleFetch();
+  }, [searchTerm]);
+
+  const handleSelect = useCallback((selectedKey: string) => {
+    const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
+    const opt = options.find((o) => keyFn(o) === selectedKey);
+    if (opt) {
+      setSelectedOption(opt);
+      onChange(getOptionValue(opt));
     }
-  }, [options, value, getOptionKey, getOptionValue]);
-
-  const handleSelect = useCallback(
-    (selectedKey: string) => {
-      const selectedOpt = options.find((option) => {
-        const key = getOptionKey ? getOptionKey(option) : String(getOptionValue(option));
-        return key === selectedKey;
-      });
-      if (selectedOpt) {
-        const newKey = getOptionKey ? getOptionKey(selectedOpt) : String(getOptionValue(selectedOpt));
-        const currentKey = selectedOption
-          ? getOptionKey
-            ? getOptionKey(selectedOption)
-            : String(getOptionValue(selectedOption))
-          : "";
-        const newValue =
-          clearable && newKey === currentKey
-            ? ("" as unknown as V)
-            : getOptionValue(selectedOpt);
-        setSelectedValue(newValue);
-        setSelectedOption(selectedOpt);
-        onChange(newValue);
-      }
-      setOpen(false);
-    },
-    [options, getOptionKey, getOptionValue, clearable, selectedOption, onChange]
-  );
+  }, [options]);
 
   useEffect(() => {
-    setOriginalOptions(initialOptions || []);
-    setOptions(initialOptions || []);
+    if (!value || options.length === 0) {
+      setSelectedOption(null);
+      return;
+    }
+
+    let matchedOption: T | null = null;
+
+    if (typeof value === "object" && getOptionKey) {
+      const valueKey = getOptionKey(value as T);
+      matchedOption = options.find((option) => getOptionKey(option) === valueKey) || null;
+    } else {
+      matchedOption = options.find((option) => getOptionValue(option) === value) || null;
+    }
+
+    setSelectedOption(matchedOption);
+  }, [value, options]);
+
+  useEffect(() => {
+    if (!initialOptions) return;
+    setOptions((prev) => {
+      const merged = [...prev];
+      for (const item of initialOptions) {
+        const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
+        if (!merged.some((o) => keyFn(o) === keyFn(item))) {
+          merged.push(item);
+        }
+      }
+      return merged;
+    });
   }, [initialOptions]);
 
+
   useEffect(() => {
-    if (options.length && value) {
-      const matchingOption = options.find((option) => {
-        return option === value;
-      });
-      if (matchingOption) {
-        setSelectedOption(matchingOption);
-      }
-    }
-  }, [options, value]);
+    handleFetch();
+  }, [debouncedSearchTerm]);
 
   return (
     <Popover modal={modal} open={open} onOpenChange={setOpen}>

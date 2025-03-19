@@ -4,7 +4,6 @@ import { AsyncSelect } from "@/components/async-select";
 import CustomSonner from "@/components/custom-sonner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -12,7 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useUpdateAppointmentMutation } from "@/lib/services/appointments";
-import { useListBusinessUnitsQuery } from "@/lib/services/business-units";
+import { useLazyListBusinessUnitsQuery } from "@/lib/services/business-units";
 import { useLazyListPatientsQuery } from "@/lib/services/patients";
 import { useLazyListTemplatesQuery } from "@/lib/services/templates";
 import { useLazyListUsersQuery } from "@/lib/services/users";
@@ -20,7 +19,7 @@ import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, parse } from "date-fns";
-import { CalendarIcon, Check, ChevronsUpDown, Clock, Loader2Icon } from "lucide-react";
+import { CalendarIcon, Clock, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ControllerRenderProps, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
@@ -31,11 +30,9 @@ export default function EditAppointmentDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
 
   const appointment = dialogState.payload?.appointment as AppointmentList;
-
   const [updateAppointment, { isLoading }] = useUpdateAppointmentMutation();
 
-  const { data: businessUnits } = useListBusinessUnitsQuery();
-
+  const [getBusinessUnits] = useLazyListBusinessUnitsQuery()
   const [getPatients] = useLazyListPatientsQuery();
   const [getDoctors] = useLazyListUsersQuery();
   const [getTemplates] = useLazyListTemplatesQuery()
@@ -128,6 +125,19 @@ export default function EditAppointmentDialog() {
       return [];
     }
   };
+
+  const handleGetBusinessUnits = async () => {
+    try {
+      const businessUnits = await getBusinessUnits().unwrap()
+      return businessUnits.data.map((bu) => ({
+        label: bu.name,
+        value: bu.id,
+      }))
+    } catch (error) {
+      console.error("Error al obtener unidades de negocio:", error)
+      return []
+    }
+  }
 
   async function onSubmit(data: z.infer<typeof newAppointmentSchema>) {
     try {
@@ -533,44 +543,19 @@ export default function EditAppointmentDialog() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel className="w-fit">Sede</FormLabel>
-                    <Popover modal>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn("justify-between font-normal pl-3", !field.value && "text-muted-foreground")}
-                          >
-                            {field.value
-                              ? businessUnits?.data.find((businessUnit) => businessUnit.id === field.value)?.name
-                              : "Seleccionar sede"}
-                            <ChevronsUpDown className="opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent align="start" className="p-0">
-                        <Command>
-                          <CommandInput placeholder="Buscar sede" className="h-8" />
-                          <CommandList>
-                            <CommandEmpty>No se encontraron resultados</CommandEmpty>
-                            <CommandGroup>
-                              {businessUnits?.data.map((businessUnit) => (
-                                <CommandItem
-                                  value={businessUnit.id}
-                                  key={businessUnit.id}
-                                  onSelect={() => {
-                                    editAppointmentForm.setValue("clinic_id", businessUnit.id, { shouldValidate: true });
-                                  }}
-                                >
-                                  {businessUnit.name}
-                                  <Check className={cn("ml-auto", businessUnit.id === field.value ? "opacity-100" : "opacity-0")} />
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
+                    <AsyncSelect<{ label: string, value: string }, string>
+                      label="Sede"
+                      triggerClassName="!w-full"
+                      placeholder="Seleccionar sede"
+                      fetcher={handleGetBusinessUnits}
+                      getDisplayValue={(item) => item.label}
+                      getOptionValue={(item) => item.value}
+                      renderOption={(item) => <div>{item.label}</div>}
+                      onChange={field.onChange}
+                      value={field.value}
+                      noResultsMessage="No se encontraron sedes"
+                      modal
+                    />
                     <FormMessage />
                   </FormItem>
                 )}

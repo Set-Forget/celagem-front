@@ -11,6 +11,7 @@ export const businessUnitsApi = usersApi.injectEndpoints({
 
 export const {
   useListBusinessUnitsQuery,
+  useLazyListBusinessUnitsQuery
 } = businessUnitsApi;
 
 

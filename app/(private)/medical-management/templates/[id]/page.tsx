@@ -27,6 +27,8 @@ import NewSectionDialog from "./components/new-section-dialog";
 import TemplateSection from "./components/template-section";
 import { getDiffs } from "./utils";
 import EditTemplateDialog from "./components/edit-template-dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import ImportSectionDialog from "./components/import-section-dialog";
 
 const normalizedSchema = z.object({
   template: newTemplateSchema,
@@ -243,14 +245,31 @@ export default function TemplatePage() {
           <div className="grid grid-cols-1 gap-4 p-4">
             <div className="flex items-center gap-2">
               <h2 className="text-base font-medium">Secciones</h2>
-              <Button
-                size="icon"
-                variant="outline"
-                className="h-6 w-6"
-                onClick={() => setDialogsState({ open: "new-section" })}
-              >
-                <Plus />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    className="h-6 w-6"
+                  >
+                    <Plus />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      onClick={() => setDialogsState({ open: "new-section" })}
+                    >
+                      Crear sección
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setDialogsState({ open: "import-section" })}
+                    >
+                      Importar sección
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <div className="flex flex-col gap-4">
               {sections?.length === 0 && (
@@ -302,6 +321,7 @@ export default function TemplatePage() {
         <NewFieldDialog />
         <EditFieldDialog />
         <NewSectionDialog />
+        <ImportSectionDialog />
         <EditSectionDialog />
         <EditTemplateDialog />
       </Form>

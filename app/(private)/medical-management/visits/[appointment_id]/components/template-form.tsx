@@ -47,7 +47,7 @@ export const TemplateForm = forwardRef<TemplateFormHandle, TemplateFormProps>(
             <div key={section.id} className="flex flex-col gap-4">
               <div className="grid grid-cols-1 gap-4">
                 <fieldset className={cn(
-                  "border border-input rounded-md p-4 !shadow-sm min-w-0 w-full flex flex-col gap-4 hover:[&:not(:has(.field:hover))]:border-primary transition-colors")}>
+                  "border border-input rounded-md p-4 !shadow-sm min-w-0 w-full flex flex-col gap-4")}>
                   {section.name && <legend className="text-xs px-2 border rounded-sm font-medium">{section.name}</legend>}
                   {section.fields.map((field: Field) => (
                     <div key={field.id} className="flex flex-col gap-2">

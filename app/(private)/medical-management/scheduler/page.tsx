@@ -34,9 +34,9 @@ const filtersConfig: Record<string, FilterConfig> = {
   status: {
     type: "multiple",
     options: [
-      { label: "Programado", value: "scheduled" },
-      { label: "Cancelado", value: "cancelled" },
-      { label: "Completado", value: "completed" },
+      { label: "Programado", value: "SCHEDULED" },
+      { label: "Cancelado", value: "CANCELLED" },
+      { label: "Completado", value: "COMPLETED" },
     ], label: "Estado",
     key: "status",
     icon: CircleDashed
@@ -49,12 +49,14 @@ export default function SchedulerPage() {
   const [selectedDate, setSelectedDate] = React.useState(new Date());
 
   const view = searchParams.get('view') || 'month';
+  const status = searchParams.get('status');
 
   const range = getRangeForView(view, selectedDate)
 
   const { data: appointments, isLoading: isAppointmentLoading } = useSearchAppointmentsQuery({
     range_start_date: format(range.start, 'yyyy-MM-dd'),
     range_end_date: format(range.end, 'yyyy-MM-dd'),
+    status: status ? JSON.parse(status).join(',') : undefined,
   });
 
   const adaptSelectedDate = () => {
@@ -110,23 +112,24 @@ export default function SchedulerPage() {
   return (
     <>
       <Header title={view === 'table' ? 'Tabla' : 'Agenda'}>
-        <Button
-          className="ml-2"
-          size="sm"
-          variant="ghost"
-          onClick={() => handleSelectView(view === 'table' ? 'month' : 'table')}
-        >
-          {view === 'table' ? <ArrowRightLeft /> : <ArrowLeftRight />}
-          {view === 'table' ? 'Ver agenda' : 'Ver tabla'}
-        </Button>
-        <Button
-          className="ml-auto"
-          size="sm"
-          onClick={() => setDialogsState({ open: "new-appointment" })}
-        >
-          <Plus className="w-4 h-4" />
-          Nuevo turno
-        </Button>
+        <div className='flex items-center gap-2 ml-auto'>
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-[115px]"
+            onClick={() => handleSelectView(view === 'table' ? 'month' : 'table')}
+          >
+            {view === 'table' ? <ArrowRightLeft /> : <ArrowLeftRight />}
+            {view === 'table' ? 'Ver agenda' : 'Ver tabla'}
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => setDialogsState({ open: "new-appointment" })}
+          >
+            <Plus className="w-4 h-4" />
+            Nuevo turno
+          </Button>
+        </div>
       </Header>
       <div className={cn('flex justify-between p-4 border-b')}>
         <FilterSelector filtersConfig={filtersConfig} />

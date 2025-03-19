@@ -69,7 +69,6 @@ export default function EditTemplateDialog() {
       form.reset();
       return;
     }
-    console.log(template);
     form.reset(template);
   }, [dialogState.open, form]);
 

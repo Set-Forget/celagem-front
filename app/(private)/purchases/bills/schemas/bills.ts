@@ -88,7 +88,6 @@ export const billDetailResponseSchema = z.object({
   data: billDetailSchema,
 });
 
-
 export type NewBillLine = z.infer<typeof newBillLineSchema>;
 
 export type NewBill = z.infer<typeof newBillSchema>;

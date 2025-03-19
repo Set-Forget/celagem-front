@@ -24,57 +24,75 @@ function getCalendarDates(selectedDate: Date): Date[] {
       startDate.getMonth(),
       startDate.getDate() + i
     );
-    dates.push(current)
+    dates.push(current);
   }
 
   return dates;
 }
 
-export default function MonthlyView({ selectedDate, appointments }: { selectedDate: Date, appointments?: AppointmentList[] }) {
-  const getAppointmentsForDay = (cellDate: Date) => {
-    const formattedDate = cellDate.toISOString().slice(0, 10);
+export default function MonthlyView({
+  selectedDate,
+  appointments,
+}: {
+  selectedDate: Date;
+  appointments?: AppointmentList[];
+}) {
+
+  function getAppointmentsForDay(cellDate: Date) {
+    if (!appointments) return [];
+
+    const dayStart = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate(), 0, 0, 0);
+    const dayEnd = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate(), 23, 59, 59);
+
     return appointments
-      ?.filter((appointment) => {
-        return appointment.start_date === formattedDate;
+      .filter((appointment) => {
+        const apptStart = new Date(`${appointment.start_date}T${appointment.start_time ?? '00:00'}:00`);
+        const apptEnd = new Date(`${appointment.end_date}T${appointment.end_time ?? '23:59'}:00`);
+
+        if (apptStart <= dayEnd && apptEnd >= dayStart) {
+          return true;
+        }
+        return false;
       })
       .sort((a, b) => a.start_time.localeCompare(b.start_time));
-  };
+  }
 
   const calendarDates = getCalendarDates(selectedDate);
 
   return (
     <>
-      <div className='grid grid-cols-7'>
+      <div className="grid grid-cols-7">
         {['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'].map((d) => (
           <div
             key={d}
-            className='p-2 text-center text-xs font-semibold border-r last:border-r-0'
+            className="p-2 text-center text-xs font-semibold border-r last:border-r-0"
           >
             {d}
           </div>
         ))}
       </div>
-      <div className='grid grid-cols-7 h-full'>
+      <div className="grid grid-cols-7 h-full">
         {calendarDates.map((cellDate, index) => {
           const dayNum = cellDate.getDate();
           const cellMonth = cellDate.getMonth();
           const cellYear = cellDate.getFullYear();
-          const isToday = new Date().toDateString() === cellDate.toDateString();
           const isCurrentMonth = cellMonth === selectedDate.getMonth() && cellYear === selectedDate.getFullYear();
+          const isToday = new Date().toDateString() === cellDate.toDateString();
           const dayAppointments = getAppointmentsForDay(cellDate);
 
           return (
             <button
               key={index}
               className={cn(
-                'relative h-full border border-l-0 min-h-[130px] border-b-0 text-center text-sm pt-2 transition flex flex-col items-center hover:cursor-pointer hover:bg-accent [&:has(.appointment:hover)]:hover:bg-transparent',
+                'relative h-full border border-l-0 min-h-[130px] text-center text-sm pt-2 transition flex flex-col items-center hover:cursor-pointer hover:bg-accent [&:has(.appointment:hover)]:hover:bg-transparent',
+                'border-b-0',
                 index % 7 === 6 && 'border-r-0',
                 !isCurrentMonth && 'text-gray-400 bg-accent/50'
               )}
               onClick={(e) => {
                 e.stopPropagation();
                 setDialogsState({
-                  open: "new-appointment",
+                  open: 'new-appointment',
                   payload: { date: cellDate },
                 });
               }}
@@ -82,20 +100,20 @@ export default function MonthlyView({ selectedDate, appointments }: { selectedDa
               <div
                 className={cn(
                   isToday && 'bg-primary text-white w-6 h-6 rounded-sm flex items-center justify-center',
-                  isToday && !isCurrentMonth && 'bg-accent text-foreground border',
+                  isToday && !isCurrentMonth && 'bg-accent text-foreground border'
                 )}
               >
                 {dayNum}
               </div>
               <div className="flex flex-col items-start w-full overflow-hidden absolute top-8 mt-2">
-                {dayAppointments?.slice(0, 3).map((appointment) => (
+                {dayAppointments.slice(0, 3).map((appointment) => (
                   <MonthlyAppointmentCard
                     key={appointment.id}
                     appointment={appointment}
                     isCurrentMonth={isCurrentMonth}
                   />
                 ))}
-                {dayAppointments && dayAppointments.length > 3 && (
+                {dayAppointments.length > 3 && (
                   <Popover>
                     <PopoverTrigger
                       onClick={(e) => e.stopPropagation()}
@@ -129,7 +147,9 @@ export default function MonthlyView({ selectedDate, appointments }: { selectedDa
                               !isCurrentMonth && "border-border bg-accent/25 shadow-border"
                             )}
                           />
-                          <span>{format(parse(appointment?.start_time ?? "", 'HH:mm', new Date()), "hh:mm a")}</span>
+                          <span>
+                            {format(parse(appointment?.start_time ?? "", 'HH:mm', new Date()), "hh:mm a")}
+                          </span>
                           <p className="font-semibold ml-0.5 truncate">
                             {appointment?.patient?.first_name} {appointment?.patient?.last_name}
                           </p>
