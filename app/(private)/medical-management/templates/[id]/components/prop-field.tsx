@@ -209,13 +209,20 @@ function getRenderer(propKey: string, primitiveType?: string) {
   if (defaultPropRenderers[propKey]) {
     return defaultPropRenderers[propKey];
   }
-  return (field: Omit<ControllerRenderProps<FieldValues, string>, "ref">) => (
+  const DefaultInputRenderer = (
+    field: Omit<ControllerRenderProps<FieldValues, string>, "ref">
+  ) => (
     <Input
       {...field}
-      placeholder={`Ingrese ${propFieldAdapter[propKey as keyof typeof propFieldAdapter].toLowerCase()}`}
+      placeholder={`Ingrese ${propFieldAdapter[
+        propKey as keyof typeof propFieldAdapter
+      ].toLowerCase()}`}
     />
   );
+  DefaultInputRenderer.displayName = `DefaultInputRenderer(${propKey})`;
+  return DefaultInputRenderer;
 }
+
 
 type DynamicFieldProps = {
   propKey: string;
