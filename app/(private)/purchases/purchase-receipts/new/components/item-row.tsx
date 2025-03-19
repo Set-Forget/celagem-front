@@ -1,4 +1,4 @@
-import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
+import { FormControl, FormField, FormItem } from "@/components/ui/form"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,11 +8,10 @@ import {
 } from "@/components/ui/table"
 import { Trash2 } from "lucide-react"
 import { useFormContext } from "react-hook-form"
-import { z } from "zod"
-import { newPurchaseReceiptSchema } from "../../schemas/purchase-receipts"
+//import { newPurchaseReceiptSchema } from "../../schemas/purchase-receipts"
 
 export default function ItemRow({ index, remove }: { index: number, remove: (index: number) => void }) {
-  const { control } = useFormContext<z.infer<typeof newPurchaseReceiptSchema>>()
+  const { control } = useFormContext()
 
   return (
     <TableRow className="group">

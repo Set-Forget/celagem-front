@@ -17,12 +17,12 @@ import {
   TableRow
 } from "@/components/ui/table"
 import ItemRow from "./item-row"
-import { newPurchaseReceiptSchema } from "../../schemas/purchase-receipts"
+//import { newPurchaseReceiptSchema } from "../../schemas/purchase-receipts"
 import { cn } from "@/lib/utils"
 import TableFooter from "./table-footer"
 
 export default function ItemsTable({ className }: { className?: string }) {
-  const { control } = useFormContext<z.infer<typeof newPurchaseReceiptSchema>>()
+  const { control } = useFormContext()
 
   const { fields, append: appendItem, remove: removeItem } = useFieldArray({
     control: control,

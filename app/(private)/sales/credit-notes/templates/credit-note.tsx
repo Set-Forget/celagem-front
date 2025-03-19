@@ -1,6 +1,6 @@
 'use client'
 
-// @ts-ignore
+// @ts-expect-error
 import html2pdf from "html2pdf.js";
 
 export const generateCreditNotePDF = () => {

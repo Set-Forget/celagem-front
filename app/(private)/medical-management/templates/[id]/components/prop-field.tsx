@@ -11,7 +11,8 @@ import {
   Input as AriaInput,
   NumberField as AriaNumberField,
   TimeField as AriaTimeField,
-  Button, DatePicker,
+  Button,
+  DatePicker,
   DateSegment,
   Dialog,
   Group,
@@ -22,7 +23,57 @@ import {
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
 import { propFieldAdapter } from "../utils";
 
-const defaultValueRenderers: Record<string, (field: Omit<ControllerRenderProps<FieldValues, string>, "ref">, props?: Record<string, unknown>) => JSX.Element> = {
+function SelectRenderer(
+  field: Omit<ControllerRenderProps<FieldValues, string>, "ref">
+) {
+  const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
+
+  return (
+    <TagInput
+      tags={
+        field?.value?.map((tag: { label: string; value: string }) => ({
+          id: tag.value,
+          text: tag.label,
+        })) ?? []
+      }
+      setTags={(newTags) => {
+        const tagsArray = typeof newTags === "function" ? newTags([]) : newTags;
+        field.onChange(
+          tagsArray.map((tag) => ({
+            label: tag.text,
+            value: tag.id,
+          }))
+        );
+      }}
+      placeholder="Agregar opción"
+      styleClasses={{
+        tagList: {
+          container: "gap-1",
+        },
+        input:
+          "rounded-sm transition-[color,box-shadow] placeholder:text-muted-foreground",
+        tag: {
+          body: "relative h-7 bg-background border border-input hover:bg-background rounded-md font-medium text-xs ps-2 pe-7",
+          closeButton:
+            "absolute -inset-y-px -end-px p-0 rounded-s-none rounded-e-md flex size-7 transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] text-muted-foreground/80 hover:text-foreground",
+        },
+      }}
+      activeTagIndex={activeTagIndex}
+      setActiveTagIndex={setActiveTagIndex}
+      inlineTags={false}
+      inputFieldPosition="top"
+    />
+  );
+}
+SelectRenderer.displayName = "SelectRenderer";
+
+const defaultValueRenderers: Record<
+  string,
+  (
+    field: Omit<ControllerRenderProps<FieldValues, string>, "ref">,
+    props?: Record<string, unknown>
+  ) => JSX.Element
+> = {
   text: (field) => <Input {...field} placeholder="Ingrese valor por defecto" />,
   textarea: (field) => (
     <Textarea
@@ -37,14 +88,12 @@ const defaultValueRenderers: Record<string, (field: Omit<ControllerRenderProps<F
       {...props}
       {...field}
       onChange={(value) => {
-        if (!isNaN(value)) return field.onChange(value)
+        if (!isNaN(value)) return field.onChange(value);
         field.onChange(null);
       }}
       className="w-full"
     >
-      <Label className="sr-only">
-        Number field
-      </Label>
+      <Label className="sr-only">Number field</Label>
       <Group className="relative inline-flex h-9 w-full items-center overflow-hidden whitespace-nowrap rounded-sm border border-input text-sm shadow-sm shadow-black/5 transition-shadow data-[disabled]:opacity-50 data-[focus-within]:outline outline-1">
         <AriaButton
           slot="decrement"
@@ -75,9 +124,7 @@ const defaultValueRenderers: Record<string, (field: Omit<ControllerRenderProps<F
           field?.onChange(value);
         }}
       >
-        <Label className="sr-only">
-          Date
-        </Label>
+        <Label className="sr-only">Date</Label>
         <div className="flex">
           <Group className="w-full">
             <DateInput className="pe-9" />
@@ -109,9 +156,7 @@ const defaultValueRenderers: Record<string, (field: Omit<ControllerRenderProps<F
           field?.onChange(value);
         }}
       >
-        <Label className="sr-only">
-          Time Input
-        </Label>
+        <Label className="sr-only">Time Input</Label>
         <div className="relative w-full">
           <AriaDateInput className="relative inline-flex h-9 w-full items-center overflow-hidden whitespace-nowrap rounded-sm border border-input bg-background px-3 py-2 pe-9 text-sm shadow-sm shadow-black/5 transition-shadow data-[focus-within]:border-ring data-[disabled]:opacity-50 data-[focus-within]:outline-none">
             {(segment) => (
@@ -141,42 +186,14 @@ const defaultValueRenderers: Record<string, (field: Omit<ControllerRenderProps<F
       </DateFieldRac>
     </I18nProvider>
   ),
-  select: (field) => {
-    const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
-    return <TagInput
-      tags={field?.value?.map((tag: { label: string, value: string }) => ({
-        id: tag.value,
-        text: tag.label,
-      })) ?? []}
-      setTags={(newTags) => {
-        const tagsArray = typeof newTags === 'function' ? newTags([]) : newTags;
-        field.onChange(tagsArray.map((tag) => ({
-          label: tag.text,
-          value: tag.id,
-        })));
-      }}
-      placeholder="Agregar opción"
-      styleClasses={{
-        tagList: {
-          container: "gap-1",
-        },
-        input:
-          "rounded-sm transition-[color,box-shadow] placeholder:text-muted-foreground",
-        tag: {
-          body: "relative h-7 bg-background border border-input hover:bg-background rounded-md font-medium text-xs ps-2 pe-7",
-          closeButton:
-            "absolute -inset-y-px -end-px p-0 rounded-s-none rounded-e-md flex size-7 transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] text-muted-foreground/80 hover:text-foreground",
-        },
-      }}
-      activeTagIndex={activeTagIndex}
-      setActiveTagIndex={setActiveTagIndex}
-      inlineTags={false}
-      inputFieldPosition="top"
-    />
-  }
+
+  select: (field) => <SelectRenderer {...field} />,
 };
 
-const defaultPropRenderers: Record<string, (field: Omit<ControllerRenderProps<FieldValues, string>, "ref">) => JSX.Element> = {
+const defaultPropRenderers: Record<
+  string,
+  (field: Omit<ControllerRenderProps<FieldValues, string>, "ref">) => JSX.Element
+> = {
   options: (field) => defaultValueRenderers.select(field),
   minLength: (field) => defaultValueRenderers.number(field, { minValue: 0 }),
   maxValue: (field) => defaultValueRenderers.number(field, { minValue: 0 }),
@@ -185,15 +202,18 @@ const defaultPropRenderers: Record<string, (field: Omit<ControllerRenderProps<Fi
   decimalPlaces: (field) => defaultValueRenderers.number(field),
 };
 
-function getRenderer(propKey: string, primitiveType?: string): (field: Omit<ControllerRenderProps<FieldValues, string>, "ref">) => JSX.Element {
+function getRenderer(propKey: string, primitiveType?: string) {
   if (propKey === "defaultValue" && primitiveType && defaultValueRenderers[primitiveType]) {
     return defaultValueRenderers[primitiveType];
   }
   if (defaultPropRenderers[propKey]) {
     return defaultPropRenderers[propKey];
   }
-  return (field) => (
-    <Input {...field} placeholder={`Ingrese ${propFieldAdapter[propKey as keyof typeof propFieldAdapter].toLowerCase()}`} />
+  return (field: Omit<ControllerRenderProps<FieldValues, string>, "ref">) => (
+    <Input
+      {...field}
+      placeholder={`Ingrese ${propFieldAdapter[propKey as keyof typeof propFieldAdapter].toLowerCase()}`}
+    />
   );
 }
 
