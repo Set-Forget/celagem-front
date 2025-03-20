@@ -138,6 +138,33 @@ const data = {
       ],
     },
     {
+      title: 'Administracion',
+      url: '#',
+      icon: Building,
+      items: [
+        {
+          title: 'Usuarios',
+          url: '/management/users',
+        },
+        {
+          title: 'Roles',
+          url: '/management/roles',
+        },
+        {
+          title: 'Compañias',
+          url: '/management/companies',
+        },
+        {
+          title: 'Unidades de negocios',
+          url: '/management/business-units',
+        },
+        {
+          title: 'Clases',
+          url: '/management/classes',
+        },
+      ],
+    },
+    {
       title: 'Hojas de ruta',
       url: '#',
       icon: Building,
