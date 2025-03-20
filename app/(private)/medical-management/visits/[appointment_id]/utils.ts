@@ -1,6 +1,6 @@
 import { DateValue, TimeValue } from "react-aria-components";
 import { z, ZodObject, ZodTypeAny } from "zod";
-import { Field, FieldType, Section, TemplateDetail } from "../../schemas/templates";
+import { Field, FieldType, Section, TemplateDetail } from "../../scheduler/schemas/templates";
 
 const isTimeValue = (value: unknown): value is TimeValue => {
   return (
@@ -47,7 +47,7 @@ const fieldSchemaGenerators: Record<FieldType["primitive_type"], (field: Field) 
     return schema;
   },
   number: (_field: Field) => {
-    let schema = z.preprocess(
+    const schema = z.preprocess(
       (val) => (val === null ? undefined : val),
       z.number({ invalid_type_error: "Campo requerido", required_error: "Campo requerido" })
     );
@@ -59,6 +59,7 @@ const fieldSchemaGenerators: Record<FieldType["primitive_type"], (field: Field) 
   time: (_field: Field) => timeSchema,
   file: (_field: Field) => z.instanceof(File, { message: "Campo requerido" }),
   select: (_field: Field) => z.string(),
+  title: (_field: Field) => z.string(),
 };
 
 const generateFieldSchema = (field: Field): ZodTypeAny => {
@@ -100,6 +101,7 @@ export const generateDefaultValues = (template: TemplateDetail): Record<string, 
       const fieldType = field.type.primitive_type;
       let defaultValue: unknown = undefined;
 
+      /* eslint-disable indent */
       switch (fieldType) {
         case "text":
         case "textarea":

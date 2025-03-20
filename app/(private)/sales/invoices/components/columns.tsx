@@ -34,6 +34,7 @@ export const columns: ColumnDef<InvoiceList>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+    size: 0
   },
   {
     accessorKey: "number",

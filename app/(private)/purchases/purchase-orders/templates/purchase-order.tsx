@@ -1,6 +1,6 @@
 'use client'
 
-// @ts-ignore
+// @ts-expect-error: Workaround temporal mientras se corrige el tipado en Y.
 import html2pdf from "html2pdf.js";
 
 export const generatePurchaseOrderPDF = () => {

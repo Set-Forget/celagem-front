@@ -164,10 +164,14 @@ export default function InvoicePage() {
                   >
                     Registro de pago
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => router.push(`/sales/credit-notes/new?invoiceId=${id}`)}
+                  >
                     Nota de crédito
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => router.push(`/sales/debit-notes/new?invoiceId=${id}`)}
+                  >
                     Nota de débito
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

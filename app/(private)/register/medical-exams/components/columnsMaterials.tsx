@@ -46,6 +46,7 @@ export const columnsMaterials: ColumnDef<Materials>[] = [
   {
     accessorKey: 'category',
     header: 'Categoría',
+    //@ts-expect-error - Fix this
     cell: ({ row }) => <div>{row.original.qty_required}</div>,
     size: 150,
   },

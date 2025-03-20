@@ -127,7 +127,7 @@ const selectSchema = baseTypeSchema.extend({
     defaultValue: z.string().optional(),
     options: z.array(z.object({ value: z.string(), label: z.string() })).nonempty({
       message: "Debe ingresar al menos una opción para este tipo de campo",
-    }),
+    }).default([{ value: "0", label: "Seleccione una opción" }]),
   })
 });
 
@@ -232,6 +232,10 @@ export const newSectionSchema = z.object({
   fields: z.array(z.number()),
 });
 
+export const importSectionSchema = z.object({
+  id: z.number()
+});
+
 export const sectionSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -273,7 +277,7 @@ export const templateDetailSchema = z.object({
   createdBy: z.string(),
   createdAt: z.string().datetime(),
   updatedBy: z.string().nullable(),
-  updatedAt: z.string().datetime(),
+  updatedAt: z.string().datetime().nullable(),
   isEpicrisis: z.boolean(),
   isForSendEmailToInsuranceProvider: z.boolean(),
   isForPrintIndependently: z.boolean(),
@@ -290,6 +294,18 @@ export const templateListSchema = z.object({
     name: z.string(),
   })),
 })
+
+export const sectionListSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+})
+
+export const sectionListResponseSchema = z.object({
+  status: z.string(),
+  code: z.number(),
+  message: z.string(),
+  data: z.array(sectionListSchema),
+});
 
 export const templateListResponseSchema = z.object({
   status: z.string(),
@@ -326,6 +342,13 @@ export const newTemplateResponseSchema = z.object({
   data: newTemplateSchema
 });
 
+export const sectionDetailResponseSchema = z.object({
+  status: z.string(),
+  code: z.number(),
+  message: z.string(),
+  data: sectionSchema
+});
+
 export type FieldType = z.infer<typeof typeSchema>;
 export type NewField = z.infer<typeof newFieldSchema>;
 export type NewFieldResponse = z.infer<typeof newFieldResponseSchema>;
@@ -334,6 +357,11 @@ export type Field = z.infer<typeof fieldSchema>;
 export type NewSection = z.infer<typeof newSectionSchema>;
 export type NewSectionResponse = z.infer<typeof newSectionResponseSchema>;
 export type Section = z.infer<typeof sectionSchema>;
+
+export type SectionList = z.infer<typeof sectionListSchema>;
+export type SectionListResponse = z.infer<typeof sectionListResponseSchema>;
+export type SectionDetailResponse = z.infer<typeof sectionDetailResponseSchema>;
+export type SectionDetail = z.infer<typeof sectionSchema>;
 
 export type NewTemplate = z.infer<typeof newTemplateSchema>;
 export type NewTemplateResponse = z.infer<typeof newTemplateResponseSchema>;

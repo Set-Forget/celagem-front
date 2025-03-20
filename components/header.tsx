@@ -47,7 +47,7 @@ export default function Header({ children, title }: HeaderProps) {
     <div className="sticky top-0 border-b z-[50]">
       <header
         className={`
-          flex h-16 shrink-0 px-4 items-center gap-2
+          flex h-12 shrink-0 px-4 items-center gap-2
           ${isSticky ? "bg-background" : ""}
           group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12
         `}

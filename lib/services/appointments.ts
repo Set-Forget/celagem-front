@@ -13,15 +13,12 @@ export const appointmentsApi = hcApi.injectEndpoints({
       transformResponse: (response: AppointmentDetailResponse) => response.data,
       providesTags: ['Appointment'],
     }),
-    searchAppointments: builder.query<AppointmentListResponse, { range_start_date: string, range_end_date: string }>({
-      query: ({ range_start_date, range_end_date }) => `appointment/search?range_start_date=${range_start_date}&range_end_date=${range_end_date}`,
+    searchAppointments: builder.query<AppointmentListResponse, { range_start_date: string, range_end_date: string, status?: string }>({
+      query: ({ range_start_date, range_end_date, status }) => `appointment/search?range_start_date=${range_start_date}&range_end_date=${range_end_date}${status ? `&status=${status}` : ''}`,
       providesTags: ['Appointment'],
     }),
     //---
-    createAppointment: builder.mutation<
-      AppointmentDetailResponse,
-      Omit<NewAppointment, "attention_type"> & { start_time: string, end_time: string }
-    >({
+    createAppointment: builder.mutation<AppointmentDetailResponse, Omit<NewAppointment, "attention_type"> & { start_time: string, end_time: string }>({
       query: (body) => ({
         url: 'appointment',
         method: 'POST',

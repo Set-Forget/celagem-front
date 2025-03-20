@@ -1,60 +1,54 @@
-// import { z } from "zod";
+import { z } from "zod";
 
-// export const userschema = z.object({
-//   id: z.string(),
-//   first_name: z.string(),
-//   last_name: z.string(),
-//   email: z.string(),
-//   is_email_confirmed: z.boolean(),
-//   created_at: z.date(),
-//   modified_at: z.date(),
-// })
+export const userListSchema = z.object({
+  id: z.string(),
+  first_name: z.string(),
+  last_name: z.string(),
+  email: z.string(),
+  is_email_confirmed: z.boolean(),
+  created_at: z.date(),
+  modified_at: z.date(),
+});
 
-// export const userListResponseSchema = z.object({ // List
-//   status: z.string(),
-//   code: z.number(),
-//   message: z.string(),
-//   data: z.array(userschema),
-// });
+export const userListResponseSchema = z.object({
+  status: z.string(),
+  code: z.number(),
+  message: z.string(),
+  data: z.array(userListSchema),
+})
 
-// export const userResponseSchema = z.object({ // Create, Retrieve, Edit
-//   status: z.string(),
-//   code: z.number(),
-//   message: z.string(),
-//   data: userschema,
-//   details: z.string(),
-// });
+export const classListSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  created_at: z.string(),
+  modified_at: z.string(),
+})
 
-// export const userOperationSchema = z.object({ // Delete, Edit user Role
-//   status: z.string(),
-//   code: z.number(),
-//   message: z.string(),
-//   data: z.string(),
-//   details: z.string(),
-// });
+export const companiesListSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+})
 
-// export const userCreateBodySchema = z.object({
-//   email: z.string(),
-//   first_name: z.string(),
-//   last_name: z.string(),
-//   password: z.string(),
-//   company_id: z.string(),
-// });
+export const companiesListResponseSchema = z.object({
+  status: z.string(),
+  code: z.number(),
+  message: z.string(),
+  data: z.array(companiesListSchema),
+})
 
-// export const userEditBodySchema = z.object({
-//   first_name: z.string(),
-//   last_name: z.string(),
-//   email: z.string(),
-// });
+export const classListResponseSchema = z.object({
+  status: z.string(),
+  code: z.number(),
+  message: z.string(),
+  data: z.array(classListSchema),
+})
 
-// export const userEditRoleBodySchema = z.object({
-//   role_id: z.string(),
-// });
+export type ClassList = z.infer<typeof classListSchema>;
+export type ClassListResponse = z.infer<typeof classListResponseSchema>;
 
-// export type User = z.infer<typeof userschema>;
-// export type UserListResponse = z.infer<typeof userListResponseSchema>;
-// export type UserResponse = z.infer<typeof userResponseSchema>;
-// export type UserOperationResponse = z.infer<typeof userOperationSchema>;
-// export type UserCreateBody = z.infer<typeof userCreateBodySchema>;
-// export type UserEditBody = z.infer<typeof userEditBodySchema>;
-// export type UserEditRoleBody = z.infer<typeof userEditRoleBodySchema>;
+export type UserList = z.infer<typeof userListSchema>;
+export type UserListResponse = z.infer<typeof userListResponseSchema>;
+
+export type CompaniesList = z.infer<typeof companiesListSchema>;
+export type CompaniesListResponse = z.infer<typeof companiesListResponseSchema>;

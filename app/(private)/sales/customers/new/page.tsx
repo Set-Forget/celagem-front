@@ -87,7 +87,7 @@ export default function NewCustomerPage() {
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear el cliente" variant="error" />)
     }
   }
-  console.log(newCustomerForm.formState.errors)
+
   return (
     <>
       <Header title="Nuevo cliente" >

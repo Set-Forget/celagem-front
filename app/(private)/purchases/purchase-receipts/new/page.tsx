@@ -22,7 +22,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { v4 as uuidv4 } from 'uuid'
-import { newPurchaseReceiptSchema } from "../schemas/purchase-receipts"
+//import { newPurchaseReceiptSchema } from "../schemas/purchase-receipts"
 import ItemsTable from "./components/items-table"
 
 const companies = [
@@ -47,8 +47,8 @@ const headquarters = [
 ];
 
 export default function NewPurchaseReceivePage() {
-  const newPurchaseReceipt = useForm<z.infer<typeof newPurchaseReceiptSchema>>({
-    resolver: zodResolver(newPurchaseReceiptSchema),
+  const newPurchaseReceipt = useForm<any>({
+    resolver: zodResolver(z.any()),
     defaultValues: {
       items: [{
         id: uuidv4(),
@@ -60,7 +60,7 @@ export default function NewPurchaseReceivePage() {
     }
   })
 
-  const onSubmit = (data: z.infer<typeof newPurchaseReceiptSchema>) => {
+  const onSubmit = (data: any) => {
     console.log(data)
   }
 
@@ -129,9 +129,7 @@ export default function NewPurchaseReceivePage() {
                     />
                   </FormControl>
                   {newPurchaseReceipt.formState.errors.purchase_order ? (
-                    <FormMessage>
-                      {newPurchaseReceipt.formState.errors.purchase_order.message}
-                    </FormMessage>
+                    <FormMessage />
                   ) :
                     <FormDescription>
                       Esta será la orden de compra a la que se asociará la recepción.
@@ -175,9 +173,7 @@ export default function NewPurchaseReceivePage() {
                     </PopoverContent>
                   </Popover>
                   {newPurchaseReceipt.formState.errors.received_at ? (
-                    <FormMessage>
-                      {newPurchaseReceipt.formState.errors.received_at.message}
-                    </FormMessage>
+                    <FormMessage />
                   ) :
                     <FormDescription>
                       Esta será la fecha en la que se recibió el pedido.

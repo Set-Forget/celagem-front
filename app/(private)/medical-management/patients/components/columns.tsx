@@ -35,19 +35,14 @@ export const columns: ColumnDef<PatientList>[] = [
     cell: ({ row }) => <div>{row.original.first_name + " " + row.original.first_last_name}</div>,
   },
   {
-    accessorKey: "id_number",
+    accessorKey: "document_type",
+    header: "Tipo de documento",
+    cell: ({ row }) => <div>{row.getValue("document_type")}</div>,
+  },
+  {
+    accessorKey: "document_number",
     header: "Número de documento",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("id_number")}</div>,
-  },
-  {
-    accessorKey: "user_type",
-    header: "Tipo de usuario",
-    cell: ({ row }) => <div>{row.getValue("user_type")}</div>,
-  },
-  {
-    accessorKey: "coverage_plan",
-    header: "Plan de cobertura",
-    cell: ({ row }) => <div>{row.getValue("coverage_plan")}</div>,
+    cell: ({ row }) => <div className="font-medium">{row.getValue("document_number")}</div>,
   },
   {
     accessorKey: "phone_number",

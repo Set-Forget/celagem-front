@@ -152,7 +152,7 @@ const data: DeliveryNote[] = [
   },
 ];
 
-export default function PurchaseReceiptsPage() {
+export default function DeliveryNotesPage() {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -168,7 +168,7 @@ export default function PurchaseReceiptsPage() {
           Crear remito
         </Button>
       </Header>
-      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
+      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
         <DataTable
           data={data}
           columns={columns}

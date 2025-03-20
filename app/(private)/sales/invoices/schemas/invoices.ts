@@ -25,6 +25,7 @@ export const invoiceLineSchema = z.object({
   id: z.number(),
   product_id: z.number(),
   product_name: z.string(),
+  quantity: z.number(),
   price_unit: z.number(),
   price_subtotal: z.number(),
   // ! Falta price_tax.

@@ -4,7 +4,6 @@ import { AsyncSelect } from "@/components/async-select";
 import CustomSonner from "@/components/custom-sonner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -12,48 +11,48 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useUpdateAppointmentMutation } from "@/lib/services/appointments";
-import { useListBusinessUnitsQuery } from "@/lib/services/business-units";
+import { useLazyListBusinessUnitsQuery } from "@/lib/services/business-units";
 import { useLazyListPatientsQuery } from "@/lib/services/patients";
+import { useLazyListTemplatesQuery } from "@/lib/services/templates";
 import { useLazyListUsersQuery } from "@/lib/services/users";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, parse } from "date-fns";
-import omit from "lodash/omit";
-import { CalendarIcon, Check, ChevronsUpDown, Clock, Loader2Icon } from "lucide-react";
+import { CalendarIcon, Clock, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ControllerRenderProps, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AppointmentList, newAppointmentSchema } from "../schemas/appointments";
-import TEMPLATES from "../templates/templates.json";
 
 export default function EditAppointmentDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
 
   const appointment = dialogState.payload?.appointment as AppointmentList;
-
   const [updateAppointment, { isLoading }] = useUpdateAppointmentMutation();
 
-  const { data: businessUnits } = useListBusinessUnitsQuery();
+  const [getBusinessUnits] = useLazyListBusinessUnitsQuery()
   const [getPatients] = useLazyListPatientsQuery();
   const [getDoctors] = useLazyListUsersQuery();
+  const [getTemplates] = useLazyListTemplatesQuery()
 
   const editAppointmentForm = useForm<z.infer<typeof newAppointmentSchema>>({
     resolver: zodResolver(newAppointmentSchema),
     defaultValues: {
       created_by: appointment?.created_by.id || "",
-      care_type_id: 1, //para ver
-      status_id: 1, //para ver
+      care_type_id: 1,
+      status: appointment?.status || "",
       start_date: appointment?.start_date || "",
       start_time: appointment?.start_time || "",
       end_date: appointment?.end_date || "",
       end_time: appointment?.end_time || "",
       doctor_id: appointment?.doctor.id || "",
       patient_id: appointment?.patient.id || "",
-      clinic_id: appointment?.clinic_id || "",
+      clinic_id: appointment?.clinic.id || "",
       notes: appointment?.notes || "",
-      mode_of_care: appointment?.mode_of_care || "IN_PERSON",
+      mode_of_care: appointment?.mode_of_care,
+      template_id: appointment?.template_id
     }
   });
 
@@ -88,6 +87,19 @@ export default function EditAppointmentDialog() {
     field.onChange(newDate.toISOString());
   };
 
+  const handleGetTemplates = async () => {
+    try {
+      const templates = await getTemplates().unwrap()
+      return templates.data.map((template) => ({
+        label: template.name,
+        value: template.id,
+      }))
+    } catch (error) {
+      console.error("Error al obtener plantillas:", error)
+      return []
+    }
+  }
+
   const handleGetPatients = async () => {
     try {
       const patients = await getPatients().unwrap();
@@ -114,13 +126,25 @@ export default function EditAppointmentDialog() {
     }
   };
 
+  const handleGetBusinessUnits = async () => {
+    try {
+      const businessUnits = await getBusinessUnits().unwrap()
+      return businessUnits.data.map((bu) => ({
+        label: bu.name,
+        value: bu.id,
+      }))
+    } catch (error) {
+      console.error("Error al obtener unidades de negocio:", error)
+      return []
+    }
+  }
+
   async function onSubmit(data: z.infer<typeof newAppointmentSchema>) {
     try {
-      const filteredData = omit(data, ["attention_type"]);
       const response = await updateAppointment({
         id: appointment?.id,
         body: {
-          ...filteredData,
+          ...data,
           start_date: format(new Date(data.start_date), "yyyy-MM-dd"),
           end_date: format(new Date(data.end_date), "yyyy-MM-dd"),
           start_time: format(new Date(data.start_time), "HH:mm"),
@@ -158,7 +182,9 @@ export default function EditAppointmentDialog() {
       editAppointmentForm.setValue("end_time", parse(appointment.end_time, "HH:mm", new Date()).toISOString());
       editAppointmentForm.setValue("doctor_id", appointment.doctor.id);
       editAppointmentForm.setValue("patient_id", appointment.patient.id);
-      editAppointmentForm.setValue("clinic_id", appointment.clinic_id);
+      editAppointmentForm.setValue("clinic_id", appointment.clinic.id);
+      editAppointmentForm.setValue("status", appointment.status);
+      editAppointmentForm.setValue("template_id", appointment.template_id);
       editAppointmentForm.setValue("notes", appointment.notes || "");
       editAppointmentForm.setValue("mode_of_care", appointment.mode_of_care);
       editAppointmentForm.setValue("created_by", appointment.created_by.id);
@@ -258,7 +284,7 @@ export default function EditAppointmentDialog() {
                                     disabled={isDisabled}
                                     onClick={() => {
                                       handleTimeChange("hour", hour.toString(), field);
-                                      editAppointmentForm.setValue("start_time", "");
+                                      editAppointmentForm.setValue("end_time", "");
                                     }}
                                   >
                                     {hour < 10 ? `0${hour}` : hour}
@@ -490,50 +516,23 @@ export default function EditAppointmentDialog() {
               />
               <FormField
                 control={editAppointmentForm.control}
-                name="attention_type"
+                name="template_id"
                 render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel className="w-fit">Tipo de atención</FormLabel>
-                    <Popover modal>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn("justify-between font-normal pl-3", !field.value && "text-muted-foreground")}
-                          >
-                            <p className="truncate">
-                              {field.value
-                                ? TEMPLATES.find((template) => template.template === field.value)?.template
-                                : "Seleccionar tipo de atención"}
-                            </p>
-                            <ChevronsUpDown className="opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent align="start" className="p-0">
-                        <Command>
-                          <CommandInput placeholder="Buscar..." className="h-8" />
-                          <CommandList>
-                            <CommandEmpty>No se encontraron resultados</CommandEmpty>
-                            <CommandGroup>
-                              {TEMPLATES.map((template) => (
-                                <CommandItem
-                                  value={template.template}
-                                  key={template.id}
-                                  onSelect={() => {
-                                    editAppointmentForm.setValue("attention_type", template.template, { shouldValidate: true });
-                                  }}
-                                >
-                                  {template.template}
-                                  <Check className={cn("ml-auto", template.template === field.value ? "opacity-100" : "opacity-0")} />
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
+                    <AsyncSelect<{ label: string, value: number }, number>
+                      label="Plantilla"
+                      triggerClassName="!w-full"
+                      placeholder="Seleccionar plantilla"
+                      fetcher={handleGetTemplates}
+                      getDisplayValue={(item) => item.label}
+                      getOptionValue={(item) => item.value}
+                      renderOption={(item) => <div>{item.label}</div>}
+                      onChange={field.onChange}
+                      value={field.value}
+                      noResultsMessage="No se encontraron plantillas"
+                      modal
+                    />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -544,44 +543,19 @@ export default function EditAppointmentDialog() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel className="w-fit">Sede</FormLabel>
-                    <Popover modal>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn("justify-between font-normal pl-3", !field.value && "text-muted-foreground")}
-                          >
-                            {field.value
-                              ? businessUnits?.data.find((businessUnit) => businessUnit.id === field.value)?.name
-                              : "Seleccionar sede"}
-                            <ChevronsUpDown className="opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent align="start" className="p-0">
-                        <Command>
-                          <CommandInput placeholder="Buscar sede" className="h-8" />
-                          <CommandList>
-                            <CommandEmpty>No se encontraron resultados</CommandEmpty>
-                            <CommandGroup>
-                              {businessUnits?.data.map((businessUnit) => (
-                                <CommandItem
-                                  value={businessUnit.id}
-                                  key={businessUnit.id}
-                                  onSelect={() => {
-                                    editAppointmentForm.setValue("clinic_id", businessUnit.id, { shouldValidate: true });
-                                  }}
-                                >
-                                  {businessUnit.name}
-                                  <Check className={cn("ml-auto", businessUnit.id === field.value ? "opacity-100" : "opacity-0")} />
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
+                    <AsyncSelect<{ label: string, value: string }, string>
+                      label="Sede"
+                      triggerClassName="!w-full"
+                      placeholder="Seleccionar sede"
+                      fetcher={handleGetBusinessUnits}
+                      getDisplayValue={(item) => item.label}
+                      getOptionValue={(item) => item.value}
+                      renderOption={(item) => <div>{item.label}</div>}
+                      onChange={field.onChange}
+                      value={field.value}
+                      noResultsMessage="No se encontraron sedes"
+                      modal
+                    />
                     <FormMessage />
                   </FormItem>
                 )}

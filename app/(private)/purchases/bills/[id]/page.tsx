@@ -1,5 +1,7 @@
 'use client'
 
+import CustomSonner from "@/components/custom-sonner"
+import { DataTable } from "@/components/data-table"
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -11,22 +13,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Separator } from "@/components/ui/separator"
-import { cn, placeholder } from "@/lib/utils"
-import { Box, Check, ChevronDown, Edit, Ellipsis, Eye, FileText, Paperclip, Trash2 } from "lucide-react"
-import Link from "next/link"
-import { DataTable } from "@/components/data-table"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useDeleteBillMutation, useGetBillQuery, useUpdateBillMutation } from "@/lib/services/bills"
-import { useParams, useRouter } from "next/navigation"
+import { cn, placeholder } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
+import { Box, Check, ChevronDown, Edit, Ellipsis, Eye, FileText, Paperclip, Trash2 } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { billStatus } from "../utils"
 import { columns } from "./components/columns"
 import TableFooter from "./components/table-footer"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { billStatus } from "../utils"
-import { toast } from "sonner"
-import CustomSonner from "@/components/custom-sonner"
 
 export default function BillPage() {
   const router = useRouter()
@@ -162,6 +160,11 @@ export default function BillPage() {
                   <DropdownMenuItem>
                     Registro de pago
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => router.push(`/sales/credit-notes/new?bill=${id}`)}
+                  >
+                    Nota de crédito
+                  </DropdownMenuItem>
                   <DropdownMenuItem>
                     Nota de débito
                   </DropdownMenuItem>
@@ -238,7 +241,7 @@ export default function BillPage() {
                 size={16}
                 aria-hidden="true"
               />
-              Proveedor
+              Cliente
             </TabsTrigger>
             <TabsTrigger
               value="tab-3"

@@ -1,7 +1,19 @@
 import { BehaviorSubject } from 'rxjs';
 
 export type DialogsState = {
-  open: "new-cost-center" | "new-appointment" | "appointment-details" | "new-field" | "edit-field" | "new-section" | "edit-section" | "new-template" | "edit-template" | "edit-appointment" | false,
+  open:
+  "new-cost-center"
+  | "new-appointment"
+  | "appointment-details"
+  | "new-field"
+  | "edit-field"
+  | "new-section"
+  | "edit-section"
+  | "new-template"
+  | "edit-template"
+  | "edit-appointment"
+  | "import-section"
+  | false,
   payload?: any
 }
 
@@ -13,7 +25,6 @@ const initalState: DialogsState = {
 const dialogsState$ = new BehaviorSubject(initalState)
 
 export const setDialogsState = (state: DialogsState) => {
-  console.log('setDialogsState', state)
   dialogsState$.next(state)
 }
 

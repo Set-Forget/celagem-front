@@ -12,9 +12,9 @@ export function ProcedureDataTable() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
+    <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
       <DataTable
-        data={proceduresMock}
+        data={proceduresMock as any}
         columns={jobPositionsColumns}
         onRowClick={(row) => router.push(`${pathname}/procedures/${row.id}`)}
         toolbar={({ table }) => <Toolbar table={table} />}
