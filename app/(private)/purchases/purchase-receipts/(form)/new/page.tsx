@@ -1,37 +1,24 @@
 "use client"
 
-import { Box, CalendarIcon, House, Save } from "lucide-react"
+import { House, Save } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-import { Calendar } from "@/components/ui/calendar"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { format } from "date-fns"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import Header from "@/components/header"
-import { Input } from "@/components/ui/input"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Textarea } from "@/components/ui/textarea"
-import { v4 as uuidv4 } from 'uuid'
-import ItemsTable from "./components/items-table"
+import CustomSonner from "@/components/custom-sonner"
 import DataTabs from "@/components/data-tabs"
+import Header from "@/components/header"
+import { Form } from "@/components/ui/form"
+import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
+import { useCreatePurchaseReceiptMutation } from "@/lib/services/purchase-receipts"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
 import { newPurchaseReceiptSchema } from "../../schemas/purchase-receipts"
 import GeneralForm from "./components/general-form"
-import { useRouter, useSearchParams } from "next/navigation"
-import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
-import { toast } from "sonner"
-import CustomSonner from "@/components/custom-sonner"
-import { useCreatePurchaseReceiptMutation } from "@/lib/services/purchase-receipts"
 
 const tabs = [
   {
