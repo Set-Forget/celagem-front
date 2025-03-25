@@ -34,7 +34,7 @@ export default function PatientsPage() {
           loading={isPatientsLoading}
           columns={columns}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
-          toolbar={({ table }) => <Toolbar table={table} />}
+          toolbar={() => <Toolbar />}
         />
       </div>
     </>

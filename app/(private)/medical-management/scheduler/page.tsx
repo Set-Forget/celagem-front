@@ -26,7 +26,6 @@ const filtersConfig: Record<string, FilterConfig> = {
     label: "Buscar",
     options: [
       { label: "Usuario", value: "user" },
-      { label: "Sede", value: "headquarter" },
     ],
     key: "search",
     icon: Search

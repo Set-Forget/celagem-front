@@ -3,12 +3,11 @@
 import { DataTable } from "@/components/data-table";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
+import { useListBillsQuery } from "@/lib/services/bills";
 import { Plus } from "lucide-react";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
-import { useListBillsQuery } from "@/lib/services/bills";
 
 export default function BillsPage() {
   const pathname = usePathname()

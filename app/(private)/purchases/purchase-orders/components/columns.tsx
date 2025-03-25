@@ -11,6 +11,7 @@ import {
 import { format } from "date-fns"
 import { purchaseOrderStatus } from "../utils"
 import { PurchaseOrderList } from "../schemas/purchase-orders"
+import { es } from "date-fns/locale"
 
 const PercentageReceivedCell = ({ row }: { row: Row<PurchaseOrderList> }) => {
   const percentageReceived = row.original.percentage_received
@@ -70,7 +71,7 @@ export const columns: ColumnDef<PurchaseOrderList>[] = [
     accessorKey: "required_date",
     header: "Fecha de requerimiento",
     cell: ({ row }) => <div>
-      {format(new Date(row.original.required_date), "dd MMM yyyy")}
+      {format(new Date(row.original.required_date), "PPP", { locale: es })}
     </div>,
   },
 ]

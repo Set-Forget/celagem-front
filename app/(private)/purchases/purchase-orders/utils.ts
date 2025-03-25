@@ -6,20 +6,15 @@ export const purchaseOrderStatus = {
     bg_color: "bg-gray-100",
     text_color: "text-gray-800",
   },
-  "to-approve": {
+  "to approve": {
     label: "A aprobar",
-    bg_color: "bg-gray-100",
-    text_color: "text-gray-800",
-  },
-  sent: {
-    label: "Pendiente",
     bg_color: "bg-amber-100",
     text_color: "text-amber-800",
   },
   purchase: {
-    label: "Pendiente",
-    bg_color: "bg-amber-100",
-    text_color: "text-amber-800",
+    label: "A recibir",
+    bg_color: "bg-blue-100",
+    text_color: "text-blue-800",
   },
   done: {
     label: "Completa",

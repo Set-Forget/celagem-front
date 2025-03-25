@@ -7,21 +7,11 @@ interface DataTableToolbarProps<TData> {
 }
 
 const filtersConfig: Record<string, FilterConfig> = {
-  date_range: {
-    type: "date_range",
-    label: "Rango de fecha",
-    options: [
-      { label: "Fecha de recepción", value: "received_at" },
-    ],
-    key: "date_range",
-    icon: CalendarFold
-  },
   search: {
     type: "search",
     label: "Buscar",
     options: [
-      { label: "Número", value: "number" },
-      { label: "Proveedor", value: "supplier" },
+      { label: "Nombre de la plantilla", value: "template_name" },
     ],
     key: "search",
     icon: Search

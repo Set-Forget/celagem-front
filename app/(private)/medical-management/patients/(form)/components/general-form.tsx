@@ -5,15 +5,15 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { useLazyGetAutocompleteQuery } from "@/lib/services/google-places"
+import { useLazyListClassesQuery, useLazyListCompaniesQuery } from "@/lib/services/users"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
-import { biologicalSexTypes, disabilityTypes, documentTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "../../utils"
-import { useFormContext, useWatch } from "react-hook-form"
-import { useLazyListClassesQuery, useLazyListCompaniesQuery } from "@/lib/services/users"
-import { useLazyGetAutocompleteQuery } from "@/lib/services/google-places"
-import { newPatientSchema } from "../../schema/patients"
+import { useFormContext } from "react-hook-form"
 import { z } from "zod"
+import { newPatientSchema } from "../../schema/patients"
+import { biologicalSexTypes, disabilityTypes, documentTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "../../utils"
 
 export default function GeneralForm() {
   const { setValue, control } = useFormContext<z.infer<typeof newPatientSchema>>()

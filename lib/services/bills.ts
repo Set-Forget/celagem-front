@@ -12,7 +12,7 @@ export const billsApi = erpApi.injectEndpoints({
       transformResponse: (response: BillDetailResponse) => response.data,
       providesTags: ['Bill'],
     }),
-    createBill: builder.mutation<NewBillResponse, Omit<NewBill, 'cost_center' | 'notes' | 'accounting_account' | 'currency' | 'payment_term'> & { currency: number; payment_term: number }>({
+    createBill: builder.mutation<NewBillResponse, Omit<NewBill, 'cost_center' | 'notes' | 'accounting_account' | 'currency' | 'payment_term' | 'payment_method' | "accounting_date"> & { currency: number; payment_term: number, payment_method: number, accounting_date: string }>({
       query: (bill) => ({
         url: '/purchase_invoices',
         method: 'POST',
@@ -20,7 +20,7 @@ export const billsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Bill'],
     }),
-    updateBill: builder.mutation<{ status: string, message: string }, Partial<BillDetail>>({
+    updateBill: builder.mutation<{ status: string, message: string }, Omit<Partial<BillDetail>, 'status'> & { state: 'draft' | 'posted' | 'cancel' }>({
       query: (bill) => ({
         url: `/purchase_invoices/${bill.id}`,
         method: 'PUT',

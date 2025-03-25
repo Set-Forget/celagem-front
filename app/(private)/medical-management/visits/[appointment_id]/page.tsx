@@ -29,8 +29,8 @@ const tabs = [
   },
 ];
 
-export default function VisitPage() {
-  const [tab, setTab] = useState("tab-1");
+export default function Page() {
+  const [tab, setTab] = useState(tabs[0].value);
 
   const params = useParams<{ appointment_id: string }>();
 

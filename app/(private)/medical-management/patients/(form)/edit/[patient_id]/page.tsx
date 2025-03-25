@@ -21,7 +21,7 @@ import CaregiverForm from "../../components/caregiver-form"
 import CompanionForm from "../../components/companion-form"
 import FiscalForm from "../../components/fiscal-form"
 import GeneralForm from "../../components/general-form"
-import { getFieldPaths } from "../../utils"
+import { getFieldPaths } from "@/lib/utils"
 
 // ! Se puede unificar con el tabs de abajo.
 const tabToFieldsMap = {
@@ -79,7 +79,7 @@ export default function Page() {
     resolver: zodResolver(newPatientSchema),
   })
 
-  const [tab, setTab] = useState("tab-1")
+  const [tab, setTab] = useState(tabs[0].value)
 
   const onSubmit = async (data: z.infer<typeof newPatientSchema>) => {
     try {

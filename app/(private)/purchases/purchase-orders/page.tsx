@@ -5,7 +5,6 @@ import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { useListPurchaseOrdersQuery } from "@/lib/services/purchase-orders";
 import { Plus } from "lucide-react";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";

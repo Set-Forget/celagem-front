@@ -70,7 +70,7 @@ export default function Page() {
 
   const { data: patient, isLoading: isPatientLoading } = useGetPatientQuery(patientId);
 
-  const [tab, setTab] = useState("tab-1")
+  const [tab, setTab] = useState(tabs[0].value)
 
   return (
     <>

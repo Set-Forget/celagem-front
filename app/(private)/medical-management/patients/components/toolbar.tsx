@@ -1,10 +1,5 @@
 import FilterSelector, { FilterConfig } from "@/components/filter-selector";
-import { Table } from "@tanstack/react-table";
-import { CircleDashed, Search, Tag } from "lucide-react";
-
-interface DataTableToolbarProps<TData> {
-  table: Table<TData>
-}
+import { Search, Tag } from "lucide-react";
 
 const filtersConfig: Record<string, FilterConfig> = {
   status: {
@@ -31,7 +26,7 @@ const filtersConfig: Record<string, FilterConfig> = {
   },
 };
 
-export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+export default function Toolbar() {
   return (
     <div className="flex items-center justify-between">
       <div className="flex gap-4">

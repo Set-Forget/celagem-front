@@ -36,8 +36,9 @@ export default function SignInPage() {
   async function onSubmit(values: z.infer<typeof signInSchema>) {
     try {
       const response = await signIn(values).unwrap()
+
       if (response.code === 200) {
-        Cookies.set('sessionToken', response.data, { expires: 1 / 12 });
+        Cookies.set('sessionToken', response.data, { expires: 30 })
       } else {
         throw new Error(response.message)
       }
