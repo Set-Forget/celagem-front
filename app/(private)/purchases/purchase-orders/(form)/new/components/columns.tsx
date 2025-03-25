@@ -169,7 +169,7 @@ const SubtotalCell = ({ control, index }: { control: Control<z.infer<typeof newP
     control,
     name: `items.${index}.unit_price`,
   });
-  3
+
   const quantity = useWatch({
     control,
     name: `items.${index}.product_qty`,
