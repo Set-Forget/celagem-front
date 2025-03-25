@@ -41,11 +41,6 @@ const fields: FieldDefinition<PurchaseRequestDetail>[] = [
     getValue: (p) => format(p.request_date, "PPP", { locale: es })
   },
   {
-    label: "Fecha de creación",
-    placeholderLength: 10,
-    getValue: (p) => "xxxxx"
-  },
-  {
     label: "Notas",
     placeholderLength: 30,
     getValue: (p) => "xxxxx",
@@ -96,7 +91,7 @@ export default function Page() {
               ? placeholder(field.placeholderLength)
               : field.getValue(purchaseRequest!) ?? "";
             return (
-              <div className="flex flex-col gap-1" key={field.label}>
+              <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
                 <label className="text-muted-foreground text-sm">
                   {field.label}
                 </label>

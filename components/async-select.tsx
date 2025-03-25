@@ -192,9 +192,9 @@ export function AsyncSelect<T, V>({
           )}
           disabled={disabled}
         >
-          <p className="truncate">
+          <span className="truncate">
             {selectedOption ? getDisplayValue(selectedOption) : placeholder}
-          </p>
+          </span>
           <ChevronsUpDown className="opacity-50" size={10} />
         </Button>
       </PopoverTrigger>

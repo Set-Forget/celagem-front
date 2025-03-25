@@ -13,6 +13,7 @@ import { z } from "zod";
 import { newPurchaseRequestSchema } from "../../schemas/purchase-requests";
 import { columns } from "./columns";
 import TableFooter from "./table-footer";
+import DatePicker from "@/components/date-picker";
 
 export default function GeneralForm() {
   const { control, formState } = useFormContext<z.infer<typeof newPurchaseRequestSchema>>()
@@ -47,36 +48,12 @@ export default function GeneralForm() {
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
             <FormLabel className="w-fit">Fecha de requerimiento</FormLabel>
-            <Popover>
-              <PopoverTrigger asChild>
-                <FormControl>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full pl-3 text-left font-normal",
-                      !field.value && "text-muted-foreground"
-                    )}
-                  >
-                    {field.value ? (
-                      format(field.value, "PPP")
-                    ) : (
-                      <span>Seleccioná una fecha</span>
-                    )}
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                  </Button>
-                </FormControl>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={field.value ? new Date(field.value) : undefined}
-                  onSelect={(date) => {
-                    field.onChange(date?.toISOString())
-                  }}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <FormControl>
+              <DatePicker
+                value={field.value || null}
+                onChange={(date) => field.onChange(date)}
+              />
+            </FormControl>
             {formState.errors.request_date ? (
               <FormMessage />
             ) :

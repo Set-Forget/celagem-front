@@ -61,7 +61,7 @@ export default function FormTable<TFormValues extends FieldValues>({
               <TableRow className="border-none">
                 <TableCell
                   colSpan={columns.length}
-                  className="text-xs text-center h-10"
+                  className="text-xs text-center h-10 border-b"
                 >
                   <div className="flex items-center justify-center gap-2 text-muted-foreground">
                     <Loader2 className="animate-spin" size={14} />

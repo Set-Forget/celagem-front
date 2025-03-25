@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { supplierSchema } from "../../vendors/schema/suppliers";
+import { CalendarDate } from "@internationalized/date";
 
 export const purchaseRequestsItemsSchema = z.object({
   item_code: z.string(),
@@ -59,7 +60,9 @@ export const purchaseRequestLineSchema = z.object({
 
 export const newPurchaseRequestSchema = z.object({
   name: z.string({ required_error: "El título es requerido" }).nonempty("El título es requerido"),
-  request_date: z.string({ required_error: "La fecha de requerimiento es requerida" }).nonempty("La fecha de requerimiento es requerida"),
+  request_date: z.custom<CalendarDate>((data) => {
+    return data instanceof CalendarDate;
+  }, { message: "La fecha de requerimiento es requerida" }),
   items: z.array(newPurchaseRequestLineSchema).nonempty("Al menos un item es requerido"),
 
   notes: z.string().optional(), // ! No existe

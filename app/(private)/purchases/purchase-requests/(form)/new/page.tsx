@@ -45,7 +45,10 @@ export default function NewPurchaseRequestPage() {
 
   const onSubmit = async (data: z.infer<typeof newPurchaseRequestSchema>) => {
     try {
-      const response = await createPurchaseRequest(data).unwrap()
+      const response = await createPurchaseRequest({
+        ...data,
+        request_date: data.request_date.toString(),
+      }).unwrap()
 
       if (response.status === "success") {
         router.push(`/purchases/purchase-requests/${response.data.id}`)

@@ -1,5 +1,6 @@
 import { NewPurchaseRequest, NewPurchaseRequestResponse, PurchaseRequestDetail, PurchaseRequestDetailResponse, PurchaseRequestListResponse } from '@/app/(private)/purchases/purchase-requests/schemas/purchase-requests';
 import { erpApi } from '@/lib/apis/erp-api';
+import { Overwrite } from '../utils';
 
 export const purchaseRequestsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -23,7 +24,7 @@ export const purchaseRequestsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['PurchaseRequest'],
     }),
-    createPurchaseRequest: builder.mutation<NewPurchaseRequestResponse, NewPurchaseRequest>({
+    createPurchaseRequest: builder.mutation<NewPurchaseRequestResponse, Overwrite<NewPurchaseRequest, { request_date: string }>>({
       query: (data) => ({
         url: 'purchase_requests',
         method: 'POST',
