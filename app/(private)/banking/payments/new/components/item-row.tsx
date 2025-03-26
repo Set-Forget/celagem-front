@@ -330,17 +330,17 @@ export default function ItemRow({ index, remove }: { index: number, remove: (ind
                                       <span
                                         className={cn(
                                           "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
-                                          status.pure_bg_color
+                                          status?.pure_bg_color
                                         )}
                                       ></span>
                                       <span
                                         className={cn(
                                           "relative inline-flex rounded-full h-2 w-2",
-                                          status.pure_bg_color
+                                          status?.pure_bg_color
                                         )}
                                       ></span>
                                     </span>
-                                    <span className="text-sm">{status.label}</span>
+                                    <span className="text-sm">{status?.label}</span>
                                   </div>
                                   <Check
                                     className={cn(

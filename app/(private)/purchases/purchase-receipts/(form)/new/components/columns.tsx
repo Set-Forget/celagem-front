@@ -9,40 +9,7 @@ import { Button as AriaButton, Input as AriaInput, Label as AriaLabel, Group, Nu
 import { Control } from "react-hook-form";
 import { z } from "zod";
 import { newPurchaseReceiptSchema } from "../../../schemas/purchase-receipts";
-
-// ! Debe traerse de la API
-const materials = [
-  {
-    id: 1,
-    name: "Material 1",
-    code: "MAT-001",
-    price: 100,
-  },
-  {
-    id: 2,
-    name: "Material 2",
-    code: "MAT-002",
-    price: 200,
-  },
-  {
-    id: 3,
-    name: "Material 3",
-    code: "MAT-003",
-    price: 300,
-  },
-  {
-    id: 4,
-    name: "Material 4",
-    code: "MAT-004",
-    price: 400,
-  },
-  {
-    id: 5,
-    name: "Material 5",
-    code: "MAT-005",
-    price: 500,
-  }
-]
+import { materials } from "@/lib/mocks/materials";
 
 const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseReceiptSchema>>; index: number }) => {
   const handleSearchMaterial = async (query?: string) => {
@@ -55,7 +22,7 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
     render={({ field }) => (
       <FormItem className="flex flex-col w-full">
         <FormControl>
-          <AsyncSelect<{ id: number, name: string, code: string, price: number }, number>
+          <AsyncSelect<{ id: number, name: string, lst_price: number }, number>
             label="Material"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
@@ -66,18 +33,18 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
             getDisplayValue={(item) => (
               <div className="flex gap-1">
                 <span className="font-medium">
-                  [{item.code}]
+                  [{item.id}]
                 </span>
                 {item.name}
               </div>
             )}
             getOptionValue={(item) => item.id}
-            renderOption={(item) => <>{item.name} ({item.code})</>}
+            renderOption={(item) => <>{item.name}</>}
             onChange={(value) => {
               field.onChange(value);
             }}
             value={field.value}
-            getOptionKey={(item) => item.code}
+            getOptionKey={(item) => String(item.id)}
             noResultsMessage="No se encontraron resultados"
             modal
           />

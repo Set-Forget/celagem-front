@@ -6,7 +6,6 @@ export default function DocumentsTab() {
 
   return (
     <div className="p-4 flex flex-col gap-4">
-      <h2 className="text-base font-medium">Documentos</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-sm">Ordenes de compra</label>

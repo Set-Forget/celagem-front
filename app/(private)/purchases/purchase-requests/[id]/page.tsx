@@ -1,21 +1,21 @@
 'use client'
 
 import { DataTable } from "@/components/data-table"
+import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { useGetPurchaseRequestQuery } from "@/lib/services/purchase-requests"
 import { cn, placeholder } from "@/lib/utils"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
+import { Paperclip } from "lucide-react"
 import { useParams } from "next/navigation"
+import { useState } from "react"
 import { PurchaseRequestDetail } from "../schemas/purchase-requests"
 import { purchaseRequestStatus } from "../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
-import DataTabs from "@/components/data-tabs"
-import { useState } from "react"
-import { FileText, Paperclip } from "lucide-react"
 import DocumentsTab from "./components/documents-tab"
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
 
 export type FieldDefinition<T> = {
   label: string;

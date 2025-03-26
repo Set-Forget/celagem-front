@@ -6,7 +6,7 @@ const newPurchaseOrderLineSchema = z.object({
   product_qty: z.number({ required_error: "La cantidad es requerida" }),
   taxes_id: z.array(z.number()).optional(),
 
-  unit_price: z.string({ required_error: "El precio unitario es requerido" }), // ! No existe en el backend.
+  unit_price: z.number({ required_error: "El precio unitario es requerido" }), // ! No existe en el backend.
 })
 
 export const newPurchaseOrderSchema = z.object({
@@ -14,8 +14,8 @@ export const newPurchaseOrderSchema = z.object({
   required_date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de requerimiento es requerida" }),
-  currency: z.string({ required_error: "La moneda es requerida" }), // ! Debe ser un number, pero primero necesito tener el endpoint.
-  payment_term: z.string({ required_error: "El término de pago es requerido" }), // ! Debe ser un number, pero primero necesito tener el endpoint.
+  currency: z.number({ required_error: "La moneda es requerida" }),
+  payment_term: z.number({ required_error: "El término de pago es requerido" }),
   notes: z.string().optional(), // ! Debería ser internal_notes.
   purchase_request: z.number({ required_error: "La solicitud de compra es requerida" }),
   items: z.array(newPurchaseOrderLineSchema).min(1, { message: "Al menos un item es requerido" }),

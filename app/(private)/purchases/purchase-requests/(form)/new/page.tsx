@@ -1,35 +1,22 @@
 "use client"
 
-import DataTabs from "@/components/data-tabs"
+import CustomSonner from "@/components/custom-sonner"
 import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
+import { useCreatePurchaseRequestMutation } from "@/lib/services/purchase-requests"
+import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { House, Paperclip, Save } from "lucide-react"
-import { useState } from "react"
+import { Save } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { z } from "zod"
 import { newPurchaseRequestSchema } from "../../schemas/purchase-requests"
 import GeneralForm from "../components/general-form"
-import CustomSonner from "@/components/custom-sonner"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { useCreatePurchaseRequestMutation } from "@/lib/services/purchase-requests"
-import { cn } from "@/lib/utils"
-
-const tabs = [
-  {
-    value: "tab-1",
-    label: "General",
-    icon: <House className="mr-1.5" size={16} />,
-    content: <GeneralForm />
-  }
-]
 
 export default function NewPurchaseRequestPage() {
   const router = useRouter()
-
-  const [tab, setTab] = useState('tab-1')
 
   const [createPurchaseRequest, { isLoading: isCreatingPurchaseRequest }] = useCreatePurchaseRequestMutation()
 
@@ -75,12 +62,7 @@ export default function NewPurchaseRequestPage() {
           </Button>
         </div>
       </Header>
-      <DataTabs
-        tabs={tabs}
-        activeTab={tab}
-        onTabChange={setTab}
-        triggerClassName="mt-4"
-      />
+      <GeneralForm />
     </Form>
   )
 }
