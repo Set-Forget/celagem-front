@@ -10,7 +10,7 @@ import Toolbar from "./components/toolbar"
 import { columns } from "./components/columns"
 import { useListPatientsQuery } from "@/lib/services/patients"
 
-export default function PatientsPage() {
+export default function PatientsPage() { 
   const pathname = usePathname()
   const router = useRouter()
 

@@ -2,9 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { User } from '@/lib/schemas/users'; 
+import { UserList } from '@/lib/schemas/users'; 
 
-export const usersColumns: ColumnDef<User>[] = [
+export const usersColumns: ColumnDef<Partial<UserList>>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -40,16 +40,20 @@ export const usersColumns: ColumnDef<User>[] = [
   {
     accessorKey: 'last_name',
     header: 'Apellido',
-    cell: ({ row }) => <div className="font-medium">{row.original.last_name}</div>,
+    cell: ({ row }) => (
+      <div className="font-medium">{row.original.last_name}</div>
+    ),
   },
   {
     accessorKey: 'email',
-    header: 'Email', 
+    header: 'Email',
     cell: ({ row }) => <div>{row.original.email}</div>,
   },
   {
     accessorKey: 'is_email_confirmed',
     header: 'Email confirmado',
-    cell: ({ row }) => <div>{row.original.is_email_confirmed ? 'Si' : 'No'}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.is_email_confirmed ? 'Si' : 'No'}</div>
+    ),
   },
 ];

@@ -10,16 +10,17 @@ import { format } from "date-fns"
 import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
 import { biologicalSexTypes, disabilityTypes, documentTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "../../utils"
 import { useFormContext, useWatch } from "react-hook-form"
-import { useLazyListClassesQuery, useLazyListCompaniesQuery } from "@/lib/services/users"
 import { useLazyGetAutocompleteQuery } from "@/lib/services/google-places"
 import { newPatientSchema } from "../../schema/patients"
 import { z } from "zod"
+import { useLazyListCompaniesQuery } from "@/lib/services/companies"
+import { useLazyListClassesQuery } from "@/lib/services/classes"
 
 export default function GeneralForm() {
   const { setValue, control } = useFormContext<z.infer<typeof newPatientSchema>>()
 
   const [getCompanies] = useLazyListCompaniesQuery()
-  const [getClasses] = useLazyListClassesQuery()
+  const [getClasses] = useLazyListClassesQuery();
   const [searchPlace] = useLazyGetAutocompleteQuery();
 
   const handleSearchPlace = async (query?: string) => {

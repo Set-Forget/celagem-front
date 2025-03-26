@@ -18,19 +18,9 @@ export default function CompaniesPage() {
     CompanyId: '',
   });
 
-  const classes = data?.data;
-
-  if (isLoading) {
-    return <div>Cargando...</div>;
-  }
-
-  if (!classes) {
-    return <div>No se encontraron clases</div>;
-  }
-
   return (
     <>
-      <Header title="Compañias">
+      <Header title="Clases">
         <Button
           className="ml-auto"
           size="sm"
@@ -43,8 +33,9 @@ export default function CompaniesPage() {
 
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
         <DataTable
-          data={classes}
+          data={data?.data || []}
           columns={classesColumns}
+          loading={isLoading}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
         />

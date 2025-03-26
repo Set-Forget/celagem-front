@@ -7,23 +7,13 @@ import { Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { rolesColumns } from './components/columns';
 import Toolbar from './components/toolbar';
-import { useListRolesQuery } from '@/lib/services/roles';
+import { useLazyListRolesQuery, useListRolesQuery } from '@/lib/services/roles';
 
 export default function RolesPage() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data, isLoading } = useListRolesQuery();
-
-  const roles = data?.data;
-
-  if (isLoading) {
-    return <div>Cargando...</div>;
-  }
-
-  if (!roles) {
-    return <div>No se encontraron roles</div>;
-  }
+  const { data: roles, isLoading } = useListRolesQuery();
 
   return (
     <>
@@ -40,8 +30,9 @@ export default function RolesPage() {
 
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
         <DataTable
-          data={roles}
+          data={roles?.data || []}
           columns={rolesColumns}
+          loading={isLoading}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
         />

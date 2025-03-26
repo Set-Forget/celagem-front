@@ -132,6 +132,7 @@ export default function NewProcedureReceiptPage({ id }: { id: string }) {
     'GESTANTE',
     'OVO-APORTANTE',
   ] as const;
+  
   //JOB POSITONS
 
   const jobPositionForm = useForm<z.infer<typeof jobPositionConsumedSchema>>({

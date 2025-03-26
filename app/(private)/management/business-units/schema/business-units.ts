@@ -1,6 +1,32 @@
 // import { businessUnitPatientSchema, businessUnitUserSchema } from '@/lib/schemas/business-units';
 import { z } from 'zod';
 
+export const newBusinessUnitGeneralSchema = z.object({
+  name: z
+    .string({ required_error: 'El nombre es requerido' })
+    .nonempty({ message: 'El nombre es requerido' })
+    .default(''),
+  description: z
+    .string({ required_error: 'La descripción es requerida' })
+    .nonempty({ message: 'La descripción es requerida' })
+    .default(''),
+  company_id: z
+    .string({ required_error: 'La compañia es requerida' })
+    .nonempty({ message: 'La compañia es requerida' })
+    .default(''),
+  created_by: z.string(),
+});
+
+export const newBusinessUnitSchema = newBusinessUnitGeneralSchema
+
+export const newBusinessUnitUserSchema = z.object({
+  user_id: z.string({ required_error: 'El usuario es requerido' }).min(1, { message: 'El usuario es requerido' }),
+});
+
+export const newBusinessUnitPatientSchema = z.object({
+  patient_id: z.string({ required_error: 'El paciente es requerido' }).min(1, { message: 'El paciente es requerido' }),
+});
+
 export const businessUnitPatientSchema = z.object({
   id: z.string(),
   first_name: z.string(),
@@ -19,8 +45,18 @@ export const businessUnitSchema = z.object({
   company_id: z.string(),
   users: z.array(businessUnitUserSchema),
   patients: z.array(businessUnitPatientSchema),
-  created_at: z.date(),
-  modified_at: z.date(),
+  created_at: z.string(),
+  created_by: z.object({
+    id: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+  }),
+  modified_at: z.string(),
+  updated_by: z.object({
+    id: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+  }),
 });
 
 export const businessUnitsListResponseSchema = z.object({
@@ -41,8 +77,8 @@ export const businessUnitResponseSchema = z.object({
   data: businessUnitSchema,
 });
 
-export const businessUnitRetrieveResponseSchema = z.object({
-  // Retrieve by id
+export const businessUnitGetResponseSchema = z.object({
+  // Get by id
   status: z.string(),
   code: z.number(),
   message: z.string(),
@@ -70,7 +106,7 @@ export const businessUnitCreateBodySchema = z.object({
   company_id: z.string(),
 });
 
-export const businessUnitEditBodySchema = z.object({
+export const businessUnitUpdateBodySchema = z.object({
   name: z.string(),
   description: z.string(),
 });
@@ -90,8 +126,8 @@ export type BusinessUnitsListResponse = z.infer<
   typeof businessUnitsListResponseSchema
 >;
 export type BusinessUnitResponse = z.infer<typeof businessUnitResponseSchema>;
-export type BusinessUnitRetrieveResponse = z.infer<
-  typeof businessUnitRetrieveResponseSchema
+export type BusinessUnitGetResponse = z.infer<
+  typeof businessUnitGetResponseSchema
 >;
 export type BusinessUnitOperationResponse = z.infer<
   typeof businessUnitOperationResponseSchema
@@ -99,7 +135,9 @@ export type BusinessUnitOperationResponse = z.infer<
 export type BusinessUnitCreateBody = z.infer<
   typeof businessUnitCreateBodySchema
 >;
-export type BusinessUnitEditBody = z.infer<typeof businessUnitEditBodySchema>;
+export type BusinessUnitUpdateBody = z.infer<
+  typeof businessUnitUpdateBodySchema
+>;
 export type BusinessUnitAddUser = z.infer<typeof businessUnitAddUserSchema>;
 export type BusinessUnitAddPatient = z.infer<
   typeof businessUnitAddPatientSchema

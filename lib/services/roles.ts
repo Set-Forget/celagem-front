@@ -2,10 +2,11 @@ import { usersApi } from '../apis/users-api';
 import {
   RoleAddPermissionBody,
   RoleCreateBody,
-  RoleEditBody,
   RoleOperationResponse,
   RoleResponse,
+  Roles,
   RolesListResponse,
+  RoleUpdateBody,
 } from '@/app/(private)/management/roles/schema/roles';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
@@ -15,19 +16,23 @@ export const userApi = usersApi.injectEndpoints({
       query: () => 'roles',
       providesTags: ['Role'],
     }),
-    createRole: builder.mutation<RoleResponse, { body: RoleCreateBody }>({
-      query: ({ body }) => ({
+    createRole: builder.mutation<RoleResponse, RoleCreateBody>({
+      query: (body) => ({
         url: 'roles',
         method: 'POST',
         body: body,
       }),
       invalidatesTags: ['Role'],
     }),
-    retrieveRole: builder.query<RoleResponse, { id: string }>({
-      query: ({ id }) => `roles/${id}`,
+    getRole: builder.query<Roles, string>({
+      query: (id) => `roles/${id}`,
+      transformResponse: (response: RoleResponse) => response.data,
       providesTags: ['Role'],
     }),
-    editRole: builder.mutation<RoleResponse, { id: string, body: RoleEditBody }>({
+    updateRole: builder.mutation<
+      RoleResponse,
+      { id: string; body: RoleUpdateBody }
+    >({
       query: ({ id, body }) => ({
         url: `roles/${id}`,
         method: 'PATCH',
@@ -42,7 +47,10 @@ export const userApi = usersApi.injectEndpoints({
       }),
       invalidatesTags: ['Role'],
     }),
-    roleAddPermission: builder.mutation<RoleResponse, { id: string, body: RoleAddPermissionBody }>({
+    roleAddPermission: builder.mutation<
+      RoleResponse,
+      { id: string; body: RoleAddPermissionBody }
+    >({
       query: ({ id, body }) => ({
         url: `roles/${id}/permissions`,
         method: 'POST',
@@ -50,7 +58,10 @@ export const userApi = usersApi.injectEndpoints({
       }),
       invalidatesTags: ['Role'],
     }),
-    roleDeletePermission: builder.mutation<RoleOperationResponse, { id: string, permissionId: string }>({
+    roleDeletePermission: builder.mutation<
+      RoleOperationResponse,
+      { id: string; permissionId: string }
+    >({
       query: ({ id, permissionId }) => ({
         url: `roles/${id}/permissions/${permissionId}`,
         method: 'DELETE',
@@ -62,9 +73,10 @@ export const userApi = usersApi.injectEndpoints({
 
 export const {
   useListRolesQuery,
+  useLazyListRolesQuery,
   useCreateRoleMutation,
-  useRetrieveRoleQuery,
-  useEditRoleMutation,
+  useGetRoleQuery,
+  useUpdateRoleMutation,
   useDeleteRoleMutation,
   useRoleAddPermissionMutation,
   useRoleDeletePermissionMutation,

@@ -1,12 +1,12 @@
 import {
   BusinessUnitsListResponse,
-  BusinessUnitRetrieveResponse,
   BusinessUnitResponse,
   BusinessUnitOperationResponse,
   BusinessUnitCreateBody,
-  BusinessUnitEditBody,
+  BusinessUnitUpdateBody,
   BusinessUnitAddUser,
   BusinessUnitAddPatient,
+  BusinessUnit,
 } from '@/app/(private)/management/business-units/schema/business-units';
 import { usersApi } from '@/lib/apis/users-api';
 
@@ -22,11 +22,13 @@ export const businessUnitsApi = usersApi.injectEndpoints({
       }),
       providesTags: ['BusinessUnit'],
     }),
-    retrieveBusinessUnit: builder.query<
-      BusinessUnitRetrieveResponse,
-      { Id: string }
+    getBusinessUnit: builder.query<
+      BusinessUnit,
+      string
     >({
-      query: ({ Id }) => `businessunits/${Id}`,
+      query: (id) => `businessunits/${id}`,
+      transformResponse: (response: BusinessUnitResponse) =>
+        response.data,
       providesTags: ['BusinessUnit'],
     }),
     createBusinessUnit: builder.mutation<
@@ -40,9 +42,9 @@ export const businessUnitsApi = usersApi.injectEndpoints({
       }),
       invalidatesTags: ['BusinessUnit'],
     }),
-    editBusinessUnit: builder.mutation<
+    updateBusinessUnit: builder.mutation<
       BusinessUnitResponse,
-      { Id: string; Body: BusinessUnitEditBody }
+      { Id: string; Body: BusinessUnitUpdateBody }
     >({
       query: ({ Id, Body }) => ({
         url: `businessunits/${Id}`,
@@ -108,9 +110,10 @@ export const businessUnitsApi = usersApi.injectEndpoints({
 
 export const {
   useListBusinessUnitsQuery,
-  useRetrieveBusinessUnitQuery,
+  useLazyListBusinessUnitsQuery,
+  useGetBusinessUnitQuery,
   useCreateBusinessUnitMutation,
-  useEditBusinessUnitMutation,
+  useUpdateBusinessUnitMutation,
   useAddUserToBusinessUnitMutation,
   useDeleteUserFromBusinessUnitMutation,
   useAddPatientToBusinessUnitMutation,

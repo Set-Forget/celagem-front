@@ -13,17 +13,7 @@ export default function CompaniesPage() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data, isLoading } = useListCompaniesQuery();
-
-  const companies = data?.data;
-
-  if (isLoading) {
-    return <div>Cargando...</div>;
-  }
-
-  if (!companies) {
-    return <div>No se encontraron compañias</div>;
-  }
+  const { data: companies, isLoading } = useListCompaniesQuery();
 
   return (
     <>
@@ -40,8 +30,9 @@ export default function CompaniesPage() {
 
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
         <DataTable
-          data={companies}
+          data={companies?.data || []}
           columns={companiesColumns}
+          loading={isLoading}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
         />

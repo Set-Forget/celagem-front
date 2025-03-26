@@ -1,10 +1,11 @@
 import { usersApi } from '../apis/users-api';
 import {
   ClassCreateBody,
-  ClassEditBody,
   ClassesListResponse,
-  ClassOperationResponse,
+  ClassDeleteResponse,
   ClassResponse,
+  ClassUpdateBody,
+  Classes,
 } from '@/app/(private)/management/classes/schema/classes';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
@@ -27,13 +28,14 @@ export const userApi = usersApi.injectEndpoints({
       }),
       invalidatesTags: ['Class'],
     }),
-    retrieveClass: builder.query<ClassResponse, { id: string }>({
-      query: ({ id }) => `classes/${id}`,
+    getClass: builder.query<Classes, string>({
+      query: (id) => `classes/${id}`,
+      transformResponse: (response: ClassResponse) => response.data,
       providesTags: ['Class'],
     }),
-    editClass: builder.mutation<
+    updateClass: builder.mutation<
       ClassResponse,
-      { id: string; body: ClassEditBody }
+      { id: string; body: ClassUpdateBody }
     >({
       query: ({ id, body }) => ({
         url: `classes/${id}`,
@@ -42,7 +44,7 @@ export const userApi = usersApi.injectEndpoints({
       }),
       invalidatesTags: ['Class'],
     }),
-    deleteClass: builder.mutation<ClassOperationResponse, { id: string }>({
+    deleteClass: builder.mutation<ClassDeleteResponse, { id: string }>({
       query: ({ id }) => ({
         url: `classes/${id}`,
         method: 'DELETE',
@@ -54,8 +56,9 @@ export const userApi = usersApi.injectEndpoints({
 
 export const {
   useListClassesQuery,
+  useLazyListClassesQuery,
   useCreateClassMutation,
-  useRetrieveClassQuery,
-  useEditClassMutation,
+  useGetClassQuery,
+  useUpdateClassMutation,
   useDeleteClassMutation,
 } = userApi;

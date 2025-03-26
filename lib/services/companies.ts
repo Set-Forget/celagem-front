@@ -1,10 +1,11 @@
 import { usersApi } from '../apis/users-api';
 import {
+  Companies,
   CompaniesListResponse,
   CompanyCreateBody,
-  CompanyEditBody,
   CompanyOperationResponse,
   CompanyResponse,
+  CompanyUpdateBody,
 } from '@/app/(private)/management/companies/schema/companies';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
@@ -21,11 +22,15 @@ export const companiesApi = usersApi.injectEndpoints({
       }),
       invalidatesTags: ['Company'],
     }),
-    retrieveCompany: builder.query<CompanyResponse, { id: string }>({
-      query: ({ id }) => `companies/${id}`,
+    getCompany: builder.query<Companies, string>({
+      query: (id) => `companies/${id}`,
+      transformResponse: (response: CompanyResponse) => response.data,
       providesTags: ['Company'],
     }),
-    editCompany: builder.mutation<CompanyResponse, { id: string, body: CompanyEditBody }>({
+    updateCompany: builder.mutation<
+      CompanyResponse,
+      { id: string; body: CompanyUpdateBody }
+    >({
       query: ({ id, body }) => ({
         url: `companies/${id}`,
         method: 'PATCH',
@@ -47,22 +52,25 @@ export const companiesApi = usersApi.injectEndpoints({
       }),
       invalidatesTags: ['Company'],
     }),
-    companyDeleteUser: builder.mutation<CompanyOperationResponse, { id: string, userId: string }>({
+    companyDeleteUser: builder.mutation<
+      CompanyOperationResponse,
+      { id: string; userId: string }
+    >({
       query: ({ id, userId }) => ({
         url: `companies/${id}/users/${userId}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Company'],
     }),
-    
   }),
 });
 
 export const {
   useListCompaniesQuery,
+  useLazyListCompaniesQuery,
   useCreateCompanyMutation,
-  useRetrieveCompanyQuery,
-  useEditCompanyMutation,
+  useGetCompanyQuery,
+  useUpdateCompanyMutation,
   useDeleteCompanyMutation,
   useCompanyAddUserMutation,
   useCompanyDeleteUserMutation,

@@ -1,14 +1,32 @@
 import { z } from 'zod';
 
+export const newCompanyGeneralSchema = z.object({
+  name: z.string({ required_error: "El nombre es requerido" }).nonempty({ message: "El nombre es requerido" }).default(""),
+  description: z.string({ required_error: "La descripción es requerida" }).nonempty({ message: "La descripción es requerida" }).default(""),
+  created_by: z.string(),
+});
+
+export const newCompanySchema = newCompanyGeneralSchema;
+
 export const companiesSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
   created_at: z.string(),
+  created_by: z.object({
+    id: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+  }),
   modified_at: z.string(),
+  updated_by: z.object({
+    id: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+  }),
 });
 
-export const companiesListSchema = z.object({
+export const companiesListResponseSchema = z.object({
   // List
   status: z.string(),
   code: z.number(),
@@ -26,7 +44,7 @@ export const companyResponseSchema = z.object({
   data: companiesSchema,
 });
 
-export const companyOperationResponseSchema = z.object({
+export const companyDeleteResponseSchema = z.object({
   // Delete
   status: z.string(),
   code: z.number(),
@@ -49,7 +67,7 @@ export const companyCreateBodySchema = z.object({
   description: z.string(),
 });
 
-export const companyEditBodySchema = z.object({
+export const companyUpdateBodySchema = z.object({
   name: z.string(),
   description: z.string(),
 });
@@ -59,12 +77,14 @@ export const companyAddUserBodySchema = z.object({
 });
 
 export type Companies = z.infer<typeof companiesSchema>;
-export type CompaniesListResponse = z.infer<typeof companiesListSchema>;
+export type CompaniesListResponse = z.infer<typeof companiesListResponseSchema>;
 export type CompanyResponse = z.infer<typeof companyResponseSchema>;
 export type CompanyOperationResponse = z.infer<
-  typeof companyOperationResponseSchema
+  typeof companyDeleteResponseSchema
 >;
 export type CompanyAddUserBody = z.infer<typeof companyAddUserBodySchema>;
 export type CompanyCreateBody = z.infer<typeof companyCreateBodySchema>;
-export type CompanyEditBody = z.infer<typeof companyEditBodySchema>;
+export type CompanyUpdateBody = z.infer<typeof companyUpdateBodySchema>;
 export type CompanyAddUser = z.infer<typeof companyAddUserBodySchema>;
+
+export type NewCompany = z.infer<typeof newCompanySchema>;

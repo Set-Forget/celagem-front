@@ -1,45 +1,42 @@
 import { usersApi } from '../apis/users-api';
 import {
   UserCreateBody,
-  UserEditBody,
-  UserEditRoleBody,
   UserListResponse,
   UserOperationResponse,
   UserResponse,
+  Users,
+  UserUpdateBody,
+  UserUpdateRoleBody,
 } from '@/app/(private)/management/users/schema/users';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const userApi = usersApi.injectEndpoints({
   endpoints: (builder) => ({
-    listUsers: builder.query<
-      UserListResponse,
-      { FirstName: string; LastName: string; CompanyId: string }
-    >({
+    listUsers: builder.query<UserListResponse, void>({
       query: (data) => ({
         url: `users`,
-        params: data || {},
-        method: 'GET',
       }),
       providesTags: ['User'],
     }),
-    createUser: builder.mutation<UserResponse, { body: UserCreateBody }>({
-      query: ({ body }) => ({
+    createUser: builder.mutation<UserResponse, Partial<UserCreateBody>>({
+      query: (body) => ({
         url: 'users',
         method: 'POST',
         body: body,
       }),
       invalidatesTags: ['User'],
     }),
-    retrieveUser: builder.query<UserResponse, { id: string }>({
-      query: ({ id }) => ({
+    getUser: builder.query<Users, string>({
+      query: (id) => ({
         url: `users/${id}`,
         method: 'GET',
       }),
+      transformResponse: (response: UserResponse) => response.data,
       providesTags: ['User'],
     }),
-    editUser: builder.mutation<
+    updateUser: builder.mutation<
       UserResponse,
-      { id: string; body: UserEditBody }
+      { id: string; body: UserUpdateBody }
     >({
       query: ({ id, body }) => ({
         url: `users/${id}`,
@@ -55,9 +52,9 @@ export const userApi = usersApi.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
-    editUserRole: builder.mutation<
+    updateUserRole: builder.mutation<
       UserResponse,
-      { id: string; body: UserEditRoleBody }
+      { id: string; body: UserUpdateRoleBody }
     >({
       query: ({ id, body }) => ({
         url: `users/${id}/update-role`,
@@ -70,10 +67,11 @@ export const userApi = usersApi.injectEndpoints({
 });
 
 export const {
+  useListUsersQuery,
   useLazyListUsersQuery,
   useCreateUserMutation,
-  useRetrieveUserQuery,
-  useEditUserMutation,
+  useGetUserQuery,
+  useUpdateUserMutation,
   useDeleteUserMutation,
-  useEditUserRoleMutation,
+  useUpdateUserRoleMutation,
 } = userApi;

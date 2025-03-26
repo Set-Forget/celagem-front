@@ -1,13 +1,33 @@
 import { z } from 'zod';
 
+export const newClassGeneralSchema = z.object({
+  name: z
+    .string({ required_error: 'El nombre es requerido' })
+    .nonempty({ message: 'El nombre es requerido' })
+    .default(''),
+  created_by: z.string(),
+});
+
+export const newClassSchema = newClassGeneralSchema;
+
 export const classesSchema = z.object({
   id: z.string(),
   name: z.string(),
-  created_at: z.date(),
-  modified_at: z.date(),
+  created_at: z.string(),
+  created_by: z.object({
+    id: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+  }),
+  modified_at: z.string(),
+  updated_by: z.object({
+    id: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+  }),
 });
 
-export const classesListSchema = z.object({
+export const classesListResponseSchema = z.object({
   // List
   status: z.string(),
   code: z.number(),
@@ -17,7 +37,7 @@ export const classesListSchema = z.object({
 });
 
 export const classResponseSchema = z.object({
-  // Create, Update, Retrieve
+  // Create, Update, Get
   status: z.string(),
   code: z.number(),
   message: z.string(),
@@ -25,7 +45,7 @@ export const classResponseSchema = z.object({
   data: classesSchema,
 });
 
-export const classOperationResponseSchema = z.object({
+export const classDeleteResponseSchema = z.object({
   // Delete
   status: z.string(),
   code: z.number(),
@@ -36,18 +56,18 @@ export const classOperationResponseSchema = z.object({
 
 export const classCreateBodySchema = z.object({
   name: z.string(),
-  company_id: z.string(),
+  created_by: z.string(),
 });
 
-export const classEditBodySchema = z.object({
+export const classUpdateBodySchema = z.object({
   name: z.string(),
 });
 
 export type Classes = z.infer<typeof classesSchema>;
-export type ClassesListResponse = z.infer<typeof classesListSchema>;
+export type ClassesListResponse = z.infer<typeof classesListResponseSchema>;
 export type ClassResponse = z.infer<typeof classResponseSchema>;
-export type ClassOperationResponse = z.infer<
-  typeof classOperationResponseSchema
->;
+export type ClassDeleteResponse = z.infer<typeof classDeleteResponseSchema>;
 export type ClassCreateBody = z.infer<typeof classCreateBodySchema>;
-export type ClassEditBody = z.infer<typeof classEditBodySchema>;
+export type ClassUpdateBody = z.infer<typeof classUpdateBodySchema>;
+
+export type NewClass = z.infer<typeof newClassSchema>;
