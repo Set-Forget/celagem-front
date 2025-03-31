@@ -29,15 +29,6 @@ export const businessUnitsColumns: ColumnDef<BusinessUnit>[] = [
     size: 10,
   },
   {
-    accessorKey: 'company_id',
-    header: 'Compañia',
-    cell: ({ row }) => (
-      <div className="capitalize flex gap-1">
-        <div>{row.original.company_id}</div>
-      </div>
-    ),
-  },
-  {
     accessorKey: 'name',
     header: 'Nombre',
     cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
@@ -49,7 +40,7 @@ export const businessUnitsColumns: ColumnDef<BusinessUnit>[] = [
   },
   {
     accessorKey: 'company_id',
-    header: 'Compañia',
+    header: 'Sede',
     cell: ({ row }) => <div>{row.original.company_id}</div>,
   },
 ];

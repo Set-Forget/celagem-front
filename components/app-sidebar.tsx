@@ -143,7 +143,7 @@ const data = {
           url: '/management/roles',
         },
         {
-          title: 'Compañias',
+          title: 'Sedes',
           url: '/management/companies',
         },
         {

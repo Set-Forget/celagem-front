@@ -133,7 +133,7 @@ export default function GeneralTab() {
       {fields.map((field) => {
         const displayValue = isPatientLoading
           ? placeholder(field.placeholderLength)
-          : field.getValue(patient!) ?? "";
+          : field.getValue(patient!) ?? '';
         return (
           <div className="flex flex-col gap-1" key={field.label}>
             <label className="text-muted-foreground text-sm">

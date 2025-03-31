@@ -11,8 +11,8 @@ export const newBusinessUnitGeneralSchema = z.object({
     .nonempty({ message: 'La descripción es requerida' })
     .default(''),
   company_id: z
-    .string({ required_error: 'La compañia es requerida' })
-    .nonempty({ message: 'La compañia es requerida' })
+    .string({ required_error: 'La sede es requerida' })
+    .nonempty({ message: 'La sede es requerida' })
     .default(''),
   created_by: z.string(),
 });

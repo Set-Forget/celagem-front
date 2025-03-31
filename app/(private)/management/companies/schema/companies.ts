@@ -8,10 +8,22 @@ export const newCompanyGeneralSchema = z.object({
 
 export const newCompanySchema = newCompanyGeneralSchema;
 
+export const newCompanyUserSchema = z.object({
+  user_id: z
+    .string({ required_error: 'El usuario es requerido' })
+    .min(1, { message: 'El usuario es requerido' }),
+});
+
+export const companyUserSchema = z.object({
+  id: z.string(),
+  email: z.string(),
+});
+
 export const companiesSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
+  users: z.array(companyUserSchema),
   created_at: z.string(),
   created_by: z.object({
     id: z.string(),

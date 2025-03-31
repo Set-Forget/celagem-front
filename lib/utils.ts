@@ -15,3 +15,7 @@ export function formatDateToISO(dateStr: string) {
   const date = new Date(year, month - 1, day);
   return date.toISOString().split('T')[0];
 }
+
+export function getRandomInt(max: number, floor: number) {
+  return Math.floor(Math.random() * max) + floor;
+}

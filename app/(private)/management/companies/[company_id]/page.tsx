@@ -66,7 +66,7 @@ export default function CompanyPage() {
 
   return (
     <>
-      <Header title="Detalles de la compañia">
+      <Header title="Detalles de la sede">
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

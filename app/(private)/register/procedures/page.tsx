@@ -7,11 +7,17 @@ import { Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { proceduresColumns } from './components/columns';
 import Toolbar from './components/toolbar';
-import { proceduresMock } from './mocks/proceduresMock';
+import { proceduresMock } from './mocks/procedures-mock';
+import { useListProceduresQuery } from '@/lib/services/procedures';
 
 export default function ProceduresPage() {
   const pathname = usePathname();
   const router = useRouter();
+
+  // const { data, isLoading } = useListProceduresQuery({
+  //   Name: '',
+  //   CompanyId: '',
+  // });
 
   return (
     <>
@@ -30,6 +36,7 @@ export default function ProceduresPage() {
         <DataTable
           data={proceduresMock}
           columns={proceduresColumns}
+          // loading={isLoading}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
         />

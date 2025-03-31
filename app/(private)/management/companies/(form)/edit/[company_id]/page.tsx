@@ -26,6 +26,7 @@ import {
   useUpdateCompanyMutation,
   useGetCompanyQuery,
 } from '@/lib/services/companies';
+import UsersForm from '../../components/users-form';
 
 // ! Se puede unificar con el tabs de abajo.
 const tabToFieldsMap = {
@@ -43,6 +44,17 @@ const tabs = [
       />
     ),
     content: <GeneralForm />,
+  },
+  {
+    value: 'tab-2',
+    label: 'Usuarios',
+    icon: (
+      <House
+        className="mr-1.5"
+        size={16}
+      />
+    ),
+    content: <UsersForm />,
   },
 ];
 

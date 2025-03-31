@@ -17,14 +17,14 @@ export default function CompaniesPage() {
 
   return (
     <>
-      <Header title="Compañias">
+      <Header title="Sedes">
         <Button
           className="ml-auto"
           size="sm"
           onClick={() => router.push(`${pathname}/new`)}
         >
           <Plus className="w-4 h-4" />
-          Crear compañia
+          Crear sede
         </Button>
       </Header>
 

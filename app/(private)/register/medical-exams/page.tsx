@@ -7,11 +7,16 @@ import { Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { medicalExamsColumns } from './components/columns';
 import Toolbar from './components/toolbar';
-import { medicalExamsMock } from './mocks/medicalExamsMock';
+import { medicalExamsMock } from './mocks/medical-exams-mock';
 
 export default function ProductsPage() {
   const pathname = usePathname();
   const router = useRouter();
+
+  // const { data, isLoading } = useListMedicalExamsQuery({
+  //   Name: '',
+  //   CompanyId: '',
+  // });
 
   return (
     <>
@@ -29,6 +34,7 @@ export default function ProductsPage() {
         <DataTable
           data={medicalExamsMock}
           columns={medicalExamsColumns}
+          // loading={isLoading}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
         />

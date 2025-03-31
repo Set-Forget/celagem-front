@@ -1,5 +1,5 @@
 import { useGetPatientQuery } from '@/lib/services/patients';
-import { cn, placeholder } from '@/lib/utils';
+import { cn, getRandomInt, placeholder } from '@/lib/utils';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useParams } from 'next/navigation';
@@ -42,7 +42,7 @@ export default function GeneralTab() {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {fields.map((field) => {
           const displayValue = isBusinessUnitLoading
-            ? placeholder(field.placeholderLength)
+            ? placeholder(getRandomInt(20, 10))
             : field.getValue(businessUnit!) ?? '';
           return (
             <div
@@ -65,32 +65,28 @@ export default function GeneralTab() {
         })}
       </div>
       <Separator />
-
-      <>
-        <div className="px-4 flex flex-col gap-4 flex-1">
+      <div>
+        <div className="px-4 flex flex-col gap-4 flex-1 h-1/2">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-medium">Pacientes</h2>
           </div>
           <DataTable
             data={businessUnit?.patients || []}
             columns={columnsPatients}
-            pagination={false}
+            pagination={true}
           />
         </div>
-      </>
-
-      <>
-        <div className="px-4 flex flex-col gap-4 flex-1">
+        <div className="px-4 flex flex-col gap-4 flex-1 h-1/2">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-medium">Usuarios</h2>
           </div>
           <DataTable
             data={businessUnit?.users || []}
             columns={columnsUsers}
-            pagination={false}
+            pagination={true}
           />
         </div>
-      </>
+      </div>
     </div>
   );
 }

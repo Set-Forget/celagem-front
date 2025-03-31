@@ -2,9 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { JobPosition } from '../schema/job-position';
+import { JobPositions } from '../schema/job-positions';
 
-export const jobPositionsColumns: ColumnDef<JobPosition>[] = [
+export const jobPositionsColumns: ColumnDef<JobPositions>[] = [
   {
     id: 'select',
     header: ({ table }) => (
