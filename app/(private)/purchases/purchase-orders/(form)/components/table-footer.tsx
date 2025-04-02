@@ -5,35 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { v4 as uuidv4 } from 'uuid'
 import { columns } from "./columns"
-import { newPurchaseOrderSchema } from "../../../schemas/purchase-orders"
+import { newPurchaseOrderSchema } from "../../schemas/purchase-orders"
 import { useListTaxesQuery } from "@/lib/services/taxes"
 import { useListCurrenciesQuery } from "@/lib/services/currencies"
-
-// ! Debe traerse de la API
-const taxes = [
-  {
-    id: 1,
-    name: "21%",
-    amount: 21,
-  },
-  {
-    id: 2,
-    name: "10.5%",
-    amount: 10.5,
-  },
-  {
-    id: 3,
-    name: "Exento",
-    amount: 0,
-  }
-]
-
-// ! Debe traerse de la API
-const currencies = [
-  { label: "ARS (Peso argentino)", value: "ARS", id: 1 },
-  { label: "COP (Peso colombiano)", value: "COP", id: 2 },
-  { label: "USD (Dólar estadounidense)", value: "USD", id: 3 },
-] as const;
 
 export default function TableFooter({ append }: { append: (value: any) => void }) {
   const { control } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()

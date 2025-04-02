@@ -10,18 +10,15 @@ import { newBillSchema } from "../../../schemas/bills"
 import { columns } from "./columns"
 import TableFooter from "./table-footer"
 import { Textarea } from "@/components/ui/textarea"
-
-// ! Debe traerse de la API
-const currencies = [
-  { label: "ARS (Peso argentino)", value: "ARS", id: 1 },
-  { label: "COP (Peso colombiano)", value: "COP", id: 2 },
-  { label: "USD (Dólar estadounidense)", value: "USD", id: 3 },
-] as const;
+import { useLazyListCurrenciesQuery } from "@/lib/services/currencies"
+import { useLazyListPaymentTermsQuery } from "@/lib/services/payment-terms"
 
 export default function GeneralForm() {
   const { control, formState } = useFormContext<z.infer<typeof newBillSchema>>()
 
   const [searchSuppliers] = useLazyListSuppliersQuery()
+  const [searchCurrencies] = useLazyListCurrenciesQuery()
+  const [searchPaymentTerms] = useLazyListPaymentTermsQuery()
 
   const handleSearchSupplier = async (query?: string) => {
     try {
@@ -29,6 +26,34 @@ export default function GeneralForm() {
       return response.data?.map(supplier => ({
         id: supplier.id,
         name: supplier.name
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
+  }
+
+  const handleSearchCurrency = async (query?: string) => {
+    try {
+      const response = await searchCurrencies({ name: query }).unwrap()
+      return response.data?.map(currency => ({
+        id: currency.id,
+        name: currency.name
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
+  }
+
+  const handleSearchPaymentTerm = async (query?: string) => {
+    try {
+      const response = await searchPaymentTerms({ name: query }).unwrap()
+      return response.data?.map(term => ({
+        id: term.id,
+        name: term.name
       }))
     }
     catch (error) {
@@ -99,42 +124,25 @@ export default function GeneralForm() {
               Condición de pago
             </FormLabel>
             <FormControl>
-              <Select
+              <AsyncSelect<{ id: number, name: string }, number>
+                label="Condición de pago"
+                triggerClassName="!w-full"
+                placeholder="Seleccionar condición de pago..."
+                fetcher={handleSearchPaymentTerm}
+                getDisplayValue={(item) => item.name}
+                getOptionValue={(item) => item.id}
+                renderOption={(item) => <div>{item.name}</div>}
+                onChange={field.onChange}
                 value={field.value}
-                onValueChange={field.onChange}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Condición de pago" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="0">
-                    Anticipo
-                  </SelectItem>
-                  <SelectItem value="1">
-                    7 días
-                  </SelectItem>
-                  <SelectItem value="2">
-                    15 días
-                  </SelectItem>
-                  <SelectItem value="3">
-                    30 días
-                  </SelectItem>
-                  <SelectItem value="4">
-                    60 días
-                  </SelectItem>
-                  <SelectItem value="5">
-                    90 días
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+                getOptionKey={(item) => String(item.id)}
+                noResultsMessage="No se encontraron resultados"
+              />
             </FormControl>
             {formState.errors.payment_term ? (
               <FormMessage />
             ) :
               <FormDescription>
-                Este será el tipo de pago que se registrará.
+                Esta será la condición de pago de la orden de compra.
               </FormDescription>
             }
           </FormItem>
@@ -194,23 +202,19 @@ export default function GeneralForm() {
           <FormItem className="flex flex-col w-full">
             <FormLabel className="w-fit">Moneda</FormLabel>
             <FormControl>
-              <Select onValueChange={field.onChange}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Moneda" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {currencies.map((currency) => (
-                    <SelectItem
-                      key={currency.id}
-                      value={String(currency.id)}
-                    >
-                      {currency.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <AsyncSelect<{ id: number, name: string }, number>
+                label="Moneda"
+                triggerClassName="!w-full"
+                placeholder="Seleccionar moneda..."
+                fetcher={handleSearchCurrency}
+                getDisplayValue={(item) => item.name}
+                getOptionValue={(item) => item.id}
+                renderOption={(item) => <div>{item.name}</div>}
+                onChange={field.onChange}
+                value={field.value}
+                getOptionKey={(item) => String(item.id)}
+                noResultsMessage="No se encontraron resultados"
+              />
             </FormControl>
             {formState.errors.currency ? (
               <FormMessage />

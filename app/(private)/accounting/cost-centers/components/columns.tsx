@@ -6,10 +6,10 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { COST_CENTERS_STATUSES } from "../adapter/statuses"
-import { CostCenter } from "../schemas/cost-centers"
+import { CostCenterList } from "../schemas/cost-centers"
+import { costCenters } from "../utils"
 
-export const columns: ColumnDef<CostCenter>[] = [
+export const columns: ColumnDef<CostCenterList>[] = [
   {
     accessorKey: "name",
     header: "Nombre",
@@ -20,12 +20,12 @@ export const columns: ColumnDef<CostCenter>[] = [
     ),
   },
   {
-    accessorKey: "status",
+    accessorKey: "active",
     header: "Estado",
     cell: ({ row }) => {
-      const status = COST_CENTERS_STATUSES[row.getValue("status") as keyof typeof COST_CENTERS_STATUSES]
+      const status = costCenters[row.getValue("active") as keyof typeof costCenters]
       return <Badge
-        variant="outline"
+        variant="custom"
         className={cn(`${status.bg_color} ${status.text_color} border-none rounded-sm`)}
       >
         {status.label}
@@ -33,12 +33,21 @@ export const columns: ColumnDef<CostCenter>[] = [
     },
   },
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: "code",
+    header: "Código",
     cell: ({ row }) => (
-      <div className="capitalize flex gap-1">
-        <div className="font-medium">{row.getValue("id")}</div>
+      <div className="flex gap-1">
+        <div className="font-medium">{row.getValue("code") || "No especificado"}</div>
       </div>
     ),
   },
+  {
+    accessorKey: "plan",
+    header: "Plan",
+    cell: ({ row }) => (
+      <div className="capitalize flex gap-1">
+        <div className="font-medium">{row.getValue("plan")}</div>
+      </div>
+    ),
+  }
 ]

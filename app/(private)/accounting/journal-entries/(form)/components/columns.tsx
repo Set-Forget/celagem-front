@@ -1,57 +1,56 @@
-import { AsyncMultiSelect } from "@/components/async-multi-select";
-import { AsyncSelect } from "@/components/async-select";
 import { FormTableColumn } from "@/components/form-table";
-import { FormControl, FormField, FormItem } from "@/components/ui/form";
-import { materials } from "@/lib/mocks/materials";
-import { useListCurrenciesQuery } from "@/lib/services/currencies";
-import { useLazyListTaxesQuery } from "@/lib/services/taxes";
-import { cn } from "@/lib/utils";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-import { Button as AriaButton, Input as AriaInput, Label as AriaLabel, Group, NumberField } from "react-aria-components";
-import { Control, useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { newPurchaseOrderSchema } from "../../../schemas/purchase-orders";
+import { newJournalEntrySchema } from "../../schemas/journal-entries";
+import { FormControl, FormField, FormItem } from "@/components/ui/form";
+import { AsyncSelect } from "@/components/async-select";
+import { cn } from "@/lib/utils";
+import { Control, useFormContext, useWatch } from "react-hook-form";
+import { useLazyListAccountingAccountsQuery } from "@/lib/services/accounting-accounts";
+import { AsyncMultiSelect } from "@/components/async-multi-select";
+import { useLazyListTaxesQuery } from "@/lib/services/taxes";
+import { Button as AriaButton, Input as AriaInput, Label as AriaLabel, Group, NumberField } from "react-aria-components";
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { useListCurrenciesQuery } from "@/lib/services/currencies";
 
-const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseOrderSchema>>; index: number }) => {
-  const { setValue } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()
+const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<typeof newJournalEntrySchema>>; index: number }) => {
+  const [searchAccountingAccounts] = useLazyListAccountingAccountsQuery()
 
-  const handleSearchMaterial = async (query?: string) => {
-    if (!query) return materials
-    return materials.filter((material) => material.name.toLowerCase().includes(query.toLowerCase())) || []
+  const handleSearchAccountingAccount = async (query?: string) => {
+    try {
+      const response = await searchAccountingAccounts({ name: query }).unwrap()
+      return response.data?.map(account => ({
+        id: account.id,
+        name: account.name,
+        code: account.code
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
   }
+
   return <FormField
     control={control}
-    name={`items.${index}.product_id`}
+    name={`items.${index}.account_id`}
     render={({ field }) => (
       <FormItem className="flex flex-col w-full">
         <FormControl>
-          <AsyncSelect<{ id: number, name: string, lst_price: number }, number>
-            label="Material"
+          <AsyncSelect<{ id: number, name: string, code: string }, number>
+            label="Cuenta contable"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
-              control._formState.errors.items?.[index]?.product_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
+              control._formState.errors.items?.[index]?.account_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
             )}
-            placeholder="Buscar material..."
-            fetcher={handleSearchMaterial}
-            getDisplayValue={(item) => (
-              <div className="flex gap-1">
-                <span className="font-medium">
-                  [{item.id}]
-                </span>
-                {item.name}
-              </div>
-            )}
+            placeholder="Buscar cuenta contable..."
+            fetcher={handleSearchAccountingAccount}
+            getDisplayValue={(item) => `${item.code} - ${item.name}`}
             getOptionValue={(item) => item.id}
-            renderOption={(item) => <>{item.name}</>}
-            onChange={(value) => {
-              field.onChange(value);
-              const material = materials.find((material) => material.id === value);
-              setValue(`items.${index}.unit_price`, material?.lst_price || 0, { shouldValidate: true });
-            }}
+            renderOption={(item) => <div>{item.code} - {item.name}</div>}
+            onChange={field.onChange}
             value={field.value}
             getOptionKey={(item) => String(item.id)}
             noResultsMessage="No se encontraron resultados"
-            modal
           />
         </FormControl>
       </FormItem>
@@ -59,14 +58,17 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
   />
 }
 
-const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseOrderSchema>>; index: number }) => {
-  const { setValue } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()
+const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newJournalEntrySchema>>; index: number }) => {
+  const { setValue } = useFormContext<z.infer<typeof newJournalEntrySchema>>()
 
   const [searchTaxes] = useLazyListTaxesQuery()
 
   const handleSearchTax = async (query?: string) => {
     try {
-      const response = await searchTaxes({ name: query }).unwrap()
+      const response = await searchTaxes({
+        name: query,
+        type_tax_use: "purchase"
+      }).unwrap()
       return response.data?.map(taxes => ({
         id: taxes.id,
         name: taxes.name
@@ -112,7 +114,9 @@ const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newPurc
   />
 }
 
-const UnitPriceCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseOrderSchema>>; index: number }) => {
+const DebitCell = ({ control, index }: { control: Control<z.infer<typeof newJournalEntrySchema>>; index: number }) => {
+  const { setValue } = useFormContext<z.infer<typeof newJournalEntrySchema>>()
+
   const { data: currencies } = useListCurrenciesQuery()
 
   const currency = useWatch({
@@ -122,14 +126,16 @@ const UnitPriceCell = ({ control, index }: { control: Control<z.infer<typeof new
 
   return <FormField
     control={control}
-    name={`items.${index}.unit_price`}
+    name={`items.${index}.debit`}
     render={({ field }) => (
       <FormItem className="flex flex-col">
         <FormControl>
           <NumberField
-            defaultValue={1}
-            minValue={1}
-            onChange={field.onChange}
+            minValue={0}
+            onChange={(value) => {
+              field.onChange(value)
+              setValue(`items.${index}.credit`, 0, { shouldValidate: true })
+            }}
             value={field.value}
             formatOptions={
               currency
@@ -142,9 +148,11 @@ const UnitPriceCell = ({ control, index }: { control: Control<z.infer<typeof new
             }
           >
             <div className="*:not-first:mt-2">
-              <AriaLabel className="sr-only">Precio unitario</AriaLabel>
+              <AriaLabel className="sr-only">Debe</AriaLabel>
               <Group className="rounded-none border-none outline-none data-focus-within:border-ring data-focus-within:ring-ring/50 data-focus-within:has-aria-invalid:ring-destructive/20 dark:data-focus-within:has-aria-invalid:ring-destructive/40 data-focus-within:has-aria-invalid:border-destructive relative inline-flex h-9 w-full items-center overflow-hidden border text-sm whitespace-nowrap transition-[color,box-shadow] data-disabled:opacity-50 justify-between">
-                <AriaInput className="text-end bg-transparent text-foreground w-full px-3 py-2 tabular-nums rounded-none border-none focus-visible:outline focus-visible:outline-ring focus-visible:!outline-offset-[-1px]" />
+                <AriaInput className={cn("text-end bg-transparent text-foreground w-full px-3 py-2 tabular-nums rounded-none border-none focus-visible:outline focus-visible:outline-ring focus-visible:!outline-offset-[-1px]",
+                  control._formState.errors.items?.[index]?.debit && "outline outline-1 outline-offset-[-1px] outline-destructive")
+                } />
                 <div className="flex h-[calc(100%+2px)] flex-col">
                   <AriaButton
                     slot="increment"
@@ -168,7 +176,9 @@ const UnitPriceCell = ({ control, index }: { control: Control<z.infer<typeof new
   />
 };
 
-const SubtotalCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseOrderSchema>>; index: number }) => {
+const CreditCell = ({ control, index }: { control: Control<z.infer<typeof newJournalEntrySchema>>; index: number }) => {
+  const { setValue } = useFormContext<z.infer<typeof newJournalEntrySchema>>()
+
   const { data: currencies } = useListCurrenciesQuery()
 
   const currency = useWatch({
@@ -176,43 +186,35 @@ const SubtotalCell = ({ control, index }: { control: Control<z.infer<typeof newP
     name: "currency",
   });
 
-  const unitPrice = useWatch({
-    control,
-    name: `items.${index}.unit_price`,
-  });
-
-  const quantity = useWatch({
-    control,
-    name: `items.${index}.product_qty`,
-  });
-
-  const subtotal = (quantity || 0) * Number(unitPrice || 0)
-
-  return (
-    <>
-      {currencies?.data.find((c) => c.id === currency)?.name}{" "}
-      <span>{subtotal.toFixed(2)}</span>
-    </>
-  );
-}
-
-const QuantityCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseOrderSchema>>; index: number }) => {
   return <FormField
     control={control}
-    name={`items.${index}.product_qty`}
+    name={`items.${index}.credit`}
     render={({ field }) => (
       <FormItem className="flex flex-col">
         <FormControl>
           <NumberField
-            defaultValue={1}
-            minValue={1}
-            onChange={field.onChange}
+            minValue={0}
+            onChange={(value) => {
+              field.onChange(value)
+              setValue(`items.${index}.debit`, 0, { shouldValidate: true })
+            }}
             value={field.value}
+            formatOptions={
+              currency
+                ? {
+                  style: "currency",
+                  currency: currencies?.data?.find((c) => c.id === currency)?.name,
+                  currencyDisplay: "code",
+                }
+                : undefined
+            }
           >
             <div className="*:not-first:mt-2">
-              <AriaLabel className="sr-only">Cantidad</AriaLabel>
+              <AriaLabel className="sr-only">Haber</AriaLabel>
               <Group className="rounded-none border-none outline-none data-focus-within:border-ring data-focus-within:ring-ring/50 data-focus-within:has-aria-invalid:ring-destructive/20 dark:data-focus-within:has-aria-invalid:ring-destructive/40 data-focus-within:has-aria-invalid:border-destructive relative inline-flex h-9 w-full items-center overflow-hidden border text-sm whitespace-nowrap transition-[color,box-shadow] data-disabled:opacity-50 justify-between">
-                <AriaInput className="text-end bg-transparent text-foreground w-full px-3 py-2 tabular-nums rounded-none border-none focus-visible:outline focus-visible:outline-ring focus-visible:!outline-offset-[-1px]" />
+                <AriaInput className={cn("text-end bg-transparent text-foreground w-full px-3 py-2 tabular-nums rounded-none border-none focus-visible:outline focus-visible:outline-ring focus-visible:!outline-offset-[-1px]",
+                  control._formState.errors.items?.[index]?.credit && "outline outline-1 outline-offset-[-1px] outline-destructive")
+                } />
                 <div className="flex h-[calc(100%+2px)] flex-col">
                   <AriaButton
                     slot="increment"
@@ -234,31 +236,17 @@ const QuantityCell = ({ control, index }: { control: Control<z.infer<typeof newP
       </FormItem>
     )}
   />
-}
+};
 
-export const columns: FormTableColumn<z.infer<typeof newPurchaseOrderSchema>>[] = [
+export const columns: FormTableColumn<z.infer<typeof newJournalEntrySchema>>[] = [
   {
-    header: "Material",
+    header: "Cuenta contable",
     width: 300,
     cellClassName: "pr-0",
     renderCell: (
       control,
       index,
-    ) => <MaterialsCell control={control} index={index} />,
-  },
-  {
-    header: "Cantidad",
-    width: 100,
-    align: "right",
-    headerClassName: "px-0 pr-9",
-    renderCell: (control, index) => <QuantityCell control={control} index={index} />,
-  },
-  {
-    header: "Precio unitario",
-    width: 150,
-    align: "right",
-    cellClassName: "border-l-0",
-    renderCell: (control, index) => <UnitPriceCell control={control} index={index} />,
+    ) => <AccountingAccountCell control={control} index={index} />,
   },
   {
     header: "Impuestos",
@@ -267,10 +255,15 @@ export const columns: FormTableColumn<z.infer<typeof newPurchaseOrderSchema>>[] 
     renderCell: (control, index) => <TaxesCell control={control} index={index} />,
   },
   {
-    header: "Subtotal (Sin imp.)",
-    width: 200,
-    align: "left",
-    cellClassName: "pl-4",
-    renderCell: (control, index) => <SubtotalCell control={control} index={index} />
+    header: "Debe",
+    width: 150,
+    cellClassName: "pr-0",
+    renderCell: (control, index) => <DebitCell control={control} index={index} />,
   },
-];
+  {
+    header: "Haber",
+    width: 150,
+    cellClassName: "pr-0 border-l-0",
+    renderCell: (control, index) => <CreditCell control={control} index={index} />,
+  },
+]

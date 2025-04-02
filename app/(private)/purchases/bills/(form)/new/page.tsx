@@ -40,7 +40,7 @@ const tabs = [
   }
 ]
 
-export default function NewBillPage() {
+export default function Page() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -112,9 +112,9 @@ export default function NewBillPage() {
         // ! Acá hay que agregar payment_term_id pero primero necesito que payment_term me devuelva un id.
         items: purchaseOrder.items.map((item) => ({
           product_id: item.product_id,
-          product_qty: item.product_qty,
-          taxes_id: item.taxes.map((tax) => tax.id), // ! Esto esta bien pero no va a funcionar hasta que tenga el endpoint de impuestos.
-          unit_price: item.price_unit.toString(),
+          quantity: item.product_qty,
+          taxes_id: item.taxes.map((tax) => tax.id),
+          unit_price: item.price_unit
         }))
       })
     }

@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useLazyListSuppliersQuery } from "@/lib/services/suppliers"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
-import { newPurchaseOrderSchema } from "../../../schemas/purchase-orders"
+import { newPurchaseOrderSchema } from "../../schemas/purchase-orders"
 import TableFooter from "./table-footer"
 import { columns } from "./columns"
 import FormTable from "@/components/form-table"

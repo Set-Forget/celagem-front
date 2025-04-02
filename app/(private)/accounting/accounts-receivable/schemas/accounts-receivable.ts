@@ -20,4 +20,10 @@ const accountsReceivableListSchema = z.object({
   "120+_days": z.number().nullable(),
 })
 
+const accountsReceivableListResponseSchema = z.object({
+  status: z.string(),
+  data: z.array(accountsReceivableListSchema),
+});
+
 export type AccountsReceivableList = z.infer<typeof accountsReceivableListSchema>;
+export type AccountsReceivableListResponse = z.infer<typeof accountsReceivableListResponseSchema>;

@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import NestedAccountTable from "./components/nested-account-table";
 import sampleData from "./data/accounts.json";
 
-export default function ChartOfAccountsPage() {
+export default function Page() {
 
   return (
     <>
@@ -21,9 +21,6 @@ export default function ChartOfAccountsPage() {
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 Nueva cuenta
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Nuevo asiento
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

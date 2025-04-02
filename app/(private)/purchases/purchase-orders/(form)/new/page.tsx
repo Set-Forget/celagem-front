@@ -21,7 +21,7 @@ import { Save } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { toast } from "sonner"
-import GeneralForm from "./components/general-form"
+import GeneralForm from "../components/general-form"
 
 export default function NewPurchaseOrderPage() {
   const router = useRouter()

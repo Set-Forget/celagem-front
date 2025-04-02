@@ -26,12 +26,13 @@ import {
   SortingState,
   useReactTable
 } from "@tanstack/react-table";
-import { ArrowLeftToLineIcon, ArrowRightToLineIcon, EllipsisIcon, PinOffIcon } from "lucide-react";
+import { ArrowLeftToLineIcon, ArrowRightToLineIcon, EllipsisIcon, Loader2, PinOffIcon } from "lucide-react";
 import { CSSProperties, useMemo, useState } from "react";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 import { AccountsPayableList } from "./schemas/accounts-payable";
 import '@tanstack/react-table';
+import { useListAccountsPayableQuery } from "@/lib/services/accounts-payable";
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {
@@ -39,393 +40,10 @@ declare module '@tanstack/react-table' {
   }
 }
 
-const data = [
-  {
-    "id": 49,
-    "date": "2024-03-29T00:00:00",
-    "supplier": "Tecnología Avanzada S.R.L.",
-    "accounting_account": "Proveedores",
-    "costs_center": "Sucursal Córdoba",
-    "voucher_type": "Nota de Crédito",
-    "voucher_number": "8544-58271849",
-    "due_date": "2024-10-26T00:00:00",
-    "invoiced_amount": 26442.96,
-    "paid_amount": 13637.54,
-    "outstanding_amount": 12805.419999999998,
-    "currency": "ARS",
-    "30_days": 0,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 50,
-    "date": "2024-02-11T00:00:00",
-    "supplier": "Distribuidora Buenos Aires",
-    "accounting_account": "Gastos Administrativos",
-    "costs_center": "Sucursal Córdoba",
-    "voucher_type": "Nota de Crédito",
-    "voucher_number": "3416-32901613",
-    "due_date": "2024-11-25T00:00:00",
-    "invoiced_amount": 160921.85,
-    "paid_amount": 132362.82,
-    "outstanding_amount": 28559.03,
-    "currency": "EUR",
-    "30_days": 0,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 51,
-    "date": "2024-11-02T00:00:00",
-    "supplier": "Servicios Eléctricos S.A.",
-    "accounting_account": "Bancos",
-    "costs_center": "Sucursal Rosario",
-    "voucher_type": "Recibo",
-    "voucher_number": "6492-89645890",
-    "due_date": "2024-12-09T00:00:00",
-    "invoiced_amount": 56430.87,
-    "paid_amount": 54390.56,
-    "outstanding_amount": 2040.310000000005,
-    "currency": "USD",
-    "30_days": 612.09,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 71,
-    "date": "2024-05-02T00:00:00",
-    "supplier": "Servicios Eléctricos S.A.",
-    "accounting_account": "Gastos Administrativos",
-    "costs_center": "Planta de Producción",
-    "voucher_type": "Nota de Crédito",
-    "voucher_number": "8144-46715121",
-    "due_date": "2024-12-10T00:00:00",
-    "invoiced_amount": 39995.89,
-    "paid_amount": 38701.87,
-    "outstanding_amount": 1294.0199999999968,
-    "currency": "USD",
-    "30_days": 0,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 72,
-    "date": "2024-08-18T00:00:00",
-    "supplier": "Materiales Industriales Mendoza",
-    "accounting_account": "Proveedores",
-    "costs_center": "Planta de Producción",
-    "voucher_type": "Nota de Débito",
-    "voucher_number": "1288-41565336",
-    "due_date": "2024-08-19T00:00:00",
-    "invoiced_amount": 102588.79,
-    "paid_amount": 28461.09,
-    "outstanding_amount": 74127.7,
-    "currency": "EUR",
-    "30_days": 22238.31,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 73,
-    "date": "2024-11-08T00:00:00",
-    "supplier": "Materiales Industriales Mendoza",
-    "accounting_account": "Clientes",
-    "costs_center": "Sucursal Córdoba",
-    "voucher_type": "Nota de Crédito",
-    "voucher_number": "8924-39687561",
-    "due_date": "2024-12-12T00:00:00",
-    "invoiced_amount": 162262.79,
-    "paid_amount": 14873.8,
-    "outstanding_amount": 147388.99000000002,
-    "currency": "ARS",
-    "30_days": 0,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 74,
-    "date": "2024-08-15T00:00:00",
-    "supplier": "Materiales Industriales Mendoza",
-    "accounting_account": "Gastos Administrativos",
-    "costs_center": "Departamento IT",
-    "voucher_type": "Nota de Crédito",
-    "voucher_number": "7270-52513024",
-    "due_date": "2024-12-08T00:00:00",
-    "invoiced_amount": 11625.31,
-    "paid_amount": 11549.59,
-    "outstanding_amount": 75.71999999999935,
-    "currency": "EUR",
-    "30_days": 0,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 75,
-    "date": "2024-03-08T00:00:00",
-    "supplier": "Materiales Industriales Mendoza",
-    "accounting_account": "Clientes",
-    "costs_center": "Planta de Producción",
-    "voucher_type": "Factura B",
-    "voucher_number": "9602-23759431",
-    "due_date": "2024-12-02T00:00:00",
-    "invoiced_amount": 11559.41,
-    "paid_amount": 2126.63,
-    "outstanding_amount": 9432.779999999999,
-    "currency": "USD",
-    "30_days": 2829.83,
-    "60_days": 1886.56,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 76,
-    "date": "2024-01-07T00:00:00",
-    "supplier": "Materiales Industriales Mendoza",
-    "accounting_account": "Bancos",
-    "costs_center": "Sucursal Córdoba",
-    "voucher_type": "Recibo",
-    "voucher_number": "5501-60711674",
-    "due_date": "2024-04-02T00:00:00",
-    "invoiced_amount": 63571.27,
-    "paid_amount": 10231.34,
-    "outstanding_amount": 53339.92999999999,
-    "currency": "EUR",
-    "30_days": 16001.98,
-    "60_days": 10667.99,
-    "90_days": 10667.99,
-    "120_days": 8000.99,
-    "120+_days": 8000.99
-  },
-  {
-    "id": 77,
-    "date": "2024-11-19T00:00:00",
-    "supplier": "Distribuidora Buenos Aires",
-    "accounting_account": "Gastos Administrativos",
-    "costs_center": "Departamento IT",
-    "voucher_type": "Factura B",
-    "voucher_number": "1979-64774478",
-    "due_date": "2024-10-24T00:00:00",
-    "invoiced_amount": 142807.29,
-    "paid_amount": 135344.85,
-    "outstanding_amount": 7462.440000000002,
-    "currency": "ARS",
-    "30_days": 2238.73,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 78,
-    "date": "2024-05-10T00:00:00",
-    "supplier": "Materiales Industriales Mendoza",
-    "accounting_account": "Caja General",
-    "costs_center": "Sucursal Córdoba",
-    "voucher_type": "Factura A",
-    "voucher_number": "1803-54170374",
-    "due_date": "2024-09-20T00:00:00",
-    "invoiced_amount": 173965.96,
-    "paid_amount": 50646.61,
-    "outstanding_amount": 123319.34999999999,
-    "currency": "EUR",
-    "30_days": 36995.8,
-    "60_days": 24663.87,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 79,
-    "date": "2024-01-05T00:00:00",
-    "supplier": "Importadora Patagónica",
-    "accounting_account": "Gastos Administrativos",
-    "costs_center": "Sucursal Córdoba",
-    "voucher_type": "Nota de Crédito",
-    "voucher_number": "1614-67777969",
-    "due_date": "2024-08-27T00:00:00",
-    "invoiced_amount": 121225.12,
-    "paid_amount": 57254.02,
-    "outstanding_amount": 63971.1,
-    "currency": "USD",
-    "30_days": 0,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 80,
-    "date": "2024-05-14T00:00:00",
-    "supplier": "Tecnología Avanzada S.R.L.",
-    "accounting_account": "Caja General",
-    "costs_center": "Sucursal Rosario",
-    "voucher_type": "Factura B",
-    "voucher_number": "4774-41584143",
-    "due_date": "2024-10-24T00:00:00",
-    "invoiced_amount": 113877.55,
-    "paid_amount": 26582.98,
-    "outstanding_amount": 87294.57,
-    "currency": "EUR",
-    "30_days": 26188.37,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 81,
-    "date": "2024-07-27T00:00:00",
-    "supplier": "Distribuidora Buenos Aires",
-    "accounting_account": "Gastos Administrativos",
-    "costs_center": "Oficina Central",
-    "voucher_type": "Factura B",
-    "voucher_number": "8102-71565801",
-    "due_date": "2024-10-27T00:00:00",
-    "invoiced_amount": 6159.48,
-    "paid_amount": 3580.13,
-    "outstanding_amount": 2579.3499999999995,
-    "currency": "ARS",
-    "30_days": 773.8,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 95,
-    "date": "2024-03-08T00:00:00",
-    "supplier": "Servicios Eléctricos S.A.",
-    "accounting_account": "Caja General",
-    "costs_center": "Oficina Central",
-    "voucher_type": "Factura B",
-    "voucher_number": "6934-13124740",
-    "due_date": "2024-08-02T00:00:00",
-    "invoiced_amount": 143022.34,
-    "paid_amount": 123231.8,
-    "outstanding_amount": 19790.539999999994,
-    "currency": "ARS",
-    "30_days": 5937.16,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 96,
-    "date": "2024-02-27T00:00:00",
-    "supplier": "Tecnología Avanzada S.R.L.",
-    "accounting_account": "Clientes",
-    "costs_center": "Planta de Producción",
-    "voucher_type": "Recibo",
-    "voucher_number": "4262-94019704",
-    "due_date": "2024-01-26T00:00:00",
-    "invoiced_amount": 98196.07,
-    "paid_amount": 27632.92,
-    "outstanding_amount": 70563.15000000001,
-    "currency": "USD",
-    "30_days": 0,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 97,
-    "date": "2024-03-19T00:00:00",
-    "supplier": "Importadora Patagónica",
-    "accounting_account": "Proveedores",
-    "costs_center": "Departamento IT",
-    "voucher_type": "Factura A",
-    "voucher_number": "4561-17010988",
-    "due_date": "2024-04-18T00:00:00",
-    "invoiced_amount": 25363.52,
-    "paid_amount": 15954.9,
-    "outstanding_amount": 9408.62,
-    "currency": "EUR",
-    "30_days": 0,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 98,
-    "date": "2024-09-01T00:00:00",
-    "supplier": "Servicios Eléctricos S.A.",
-    "accounting_account": "Clientes",
-    "costs_center": "Departamento IT",
-    "voucher_type": "Recibo",
-    "voucher_number": "4555-39870878",
-    "due_date": "2024-12-18T00:00:00",
-    "invoiced_amount": 124333.74,
-    "paid_amount": 24708.16,
-    "outstanding_amount": 99625.58,
-    "currency": "EUR",
-    "30_days": 29887.67,
-    "60_days": 19925.12,
-    "90_days": 19925.12,
-    "120_days": 14943.84,
-    "120+_days": 14943.84
-  },
-  {
-    "id": 99,
-    "date": "2024-12-29T00:00:00",
-    "supplier": "Distribuidora Buenos Aires",
-    "accounting_account": "Clientes",
-    "costs_center": "Oficina Central",
-    "voucher_type": "Nota de Crédito",
-    "voucher_number": "6449-67773009",
-    "due_date": "2024-10-31T00:00:00",
-    "invoiced_amount": 19820.23,
-    "paid_amount": 19700.69,
-    "outstanding_amount": 119.54000000000087,
-    "currency": "USD",
-    "30_days": 0,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  },
-  {
-    "id": 100,
-    "date": "2024-08-16T00:00:00",
-    "supplier": "Importadora Patagónica",
-    "accounting_account": "Proveedores",
-    "costs_center": "Sucursal Rosario",
-    "voucher_type": "Factura A",
-    "voucher_number": "5258-69909232",
-    "due_date": "2024-04-16T00:00:00",
-    "invoiced_amount": 65776.57,
-    "paid_amount": 55357.9,
-    "outstanding_amount": 10418.670000000006,
-    "currency": "ARS",
-    "30_days": 3125.6,
-    "60_days": 0,
-    "90_days": 0,
-    "120_days": 0,
-    "120+_days": 0
-  }
-]
-
-function groupBySupplier(accounts: AccountsPayableList[]): AccountsPayableList[] {
+function groupBySupplier(accounts?: AccountsPayableList[]): AccountsPayableList[] {
   const groups: { [supplier: string]: AccountsPayableList[] } = {};
-  accounts.forEach((item) => {
-    const supplier = item.supplier;
+  accounts?.forEach((item) => {
+    const supplier = item.customer;
     if (!groups[supplier]) {
       groups[supplier] = [];
     }
@@ -450,7 +68,7 @@ function groupBySupplier(accounts: AccountsPayableList[]): AccountsPayableList[]
     const totalRow: AccountsPayableList = {
       id: -1,
       date: "",
-      supplier,
+      customer: supplier,
       accounting_account: "",
       costs_center: "",
       voucher_type: "",
@@ -472,7 +90,7 @@ function groupBySupplier(accounts: AccountsPayableList[]): AccountsPayableList[]
     const emptyRow: AccountsPayableList = {
       id: -2,
       date: "",
-      supplier: "",
+      customer: "",
       accounting_account: "",
       costs_center: "",
       voucher_type: "",
@@ -498,7 +116,9 @@ function groupBySupplier(accounts: AccountsPayableList[]): AccountsPayableList[]
 export default function AccountsReceivablePage() {
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const memoizedData = useMemo(() => groupBySupplier(data), [data]);
+  const { data: accountsPayable, isLoading: isAccountsPayableLoading } = useListAccountsPayableQuery();
+
+  const memoizedData = useMemo(() => groupBySupplier(accountsPayable?.data), [accountsPayable]);
   const memoizedColumns = useMemo(() => columns, [columns]);
 
   const table = useReactTable({
@@ -526,7 +146,7 @@ export default function AccountsReceivablePage() {
   return (
     <>
       <Header title="Cuentas por pagar" />
-      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-213px)] [&_*[data-table='true']]:w-[calc(100svw-306px)]">
+      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-197px)] [&_*[data-table='true']]:w-[calc(100svw-306px)]">
         <div className="space-y-4 flex flex-col justify-between">
           <Toolbar table={table} />
           <div className="overflow-hidden rounded-sm border border-border bg-background shadow-sm">
@@ -626,40 +246,55 @@ export default function AccountsReceivablePage() {
                 ))}
               </TableHeader>
               <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                      {row.getVisibleCells().map((cell) => {
-                        const { column, row } = cell;
-                        const isPinned = column.getIsPinned();
-                        const isLastLeftPinned = isPinned === "left" && column.getIsLastColumn("left");
-                        const isFirstRightPinned = isPinned === "right" && column.getIsFirstColumn("right");
-
-                        return (
-                          <TableCell
-                            key={cell.id}
-                            className={cn("[&[data-pinned][data-last-col]]:border-border [&[data-pinned]]:bg-background/90 truncate [&[data-pinned]]:backdrop-blur-sm [&[data-pinned=left][data-last-col=left]]:border-r [&[data-pinned=right][data-last-col=right]]:border-l", row.original.id === -1 && "bg-accent")}
-                            style={{ ...getPinningStyles(column) }}
-                            data-pinned={isPinned || undefined}
-                            data-last-col={
-                              isLastLeftPinned ? "left" : isFirstRightPinned ? "right" : undefined
-                            }
-                          >
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={columns.length} className="h-24 text-center">
-                      No results.
+                {isAccountsPayableLoading &&
+                  <TableRow className="border-none">
+                    <TableCell
+                      colSpan={columns.length}
+                      className="text-xs text-center h-10 border-b"
+                    >
+                      <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                        <Loader2 className="animate-spin" size={14} />
+                        Cargando...
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                }
+                {!table?.getRowModel()?.rows?.length && !isAccountsPayableLoading && (
+                  <TableRow className="border-none">
+                    <TableCell
+                      colSpan={columns.length}
+                      className="text-xs text-center h-10 border-b text-muted-foreground"
+                    >
+                      No hay items
                     </TableCell>
                   </TableRow>
                 )}
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                    {row.getVisibleCells().map((cell) => {
+                      const { column, row } = cell;
+                      const isPinned = column.getIsPinned();
+                      const isLastLeftPinned = isPinned === "left" && column.getIsLastColumn("left");
+                      const isFirstRightPinned = isPinned === "right" && column.getIsFirstColumn("right");
+
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={cn("[&[data-pinned][data-last-col]]:border-border [&[data-pinned]]:bg-background/90 truncate [&[data-pinned]]:backdrop-blur-sm [&[data-pinned=left][data-last-col=left]]:border-r [&[data-pinned=right][data-last-col=right]]:border-l", row.original.id === -1 && "bg-accent")}
+                          style={{ ...getPinningStyles(column) }}
+                          data-pinned={isPinned || undefined}
+                          data-last-col={
+                            isLastLeftPinned ? "left" : isFirstRightPinned ? "right" : undefined
+                          }
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))}
               </TableBody>
-              <TableFooter className="sticky bottom-0 z-10 bg-accent/90 backdrop-blur-sm">
+              <TableFooter className={cn("sticky bottom-0 z-10 bg-accent/90 backdrop-blur-sm", accountsPayable?.data?.length === 0 || isAccountsPayableLoading && "hidden")}>
                 {table.getFooterGroups().map((footerGroup) => (
                   <TableRow key={footerGroup.id}>
                     {footerGroup.headers.map((header) => {
@@ -686,7 +321,6 @@ export default function AccountsReceivablePage() {
                   </TableRow>
                 ))}
               </TableFooter>
-
             </Table>
           </div>
           <div className="flex items-center justify-end space-x-2">

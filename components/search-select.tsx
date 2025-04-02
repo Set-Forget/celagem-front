@@ -6,16 +6,17 @@ import { CheckIcon, ChevronsUpDown } from "lucide-react"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command"
 
 export interface Option {
-  value: string;
+  value: string | number;
   label: string;
 }
 
 export interface SearchSelectProps {
-  value?: string;
-  onSelect: (value: string) => void;
+  value?: string | number;
+  onSelect: (value: string | number) => void;
   options: Option[];
   placeholder?: string;
   searchPlaceholder?: string;
+  modal?: boolean;
 }
 
 const SearchSelect: React.FC<SearchSelectProps> = ({
@@ -23,12 +24,15 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
   onSelect,
   options,
   placeholder = "Selecciona una opción",
-  searchPlaceholder = "Buscar..."
+  searchPlaceholder = "Buscar...",
+  modal = false,
 }) => {
   const selectedOption = options.find(option => option.value === value);
 
   return (
-    <Popover>
+    <Popover
+      modal={modal}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="outline"

@@ -14,6 +14,8 @@ import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newPatientSchema } from "../../schema/patients"
 import { biologicalSexTypes, disabilityTypes, documentTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "../../utils"
+import { CountrySelect, FlagComponent, PhoneInput } from "@/components/phone-input"
+import * as RPNInput from "react-phone-number-input"
 
 export default function GeneralForm() {
   const { setValue, control } = useFormContext<z.infer<typeof newPatientSchema>>()
@@ -553,10 +555,16 @@ export default function GeneralForm() {
           <FormItem className="flex flex-col w-full">
             <FormLabel className="w-fit">Número de teléfono</FormLabel>
             <FormControl>
-              <Input
-                {...field}
-                value={field.value ?? ""}
-                placeholder="+1 123 456 7890"
+              <RPNInput.default
+                className="flex rounded-md shadow-xs"
+                international
+                flagComponent={FlagComponent}
+                countrySelectComponent={CountrySelect}
+                inputComponent={PhoneInput}
+                placeholder="Ingresa un número de teléfono"
+                defaultCountry="CO"
+                value={field.value}
+                onChange={field.onChange}
               />
             </FormControl>
             <FormMessage />

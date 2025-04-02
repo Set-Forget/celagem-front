@@ -1,30 +1,20 @@
 'use client'
 
 import { DataTable } from "@/components/data-table"
+import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn, placeholder } from "@/lib/utils"
 import { useGetPurchaseReceiptQuery } from "@/lib/services/purchase-receipts"
+import { cn, placeholder } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { Box, ChevronDown, Eye, Paperclip, StickyNote } from "lucide-react"
+import { Box, Paperclip } from "lucide-react"
 import { useParams } from "next/navigation"
-import { columns } from "./components/columns"
+import { useState } from "react"
 import { PurchaseReceiptDetail } from "../schemas/purchase-receipts"
 import Actions from "./actions"
-import SupplierTab from "./components/supplier-tab"
+import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
-import { useState } from "react"
-import DataTabs from "@/components/data-tabs"
+import SupplierTab from "./components/supplier-tab"
 
 export type FieldDefinition<T> = {
   label: string;
@@ -82,12 +72,6 @@ export default function Page() {
   const [tab, setTab] = useState(tabs[0].value)
 
   const { data: purchaseReceipt, isLoading: isPurchaseReceiptLoading } = useGetPurchaseReceiptQuery(id);
-
-  const handleGeneratePDF = async () => {
-    const { generatePurchaseReceiptPDF } = await import("../templates/purchase-receipt")
-    generatePurchaseReceiptPDF()
-  }
-
   return (
     <>
       <Header title={

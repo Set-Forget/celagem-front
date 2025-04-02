@@ -1,6 +1,5 @@
-import { z } from "zod";
-import { supplierSchema } from "../../vendors/schema/suppliers";
 import { CalendarDate } from "@internationalized/date";
+import { z } from "zod";
 
 export const purchaseRequestsItemsSchema = z.object({
   item_code: z.string(),
@@ -19,18 +18,6 @@ export const purchaseRequestsSchema = z.object({
   items: z.array(purchaseRequestsItemsSchema).optional(),
   id: z.number(),
 });
-
-/* export const newPurchaseRequestSchema = z.object({
-  headquarter: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  title: z.string({ required_error: "El título es requerido" }),
-  required_by: z.string({ required_error: "La fecha requerida es requerida" }),
-  items: z.array(purchaseRequestsItemsSchema).nonempty("Al menos un item es requerido"),
-  suppliers: z.array(supplierSchema).nonempty("Al menos un proveedor es requerido"),
-  notes: z.string().optional(),
-}); */
 
 export type PurchaseRequest = z.infer<typeof purchaseRequestsSchema>;
 export type PurchaseRequestItems = z.infer<typeof purchaseRequestsItemsSchema>;

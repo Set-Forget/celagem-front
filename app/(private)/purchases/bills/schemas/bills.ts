@@ -7,15 +7,15 @@ export const newBillLineSchema = z.object({
   purchase_line_id: z.number().optional(),
   taxes_id: z.array(z.number()).optional(),
 
-  unit_price: z.string({ required_error: "El precio unitario es requerido" }), // ! No existe en el backend.
+  unit_price: z.number({ required_error: "El precio unitario es requerido" }), // ! No existe en el backend.
 });
 
 export const newBillGeneralSchema = z.object({
   supplier: z.number({ required_error: "El proveedor es requerido" }),
   number: z.string({ required_error: "El número de factura es requerido" }).min(1, { message: "El número de factura es requerido" }),
   date: z.string({ required_error: "La fecha de factura es requerida" }),
-  currency: z.string({ required_error: "La moneda es requerida" }), // ! Debe ser un number, pero primero necesito tener el endpoint.
-  payment_term: z.string({ required_error: "La condición de pago es requerida" }), // ! Debe ser un number, pero primero necesito tener el endpoint.
+  currency: z.number({ required_error: "La moneda es requerida" }),
+  payment_term: z.number({ required_error: "La condición de pago es requerida" }),
   payment_method: z.string({ required_error: "El método de pago es requerido" }), // ! Debe ser un number, pero primero necesito tener el endpoint.
   tyc_notes: z.string().optional(),
   items: z.array(newBillLineSchema).min(1, { message: "Debe agregar al menos un item" }),

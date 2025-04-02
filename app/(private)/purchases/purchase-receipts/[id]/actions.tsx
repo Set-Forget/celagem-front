@@ -1,7 +1,7 @@
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
-import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { EditIcon, Ellipsis, FileTextIcon } from "lucide-react";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Ellipsis, FileTextIcon } from "lucide-react";
 
 export default function Actions() {
 
@@ -22,18 +22,6 @@ export default function Actions() {
         <FileTextIcon />
         Previsualizar
       </DropdownMenuItem>
-      {/*       <DropdownMenuItem onSelect={() => console.log("Editar")}>
-        <EditIcon />
-        Editar
-      </DropdownMenuItem> */}
-      {/*     <DropdownMenuItem
-      onSelect={() => handleUpdatePurchaseRequest("cancelled")}
-      loading={isPurchaseRequestUpdating}
-      className="text-destructive focus:text-destructive"
-    >
-      <CircleX className={cn(isPurchaseRequestUpdating && "hidden")} />
-      Cancelar
-    </DropdownMenuItem> */}
     </Dropdown>
   )
 }

@@ -7,7 +7,7 @@ export default function WeeklyViewHeader({ selectedDate }: { selectedDate: Date;
   const isToday = new Date().toDateString() === selectedDate.toDateString();
 
   return (
-    <div className="grid grid-cols-8 border-b sticky top-[65px] bg-background z-[6]">
+    <div className="grid grid-cols-8 border-b sticky top-[49px] bg-background z-[6]">
       <div className="grid grid-rows-1 border-r"></div>
       {days.map((day, index) => (
         <div
