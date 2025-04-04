@@ -112,6 +112,10 @@ const data = {
           title: "Cuentas por pagar",
           url: "/accounting/accounts-payable",
         },
+        {
+          title: "Reportes",
+          url: "/accounting/reports",
+        },
       ],
     },
     {

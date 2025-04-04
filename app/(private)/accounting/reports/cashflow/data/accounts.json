@@ -1,0 +1,4550 @@
+[
+  {
+    "id": "1",
+    "name": "ACTIVOS",
+    "balance": 4263,
+    "children": [
+      {
+        "id": "11",
+        "name": "EFECTIVO Y EQUIVALENTES AL EFECTIVO",
+        "balance": 3113,
+        "children": [
+          {
+            "id": "1101",
+            "name": "EFECTIVO",
+            "balance": 4771,
+            "children": [
+              {
+                "id": "110101",
+                "name": "CAJA GENERAL",
+                "balance": 2124,
+                "children": [
+                  {
+                    "id": "110101061",
+                    "name": "CAJA GENERAL BOGOTA",
+                    "balance": 4870,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "110102",
+                "name": "CAJAS MENORES",
+                "balance": 1162,
+                "children": [
+                  {
+                    "id": "110102061",
+                    "name": "CAJAS MENORES",
+                    "balance": 1618,
+                    "children": []
+                  },
+                  {
+                    "id": "110102062",
+                    "name": "CAJA MENOR MEDELLIN",
+                    "balance": 1583,
+                    "children": []
+                  },
+                  {
+                    "id": "110102063",
+                    "name": "CAJA MENOR LEGALES",
+                    "balance": 3423,
+                    "children": []
+                  },
+                  {
+                    "id": "110102064",
+                    "name": "CAJA MENOR BUCARAMANGA",
+                    "balance": 4915,
+                    "children": []
+                  },
+                  {
+                    "id": "110102069",
+                    "name": "COMPRAS CAJA MENOR  DOC SOPORTE",
+                    "balance": 4966,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "110103",
+                "name": "CAJA MONEDA EXTRANJERA",
+                "balance": 1124,
+                "children": []
+              },
+              {
+                "id": "110104",
+                "name": "BANCOS CUENTAS CORRIENTES MONEDA NACIONAL",
+                "balance": 1356,
+                "children": [
+                  {
+                    "id": "110104061",
+                    "name": "CTA CTE BANCO BBVA CTA No.",
+                    "balance": 3510,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "110105",
+                "name": "BANCOS CUENTAS CORRIENTES MONEDA EXTRANJERA",
+                "balance": 2309,
+                "children": []
+              },
+              {
+                "id": "110106",
+                "name": "BANCOS CUENTAS DE AHORRO BANCOS MONEDA NACIONAL",
+                "balance": 1759,
+                "children": [
+                  {
+                    "id": "110106061",
+                    "name": "CTA AHORRO BANCO DAVIVIENDA CTA No",
+                    "balance": 2980,
+                    "children": []
+                  },
+                  {
+                    "id": "110106062",
+                    "name": "CTA AHORRO BANCOLOMBIA CTA N. 20100005011",
+                    "balance": 3661,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "110107",
+                "name": "BANCOS CUENTAS DE AHORRO BANCOS MONEDA EXTRANJERA",
+                "balance": 1163,
+                "children": []
+              },
+              {
+                "id": "110108",
+                "name": "CARTERA COLECTIVA ABIERTA O FONDO DE INVERSI\u00d3N MERCADO MONETARIO",
+                "balance": 3326,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "12",
+        "name": "INVERSIONES E INSTRUMENTOS DERIVADOS",
+        "balance": 4336,
+        "children": [
+          {
+            "id": "1204",
+            "name": "EN INSTRUMENTOS DE DEUDA O PATRIMONIO AL COSTO",
+            "balance": 2978,
+            "children": [
+              {
+                "id": "120405",
+                "name": "CERTIFICADOS DE DEPOSITO A TERMINO",
+                "balance": 4025,
+                "children": [
+                  {
+                    "id": "120405061",
+                    "name": "CDT BANCOLOMBIA",
+                    "balance": 1395,
+                    "children": []
+                  },
+                  {
+                    "id": "120405062",
+                    "name": "CDT DAVIVIENDA",
+                    "balance": 1955,
+                    "children": []
+                  },
+                  {
+                    "id": "120405063",
+                    "name": "CDT DAVIVIENDA #3125292",
+                    "balance": 1815,
+                    "children": []
+                  },
+                  {
+                    "id": "120405064",
+                    "name": "CDT BANCOLOMBIA N.5705373",
+                    "balance": 2847,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "13",
+        "name": "CUENTAS POR COBRAR",
+        "balance": 1960,
+        "children": [
+          {
+            "id": "1301",
+            "name": "DEUDORES DEL SISTEMA",
+            "balance": 3194,
+            "children": [
+              {
+                "id": "130126",
+                "name": "POR PRESTACION DE SERVICIOS   RADICADA",
+                "balance": 2132,
+                "children": [
+                  {
+                    "id": "13012606",
+                    "name": "CLIENTES NACIONALES",
+                    "balance": 4874,
+                    "children": [
+                      {
+                        "id": "130126061",
+                        "name": "CUENTAS POR COBRAR   PACIENTES",
+                        "balance": 1023,
+                        "children": []
+                      },
+                      {
+                        "id": "130126062",
+                        "name": "CUENTAS POR COBRAR   ASEGURADORA",
+                        "balance": 1078,
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1305",
+            "name": "CUENTAS POR COBRAR A VINCULADOS ECONOMICOS O PARTES RELACIONADAS AL COSTO",
+            "balance": 1336,
+            "children": [
+              {
+                "id": "130507",
+                "name": "CUENTAS POR COBRAR A SOCIOS O ACCIONISTAS CON INFLUENCIA SIGNIFICATIVA",
+                "balance": 2913,
+                "children": [
+                  {
+                    "id": "130507061",
+                    "name": "CUENTAS POR COBRAR A SOCIOS O ACCIONISTAS CON INFLUENCIA SIGNIFICATIVA",
+                    "balance": 4025,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1308",
+            "name": "CUENTAS POR COBRAR A SOCIOS Y ACCIONISTAS AL COSTO",
+            "balance": 4497,
+            "children": [
+              {
+                "id": "130801",
+                "name": "PRESTAMOS A SOCIOS",
+                "balance": 1505,
+                "children": [
+                  {
+                    "id": "130801061",
+                    "name": "PRESTAMOS A SOCIOS",
+                    "balance": 1058,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1313",
+            "name": "ACTIVOS NO FINANCIEROS ANTICIPOS",
+            "balance": 2219,
+            "children": [
+              {
+                "id": "131301",
+                "name": "PROVEEDORES",
+                "balance": 1466,
+                "children": [
+                  {
+                    "id": "131301061",
+                    "name": "ANTICIPO A PROVEEDORES",
+                    "balance": 1079,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "131303",
+                "name": "TRABAJADORES",
+                "balance": 2295,
+                "children": [
+                  {
+                    "id": "131303061",
+                    "name": "ANTICIPO SALARIO A TRABAJADORES",
+                    "balance": 1947,
+                    "children": []
+                  },
+                  {
+                    "id": "131303062",
+                    "name": "ANTICIPO PRIMA",
+                    "balance": 2744,
+                    "children": []
+                  },
+                  {
+                    "id": "131303063",
+                    "name": "ANTICIPO VACACIONES",
+                    "balance": 4965,
+                    "children": []
+                  },
+                  {
+                    "id": "131303064",
+                    "name": "ANTICIPO DE CESANTIAS",
+                    "balance": 1710,
+                    "children": []
+                  },
+                  {
+                    "id": "131303065",
+                    "name": "LIBRANZAS EMPLEADOS",
+                    "balance": 4730,
+                    "children": []
+                  },
+                  {
+                    "id": "131303066",
+                    "name": "EMBARGOS",
+                    "balance": 1343,
+                    "children": []
+                  },
+                  {
+                    "id": "131303069",
+                    "name": "OTROS ANTICIPOS A EMPLEADOS",
+                    "balance": 4330,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "131326",
+                "name": "OTROS ANTICIPOS",
+                "balance": 4784,
+                "children": [
+                  {
+                    "id": "131326061",
+                    "name": "OTROS ANTICIPOS",
+                    "balance": 2944,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1314",
+            "name": "ANTICIPO DE IMPUESTOS Y CONTRIBUCIONES O SALDOS A",
+            "balance": 1411,
+            "children": [
+              {
+                "id": "131401",
+                "name": "ANTICIPO DE IMPUESTOS DE RENTA Y COMPLEMENTARIOS",
+                "balance": 4957,
+                "children": [
+                  {
+                    "id": "131401061",
+                    "name": "ANTICIPO DE IMPUESTOS DE RENTA Y COMPLEMENTARIOS",
+                    "balance": 1183,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "131402",
+                "name": "RETENCI\u00d3N EN LA FUENTE",
+                "balance": 1129,
+                "children": [
+                  {
+                    "id": "131402061",
+                    "name": "RETENCION EN LA FUENTE 2%",
+                    "balance": 1249,
+                    "children": []
+                  },
+                  {
+                    "id": "131402062",
+                    "name": "RETENCION EN LA FUENTE 11%",
+                    "balance": 3825,
+                    "children": []
+                  },
+                  {
+                    "id": "131402065",
+                    "name": "RETENCION EN LA FUENTE PAGOS CON TC",
+                    "balance": 2022,
+                    "children": []
+                  },
+                  {
+                    "id": "131402069",
+                    "name": "R/CION DESCONTADA EN DECLARACION",
+                    "balance": 4697,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "131403",
+                "name": "DESCUENTOS TRIBUTARIOS",
+                "balance": 2186,
+                "children": [
+                  {
+                    "id": "131403061",
+                    "name": "DESCUENTO TRIBUTARIO IVA ACTIVOS FIJOS REALES PRODUCTIVOS",
+                    "balance": 2148,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "131404",
+                "name": "IMPUESTO DE INDUSTRIA Y COMERCIO RETENIDO",
+                "balance": 2728,
+                "children": [
+                  {
+                    "id": "131404061",
+                    "name": "IMPUESTO ICA RETENIDO 9.66X1000",
+                    "balance": 2162,
+                    "children": []
+                  },
+                  {
+                    "id": "131404062",
+                    "name": "Retencion ICA 4.14xmil Pago TC",
+                    "balance": 4523,
+                    "children": []
+                  },
+                  {
+                    "id": "131404069",
+                    "name": "R/CA DESCONTADO DECLARACION",
+                    "balance": 4341,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "131405",
+                "name": "AUTO RENTENCION EXONERADOS (art. 114 1 E.T.)",
+                "balance": 2270,
+                "children": [
+                  {
+                    "id": "131405061",
+                    "name": "AUTO RENTENCION EXONERADOS (art. 114 1 E.T.)",
+                    "balance": 4032,
+                    "children": []
+                  },
+                  {
+                    "id": "131405069",
+                    "name": "R/CION DESCONTADA EN DECLARACION",
+                    "balance": 4074,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1316",
+            "name": "CUENTAS POR COBRAR A TRABAJADORES BENEFICIOS",
+            "balance": 4563,
+            "children": [
+              {
+                "id": "131607",
+                "name": "OTROS PRESTAMOS A TRABAJADORES",
+                "balance": 1144,
+                "children": [
+                  {
+                    "id": "131607061",
+                    "name": "OTROS PRESTAMOS A TRABAJADORES",
+                    "balance": 3771,
+                    "children": []
+                  },
+                  {
+                    "id": "131607069",
+                    "name": "OTROS DESCUENTOS A TRABAJADORES",
+                    "balance": 1819,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1319",
+            "name": "DEUDORES VARIOS",
+            "balance": 3129,
+            "children": [
+              {
+                "id": "131910",
+                "name": "SERVICIOS",
+                "balance": 1410,
+                "children": [
+                  {
+                    "id": "131910061",
+                    "name": "SERVICIOS",
+                    "balance": 3514,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "131911",
+                "name": "OTROS DEUDORES",
+                "balance": 3774,
+                "children": [
+                  {
+                    "id": "131911061",
+                    "name": "OTROS DEUDORES",
+                    "balance": 1845,
+                    "children": []
+                  },
+                  {
+                    "id": "131911062",
+                    "name": "INCAPACIDADES POR COBRAR",
+                    "balance": 1492,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1320",
+            "name": "DETERIORO ACUMULADO DE CUENTAS POR COBRAR (CR)",
+            "balance": 4590,
+            "children": [
+              {
+                "id": "132001",
+                "name": "DEUDORES DEL SISTEMA  AL COSTO",
+                "balance": 1718,
+                "children": [
+                  {
+                    "id": "132001061",
+                    "name": "DETERIORO DEUDORES PACIENTES (CR)",
+                    "balance": 3587,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "14",
+        "name": "INVENTARIOS",
+        "balance": 1124,
+        "children": [
+          {
+            "id": "1403",
+            "name": "INVENTARIOS PARA SER CONSUMIDOS EN LA PRESTACI\u00d3N D",
+            "balance": 2423,
+            "children": [
+              {
+                "id": "140301",
+                "name": "MEDICAMENTOS",
+                "balance": 4958,
+                "children": [
+                  {
+                    "id": "140301061",
+                    "name": "MEDICAMENTOS",
+                    "balance": 3950,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "140302",
+                "name": "DISPOSITIVOS M\u00c9DICO QUIR\u00daRGICO",
+                "balance": 4697,
+                "children": [
+                  {
+                    "id": "140302061",
+                    "name": "DISPOSITIVOS M\u00c9DICO QUIR\u00daRGICO",
+                    "balance": 1041,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "140303",
+                "name": "MATERIALES REACTIVOS Y DE LABORATORIO",
+                "balance": 4941,
+                "children": [
+                  {
+                    "id": "140303061",
+                    "name": "MATERIALES REACTIVOS Y DE LABORATORIO",
+                    "balance": 3202,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "140304",
+                "name": "REACTIVO MOLECULAR",
+                "balance": 1668,
+                "children": [
+                  {
+                    "id": "140304061",
+                    "name": "REACTIVO MOLECULAR",
+                    "balance": 2002,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "140314",
+                "name": "OTROS MATERIALES   INSUMOS",
+                "balance": 4570,
+                "children": [
+                  {
+                    "id": "140314061",
+                    "name": "OTROS MATERIALES   INSUMOS",
+                    "balance": 3102,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "140399",
+                "name": "INVENTARIO PARA PRESTACION DE SERVICIOS",
+                "balance": 1108,
+                "children": [
+                  {
+                    "id": "140399061",
+                    "name": "INVENTARIO PARA PRESTACION DE SERVICIOS",
+                    "balance": 1857,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1405",
+            "name": "DETERIORO  DE INVENTARIOS (CR)",
+            "balance": 1319,
+            "children": [
+              {
+                "id": "140503",
+                "name": "INVENTARIOS PARA SER CONSUMIDOS EN LA PRESTACI\u00d3N DE SERVICIOS",
+                "balance": 4781,
+                "children": [
+                  {
+                    "id": "140503061",
+                    "name": "INVENTARIOS PARA SER CONSUMIDOS EN LA PRESTACI\u00d3N DE SERVICIOS",
+                    "balance": 2834,
+                    "children": []
+                  },
+                  {
+                    "id": "140503062",
+                    "name": "DETERIORO DISPOSITIVOS MEDICO QUIRURGICOS (CR)",
+                    "balance": 4978,
+                    "children": []
+                  },
+                  {
+                    "id": "140503063",
+                    "name": "DETERIORO MATERIALES REACTIVOS (CR)",
+                    "balance": 2683,
+                    "children": []
+                  },
+                  {
+                    "id": "140503064",
+                    "name": "DETERIORO OTROS MATERIALES   INSUMOS (CR)",
+                    "balance": 3668,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "15",
+        "name": "PROPIEDAD PLANTA Y EQUIPO",
+        "balance": 3697,
+        "children": [
+          {
+            "id": "1501",
+            "name": "PROPIEDAD PLANTA Y EQUIPO AL MODELO DEL  COSTO",
+            "balance": 4320,
+            "children": [
+              {
+                "id": "150124",
+                "name": "EQUIPO DE OFICINA MUEBLES Y ENSERES",
+                "balance": 3949,
+                "children": [
+                  {
+                    "id": "150124061",
+                    "name": "EQUIPO DE OFICINA MUEBLES Y ENSERES  BOGOTA",
+                    "balance": 2144,
+                    "children": []
+                  },
+                  {
+                    "id": "150124062",
+                    "name": "EQUIPO DE OFICINA MUEBLES Y ENSERES  MEDELLIN",
+                    "balance": 3336,
+                    "children": []
+                  },
+                  {
+                    "id": "150124063",
+                    "name": "EQUIPO DE OFICINA MUEBLES Y ENSERES  B/MANGA",
+                    "balance": 3568,
+                    "children": []
+                  },
+                  {
+                    "id": "150124064",
+                    "name": "EQUIPO DE OFICINA MUEBLES Y ENSERES  B/QUILLA",
+                    "balance": 2653,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "150127",
+                "name": "EQ DE COMPUTACI\u00d3N Y COMUNICACI\u00d3N PROCESAM DE DATOS",
+                "balance": 1040,
+                "children": [
+                  {
+                    "id": "150127061",
+                    "name": "EQUIPO DE COMPUTACI\u00d3N   BOGOTA",
+                    "balance": 2339,
+                    "children": []
+                  },
+                  {
+                    "id": "150127062",
+                    "name": "EQUIPO DE COMPUTACI\u00d3N   MEDELLIN",
+                    "balance": 4127,
+                    "children": []
+                  },
+                  {
+                    "id": "150127063",
+                    "name": "EQUIPO DE COMPUTACI\u00d3N   B/MANGA",
+                    "balance": 4221,
+                    "children": []
+                  },
+                  {
+                    "id": "150127064",
+                    "name": "EQUIPO DE COMPUTACI\u00d3N   B/QUILLA",
+                    "balance": 4274,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "150128",
+                "name": "EQ DE COMPUTACI\u00d3N Y COMUNICACI\u00d3N EQ DE TELECOMUNICACIONES",
+                "balance": 2486,
+                "children": [
+                  {
+                    "id": "150128061",
+                    "name": "EQUIPO DE TELECOMUNICACIONES   BOGOTA",
+                    "balance": 3775,
+                    "children": []
+                  },
+                  {
+                    "id": "150128062",
+                    "name": "EQUIPO DE TELECOMUNICACIONES   MEDELLIN",
+                    "balance": 2878,
+                    "children": []
+                  },
+                  {
+                    "id": "150128063",
+                    "name": "EQUIPO DE TELECOMUNICACIONES   B/MANGA",
+                    "balance": 2712,
+                    "children": []
+                  },
+                  {
+                    "id": "150128064",
+                    "name": "EQUIPO DE TELECOMUNICACIONES   B/QUILLA",
+                    "balance": 4847,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "150139",
+                "name": "EQUIPO M\u00c9DICO CIENT\u00cdFICO EQUIPO DE APOYO DIAGN\u00d3STI",
+                "balance": 4466,
+                "children": [
+                  {
+                    "id": "150139061",
+                    "name": "EQUIPO M\u00c9DICO CIENT\u00cdFICO EQUIPO  BOGOTA",
+                    "balance": 4482,
+                    "children": []
+                  },
+                  {
+                    "id": "150139062",
+                    "name": "EQUIPO M\u00c9DICO CIENT\u00cdFICO EQUIPO  MEDELLIN",
+                    "balance": 4633,
+                    "children": []
+                  },
+                  {
+                    "id": "150139063",
+                    "name": "EQUIPO M\u00c9DICO CIENT\u00cdFICO EQUIPO  B/MANGA",
+                    "balance": 3129,
+                    "children": []
+                  },
+                  {
+                    "id": "150139064",
+                    "name": "EQUIPO M\u00c9DICO CIENT\u00cdFICO EQUIPO  B/QUILLA",
+                    "balance": 3139,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "150143",
+                "name": "DOTACION DE CLINICAS Y RESTAURANTES",
+                "balance": 3659,
+                "children": [
+                  {
+                    "id": "150143061",
+                    "name": "DOTACION MOBILIARIO Y EQUIPO DE CLINICAS",
+                    "balance": 4606,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "150148",
+                "name": "EQUIPO DE TRANSPORTE AUTOS, CAMIONES Y CAMPEROS",
+                "balance": 4793,
+                "children": [
+                  {
+                    "id": "150148061",
+                    "name": "EQUIPO DE TRANSPORTE CAMIONETA   BOGOTA",
+                    "balance": 1334,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "150170",
+                "name": "MEJORAS EN PROPIEDAD AJENA",
+                "balance": 3368,
+                "children": [
+                  {
+                    "id": "150170061",
+                    "name": "MEJORA EN PROPIEDAD AJENA   CONSULTORIOS BOGOTA",
+                    "balance": 1391,
+                    "children": []
+                  },
+                  {
+                    "id": "150170062",
+                    "name": "MEJORA EN PROPIEDAD AJENA   CONSULTORIOS MEDELLIN",
+                    "balance": 1076,
+                    "children": []
+                  },
+                  {
+                    "id": "150170063",
+                    "name": "MEJORA EN PROPIEDAD AJENA   CONSULTORIOS B/MANGA",
+                    "balance": 3044,
+                    "children": []
+                  },
+                  {
+                    "id": "150170064",
+                    "name": "MEJORA EN PROPIEDAD AJENA   CONSULTORIOS B/QUILLA",
+                    "balance": 2306,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1503",
+            "name": "DEPRECIACI\u00d3N ACUMULADA PROPIEDADES PLANTA Y EQUIPO",
+            "balance": 3293,
+            "children": [
+              {
+                "id": "150303",
+                "name": "DEP. EQUIPO DE OFICINA",
+                "balance": 4373,
+                "children": [
+                  {
+                    "id": "150303061",
+                    "name": "DEP. EQUIPO DE OFICINA   BOGOTA",
+                    "balance": 2452,
+                    "children": []
+                  },
+                  {
+                    "id": "150303062",
+                    "name": "DEP. EQUIPO DE OFICINA   MEDELLIN",
+                    "balance": 4955,
+                    "children": []
+                  },
+                  {
+                    "id": "150303063",
+                    "name": "DEP. EQUIPO DE OFICINA   B/MANGA",
+                    "balance": 4870,
+                    "children": []
+                  },
+                  {
+                    "id": "150303064",
+                    "name": "DEP. EQUIPO DE OFICINA   B/QUILLA",
+                    "balance": 2289,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "150304",
+                "name": "DEP. EQ DE COMPUTACI\u00d3N Y COMUNICACI\u00d3N",
+                "balance": 1829,
+                "children": [
+                  {
+                    "id": "150304061",
+                    "name": "DEP. EQ DE COMPUTACI\u00d3N Y COMUNICACI\u00d3N   BOGOTA",
+                    "balance": 3268,
+                    "children": []
+                  },
+                  {
+                    "id": "150304062",
+                    "name": "DEP. EQ DE COMPUTACI\u00d3N Y COMUNICACI\u00d3N   MEDELLIN",
+                    "balance": 4921,
+                    "children": []
+                  },
+                  {
+                    "id": "150304063",
+                    "name": "DEP. EQ DE COMPUTACI\u00d3N Y COMUNICACI\u00d3N   B/MANGA",
+                    "balance": 2398,
+                    "children": []
+                  },
+                  {
+                    "id": "150304064",
+                    "name": "DEP. EQ DE COMPUTACI\u00d3N Y COMUNICACI\u00d3N   B/QUILLA",
+                    "balance": 3634,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "150305",
+                "name": "DEP. EQ M\u00c9DICO CIENT\u00cdFICO",
+                "balance": 3317,
+                "children": [
+                  {
+                    "id": "150305061",
+                    "name": "DEP. EQ M\u00c9DICO CIENT\u00cdFICO   BOGOTA",
+                    "balance": 4842,
+                    "children": []
+                  },
+                  {
+                    "id": "150305062",
+                    "name": "DEP. EQ M\u00c9DICO CIENT\u00cdFICO   MEDELLIN",
+                    "balance": 4427,
+                    "children": []
+                  },
+                  {
+                    "id": "150305063",
+                    "name": "DEP. EQ M\u00c9DICO CIENT\u00cdFICO   B/MANGA",
+                    "balance": 4829,
+                    "children": []
+                  },
+                  {
+                    "id": "150305064",
+                    "name": "DEP. EQ M\u00c9DICO CIENT\u00cdFICO   B/QUILLA",
+                    "balance": 2570,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "150307",
+                "name": "DEP EQUIPO DE TRANSPORTE TERRESTRE",
+                "balance": 3488,
+                "children": [
+                  {
+                    "id": "150307061",
+                    "name": "DEPRECIACION EQUIPO DE TRANSPORTE",
+                    "balance": 3266,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "150313",
+                "name": "AMOR. MEJORAS EN PROPIEDAD AJENA",
+                "balance": 1384,
+                "children": [
+                  {
+                    "id": "150313061",
+                    "name": "AMORT MEJORAS EN PROPIEDAD AJENA   CONS BOGOTA",
+                    "balance": 1457,
+                    "children": []
+                  },
+                  {
+                    "id": "150313062",
+                    "name": "AMORT MEJORAS EN PROPIEDAD AJENA   CONS MEDELLIN",
+                    "balance": 3783,
+                    "children": []
+                  },
+                  {
+                    "id": "150313063",
+                    "name": "AMORT MEJORAS EN PROPIEDAD AJENA   CONS B/MANGA",
+                    "balance": 2064,
+                    "children": []
+                  },
+                  {
+                    "id": "150313064",
+                    "name": "AMORT MEJORAS EN PROPIEDAD AJENA   CONS B/QUILLA",
+                    "balance": 1581,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1599",
+            "name": "ACTIVOS FIJOS TRANSITORIOS",
+            "balance": 2874,
+            "children": [
+              {
+                "id": "159999",
+                "name": "ACTIVOS FIJOS TRANSITORIOS",
+                "balance": 2689,
+                "children": [
+                  {
+                    "id": "159999999",
+                    "name": "ACTIVOS FIJOS TRANSITORIOS",
+                    "balance": 1063,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "17",
+        "name": "ACTIVOS INTANGIBLES  DISTINTOS A LA PLUSVALIA",
+        "balance": 4388,
+        "children": [
+          {
+            "id": "1701",
+            "name": "ACTIVOS INTANGIBLES AL COSTO",
+            "balance": 1628,
+            "children": [
+              {
+                "id": "170103",
+                "name": "PROGRAMAS Y APLICACIONES INFORMATICAS",
+                "balance": 4724,
+                "children": [
+                  {
+                    "id": "170103061",
+                    "name": "LICENCIAS Y SOFTWARE INFORMATICOS",
+                    "balance": 3495,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1703",
+            "name": "AMORTIZACI\u00d3N ACUMULADA DE ACTIVOS INTANGIBLES AL COSTO (CR)",
+            "balance": 2791,
+            "children": [
+              {
+                "id": "170303",
+                "name": "PROGRAMAS Y APLICACIONES INFORMATICAS",
+                "balance": 2494,
+                "children": [
+                  {
+                    "id": "170303061",
+                    "name": "LICENCIAS Y SOFTWARE INFORMATICOS",
+                    "balance": 2058,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "PASIVOS",
+    "balance": 4891,
+    "children": [
+      {
+        "id": "21",
+        "name": "OBLIGACIONES FINANCIERAS",
+        "balance": 3110,
+        "children": [
+          {
+            "id": "2105",
+            "name": "CUENTAS POR PAGAR AL COSTO",
+            "balance": 2446,
+            "children": [
+              {
+                "id": "210501",
+                "name": "PROVEEDORES NACIONALES  BIENES Y SERVICIOS",
+                "balance": 3572,
+                "children": [
+                  {
+                    "id": "210501061",
+                    "name": "PROVEEDORES NACIONALES  BIENES Y SERVICIOS",
+                    "balance": 2969,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "210502",
+                "name": "PROVEEDORES NACIONALES  PRESTADORES DE SERVICIOS D",
+                "balance": 3297,
+                "children": [
+                  {
+                    "id": "210502061",
+                    "name": "PROVEEDORES NACIONALES  PRESTADORES DE SERVICIOS D",
+                    "balance": 3845,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "210506",
+                "name": "PROVEEDORES DEL EXTERIOR BIENES Y SERVICIOS",
+                "balance": 3278,
+                "children": [
+                  {
+                    "id": "210506061",
+                    "name": "PROVEEDORES DEL EXTERIOR BIENES Y SERVICIOS",
+                    "balance": 2621,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "2109",
+            "name": "CUENTAS POR PAGAR A VINCULADOS ECONOMICOS O PARTES RELACIONADAS AL COSTO",
+            "balance": 1982,
+            "children": [
+              {
+                "id": "210907",
+                "name": "CUENTA POR PAGAR A SOCIOS O ACCIONISTAS CON INFLUENCIA SIGNIFICATIVA",
+                "balance": 1542,
+                "children": [
+                  {
+                    "id": "210907061",
+                    "name": "CUENTA POR PAGAR A SOCIOS O ACCIONISTAS CON INFLUENCIA SIGNIFICATIVA",
+                    "balance": 2915,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "2113",
+            "name": "CUENTAS POR PAGAR CON CONTRATISTAS  AL COSTO",
+            "balance": 3143,
+            "children": [
+              {
+                "id": "211301",
+                "name": "CUENTAS POR PAGAR A CONTRATISTAS NACIONALES",
+                "balance": 4413,
+                "children": [
+                  {
+                    "id": "211301061",
+                    "name": "CUENTAS POR PAGAR A CONTRATISTAS NACIONALES",
+                    "balance": 1160,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "2120",
+            "name": "COSTOS Y GASTOS POR PAGAR AL COSTO",
+            "balance": 2104,
+            "children": [
+              {
+                "id": "212003",
+                "name": "COMISIONES",
+                "balance": 3534,
+                "children": [
+                  {
+                    "id": "212003061",
+                    "name": "COMISIONES",
+                    "balance": 4564,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "212004",
+                "name": "HONORARIOS",
+                "balance": 4718,
+                "children": [
+                  {
+                    "id": "212004061",
+                    "name": "HONORARIOS",
+                    "balance": 4730,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "212007",
+                "name": "ARRENDAMIENTOS",
+                "balance": 1845,
+                "children": [
+                  {
+                    "id": "212007061",
+                    "name": "ARRENDAMIENTOS",
+                    "balance": 2925,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "212010",
+                "name": "SERVICIOS P\u00daBLICOS",
+                "balance": 3485,
+                "children": [
+                  {
+                    "id": "212010061",
+                    "name": "SERVICIOS PUBLICOS",
+                    "balance": 2937,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "212016",
+                "name": "OTROS COSTOS Y GASTOS POR PAGAR",
+                "balance": 2467,
+                "children": [
+                  {
+                    "id": "212016061",
+                    "name": "OTROS COSTOS Y GASTOS POR PAGAR",
+                    "balance": 2328,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "2127",
+            "name": "CUENTAS POR PAGAR A SOCIOS O ACCIONISTAS   NO VINCULADOS ECON\u00d3MICOS  AL COSTO",
+            "balance": 2572,
+            "children": [
+              {
+                "id": "212702",
+                "name": "CUENTAS POR PAGAR A SOCIOS O ACCIONISTAS   NO VINCULADOS ECON\u00d3MICOS  AL COSTO",
+                "balance": 1760,
+                "children": [
+                  {
+                    "id": "212702061",
+                    "name": "CUENTAS POR PAGAR A SOCIOS O ACCIONISTAS   NO VINCULADOS ECON\u00d3MICOS  AL COSTO",
+                    "balance": 1098,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "2128",
+            "name": "CUENTAS POR PAGAR CON SOCIOS O ACCIONISTAS AMORTIZ",
+            "balance": 1534,
+            "children": [
+              {
+                "id": "212802",
+                "name": "OTRAS CUENTAS POR PAGAR CON ACCIONISTAS AMORTIZADO",
+                "balance": 1284,
+                "children": [
+                  {
+                    "id": "212802061",
+                    "name": "OTRAS CUENTAS POR PAGAR CON ACCIONISTAS AMORTIZADO",
+                    "balance": 2413,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "22",
+        "name": "IMPUESTOS GRAVAMENES Y TASAS",
+        "balance": 1112,
+        "children": [
+          {
+            "id": "2201",
+            "name": "RETENCION EN LA FUENTE",
+            "balance": 2276,
+            "children": [
+              {
+                "id": "220101",
+                "name": "SALARIOS Y PAGOS LABORALES",
+                "balance": 3501,
+                "children": [
+                  {
+                    "id": "220101061",
+                    "name": "SALARIOS Y PAGOS LABORALES",
+                    "balance": 4950,
+                    "children": []
+                  },
+                  {
+                    "id": "220101069",
+                    "name": "R/CION SALARIOS POR PAGAR",
+                    "balance": 3003,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220102",
+                "name": "DIVIDENDOS Y/O PARTICIPACIONES",
+                "balance": 3368,
+                "children": [
+                  {
+                    "id": "220102061",
+                    "name": "DIVIDENDOS Y/O PARTICIPACIONES",
+                    "balance": 3612,
+                    "children": []
+                  },
+                  {
+                    "id": "220102069",
+                    "name": "R/CION DIVIDENDOS POR PAGAR",
+                    "balance": 3771,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220103",
+                "name": "HONORARIOS",
+                "balance": 3957,
+                "children": [
+                  {
+                    "id": "220103061",
+                    "name": "HONORARIOS P J 11%",
+                    "balance": 1634,
+                    "children": []
+                  },
+                  {
+                    "id": "220103062",
+                    "name": "HONORARIOS P.N 10%",
+                    "balance": 2521,
+                    "children": []
+                  },
+                  {
+                    "id": "220103063",
+                    "name": "HONORARIOS DESARROLLO DE SOFTWARE 3,5%",
+                    "balance": 2240,
+                    "children": []
+                  },
+                  {
+                    "id": "220103069",
+                    "name": "R/CION HONORARIOS POR PAGAR",
+                    "balance": 1946,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220104",
+                "name": "COMISIONES",
+                "balance": 1151,
+                "children": [
+                  {
+                    "id": "220104061",
+                    "name": "COMISIONES PJ 11%",
+                    "balance": 1477,
+                    "children": []
+                  },
+                  {
+                    "id": "220104062",
+                    "name": "COMISIONES P.N 10%",
+                    "balance": 3731,
+                    "children": []
+                  },
+                  {
+                    "id": "220104069",
+                    "name": "R/CION COMISION POR PAGAR",
+                    "balance": 2426,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220105",
+                "name": "SERVICIOS",
+                "balance": 2641,
+                "children": [
+                  {
+                    "id": "220105061",
+                    "name": "SERVICIOS PJ 4%",
+                    "balance": 3880,
+                    "children": []
+                  },
+                  {
+                    "id": "220105062",
+                    "name": "SERVICIOS PN 6%",
+                    "balance": 2767,
+                    "children": []
+                  },
+                  {
+                    "id": "220105063",
+                    "name": "SERVICIOS MEDICOS 2%",
+                    "balance": 3252,
+                    "children": []
+                  },
+                  {
+                    "id": "220105064",
+                    "name": "SERVICIOS TRANSPORTE CARGA 1%",
+                    "balance": 1594,
+                    "children": []
+                  },
+                  {
+                    "id": "220105065",
+                    "name": "TRANSPORTE AEREO PASAJEROS 1%",
+                    "balance": 4959,
+                    "children": []
+                  },
+                  {
+                    "id": "220105066",
+                    "name": "TRANSPORTE TERRESTRE PASAJEROS 3.5%",
+                    "balance": 1745,
+                    "children": []
+                  },
+                  {
+                    "id": "220105067",
+                    "name": "SERVICIO HOTEL Y RESTAURANTE 3.5%",
+                    "balance": 2451,
+                    "children": []
+                  },
+                  {
+                    "id": "220105068",
+                    "name": "SERVICIOS DE USO DE SOFTWARE 3.5%",
+                    "balance": 4525,
+                    "children": []
+                  },
+                  {
+                    "id": "220105069",
+                    "name": "R/CION SERVICIOS POR PAGAR",
+                    "balance": 2024,
+                    "children": []
+                  },
+                  {
+                    "id": "220105070",
+                    "name": "SERVICIO EMPRESAS ASEO Y VIGILANCIA",
+                    "balance": 1262,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220106",
+                "name": "ARRENDAMIENTOS",
+                "balance": 3033,
+                "children": [
+                  {
+                    "id": "220106061",
+                    "name": "ARRENDAMIENTOS MUEBLES 4%",
+                    "balance": 2940,
+                    "children": []
+                  },
+                  {
+                    "id": "220106062",
+                    "name": "ARRENDAMIENTOS INMUEBLES 3.5%",
+                    "balance": 4465,
+                    "children": []
+                  },
+                  {
+                    "id": "220106069",
+                    "name": "R/CION ARRENDAMIENTOS POR PAGAR",
+                    "balance": 1816,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220107",
+                "name": "RENDIMIENTOS FINANCIEROS",
+                "balance": 2637,
+                "children": [
+                  {
+                    "id": "220107061",
+                    "name": "RENDIMIENTOS FINANCIEROS 4% CUOTA FIJA",
+                    "balance": 1307,
+                    "children": []
+                  },
+                  {
+                    "id": "220107069",
+                    "name": "R/CION RENDIMIENTOS POR PAGAR",
+                    "balance": 3447,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220108",
+                "name": "COMPRAS",
+                "balance": 1865,
+                "children": [
+                  {
+                    "id": "220108061",
+                    "name": "COMPRAS DECLARANTES 2.5%",
+                    "balance": 2156,
+                    "children": []
+                  },
+                  {
+                    "id": "220108062",
+                    "name": "COMPRAS NO  DECLARANTES 3.5%",
+                    "balance": 2224,
+                    "children": []
+                  },
+                  {
+                    "id": "220108069",
+                    "name": "R/CION COMPRAS POR PAGAR",
+                    "balance": 3831,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220110",
+                "name": "POR PAGOS AL EXTERIOR 20%",
+                "balance": 1616,
+                "children": [
+                  {
+                    "id": "220110061",
+                    "name": "POR PAGOS AL EXTERIOR 20%",
+                    "balance": 3578,
+                    "children": []
+                  },
+                  {
+                    "id": "220110069",
+                    "name": "R/CION PAGOS AL EXTERIOR",
+                    "balance": 1607,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220116",
+                "name": "RETENCI\u00d3N POR ICA",
+                "balance": 3143,
+                "children": [
+                  {
+                    "id": "220116061",
+                    "name": "RETENCI\u00d3N POR ICA 4.14 X 1000",
+                    "balance": 4170,
+                    "children": []
+                  },
+                  {
+                    "id": "220116062",
+                    "name": "RETENCI\u00d3N POR ICA 6,9 X 1000",
+                    "balance": 2439,
+                    "children": []
+                  },
+                  {
+                    "id": "220116063",
+                    "name": "RETENCI\u00d3N POR ICA 9,66 X 1000",
+                    "balance": 4563,
+                    "children": []
+                  },
+                  {
+                    "id": "220116064",
+                    "name": "RETENCI\u00d3N POR ICA 11,04 X 1000",
+                    "balance": 2407,
+                    "children": []
+                  },
+                  {
+                    "id": "220116065",
+                    "name": "RETENCI\u00d3N POR ICA 13,80 X 1000",
+                    "balance": 2102,
+                    "children": []
+                  },
+                  {
+                    "id": "220116066",
+                    "name": "RETENCION POR ICA 12X1000",
+                    "balance": 1975,
+                    "children": []
+                  },
+                  {
+                    "id": "220116067",
+                    "name": "RETENCION POR ICA 7,12 X 1000",
+                    "balance": 3815,
+                    "children": []
+                  },
+                  {
+                    "id": "220116068",
+                    "name": "RETENCION POR ICA 8,00 X 1000",
+                    "balance": 3766,
+                    "children": []
+                  },
+                  {
+                    "id": "220116069",
+                    "name": "R/CION ICA POR PAGAR",
+                    "balance": 2738,
+                    "children": []
+                  },
+                  {
+                    "id": "220116070",
+                    "name": "RETENCION POR ICA 8.66 X 1000",
+                    "balance": 3317,
+                    "children": []
+                  },
+                  {
+                    "id": "220116071",
+                    "name": "RETENCION POR ICA 7.66 X 1000",
+                    "balance": 3411,
+                    "children": []
+                  },
+                  {
+                    "id": "220116072",
+                    "name": "RETENCION POR ICA 11,76 X 1000",
+                    "balance": 2907,
+                    "children": []
+                  },
+                  {
+                    "id": "220116073",
+                    "name": "RETENCION POR ICA 7.36 X 1000",
+                    "balance": 2189,
+                    "children": []
+                  },
+                  {
+                    "id": "220116074",
+                    "name": "RETENCION POR ICA 10.30 X 1000",
+                    "balance": 3980,
+                    "children": []
+                  },
+                  {
+                    "id": "220116075",
+                    "name": "RETENCION POR ICA 12.54 X 1000",
+                    "balance": 1589,
+                    "children": []
+                  },
+                  {
+                    "id": "220116076",
+                    "name": "RETENCION POR ICA 10.63 X 1000",
+                    "balance": 3103,
+                    "children": []
+                  },
+                  {
+                    "id": "220116090",
+                    "name": "RETENCI\u00d3N POR ICA MEDELLIN 2 X 1000",
+                    "balance": 2226,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220117",
+                "name": "ATORETENCION EXONERADO DE APORTES",
+                "balance": 1473,
+                "children": [
+                  {
+                    "id": "220117061",
+                    "name": "AUTORETENCION exone de aportes (art. 114 1 E.T.)",
+                    "balance": 2499,
+                    "children": []
+                  },
+                  {
+                    "id": "220117069",
+                    "name": "AUTORRETENICON POR PAGAR",
+                    "balance": 2337,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220199",
+                "name": "RETENCION F/TE POR PAGAR",
+                "balance": 4054,
+                "children": [
+                  {
+                    "id": "220199061",
+                    "name": "RETENCION F/TE POR PAGAR",
+                    "balance": 4324,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "2202",
+            "name": "DE RENTA Y COMPLEMENTARIOS",
+            "balance": 4746,
+            "children": [
+              {
+                "id": "220201",
+                "name": "VIGENCIA FISCAL CORRIENTE",
+                "balance": 1217,
+                "children": [
+                  {
+                    "id": "220201061",
+                    "name": "VIGENCIA FISCAL CORRIENTE RENTA",
+                    "balance": 3461,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "220202",
+                "name": "VIGENCIAS FICALES ANTERIORES",
+                "balance": 3839,
+                "children": [
+                  {
+                    "id": "220202061",
+                    "name": "VIGENCIAS FISCALES ANTERIORES",
+                    "balance": 4615,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "2204",
+            "name": "DE INDUSTRIA Y COMERCIO",
+            "balance": 1724,
+            "children": [
+              {
+                "id": "220401",
+                "name": "VIGENCIA FISCAL CORRIENTE",
+                "balance": 3108,
+                "children": [
+                  {
+                    "id": "220401061",
+                    "name": "VIGENCIA FISCAL CORRIENTE ICA",
+                    "balance": 3505,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "23",
+        "name": "BENEFICIOS A LOS EMPLEADOS",
+        "balance": 2016,
+        "children": [
+          {
+            "id": "2301",
+            "name": "BENEFICIOS A LOS EMPLEADOS A CORTO PLAZO",
+            "balance": 3335,
+            "children": [
+              {
+                "id": "230101",
+                "name": "NOMINAR POR PAGAR",
+                "balance": 1352,
+                "children": [
+                  {
+                    "id": "230101061",
+                    "name": "NOMINA POR PAGAR",
+                    "balance": 4894,
+                    "children": []
+                  },
+                  {
+                    "id": "230101062",
+                    "name": "NOMINA POR PAGAR NA",
+                    "balance": 4775,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "230102",
+                "name": "CESANTIAS",
+                "balance": 4136,
+                "children": [
+                  {
+                    "id": "230102061",
+                    "name": "CESANTIAS",
+                    "balance": 3126,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "230103",
+                "name": "INTERESES SOBRE CESANT\u00cdAS",
+                "balance": 2695,
+                "children": [
+                  {
+                    "id": "230103061",
+                    "name": "INTERESES SOBRE CESANTIAS",
+                    "balance": 2018,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "230104",
+                "name": "VACACIONES",
+                "balance": 1175,
+                "children": [
+                  {
+                    "id": "230104061",
+                    "name": "VACACIONES",
+                    "balance": 4096,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "230106",
+                "name": "PRIMA DE SERVICIOS",
+                "balance": 2168,
+                "children": [
+                  {
+                    "id": "230106061",
+                    "name": "PRIMA DE SERVICIOS",
+                    "balance": 1121,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "230110",
+                "name": "APORTES A RIESGOS LABORALES",
+                "balance": 1919,
+                "children": [
+                  {
+                    "id": "230110061",
+                    "name": "APORTES A RIESGOS LABORALES",
+                    "balance": 2065,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "230113",
+                "name": "HONORARIOS",
+                "balance": 2855,
+                "children": [
+                  {
+                    "id": "230113061",
+                    "name": "HONORARIOS",
+                    "balance": 2676,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "230115",
+                "name": "DOTACI\u00d3N Y SUMINISTRO A TRABAJADORES",
+                "balance": 4281,
+                "children": [
+                  {
+                    "id": "230115061",
+                    "name": "DOTACI\u00d3N Y SUMINISTRO A TRABAJADORES",
+                    "balance": 2066,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "230120",
+                "name": "APORTES A FONDOS PENSIONALES   EMPLEADOR",
+                "balance": 4917,
+                "children": [
+                  {
+                    "id": "230120061",
+                    "name": "APORTES A FONDOS PENSIONALES   EMPLEADOR",
+                    "balance": 3451,
+                    "children": []
+                  },
+                  {
+                    "id": "230120062",
+                    "name": "APORTE PENSION VOLUNTARIA",
+                    "balance": 1807,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "230121",
+                "name": "APORTES A SEGURIDAD SOCIAL EN SALUD   EMPLEADOR",
+                "balance": 1674,
+                "children": [
+                  {
+                    "id": "230121061",
+                    "name": "APORTES A SEGURIDAD SOCIAL EN SALUD   EMPLEADOR",
+                    "balance": 2758,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "230122",
+                "name": "APORTES AL ICBF SENA Y CAJAS DE COMPENSACI\u00d3N",
+                "balance": 2053,
+                "children": [
+                  {
+                    "id": "230122061",
+                    "name": "APORTES AL ICBF SENA Y CAJAS DE COMPENSACI\u00d3N",
+                    "balance": 3577,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "230123",
+                "name": "OTROS SALARIOS Y PRESTACIONES SOCIALES",
+                "balance": 2342,
+                "children": [
+                  {
+                    "id": "230123061",
+                    "name": "APORTES AFC",
+                    "balance": 3283,
+                    "children": []
+                  },
+                  {
+                    "id": "230123062",
+                    "name": "LIBRANZAS",
+                    "balance": 1346,
+                    "children": []
+                  },
+                  {
+                    "id": "230123063",
+                    "name": "LIBRANZA APORTES COOPERATIVA COASMEDAS",
+                    "balance": 1655,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "25",
+        "name": "OTROS PASIVOS  ANTICIPOS Y AVANCES RECIBIDOS",
+        "balance": 3132,
+        "children": [
+          {
+            "id": "2501",
+            "name": "OTROS PASIVOS  ANTICIPOS Y AVANCES RECIBIDOS",
+            "balance": 1525,
+            "children": [
+              {
+                "id": "250101",
+                "name": "POR SERVICIOS DE SALUD",
+                "balance": 3850,
+                "children": [
+                  {
+                    "id": "250101061",
+                    "name": "ANTICIPOS POR SERVICIOS DE SALUD",
+                    "balance": 1291,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "250103",
+                "name": "OTROS ANTICIPOS Y AVANCES RECIBIDOS",
+                "balance": 3824,
+                "children": [
+                  {
+                    "id": "250103061",
+                    "name": "OTROS ANTICIPOS Y AVANCES RECIBIDOS",
+                    "balance": 1494,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "2502",
+            "name": "DEP\u00d3SITOS RECIBIDOS",
+            "balance": 2159,
+            "children": [
+              {
+                "id": "250201",
+                "name": "PARA FUTURA SUSCRIPCI\u00d3N DE ACCIONES",
+                "balance": 3177,
+                "children": [
+                  {
+                    "id": "250201061",
+                    "name": "PARA FUTURA SUSCRIPCI\u00d3N DE ACCIONES",
+                    "balance": 2447,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "2505",
+            "name": "CUENTAS EN PARTICIPACION",
+            "balance": 2256,
+            "children": [
+              {
+                "id": "250501",
+                "name": "EN PRESTACI\u00d3N DE SERVICIOS",
+                "balance": 2659,
+                "children": [
+                  {
+                    "id": "250501061",
+                    "name": "CUENTAS EN PARTICIPACION EN PRESTACI\u00d3N DE SERVICIO",
+                    "balance": 3997,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "26",
+        "name": "PASIVOS ESTIMADOS Y PROVISIONES",
+        "balance": 2197,
+        "children": [
+          {
+            "id": "2695",
+            "name": "PROVISIONES DIVERSAS",
+            "balance": 4060,
+            "children": [
+              {
+                "id": "269501",
+                "name": "DIVERSOS",
+                "balance": 4692,
+                "children": [
+                  {
+                    "id": "269501061",
+                    "name": "COMPRA DE INVENTARIOS",
+                    "balance": 3643,
+                    "children": []
+                  },
+                  {
+                    "id": "269501062",
+                    "name": "COMPRA DE ACTIVOS FIJOS",
+                    "balance": 4469,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "name": "PATRIMONIO",
+    "balance": 2069,
+    "children": [
+      {
+        "id": "31",
+        "name": "CAPITAL SOCIAL",
+        "balance": 1524,
+        "children": [
+          {
+            "id": "3101",
+            "name": "CAPITAL SUSCRITO Y PAGADO",
+            "balance": 3834,
+            "children": [
+              {
+                "id": "310101",
+                "name": "CAPITAL AUTORIZADO",
+                "balance": 1681,
+                "children": [
+                  {
+                    "id": "310101061",
+                    "name": "PRESTADORES DE SERVICIOS DE SALUD",
+                    "balance": 4054,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "35",
+        "name": "RESULTADOS DEL EJERCICIO",
+        "balance": 3953,
+        "children": [
+          {
+            "id": "3501",
+            "name": "RESULTADOS DEL EJERCICIO",
+            "balance": 3287,
+            "children": [
+              {
+                "id": "350101",
+                "name": "UTILIDAD DEL EJERCICIO DE OPERACIONES CONTINUAS",
+                "balance": 1398,
+                "children": [
+                  {
+                    "id": "350101061",
+                    "name": "UTILIDAD DEL EJERCICIO DE OPERACIONES CONTINUAS",
+                    "balance": 3218,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "3502",
+            "name": "RESULTADOS ACUMULADOS",
+            "balance": 2657,
+            "children": [
+              {
+                "id": "350201",
+                "name": "UTILIDADES O EXCEDENTES ACUMULADOS",
+                "balance": 2582,
+                "children": [
+                  {
+                    "id": "350201061",
+                    "name": "UTILIDADES O EXCEDENTES ACUMULADOS",
+                    "balance": 1528,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "350204",
+                "name": "P\u00c9RDIDAS ACUMULADAS",
+                "balance": 4453,
+                "children": [
+                  {
+                    "id": "350204061",
+                    "name": "P\u00c9RDIDAS ACUMULADAS",
+                    "balance": 4003,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "33",
+        "name": "RESERVAS",
+        "balance": 3478,
+        "children": [
+          {
+            "id": "3303",
+            "name": "RESERVAS OCASIONALES",
+            "balance": 2437,
+            "children": [
+              {
+                "id": "330309",
+                "name": "OTRAS RESERVAS OCASIONALES",
+                "balance": 4840,
+                "children": [
+                  {
+                    "id": "330309061",
+                    "name": "OTRAS RESERVAS OCASIONALES",
+                    "balance": 4432,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "name": "INGRESOS OPERACIONALES",
+    "balance": 3400,
+    "children": [
+      {
+        "id": "41",
+        "name": "OPERACIONALES",
+        "balance": 4832,
+        "children": [
+          {
+            "id": "4101",
+            "name": "INGRESOS DE INSTITUCIONES PRESTADORES DE SERVICIOS",
+            "balance": 3213,
+            "children": [
+              {
+                "id": "410108",
+                "name": "OTRAS ACTIVIDADES RELACIONADAS CON LA SALUD",
+                "balance": 1291,
+                "children": [
+                  {
+                    "id": "410108061",
+                    "name": "PROGRAMA BEBE MILAGRO",
+                    "balance": 3201,
+                    "children": []
+                  },
+                  {
+                    "id": "410108062",
+                    "name": "PROGRAMA FECUNDACION INVITRO",
+                    "balance": 2696,
+                    "children": []
+                  },
+                  {
+                    "id": "410108063",
+                    "name": "PROGRAMA FECUNDACION INVITRO POMEROY",
+                    "balance": 4306,
+                    "children": []
+                  },
+                  {
+                    "id": "410108064",
+                    "name": "PROGRAMA NI\u00d1O EN CASA",
+                    "balance": 3912,
+                    "children": []
+                  },
+                  {
+                    "id": "410108065",
+                    "name": "PROGRAMA NI\u00d1O EN CASA GENETICO",
+                    "balance": 1371,
+                    "children": []
+                  },
+                  {
+                    "id": "410108066",
+                    "name": "PROGRAMA OVODONACION",
+                    "balance": 4627,
+                    "children": []
+                  },
+                  {
+                    "id": "410108067",
+                    "name": "PROGRAMA R.O.P.A.",
+                    "balance": 3014,
+                    "children": []
+                  },
+                  {
+                    "id": "410108068",
+                    "name": "PROGRAMA OTROS SERVICIOS MEDICOS",
+                    "balance": 1021,
+                    "children": []
+                  },
+                  {
+                    "id": "410108069",
+                    "name": "PROTOCOLO DE DIAGNOSTICO",
+                    "balance": 4448,
+                    "children": []
+                  },
+                  {
+                    "id": "410108070",
+                    "name": "DEVOLUCIONES EN VENTA",
+                    "balance": 1766,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "410190",
+                "name": "DEVOLUCIONES Y DESCUENTOS",
+                "balance": 3738,
+                "children": [
+                  {
+                    "id": "410190061",
+                    "name": "DEVOLUCIONES Y DESCUENTOS PRESTADORES DE SERVICIOS DE SALUD",
+                    "balance": 4547,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "420102",
+        "name": "GANACIAS EN ACTIVOS FINANCIEROS MEDIDOS AL COSTO AMORTIZADO",
+        "balance": 1531,
+        "children": [
+          {
+            "id": "420102061",
+            "name": "UTILIDAD EN RETIRO DE PROPIEDAD PLANTA Y EQUIPO",
+            "balance": 3905,
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "42",
+        "name": "OTROS INGRESOS DE OPERACI\u00d3N",
+        "balance": 4697,
+        "children": [
+          {
+            "id": "4201",
+            "name": "GANANCIAS EN INVERSIONES E INTRUMENTOS FINANCIEROS",
+            "balance": 1442,
+            "children": [
+              {
+                "id": "420117",
+                "name": "INTERESES POR TRANSACCIONES CON NO VINCULADOS ECONOMICOS EN PARTES RELACIONADAS",
+                "balance": 4398,
+                "children": [
+                  {
+                    "id": "420117061",
+                    "name": "INTERESES POR TRANSACCIONES CON NO VINCULADOS ECONOMICOS EN PARTES RELACIONADAS",
+                    "balance": 1328,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "4211",
+            "name": "RECUPERACIONES",
+            "balance": 3160,
+            "children": [
+              {
+                "id": "421105",
+                "name": "DESCUENTOS CONCEDIDOS",
+                "balance": 3901,
+                "children": [
+                  {
+                    "id": "421105061",
+                    "name": "DESCUENTOS CONCEDIDOS",
+                    "balance": 3634,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "421109",
+                "name": "REINTEGRO DE OTROS COSTOS Y GASTOS",
+                "balance": 4758,
+                "children": [
+                  {
+                    "id": "421109061",
+                    "name": "REINTEGRO DE OTROS COSTOS Y GASTOS",
+                    "balance": 1108,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "4214",
+            "name": "DIVERSOS",
+            "balance": 4036,
+            "children": [
+              {
+                "id": "421401",
+                "name": "APROVECHAMIENTOS",
+                "balance": 1419,
+                "children": [
+                  {
+                    "id": "421401061",
+                    "name": "APROVECHAMIENTOS",
+                    "balance": 2346,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "421412",
+                "name": "SOBRANTES DE CAJA MENOR",
+                "balance": 1019,
+                "children": [
+                  {
+                    "id": "421412061",
+                    "name": "SOBRANTES DE CAJA MENOR",
+                    "balance": 1537,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "421414",
+                "name": "AJUSTE AL PESO",
+                "balance": 3611,
+                "children": [
+                  {
+                    "id": "421414061",
+                    "name": "AJUSTE AL PESO",
+                    "balance": 3864,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "421416",
+                "name": "OTROS INGRESOS DIVERSOS",
+                "balance": 3842,
+                "children": [
+                  {
+                    "id": "421416061",
+                    "name": "OTROS INGRESOS DIVERSOS",
+                    "balance": 2514,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "4215",
+            "name": "AJUSTE POR DIFERENCIA EN CAMBIO",
+            "balance": 2892,
+            "children": [
+              {
+                "id": "421502",
+                "name": "CUENTAS POR COBRAR",
+                "balance": 3475,
+                "children": [
+                  {
+                    "id": "421502061",
+                    "name": "DIFERENCIA EN CAMBIO CUENTAS POR COBRAR",
+                    "balance": 3989,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "name": "GASTOS OPERACIONALES",
+    "balance": 1603,
+    "children": [
+      {
+        "id": "51",
+        "name": "GASTOS DE ADMINSITRACION",
+        "balance": 1310,
+        "children": [
+          {
+            "id": "5101",
+            "name": "SUELDOS Y SALARIOS",
+            "balance": 2430,
+            "children": [
+              {
+                "id": "510101",
+                "name": "SUELDOS Y SALARIOS",
+                "balance": 1564,
+                "children": [
+                  {
+                    "id": "510101061",
+                    "name": "SUELDOS Y SALARIOS",
+                    "balance": 4694,
+                    "children": []
+                  },
+                  {
+                    "id": "510101062",
+                    "name": "LICENCIA POR LUTO REMUNERADA",
+                    "balance": 4912,
+                    "children": []
+                  },
+                  {
+                    "id": "510101063",
+                    "name": "APOYO SOSTENIMIENTO   APRENDICES",
+                    "balance": 1665,
+                    "children": []
+                  },
+                  {
+                    "id": "510101064",
+                    "name": "LICENCIA REMUNERADA SUELDO",
+                    "balance": 4789,
+                    "children": []
+                  },
+                  {
+                    "id": "510101065",
+                    "name": "CALAMIDAD DOM\u00c9STICA",
+                    "balance": 1119,
+                    "children": []
+                  },
+                  {
+                    "id": "510101066",
+                    "name": "LICENCIA DE PATERNIDAD",
+                    "balance": 3526,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510102",
+                "name": "SALARIO INTEGRAL",
+                "balance": 3513,
+                "children": [
+                  {
+                    "id": "510102061",
+                    "name": "SALARIO INTEGRAL",
+                    "balance": 4472,
+                    "children": []
+                  },
+                  {
+                    "id": "510102062",
+                    "name": "LICENCIA REMUNERADA SALARIO INTEGRAL",
+                    "balance": 1808,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510106",
+                "name": "HORAS EXTRAS Y RECARGOS",
+                "balance": 4691,
+                "children": [
+                  {
+                    "id": "510106061",
+                    "name": "HORAS EXTRAS Y RECARGOS",
+                    "balance": 4869,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510107",
+                "name": "SUBSIDIO DE ALIMENTACI\u00d3N",
+                "balance": 4091,
+                "children": [
+                  {
+                    "id": "510107061",
+                    "name": "SUBSIDIO DE ALIMENTACI\u00d3N",
+                    "balance": 1348,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510108",
+                "name": "AUXILIO DE TRANSPORTE",
+                "balance": 1568,
+                "children": [
+                  {
+                    "id": "510108061",
+                    "name": "AUXILIO DE TRANSPORTE",
+                    "balance": 1804,
+                    "children": []
+                  },
+                  {
+                    "id": "510108062",
+                    "name": "AUXILIO DE CONECTIVIDAD",
+                    "balance": 3231,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510109",
+                "name": "BONIFICACIONES",
+                "balance": 1488,
+                "children": [
+                  {
+                    "id": "510109061",
+                    "name": "BONIFICACIONES",
+                    "balance": 1330,
+                    "children": []
+                  },
+                  {
+                    "id": "510109062",
+                    "name": "BONIFICACIONES POR RETIRO",
+                    "balance": 1354,
+                    "children": []
+                  },
+                  {
+                    "id": "510109063",
+                    "name": "BONO CUMPLEA\u00d1OS NO SALARIAL",
+                    "balance": 1745,
+                    "children": []
+                  },
+                  {
+                    "id": "510109064",
+                    "name": "BONO CANASTA NO SALARIAL",
+                    "balance": 4967,
+                    "children": []
+                  },
+                  {
+                    "id": "510109065",
+                    "name": "BONO MUDANZA NO SALARIAL",
+                    "balance": 4061,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510112",
+                "name": "OTROS BENEFICIOS ECONOMICOS",
+                "balance": 1780,
+                "children": [
+                  {
+                    "id": "510112061",
+                    "name": "AUXILIO EDUCATIVO",
+                    "balance": 4675,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5102",
+            "name": "CONTRIBUCIONES IMPUTADAS",
+            "balance": 3384,
+            "children": [
+              {
+                "id": "510201",
+                "name": "INCAPACIDADES",
+                "balance": 1568,
+                "children": [
+                  {
+                    "id": "510201061",
+                    "name": "INCAPACIDADES",
+                    "balance": 3808,
+                    "children": []
+                  },
+                  {
+                    "id": "510201062",
+                    "name": "LICENCIA MATERNIDAD",
+                    "balance": 4189,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510205",
+                "name": "INDEMNIZACIONES LABORALES",
+                "balance": 4764,
+                "children": [
+                  {
+                    "id": "510205061",
+                    "name": "INDEMNIZACIONES LABORALES",
+                    "balance": 1532,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5103",
+            "name": "CONTRIBUCIONES EFECTIVAS",
+            "balance": 1767,
+            "children": [
+              {
+                "id": "510301",
+                "name": "APORTES ARL",
+                "balance": 3531,
+                "children": [
+                  {
+                    "id": "510301061",
+                    "name": "APORTES ARL",
+                    "balance": 4615,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510302",
+                "name": "APORTES A EPS",
+                "balance": 2782,
+                "children": [
+                  {
+                    "id": "510302061",
+                    "name": "APORTES EPS",
+                    "balance": 1710,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510303",
+                "name": "APORTES A FONDOS DE PENSIONES Y/O CESANT\u00cdAS",
+                "balance": 2991,
+                "children": [
+                  {
+                    "id": "510303061",
+                    "name": "APORTES A FONDOS DE PENSIONES Y/O CESANT\u00cdAS",
+                    "balance": 1819,
+                    "children": []
+                  },
+                  {
+                    "id": "510303062",
+                    "name": "APORTE FONDO DE SOLIDARIDAD",
+                    "balance": 3310,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510304",
+                "name": "APORTES CAJAS DE COMPENSACI\u00d3N FAMILIAR",
+                "balance": 4512,
+                "children": [
+                  {
+                    "id": "510304061",
+                    "name": "APORTES CAJAS DE COMPENSACI\u00d3N FAMILIAR",
+                    "balance": 3579,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5104",
+            "name": "APORTES SOBRE LA NOMINA",
+            "balance": 3913,
+            "children": [
+              {
+                "id": "510401",
+                "name": "APORTES ICBF",
+                "balance": 2941,
+                "children": [
+                  {
+                    "id": "510401061",
+                    "name": "APORTES ICBF",
+                    "balance": 4527,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510402",
+                "name": "SENA",
+                "balance": 3933,
+                "children": [
+                  {
+                    "id": "510402061",
+                    "name": "SENA",
+                    "balance": 4061,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5105",
+            "name": "PRESTACIONES SOCIALES",
+            "balance": 2432,
+            "children": [
+              {
+                "id": "510501",
+                "name": "CESANT\u00cdAS",
+                "balance": 4188,
+                "children": [
+                  {
+                    "id": "510501061",
+                    "name": "CESANTIAS",
+                    "balance": 4268,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510502",
+                "name": "INTERESES SOBRE CESANT\u00cdAS",
+                "balance": 3340,
+                "children": [
+                  {
+                    "id": "510502061",
+                    "name": "INTERESES SOBRE CESANT\u00cdAS",
+                    "balance": 1725,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510503",
+                "name": "VACACIONES",
+                "balance": 1590,
+                "children": [
+                  {
+                    "id": "510503061",
+                    "name": "VACACIONES",
+                    "balance": 1096,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510505",
+                "name": "PRIMA DE SERVICIOS",
+                "balance": 3223,
+                "children": [
+                  {
+                    "id": "510505061",
+                    "name": "PRIMA DE SERVICIOS",
+                    "balance": 3492,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5106",
+            "name": "GASTOS DE PERSONAL DIVERSOS",
+            "balance": 2104,
+            "children": [
+              {
+                "id": "510601",
+                "name": "COMISIONES",
+                "balance": 2979,
+                "children": [
+                  {
+                    "id": "510601061",
+                    "name": "COMISIONES ATENCION PACIENTES",
+                    "balance": 3910,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510604",
+                "name": "DOTACI\u00d3N Y SUMINISTRO A TRABAJADORES",
+                "balance": 3992,
+                "children": [
+                  {
+                    "id": "510604061",
+                    "name": "DOTACI\u00d3N Y SUMINISTRO A TRABAJADORES",
+                    "balance": 3439,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510605",
+                "name": "CAPACITACI\u00d3N AL PERSONAL",
+                "balance": 4382,
+                "children": [
+                  {
+                    "id": "510605061",
+                    "name": "CAPACITACION AL PERSONAL",
+                    "balance": 2566,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510608",
+                "name": "OTROS GASTOS DE PERSONAL DIVERSOS",
+                "balance": 2391,
+                "children": [
+                  {
+                    "id": "510608061",
+                    "name": "OTROS GASTOS DE PERSONAL DIVERSOS",
+                    "balance": 3350,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5107",
+            "name": "GASTOS POR HONORARIOS",
+            "balance": 2956,
+            "children": [
+              {
+                "id": "510705",
+                "name": "ASESOR\u00cdA JUR\u00cdDICA",
+                "balance": 2170,
+                "children": [
+                  {
+                    "id": "510705061",
+                    "name": "ASESOR\u00cdA JUR\u00cdDICA",
+                    "balance": 2915,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510706",
+                "name": "ASESOR\u00cdA FINANCIERA",
+                "balance": 3157,
+                "children": [
+                  {
+                    "id": "510706061",
+                    "name": "ASESORIA FINANCIERA",
+                    "balance": 2576,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510708",
+                "name": "OTROS HONORARIOS",
+                "balance": 4960,
+                "children": [
+                  {
+                    "id": "510708061",
+                    "name": "OTROS HONORARIOS",
+                    "balance": 2123,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5108",
+            "name": "GASTOS POR IMPUESTOS DISTINTOS DE GASTOS POR IMPUE",
+            "balance": 1631,
+            "children": [
+              {
+                "id": "510801",
+                "name": "INDUSTRIA Y COMERCIO",
+                "balance": 3277,
+                "children": [
+                  {
+                    "id": "510801061",
+                    "name": "INDUSTRIA Y COMERCIO",
+                    "balance": 4721,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510810",
+                "name": "IVA DESCONTABLE",
+                "balance": 2811,
+                "children": [
+                  {
+                    "id": "510810061",
+                    "name": "IVA MAYOR VALOR   HONORARIOS",
+                    "balance": 1530,
+                    "children": []
+                  },
+                  {
+                    "id": "510810062",
+                    "name": "IVA MAYOR VALOR   ARRENDAMIENTOS",
+                    "balance": 2209,
+                    "children": []
+                  },
+                  {
+                    "id": "510810063",
+                    "name": "IVA MAYOR VALOR   SEGUROS",
+                    "balance": 3719,
+                    "children": []
+                  },
+                  {
+                    "id": "510810064",
+                    "name": "IVA MAYOR VALOR   SERVICIOS",
+                    "balance": 4319,
+                    "children": []
+                  },
+                  {
+                    "id": "510810065",
+                    "name": "IVA MAYOR VALOR   GASTOS LEGALES",
+                    "balance": 4753,
+                    "children": []
+                  },
+                  {
+                    "id": "510810066",
+                    "name": "IVA MAYOR VALOR   REPARACION Y MTTO",
+                    "balance": 3436,
+                    "children": []
+                  },
+                  {
+                    "id": "510810067",
+                    "name": "IVA MAYOR VALOR   ADECUACION E INSTALACION",
+                    "balance": 1298,
+                    "children": []
+                  },
+                  {
+                    "id": "510810068",
+                    "name": "IVA MAYOR VALOR   TRANSPORTE Y GTOS VIAJE",
+                    "balance": 3147,
+                    "children": []
+                  },
+                  {
+                    "id": "510810069",
+                    "name": "IVA MAYOR VALOR   OTROS GASTOS",
+                    "balance": 1245,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510812",
+                "name": "OTROS IMPUESTOS",
+                "balance": 3032,
+                "children": [
+                  {
+                    "id": "510812061",
+                    "name": "IMPUESTO AL CONSUMO",
+                    "balance": 1167,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5109",
+            "name": "ARRENDAMIENTOS OPERATIVOS",
+            "balance": 1823,
+            "children": [
+              {
+                "id": "510902",
+                "name": "CONSTRUCCIONES O EDIFICACIONES",
+                "balance": 1637,
+                "children": [
+                  {
+                    "id": "510902061",
+                    "name": "ARRIENDO CONSULTORIOS BOGOTA",
+                    "balance": 4779,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "510908",
+                "name": "DE OTROS ACTIVOS",
+                "balance": 4498,
+                "children": [
+                  {
+                    "id": "510908061",
+                    "name": "ARRIENDO OTROS ACTIVOS",
+                    "balance": 3480,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5111",
+            "name": "CONTRIBUCIONES Y AFILIACIONES",
+            "balance": 1726,
+            "children": [
+              {
+                "id": "511103",
+                "name": "OTRAS CONTRIBUCIONES Y AFILIACIONES",
+                "balance": 3325,
+                "children": [
+                  {
+                    "id": "511103061",
+                    "name": "CONTRIBUCION SUPERSALUD",
+                    "balance": 3874,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5112",
+            "name": "SEGUROS",
+            "balance": 1665,
+            "children": [
+              {
+                "id": "511216",
+                "name": "OTROS SEGUROS",
+                "balance": 4496,
+                "children": [
+                  {
+                    "id": "511216061",
+                    "name": "OTROS SEGUROS",
+                    "balance": 2540,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5113",
+            "name": "SERVICIOS",
+            "balance": 3110,
+            "children": [
+              {
+                "id": "511301",
+                "name": "SERVICIO DE ASEO",
+                "balance": 1954,
+                "children": [
+                  {
+                    "id": "511301061",
+                    "name": "SERVICIO DE ASEO",
+                    "balance": 4594,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511304",
+                "name": "ASISTENCIA T\u00c9CNICA",
+                "balance": 4831,
+                "children": [
+                  {
+                    "id": "511304061",
+                    "name": "ASISTENCIA TECNICA",
+                    "balance": 3227,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511305",
+                "name": "PROCESAMIENTO ELECTR\u00d3NICO DE DATOS",
+                "balance": 4774,
+                "children": [
+                  {
+                    "id": "511305061",
+                    "name": "PROCESAMIENTO ELECTR\u00d3NICO DE DATOS",
+                    "balance": 4219,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511306",
+                "name": "ACUEDUCTO Y ALCANTARILLADO",
+                "balance": 4725,
+                "children": [
+                  {
+                    "id": "511306061",
+                    "name": "ACUEDUCTO Y ALCANTARILLADO",
+                    "balance": 1026,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511307",
+                "name": "ENERG\u00cdA EL\u00c9CTRICA",
+                "balance": 4050,
+                "children": [
+                  {
+                    "id": "511307061",
+                    "name": "ENERG\u00cdA EL\u00c9CTRICA",
+                    "balance": 2117,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511308",
+                "name": "TEL\u00c9FONO",
+                "balance": 1780,
+                "children": [
+                  {
+                    "id": "511308061",
+                    "name": "TELEFONO",
+                    "balance": 2992,
+                    "children": []
+                  },
+                  {
+                    "id": "511308062",
+                    "name": "SERVICIO DE INTERNET",
+                    "balance": 1747,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511309",
+                "name": "TRANSPORTE FLETES Y ACARREOS",
+                "balance": 3761,
+                "children": [
+                  {
+                    "id": "511309061",
+                    "name": "TRANSPORTE FLETES Y ACARREOS",
+                    "balance": 1237,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511313",
+                "name": "OTROS SERVICIOS",
+                "balance": 2573,
+                "children": [
+                  {
+                    "id": "511313061",
+                    "name": "ADMINISTRACION OFICINA",
+                    "balance": 3675,
+                    "children": []
+                  },
+                  {
+                    "id": "511313062",
+                    "name": "SERV RECARGA DE EXINTORES",
+                    "balance": 1877,
+                    "children": []
+                  },
+                  {
+                    "id": "511313063",
+                    "name": "OTROS SERVICIOS",
+                    "balance": 3484,
+                    "children": []
+                  },
+                  {
+                    "id": "511313064",
+                    "name": "IMPLEMENTACION PROGRAMA SAP",
+                    "balance": 4005,
+                    "children": []
+                  },
+                  {
+                    "id": "511313065",
+                    "name": "OTRAS LICENCIAS",
+                    "balance": 1297,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5114",
+            "name": "GASTOS LEGALES",
+            "balance": 4666,
+            "children": [
+              {
+                "id": "511402",
+                "name": "REGISTRO MERCANTIL",
+                "balance": 2456,
+                "children": [
+                  {
+                    "id": "511402061",
+                    "name": "REGISTRO MERCANTIL",
+                    "balance": 2362,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511403",
+                "name": "TRAMITES Y LICENCIAS",
+                "balance": 3569,
+                "children": [
+                  {
+                    "id": "511403061",
+                    "name": "TRAMITES Y LICENCIAS",
+                    "balance": 1248,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511406",
+                "name": "OTROS GASTOS LEGALES",
+                "balance": 1764,
+                "children": [
+                  {
+                    "id": "511406061",
+                    "name": "OTROS GASTOS LEGALES",
+                    "balance": 3147,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5115",
+            "name": "GASTOS DE REPARACION Y MANTENIMIENTO",
+            "balance": 3773,
+            "children": [
+              {
+                "id": "511504",
+                "name": "EQUIPO M\u00c9DICO CIENT\u00cdFICO",
+                "balance": 1569,
+                "children": [
+                  {
+                    "id": "511504061",
+                    "name": "MANTENIMIENTO EQUIPO M\u00c9DICO CIENT\u00cdFICO",
+                    "balance": 2025,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511505",
+                "name": "EQUIPO DE OFICINA",
+                "balance": 2109,
+                "children": [
+                  {
+                    "id": "511505061",
+                    "name": "MANTENIMIENTO MUEBLES Y ENSERES",
+                    "balance": 3172,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511506",
+                "name": "EQUIPO DE COMPUTACION  Y COMUNICACION",
+                "balance": 1959,
+                "children": [
+                  {
+                    "id": "511506061",
+                    "name": "MTTO EQUIPO DE COMPUTACION Y COMUNICACION",
+                    "balance": 4350,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511509",
+                "name": "EQUIPO DE TRANSPORTE",
+                "balance": 2939,
+                "children": [
+                  {
+                    "id": "511509061",
+                    "name": "MANTENIMIENTO EQ TRANSPORTE",
+                    "balance": 2633,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5116",
+            "name": "ADECUACI\u00d3N E INSTALACI\u00d3N",
+            "balance": 2645,
+            "children": [
+              {
+                "id": "511604",
+                "name": "OTROS GASTOS DE ADECUACI\u00d3N E INSTALACI\u00d3N",
+                "balance": 3167,
+                "children": [
+                  {
+                    "id": "511604061",
+                    "name": "OTROS GASTOS DE ADECUACI\u00d3N E INSTALACI\u00d3N",
+                    "balance": 1736,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5117",
+            "name": "GASTOS DE TRANSPORTE",
+            "balance": 4189,
+            "children": [
+              {
+                "id": "511701",
+                "name": "ALOJAMIENTO Y MANUTENCION",
+                "balance": 4463,
+                "children": [
+                  {
+                    "id": "511701061",
+                    "name": "ALOJAMIENTO Y MANUTENCION",
+                    "balance": 3272,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5118",
+            "name": "DEPRECIACI\u00d3N DE PROPIEDADES PLANTA Y EQUIPO",
+            "balance": 4545,
+            "children": [
+              {
+                "id": "511803",
+                "name": "DPRECIACION EQUIPO DE OFICINA",
+                "balance": 1662,
+                "children": [
+                  {
+                    "id": "511803061",
+                    "name": "DPRECIACION EQUIPO DE OFICINA",
+                    "balance": 4991,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511804",
+                "name": "DEPRECIACION EQ COMPUTACION Y COMUNICACION",
+                "balance": 1119,
+                "children": [
+                  {
+                    "id": "511804061",
+                    "name": "DEPRECIACION EQ COMPUTACION Y COMUNICACION",
+                    "balance": 2895,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "511812",
+                "name": "DEPRECIACION MEJORAS PROPIEDAD AJENA",
+                "balance": 4784,
+                "children": [
+                  {
+                    "id": "511812061",
+                    "name": "DEPRECIACION MEJORAS PROPIEDAD AJENA",
+                    "balance": 2450,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5121",
+            "name": "DETERIORO DE CUENTAS POR COBRAR",
+            "balance": 4215,
+            "children": [
+              {
+                "id": "512101",
+                "name": "DEUDORES DEL SISTEMA COSTO",
+                "balance": 3466,
+                "children": [
+                  {
+                    "id": "512101061",
+                    "name": "DETERIORO DE CLIENTES PACIENTES",
+                    "balance": 4942,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5123",
+            "name": "DETERIORO DE PROPIEDADES, PLANTA Y EQUIPO MODELO DEL COSTO",
+            "balance": 4063,
+            "children": [
+              {
+                "id": "512304",
+                "name": "DETERIORO EQUIPO DE OFICINA",
+                "balance": 3396,
+                "children": [
+                  {
+                    "id": "512304061",
+                    "name": "DETERIORO EQUIPO DE OFICINA",
+                    "balance": 1905,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "512303",
+                "name": "DETERIORO MAQUINARIA Y EQUIPO",
+                "balance": 3709,
+                "children": [
+                  {
+                    "id": "512303061",
+                    "name": "DETERIORO MAQUINARIA Y EQUIPO",
+                    "balance": 3390,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "512305",
+                "name": "DETERIORO EQUIPO DE COPMPUTACION Y COMUNICACION",
+                "balance": 1804,
+                "children": [
+                  {
+                    "id": "512305061",
+                    "name": "DETERIORO EQUIPO DE COMPUTACION Y COMUNICACION",
+                    "balance": 3603,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "512306",
+                "name": "DETERIORO EQUIPO MEDICO CIENTIFICO",
+                "balance": 3408,
+                "children": [
+                  {
+                    "id": "512306061",
+                    "name": "DETERIORO EQUIPO MEDICO CIENTIFICO",
+                    "balance": 4077,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "512308",
+                "name": "DETERIORO EQUIPO DE TRANSPORTE",
+                "balance": 1706,
+                "children": [
+                  {
+                    "id": "512308061",
+                    "name": "DETERIORO EQUIPO DE TRANSPORTE",
+                    "balance": 4483,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "512312",
+                "name": "DETERIORO MEJORAS EN PROPIEDAD AJENA",
+                "balance": 1677,
+                "children": [
+                  {
+                    "id": "512312061",
+                    "name": "DETERIORO MEJORAS EN PROPIEDAD AJENA",
+                    "balance": 1581,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5130",
+            "name": "AMORTIZACI\u00d3N ACTIVOS INTANGIBLES AL COSTO",
+            "balance": 2629,
+            "children": [
+              {
+                "id": "513003",
+                "name": "PROGRAMAS Y APLICACIONES INFORMATICAS",
+                "balance": 3534,
+                "children": [
+                  {
+                    "id": "513003061",
+                    "name": "LICENCIAS Y SOFTWARE INFORMATICO",
+                    "balance": 1433,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5136",
+            "name": "OTROS GASTOS",
+            "balance": 2438,
+            "children": [
+              {
+                "id": "513603",
+                "name": "GASTOS DE REPRESENTACI\u00d3N Y RELACIONES P\u00daBLICAS",
+                "balance": 4236,
+                "children": [
+                  {
+                    "id": "513603061",
+                    "name": "GASTOS DE REPRESENTACI\u00d3N Y RELACIONES P\u00daBLICAS",
+                    "balance": 1269,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "513604",
+                "name": "ELEMENTOS DE ASEO Y CAFETER\u00cdA",
+                "balance": 1246,
+                "children": [
+                  {
+                    "id": "513604061",
+                    "name": "ELEMENTOS DE ASEO Y CAFETER\u00cdA",
+                    "balance": 4349,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "513605",
+                "name": "\u00daTILES PAPELER\u00cdA Y FOTOCOPIAS",
+                "balance": 4204,
+                "children": [
+                  {
+                    "id": "513605061",
+                    "name": "\u00daTILES PAPELER\u00cdA Y FOTOCOPIAS",
+                    "balance": 2331,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "513608",
+                "name": "TAXIS Y BUSES",
+                "balance": 4518,
+                "children": [
+                  {
+                    "id": "513608061",
+                    "name": "TAXIS Y BUSES",
+                    "balance": 4168,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "513611",
+                "name": "CASINO Y RESTAURANTE",
+                "balance": 3812,
+                "children": [
+                  {
+                    "id": "513611061",
+                    "name": "CASINO Y RESTAURANTE",
+                    "balance": 4658,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "513612",
+                "name": "PARQUEADEROS",
+                "balance": 3970,
+                "children": [
+                  {
+                    "id": "513612061",
+                    "name": "PARQUEADEROS",
+                    "balance": 4546,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "513614",
+                "name": "OTROS GASTOS DIVERSOS",
+                "balance": 3116,
+                "children": [
+                  {
+                    "id": "513614061",
+                    "name": "OTROS GASTOS DIVERSOS",
+                    "balance": 2521,
+                    "children": []
+                  },
+                  {
+                    "id": "513614062",
+                    "name": "GASTOS NO DEDUCIBLES",
+                    "balance": 1112,
+                    "children": []
+                  },
+                  {
+                    "id": "513614063",
+                    "name": "IMPUESTOS ASUMIDOS",
+                    "balance": 2854,
+                    "children": []
+                  },
+                  {
+                    "id": "513614064",
+                    "name": "AJUSTE AL PESO",
+                    "balance": 4885,
+                    "children": []
+                  },
+                  {
+                    "id": "513614066",
+                    "name": "MULTAS  SANCIONES Y LITIGIOS",
+                    "balance": 1658,
+                    "children": []
+                  },
+                  {
+                    "id": "513614067",
+                    "name": "CONSTITUCION DE GARANTIAS",
+                    "balance": 3538,
+                    "children": []
+                  },
+                  {
+                    "id": "513614068",
+                    "name": "GASTOS EJERCICIOS ANTERIORES",
+                    "balance": 3634,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "513615",
+                "name": "MULTAS Y SANCIONES",
+                "balance": 2604,
+                "children": [
+                  {
+                    "id": "513615061",
+                    "name": "MULTAS Y SANCIONES",
+                    "balance": 3096,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "52",
+        "name": "OPERACIONALES DE VENTAS",
+        "balance": 1923,
+        "children": [
+          {
+            "id": "5208",
+            "name": "GASTOS POR IMPUESTOS DISTINTOS DE GASTOS POR IMPUESTOS A LAS GANANCIAS",
+            "balance": 1497,
+            "children": [
+              {
+                "id": "520810",
+                "name": "IVA DESCONTABLE",
+                "balance": 2632,
+                "children": [
+                  {
+                    "id": "520810061",
+                    "name": "IVA MAYOR VALOR   HONORARIOS",
+                    "balance": 3706,
+                    "children": []
+                  },
+                  {
+                    "id": "520810062",
+                    "name": "IVA MAYOR VALOR   SERVICIOS",
+                    "balance": 2951,
+                    "children": []
+                  },
+                  {
+                    "id": "520810063",
+                    "name": "IVA MAYOR VALOR   OTROS GASTOS DIVERSOS",
+                    "balance": 3927,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5213",
+            "name": "SERVICIOS",
+            "balance": 2472,
+            "children": [
+              {
+                "id": "521311",
+                "name": "PUBLICIDAD",
+                "balance": 4024,
+                "children": [
+                  {
+                    "id": "521311061",
+                    "name": "PUBLICIDAD",
+                    "balance": 3102,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5222",
+            "name": "DETERIORO DE INVENTARIO",
+            "balance": 1859,
+            "children": [
+              {
+                "id": "522203",
+                "name": "INV PARA SER CONSUMIDO EN LA PREST DEL SERVICIO",
+                "balance": 4948,
+                "children": [
+                  {
+                    "id": "522203061",
+                    "name": "INV PARA SER CONSUMIDO EN LA PREST DEL SERVICIO",
+                    "balance": 4043,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5236",
+            "name": "OTROS GASTOS",
+            "balance": 3362,
+            "children": [
+              {
+                "id": "523614",
+                "name": "OTROS GASTOS DIVERSOS",
+                "balance": 4044,
+                "children": [
+                  {
+                    "id": "523614061",
+                    "name": "COMISIONES DE VENTAS",
+                    "balance": 4551,
+                    "children": []
+                  },
+                  {
+                    "id": "523614062",
+                    "name": "OTROS GASTOS DIVERSOS EN VENTAS",
+                    "balance": 4892,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "53",
+        "name": "GASTOS FINANCIEROS",
+        "balance": 2449,
+        "children": [
+          {
+            "id": "5301",
+            "name": "GASTOS FINANCIEROS",
+            "balance": 4416,
+            "children": [
+              {
+                "id": "530101",
+                "name": "GASTOS FINANCIEROS",
+                "balance": 3053,
+                "children": [
+                  {
+                    "id": "530101061",
+                    "name": "GASTOS BANCARIOS",
+                    "balance": 1030,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "530102",
+                "name": "COMISIONES",
+                "balance": 1131,
+                "children": [
+                  {
+                    "id": "530102061",
+                    "name": "COMISIONES BANCARIAS",
+                    "balance": 3483,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "530103",
+                "name": "INTERESES POR TRANSACCIONES CON NO VINCULADOS ECONOMICOS EN PARTES RELACIONADAS",
+                "balance": 4031,
+                "children": [
+                  {
+                    "id": "530103061",
+                    "name": "INTERESES CORRIENTES",
+                    "balance": 3452,
+                    "children": []
+                  },
+                  {
+                    "id": "530103062",
+                    "name": "INTERESES DE MORA",
+                    "balance": 3310,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "530104",
+                "name": "DIFERNCIA EN CAMBIO",
+                "balance": 3479,
+                "children": [
+                  {
+                    "id": "530104061",
+                    "name": "DIFERENCIA EN CAMBIO",
+                    "balance": 3844,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "530106",
+                "name": "GRAVAMEN A LOS MOVIMIENTOS FINANCIEROS",
+                "balance": 2865,
+                "children": [
+                  {
+                    "id": "530106061",
+                    "name": "GRAVAMEN A LOS MOVIMIENTOS FINANCIEROS",
+                    "balance": 4934,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5302",
+            "name": "PERDIDA EN INVERSIONES E INSTRUMENTOS FINANCIEROS",
+            "balance": 2561,
+            "children": [
+              {
+                "id": "530201",
+                "name": "PERDIDA EN ACTIVOS FINANCIEROS MEDIDOS A VALOR RAZONABLE",
+                "balance": 2854,
+                "children": [
+                  {
+                    "id": "530201061",
+                    "name": "PERDIDA EN RETIRO DE ACTIVOS",
+                    "balance": 2921,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "54",
+        "name": "OTROS GASTOS",
+        "balance": 4894,
+        "children": [
+          {
+            "id": "5401",
+            "name": "OTROS GASTOS",
+            "balance": 1724,
+            "children": [
+              {
+                "id": "540101",
+                "name": "OTROS GASTOS",
+                "balance": 2511,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "55",
+        "name": "IMPUESTO A LAS GANANCIAS",
+        "balance": 1189,
+        "children": [
+          {
+            "id": "5501",
+            "name": "IMPUESTO A LA GANANCIAS CORRIENTE",
+            "balance": 2746,
+            "children": [
+              {
+                "id": "550101",
+                "name": "IMPUESTO DE RENTA Y COMPLEMENTARIO",
+                "balance": 2518,
+                "children": [
+                  {
+                    "id": "550101061",
+                    "name": "DEL EJERCICIO",
+                    "balance": 3170,
+                    "children": []
+                  },
+                  {
+                    "id": "550101062",
+                    "name": "EJERCICIOS ANTERIORES",
+                    "balance": 3614,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "name": "COSTOS OPERACIONALES",
+    "balance": 3862,
+    "children": [
+      {
+        "id": "61",
+        "name": "COSTOS POR ATENCI\u00d3N EN SALUD",
+        "balance": 4782,
+        "children": [
+          {
+            "id": "6101",
+            "name": "PRESTACION DE SERVICIOS DE SALUD",
+            "balance": 2206,
+            "children": [
+              {
+                "id": "610108",
+                "name": "OTRAS ACTIVIDADES RELACIONADAS CON LA SALUD",
+                "balance": 1312,
+                "children": [
+                  {
+                    "id": "610108101",
+                    "name": "SUELDOS Y SALARIOS",
+                    "balance": 2084,
+                    "children": []
+                  },
+                  {
+                    "id": "610108102",
+                    "name": "LICENCIA POR LUTO REMUNERADA",
+                    "balance": 4667,
+                    "children": []
+                  },
+                  {
+                    "id": "610108103",
+                    "name": "APOYO SOSTENIMIENTO   APRENDICES",
+                    "balance": 4849,
+                    "children": []
+                  },
+                  {
+                    "id": "610108104",
+                    "name": "LICENCIA REMUNERADA SUELDO",
+                    "balance": 2588,
+                    "children": []
+                  },
+                  {
+                    "id": "610108105",
+                    "name": "SALARIO INTEGRAL",
+                    "balance": 1827,
+                    "children": []
+                  },
+                  {
+                    "id": "610108106",
+                    "name": "LICENCIA REMUN. SALARIO INTEGRAL",
+                    "balance": 4559,
+                    "children": []
+                  },
+                  {
+                    "id": "610108107",
+                    "name": "HORAS EXTRAS Y RECARGOS",
+                    "balance": 4336,
+                    "children": []
+                  },
+                  {
+                    "id": "610108108",
+                    "name": "SUBSIDIO DE ALIMENTACION",
+                    "balance": 3138,
+                    "children": []
+                  },
+                  {
+                    "id": "610108109",
+                    "name": "AUXILIO DE TRANSPORTE",
+                    "balance": 1844,
+                    "children": []
+                  },
+                  {
+                    "id": "610108110",
+                    "name": "BONIFICACIONES",
+                    "balance": 3710,
+                    "children": []
+                  },
+                  {
+                    "id": "610108111",
+                    "name": "INCAPACIDADES",
+                    "balance": 2356,
+                    "children": []
+                  },
+                  {
+                    "id": "610108112",
+                    "name": "INCAP POR LICENCIA DE MATERNIDAD",
+                    "balance": 1421,
+                    "children": []
+                  },
+                  {
+                    "id": "610108113",
+                    "name": "INDEMNIZACIONES LABORALES",
+                    "balance": 4825,
+                    "children": []
+                  },
+                  {
+                    "id": "610108114",
+                    "name": "APORTES ARL",
+                    "balance": 3893,
+                    "children": []
+                  },
+                  {
+                    "id": "610108115",
+                    "name": "APORTES A EPS",
+                    "balance": 2992,
+                    "children": []
+                  },
+                  {
+                    "id": "610108116",
+                    "name": "APORTES A FONDOS DE PENSIONES Y/O CESANTIAS",
+                    "balance": 2884,
+                    "children": []
+                  },
+                  {
+                    "id": "610108117",
+                    "name": "APORTES A CAJA COMPENSACION FAMILIAR",
+                    "balance": 4370,
+                    "children": []
+                  },
+                  {
+                    "id": "610108118",
+                    "name": "APORTES AL ICBF",
+                    "balance": 4772,
+                    "children": []
+                  },
+                  {
+                    "id": "610108119",
+                    "name": "APORTES SENA",
+                    "balance": 2264,
+                    "children": []
+                  },
+                  {
+                    "id": "610108120",
+                    "name": "CESANTIAS",
+                    "balance": 2143,
+                    "children": []
+                  },
+                  {
+                    "id": "610108121",
+                    "name": "INTERESES SOBRE CESANTIAS",
+                    "balance": 3419,
+                    "children": []
+                  },
+                  {
+                    "id": "610108122",
+                    "name": "VACACIONES",
+                    "balance": 3044,
+                    "children": []
+                  },
+                  {
+                    "id": "610108123",
+                    "name": "PRIMA DE SERVICIOS",
+                    "balance": 4785,
+                    "children": []
+                  },
+                  {
+                    "id": "610108124",
+                    "name": "COMISIONES ATENCION PACIENTES",
+                    "balance": 4621,
+                    "children": []
+                  },
+                  {
+                    "id": "610108125",
+                    "name": "DOTACI\u00d3N Y SUMINISTRO A TRABAJADORES",
+                    "balance": 1274,
+                    "children": []
+                  },
+                  {
+                    "id": "610108126",
+                    "name": "CAPACITACION AL PERSONAL",
+                    "balance": 3839,
+                    "children": []
+                  },
+                  {
+                    "id": "610108127",
+                    "name": "BONIFICACIONES POR RETIRO",
+                    "balance": 1029,
+                    "children": []
+                  },
+                  {
+                    "id": "610108128",
+                    "name": "AUXILIO DE CONECTIVIDAD",
+                    "balance": 1780,
+                    "children": []
+                  },
+                  {
+                    "id": "610108199",
+                    "name": "OTROS GASTOS DE PERSONAL",
+                    "balance": 1616,
+                    "children": []
+                  },
+                  {
+                    "id": "610108201",
+                    "name": "HONORARIOS PSICOLOGO",
+                    "balance": 1430,
+                    "children": []
+                  },
+                  {
+                    "id": "610108202",
+                    "name": "HONORARIOS UROLOGO",
+                    "balance": 2461,
+                    "children": []
+                  },
+                  {
+                    "id": "610108203",
+                    "name": "HONORARIOS ANESTESIOLO",
+                    "balance": 4807,
+                    "children": []
+                  },
+                  {
+                    "id": "610108204",
+                    "name": "HONORARIOS GENETISTA",
+                    "balance": 4330,
+                    "children": []
+                  },
+                  {
+                    "id": "610108205",
+                    "name": "HONORARIOS GINECOLOGIA Y OBSTETRICIA",
+                    "balance": 4615,
+                    "children": []
+                  },
+                  {
+                    "id": "610108206",
+                    "name": "HONORARIOS CITOGENETICOS",
+                    "balance": 4164,
+                    "children": []
+                  },
+                  {
+                    "id": "610108298",
+                    "name": "IVA POR HONORARIOS   COSTO",
+                    "balance": 2904,
+                    "children": []
+                  },
+                  {
+                    "id": "610108299",
+                    "name": "OTROS HONORARIOS",
+                    "balance": 4821,
+                    "children": []
+                  },
+                  {
+                    "id": "610108301",
+                    "name": "ARRENDAMIENTOS CONSULTORIOS BOGOTA",
+                    "balance": 4005,
+                    "children": []
+                  },
+                  {
+                    "id": "610108398",
+                    "name": "IVA POR ARRENDAMIENTOS   COSTO",
+                    "balance": 2506,
+                    "children": []
+                  },
+                  {
+                    "id": "610108401",
+                    "name": "SERVICIOS POR LABORATORIO EXTERNO",
+                    "balance": 1503,
+                    "children": []
+                  },
+                  {
+                    "id": "610108402",
+                    "name": "SERVICIOS POR  BANCO DE SEMEN",
+                    "balance": 4298,
+                    "children": []
+                  },
+                  {
+                    "id": "610108403",
+                    "name": "SERVICIOS DE ENFERMERIA",
+                    "balance": 2615,
+                    "children": []
+                  },
+                  {
+                    "id": "610108404",
+                    "name": "ADMINISTRACION OFICINA",
+                    "balance": 3172,
+                    "children": []
+                  },
+                  {
+                    "id": "610108405",
+                    "name": "MANTENIMIENTO DE EQUIPO MEDICO Y CIENTIFICO",
+                    "balance": 2519,
+                    "children": []
+                  },
+                  {
+                    "id": "610108406",
+                    "name": "SERVICIOS PUBLICOS",
+                    "balance": 4538,
+                    "children": []
+                  },
+                  {
+                    "id": "610108407",
+                    "name": "TRANSPORTE FLETESACARREOS",
+                    "balance": 4462,
+                    "children": []
+                  },
+                  {
+                    "id": "610108408",
+                    "name": "TRANSPORTE TERRESTRE DE PASAJEROS",
+                    "balance": 1378,
+                    "children": []
+                  },
+                  {
+                    "id": "610108409",
+                    "name": "PASAJE AEREO",
+                    "balance": 1429,
+                    "children": []
+                  },
+                  {
+                    "id": "610108410",
+                    "name": "MANTENIMIENTO EQ TRANSPORTE",
+                    "balance": 4050,
+                    "children": []
+                  },
+                  {
+                    "id": "610108411",
+                    "name": "TAXIS Y BUSES",
+                    "balance": 1905,
+                    "children": []
+                  },
+                  {
+                    "id": "610108412",
+                    "name": "MANTENIMIENTO DE EQUIPO DE OFICINA",
+                    "balance": 1408,
+                    "children": []
+                  },
+                  {
+                    "id": "610108413",
+                    "name": "PRODUCTOS DE ASEO Y CAFETERIA",
+                    "balance": 3430,
+                    "children": []
+                  },
+                  {
+                    "id": "610108414",
+                    "name": "MANTENIMIENTO EQUIPO DE COMPUTO",
+                    "balance": 3839,
+                    "children": []
+                  },
+                  {
+                    "id": "610108415",
+                    "name": "MANTENIMIENTO EQUIPO DE TELECOMUNICACIONES",
+                    "balance": 2619,
+                    "children": []
+                  },
+                  {
+                    "id": "610108416",
+                    "name": "MANTENIMIENTO CONSTRUCCIONES Y EDIFICACIONES",
+                    "balance": 2603,
+                    "children": []
+                  },
+                  {
+                    "id": "610108417",
+                    "name": "CASINO Y RESTAURANTE",
+                    "balance": 1925,
+                    "children": []
+                  },
+                  {
+                    "id": "610108418",
+                    "name": "SERVICIOS EXTERNOS ASEO Y CAFETERIA",
+                    "balance": 3946,
+                    "children": []
+                  },
+                  {
+                    "id": "610108498",
+                    "name": "IVA POR SERVICIOS   COSTO",
+                    "balance": 4993,
+                    "children": []
+                  },
+                  {
+                    "id": "610108499",
+                    "name": "OTROS SERVICIOS",
+                    "balance": 2394,
+                    "children": []
+                  },
+                  {
+                    "id": "610108504",
+                    "name": "MEZCLAS CO2 Y DEMAS",
+                    "balance": 2767,
+                    "children": []
+                  },
+                  {
+                    "id": "610108505",
+                    "name": "CELULAS MADRES",
+                    "balance": 3356,
+                    "children": []
+                  },
+                  {
+                    "id": "610108593",
+                    "name": "CONSUMO INVENTARIO REACTIVO MOLECULAR",
+                    "balance": 3003,
+                    "children": []
+                  },
+                  {
+                    "id": "610108594",
+                    "name": "CONSUMO INVENTARIO MEDICAMENTOS",
+                    "balance": 2353,
+                    "children": []
+                  },
+                  {
+                    "id": "610108595",
+                    "name": "CONSUMO INVENTARIO DOSPOSITIVOS MEDICO QUIRURGICOS",
+                    "balance": 1417,
+                    "children": []
+                  },
+                  {
+                    "id": "610108596",
+                    "name": "CONSUMO INVENTARIO MATERIALES REACTIVOS Y DE LABORATORIO",
+                    "balance": 4235,
+                    "children": []
+                  },
+                  {
+                    "id": "610108597",
+                    "name": "CONSUMO INVENTARIO OTROS MATERIALES E INSUMOS",
+                    "balance": 3095,
+                    "children": []
+                  },
+                  {
+                    "id": "610108598",
+                    "name": "IVA POR INVENTARIO   COSTO",
+                    "balance": 1231,
+                    "children": []
+                  },
+                  {
+                    "id": "610108599",
+                    "name": "CONSUMO DE INVENTARIOS EN ATENCION MEDICA",
+                    "balance": 1791,
+                    "children": []
+                  },
+                  {
+                    "id": "610108601",
+                    "name": "DEPRECIACION DE EQUIPO M\u00c9DICO CIENT\u00cdFICO",
+                    "balance": 1794,
+                    "children": []
+                  },
+                  {
+                    "id": "610108602",
+                    "name": "DEPRECIACION MEJORAS EN PROPIEDAD AJENA",
+                    "balance": 2847,
+                    "children": []
+                  },
+                  {
+                    "id": "610108603",
+                    "name": "DEPRECIACION DE EQ OFICINA",
+                    "balance": 2982,
+                    "children": []
+                  },
+                  {
+                    "id": "610108604",
+                    "name": "DEPRECIACION EQ COMPUTACION",
+                    "balance": 3118,
+                    "children": []
+                  },
+                  {
+                    "id": "610108605",
+                    "name": "DEPRECIACION EQ TELECOMUNICACIONES",
+                    "balance": 3633,
+                    "children": []
+                  },
+                  {
+                    "id": "610108606",
+                    "name": "DEPRECIACION EQ DE TRANSPORTE",
+                    "balance": 3368,
+                    "children": []
+                  },
+                  {
+                    "id": "610108701",
+                    "name": "GASTOS DE VIAJE   ALOJAMIENTO Y MANUTENCION",
+                    "balance": 1780,
+                    "children": []
+                  },
+                  {
+                    "id": "610108702",
+                    "name": "GASTOS DE VIAJE   TRANSPORTE",
+                    "balance": 1317,
+                    "children": []
+                  },
+                  {
+                    "id": "610108798",
+                    "name": "IVA GASTOS DE VIAJE COSTO",
+                    "balance": 3111,
+                    "children": []
+                  },
+                  {
+                    "id": "610108801",
+                    "name": "SEGUROS EQUIPOS MEDICOS",
+                    "balance": 4966,
+                    "children": []
+                  },
+                  {
+                    "id": "610108898",
+                    "name": "IVA MAYOR VALOR COSTO SEGUROS",
+                    "balance": 4339,
+                    "children": []
+                  },
+                  {
+                    "id": "610108901",
+                    "name": "OTROS COSTOS",
+                    "balance": 3215,
+                    "children": []
+                  },
+                  {
+                    "id": "610108902",
+                    "name": "LICENCIAS Y SOFTWARE INFORMATICO",
+                    "balance": 3623,
+                    "children": []
+                  },
+                  {
+                    "id": "610108903",
+                    "name": "CONTRIBUCION SUPERSALUD",
+                    "balance": 1742,
+                    "children": []
+                  },
+                  {
+                    "id": "610108904",
+                    "name": "OTROS COSTOS DE ADECUACION E INSTALACION",
+                    "balance": 2245,
+                    "children": []
+                  },
+                  {
+                    "id": "610108905",
+                    "name": "COSTOS POR PAPELERIA, TONER, GENERALES",
+                    "balance": 2470,
+                    "children": []
+                  },
+                  {
+                    "id": "610108906",
+                    "name": "COMBUSTIBLES Y LUBRICANTES",
+                    "balance": 4965,
+                    "children": []
+                  },
+                  {
+                    "id": "610108907",
+                    "name": "OTROS COSTOS LEGALES",
+                    "balance": 2789,
+                    "children": []
+                  },
+                  {
+                    "id": "610108908",
+                    "name": "GASTOS DE REPRESENTACI\u00d3N",
+                    "balance": 2907,
+                    "children": []
+                  },
+                  {
+                    "id": "610108909",
+                    "name": "INSTRUMENTAL Y DISPOSITIVOS",
+                    "balance": 2618,
+                    "children": []
+                  },
+                  {
+                    "id": "610108910",
+                    "name": "ASISTENCIALES EXTERNOS EN SALUD",
+                    "balance": 2995,
+                    "children": []
+                  },
+                  {
+                    "id": "610108998",
+                    "name": "IVA MAYOR VALOR   OTROS COSTOS",
+                    "balance": 3519,
+                    "children": []
+                  },
+                  {
+                    "id": "610108999",
+                    "name": "IVA MAYOR VALOR   VENTAS EXENTO",
+                    "balance": 1413,
+                    "children": []
+                  },
+                  {
+                    "id": "610108031",
+                    "name": "BONO CUMPLEA\u00d1OS NO SALARIAL",
+                    "balance": 2848,
+                    "children": []
+                  },
+                  {
+                    "id": "610108033",
+                    "name": "BONO MUDANZA NO SALARIAL",
+                    "balance": 1898,
+                    "children": []
+                  },
+                  {
+                    "id": "610108129",
+                    "name": "AUXILIO EDUCATIVO",
+                    "balance": 3541,
+                    "children": []
+                  },
+                  {
+                    "id": "610108130",
+                    "name": "CALAMIDAD DOM\u00c9STICA",
+                    "balance": 2598,
+                    "children": []
+                  },
+                  {
+                    "id": "610108131",
+                    "name": "BONO CUMPLEA\u00d1OS NO SALARIAL",
+                    "balance": 4925,
+                    "children": []
+                  },
+                  {
+                    "id": "610108132",
+                    "name": "BONO CANASTA NO SALARIAL",
+                    "balance": 3857,
+                    "children": []
+                  },
+                  {
+                    "id": "610108133",
+                    "name": "BONO MUDANZA NO SALARIAL",
+                    "balance": 1837,
+                    "children": []
+                  },
+                  {
+                    "id": "610108134",
+                    "name": "AUXILIO MOVILIZACI\u00d3N",
+                    "balance": 3224,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
