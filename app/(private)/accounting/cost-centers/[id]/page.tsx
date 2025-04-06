@@ -59,7 +59,7 @@ export default function Page() {
   }
 
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isCostCenterLoading ? "blur-[4px]" : "blur-none")}>
           {isCostCenterLoading ? placeholder(13, true) : costCenter?.name}
@@ -154,6 +154,6 @@ export default function Page() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

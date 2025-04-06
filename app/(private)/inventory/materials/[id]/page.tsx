@@ -1,7 +1,7 @@
 import Header from '@/components/header';
 import { materialsInventoryMock } from '../mocks/materials-inventory';
 
-export default async function MaterialInventoryEntryPage({
+export default async function Page({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -13,7 +13,7 @@ export default async function MaterialInventoryEntryPage({
   );
 
   return (
-    <>
+    <div>
       <Header
         title={
           materialInventoryEntry?.code + ' - ' + materialInventoryEntry?.name ||
@@ -91,6 +91,6 @@ export default async function MaterialInventoryEntryPage({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

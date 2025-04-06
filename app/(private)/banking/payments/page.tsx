@@ -152,12 +152,12 @@ const data: any[] = [
   }
 ]
 
-export default function PaymentsPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   return (
-    <>
+    <div>
       <Header title="Pagos">
         <Button
           className="ml-auto"
@@ -176,6 +176,6 @@ export default function PaymentsPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   )
 }

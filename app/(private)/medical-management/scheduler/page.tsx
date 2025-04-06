@@ -42,7 +42,7 @@ const filtersConfig: Record<string, FilterConfig> = {
   },
 };
 
-export default function SchedulerPage() {
+export default function Page() {
   const searchParams = useSearchParams();
 
   const [selectedDate, setSelectedDate] = React.useState(new Date());
@@ -109,7 +109,7 @@ export default function SchedulerPage() {
   const adaptedSelectedDate = adaptSelectedDate();
 
   return (
-    <>
+    <div>
       <Header title={view === 'table' ? 'Tabla' : 'Agenda'}>
         <div className='flex items-center gap-2 ml-auto'>
           <Button
@@ -176,6 +176,6 @@ export default function SchedulerPage() {
       <NewAppointmentDialog />
       <AppointmentDetailsDialog />
       <EditAppointmentDialog />
-    </>
+    </div>
   );
 }

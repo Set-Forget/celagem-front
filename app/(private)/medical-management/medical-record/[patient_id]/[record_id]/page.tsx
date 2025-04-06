@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 export default function MedicalRecord() {
 
   return (
-    <>
+    <div>
       <Header title="Visita N° 123456">
 
       </Header>
@@ -60,6 +60,6 @@ export default function MedicalRecord() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

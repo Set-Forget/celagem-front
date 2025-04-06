@@ -73,7 +73,7 @@ export default function Page() {
   const [tab, setTab] = useState(tabs[0].value)
 
   return (
-    <>
+    <div>
       <Header title="Detalles del paciente">
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
@@ -190,6 +190,6 @@ export default function Page() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-    </>
+    </div>
   )
 }

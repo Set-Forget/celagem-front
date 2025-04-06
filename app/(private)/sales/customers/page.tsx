@@ -9,14 +9,14 @@ import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 import { useListCustomersQuery } from "@/lib/services/customers";
 
-export default function CustomersPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   const { data: customers, isLoading: isCustomersLoading } = useListCustomersQuery()
 
   return (
-    <>
+    <div>
       <Header>
         <Button
           className="ml-auto"
@@ -36,6 +36,6 @@ export default function CustomersPage() {
           loading={isCustomersLoading}
         />
       </div>
-    </>
+    </div>
   )
 }

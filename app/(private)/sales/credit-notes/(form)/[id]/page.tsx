@@ -65,7 +65,7 @@ export default function Page() {
   const status = creditNoteStatus[creditNote?.status as keyof typeof creditNoteStatus];
 
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isCreditNoteLoading ? "blur-[4px]" : "blur-none")}>
           {isCreditNoteLoading ? placeholder(13, true) : creditNote?.number}
@@ -118,6 +118,6 @@ export default function Page() {
         onTabChange={setTab}
         triggerClassName="mt-4"
       />
-    </>
+    </div>
   )
 }

@@ -29,7 +29,7 @@ const accounts_paid_from = [
   { id: "af4", name: "CAJA CHICA" },
 ];
 
-export default function NewPurchaseReceivePage() {
+export default function Page() {
   const newPaymentForm = useForm<z.infer<typeof newPaymentSchema>>({
     resolver: zodResolver(newPaymentSchema),
     defaultValues: {
@@ -66,7 +66,7 @@ export default function NewPurchaseReceivePage() {
   }
 
   return (
-    <>
+    <div>
       <Header />
       <Separator />
       <div className="flex flex-col h-full justify-between">
@@ -298,6 +298,6 @@ export default function NewPurchaseReceivePage() {
           </div>
         </Form>
       </div>
-    </>
+    </div>
   )
 }

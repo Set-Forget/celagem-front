@@ -38,7 +38,7 @@ const normalizedSchema = z.object({
 
 export type NormalizedSchema = z.infer<typeof normalizedSchema>
 
-export default function TemplatePage() {
+export default function Page() {
   const params = useParams<{ id: string }>();
 
   const id = Number(params.id)
@@ -186,7 +186,7 @@ export default function TemplatePage() {
   }, [template])
 
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isTemplateLoading ? "blur-[4px]" : "blur-none")}>
           {!template ? placeholder(14, true) : template.name}
@@ -325,6 +325,6 @@ export default function TemplatePage() {
         <EditSectionDialog />
         <EditTemplateDialog />
       </Form>
-    </>
+    </div>
   )
 }

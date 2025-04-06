@@ -9,12 +9,12 @@ import { medicalExamsColumns } from './components/columns';
 import Toolbar from './components/toolbar';
 import { medicalExamsMock } from './mocks/medicalExamsMock';
 
-export default function ProductsPage() {
+export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
   return (
-    <>
+    <div>
       <Header title="Examenes Medicos">
         <Button
           className="ml-auto"
@@ -33,6 +33,6 @@ export default function ProductsPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   );
 }

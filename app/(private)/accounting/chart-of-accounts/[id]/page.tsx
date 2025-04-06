@@ -12,7 +12,7 @@ import { useState } from "react"
 import { DateRange } from "react-day-picker"
 import { GeneralLedgerItemsTable } from "./components/general-ledger-items-table"
 
-export default function GeneralLedgerPage({
+export default function Page({
   params,
 }: {
   params: Promise<{ id: string }>
@@ -24,7 +24,7 @@ export default function GeneralLedgerPage({
   //const customerId = (await params).id
 
   return (
-    <>
+    <div>
       <Header title="EFECTIVO Y EQUIVALENTES AL EFECTIVO">
         <div className={cn("grid gap-2 ml-auto")}>
           <Popover>
@@ -84,6 +84,6 @@ export default function GeneralLedgerPage({
           <GeneralLedgerItemsTable />
         </div>
       </div>
-    </>
+    </div>
   )
 }

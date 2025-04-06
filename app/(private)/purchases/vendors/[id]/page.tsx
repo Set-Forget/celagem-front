@@ -75,7 +75,7 @@ const tabs = [
   }
 ]
 
-export default function SupplierPage() {
+export default function Page() {
   const { id } = useParams<{ id: string }>()
 
   const [tab, setTab] = useState(tabs[0].value)
@@ -83,7 +83,7 @@ export default function SupplierPage() {
   const { data: supplier, isLoading: isSupplierLoading } = useGetSupplierQuery(id)
 
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isSupplierLoading ? "blur-[4px]" : "blur-none")}>
           {isSupplierLoading ? placeholder(13, true) : supplier?.name}
@@ -191,6 +191,6 @@ export default function SupplierPage() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-    </>
+    </div>
   )
 }

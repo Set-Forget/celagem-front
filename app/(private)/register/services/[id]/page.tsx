@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { servicesMock } from '../mocks/servicesMock';
 
-export default function ProductPage() {
+export default function Page() {
   const router = useRouter();
   const pathname = usePathname()
 
@@ -14,7 +14,7 @@ export default function ProductPage() {
   const service = servicesMock.find((proc) => proc.id === parseInt(id as string));
 
   return (
-    <>
+    <div>
       <Header title={service?.code || 'Servicio'}>
         <div className="ml-auto flex gap-2">
           <Button
@@ -53,6 +53,6 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

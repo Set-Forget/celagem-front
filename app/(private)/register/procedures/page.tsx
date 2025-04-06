@@ -9,12 +9,12 @@ import { proceduresColumns } from './components/columns';
 import Toolbar from './components/toolbar';
 import { proceduresMock } from './mocks/proceduresMock';
 
-export default function ProceduresPage() {
+export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
   return (
-    <>
+    <div>
       <Header title="Actos Clinicos">
         <Button
           className="ml-auto"
@@ -34,6 +34,6 @@ export default function ProceduresPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   );
 }

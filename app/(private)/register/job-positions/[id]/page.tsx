@@ -7,7 +7,7 @@ import { jobPositionsMock } from '../mocks/jobPositionsMock';
 
 import { useParams, usePathname, useRouter } from 'next/navigation';
 
-export default function JobPositionPage() {
+export default function Page() {
   const router = useRouter();
   const pathname = usePathname()
 
@@ -18,7 +18,7 @@ export default function JobPositionPage() {
   );
 
   return (
-    <>
+    <div>
       <Header title={jobPosition?.code || 'Puesto de trabajo'}>
         <div className="ml-auto flex gap-2">
           <Button
@@ -57,6 +57,6 @@ export default function JobPositionPage() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

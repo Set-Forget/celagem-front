@@ -54,12 +54,12 @@ const PATIENT_DATA = [
   }
 ]
 
-export default function MedicalRecords() {
+export default function Page() {
   const router = useRouter()
   const pathname = usePathname()
 
   return (
-    <>
+    <div>
       <Header title="Paciente Juan Pérez" />
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
         <DataTable
@@ -69,6 +69,6 @@ export default function MedicalRecords() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   )
 }

@@ -9,7 +9,7 @@ import { House } from 'lucide-react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { materialsMock } from '../mocks/materials';
 
-export default function MaterialPage() {
+export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -22,7 +22,7 @@ export default function MaterialPage() {
   );
 
   return (
-    <>
+    <div>
       <Header title={material?.code + ' - ' + material?.name}>
         <div className="ml-auto flex gap-2">
           <Button
@@ -98,6 +98,6 @@ export default function MaterialPage() {
           </div>
         </TabsContent>
       </Tabs>
-    </>
+    </div>
   );
 }

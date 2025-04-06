@@ -30,7 +30,7 @@ const tags = [
   { id: 3, name: "VIP" },
 ]
 
-export default function CustomerPage() {
+export default function Page() {
   const { id } = useParams<{ id: string }>()
 
   const { data: customer, isLoading: isCustomerLoading } = useGetCustomerQuery(Number(id))
@@ -38,7 +38,7 @@ export default function CustomerPage() {
   const status = customerStatus[String(customer?.status) as keyof typeof customerStatus];
 
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
           {isCustomerLoading ? placeholder(13, true) : customer?.name}
@@ -303,6 +303,6 @@ export default function CustomerPage() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-    </>
+    </div>
   )
 }

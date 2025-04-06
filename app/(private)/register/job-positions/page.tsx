@@ -9,12 +9,12 @@ import { jobPositionsColumns } from './components/columns';
 import Toolbar from './components/toolbar';
 import { jobPositionsMock } from './mocks/jobPositionsMock';
 
-export default function JobPositionsPage() {
+export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
   return (
-    <>
+    <div>
       <Header title="Puestos de trabajo">
         <Button
           className="ml-auto"
@@ -34,6 +34,6 @@ export default function JobPositionsPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   );
 }

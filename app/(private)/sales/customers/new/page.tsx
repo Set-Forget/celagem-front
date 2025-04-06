@@ -52,7 +52,7 @@ const accounts = [
   { number: "12", name: "INVERSIONES E INSTRUMENTOS DERIVADOS" }
 ];
 
-export default function NewCustomerPage() {
+export default function Page() {
   const router = useRouter()
 
   const [createCustomer, { isLoading: isCreatingCustomer }] = useCreateCustomerMutation()
@@ -89,7 +89,7 @@ export default function NewCustomerPage() {
   }
 
   return (
-    <>
+    <div>
       <Header title="Nuevo cliente" >
         <Button
           type="submit"
@@ -872,6 +872,6 @@ export default function NewCustomerPage() {
           </form>
         </Form>
       </div>
-    </>
+    </div>
   )
 }

@@ -8,7 +8,7 @@ import sampleData from "./data/accounts.json";
 export default function Page() {
 
   return (
-    <>
+    <div>
       <Header title="Plan de cuentas">
         <DropdownMenu>
           <DropdownMenuTrigger className="ml-auto" asChild>
@@ -29,6 +29,6 @@ export default function Page() {
       <div className="flex flex-col p-4 h-full justify-between">
         <NestedAccountTable data={sampleData} />
       </div>
-    </>
+    </div>
   )
 }

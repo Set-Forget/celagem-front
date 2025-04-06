@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { medicalExamsMock } from '../mocks/medicalExamsMock';
 
-export default function ProductPage() {
+export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -15,7 +15,7 @@ export default function ProductPage() {
   );
 
   return (
-    <>
+    <div>
       <Header
         title={
           medicalExam?.code + ' - ' + medicalExam?.description ||
@@ -72,6 +72,6 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

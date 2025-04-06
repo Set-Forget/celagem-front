@@ -11,14 +11,14 @@ import { usePathname, useRouter } from "next/navigation";
 import Toolbar from "./components/toolbar";
 import { useListCostCentersQuery } from "@/lib/services/cost-centers";
 
-export default function CostsCenterPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   const { data: costCenters, isLoading: isCostCentersLoading } = useListCostCentersQuery()
 
   return (
-    <>
+    <div>
       <Header title="Centro de costos">
         <Button
           size="sm"
@@ -43,6 +43,6 @@ export default function CostsCenterPage() {
         />
       </div>
       <NewCostCenterDialog />
-    </>
+    </div>
   )
 }

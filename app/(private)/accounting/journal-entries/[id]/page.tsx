@@ -54,7 +54,7 @@ export default function Page() {
   const status = journalEntryStatus[journalEntry?.status as keyof typeof journalEntryStatus];
 
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isJournalEntryLoading ? "blur-[4px]" : "blur-none")}>
           {isJournalEntryLoading ? placeholder(20, true) : journalEntry?.number}
@@ -102,6 +102,6 @@ export default function Page() {
           pagination={false}
         />
       </div>
-    </>
+    </div>
   )
 }

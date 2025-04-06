@@ -144,7 +144,7 @@ export default function AccountsReceivablePage() {
   };
 
   return (
-    <>
+    <div>
       <Header title="Cuentas por pagar" />
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-197px)] [&_*[data-table='true']]:w-[calc(100svw-306px)]">
         <div className="space-y-4 flex flex-col justify-between">
@@ -345,6 +345,6 @@ export default function AccountsReceivablePage() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

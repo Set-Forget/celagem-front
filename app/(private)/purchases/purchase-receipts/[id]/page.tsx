@@ -72,8 +72,9 @@ export default function Page() {
   const [tab, setTab] = useState(tabs[0].value)
 
   const { data: purchaseReceipt, isLoading: isPurchaseReceiptLoading } = useGetPurchaseReceiptQuery(id);
+
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isPurchaseReceiptLoading ? "blur-[4px]" : "blur-none")}>
           {isPurchaseReceiptLoading ? placeholder(11, true) : purchaseReceipt?.number}
@@ -120,6 +121,6 @@ export default function Page() {
         onTabChange={setTab}
         triggerClassName="mt-4"
       />
-    </>
+    </div>
   )
 }

@@ -16,7 +16,7 @@ export default function Page() {
   const { data: journalEntries, isLoading } = useListJournalEntriesQuery();
 
   return (
-    <>
+    <div>
       <Header title="Asientos contables">
         <Button
           className="ml-auto"
@@ -36,6 +36,6 @@ export default function Page() {
           loading={isLoading}
         />
       </div>
-    </>
+    </div>
   )
 }

@@ -42,7 +42,7 @@ export default function Page() {
   const formRef = useRef<TemplateFormHandle>(null);
 
   return (
-    <>
+    <div>
       <Header title="Visita N° xxxx">
         <div className="flex gap-2 items-center ml-auto">
           <Button
@@ -97,6 +97,6 @@ export default function Page() {
           :
           <TemplateForm template={template} ref={formRef} />}
       </div>
-    </>
+    </div>
   )
 }

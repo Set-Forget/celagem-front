@@ -80,7 +80,7 @@ export default function Page() {
   const status = debitNoteStatus[debitNote?.status === "posted" && new Date(debitNote?.due_date) < new Date() ? "overdue" : debitNote?.status as keyof typeof debitNoteStatus];
 
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isDebitNoteLoading ? "blur-[4px]" : "blur-none")}>
           {isDebitNoteLoading ? placeholder(13, true) : debitNote?.number}
@@ -133,6 +133,6 @@ export default function Page() {
         onTabChange={setTab}
         triggerClassName="mt-4"
       />
-    </>
+    </div>
   )
 }

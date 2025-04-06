@@ -91,7 +91,7 @@ export default function Page() {
   ];
 
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isBillLoading ? "blur-[4px]" : "blur-none")}>
           {isBillLoading ? placeholder(13, true) : bill?.number}
@@ -145,6 +145,6 @@ export default function Page() {
         onTabChange={setTab}
         triggerClassName="mt-4"
       />
-    </>
+    </div>
   )
 }

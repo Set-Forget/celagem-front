@@ -9,14 +9,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 
-export default function BillsPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   const { data: bills, isLoading } = useListBillsQuery();
 
   return (
-    <>
+    <div>
       <Header>
         <Button
           className="ml-auto"
@@ -36,6 +36,6 @@ export default function BillsPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   )
 }

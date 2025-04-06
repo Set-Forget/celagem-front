@@ -111,7 +111,7 @@ export default function Page() {
   ];
 
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300 flex items-center gap-1", isInvoiceLoading ? "blur-[4px]" : "blur-none")}>
           {isInvoiceLoading ? placeholder(13, true) : invoice?.number}
@@ -164,6 +164,6 @@ export default function Page() {
         onTabChange={setTab}
         triggerClassName="mt-4"
       />
-    </>
+    </div>
   )
 }

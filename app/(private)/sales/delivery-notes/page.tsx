@@ -152,12 +152,12 @@ const data: DeliveryNote[] = [
   },
 ];
 
-export default function DeliveryNotesPage() {
+export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
   return (
-    <>
+    <div>
       <Header title='Remitos'>
         <Button
           className="ml-auto"
@@ -176,6 +176,6 @@ export default function DeliveryNotesPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   );
 }

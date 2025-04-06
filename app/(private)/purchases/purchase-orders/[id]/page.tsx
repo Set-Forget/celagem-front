@@ -94,7 +94,7 @@ export default function Page() {
   const status = purchaseOrderStatus[purchaseOrder?.status as keyof typeof purchaseOrderStatus]
 
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isPurchaseOrderLoading ? "blur-[4px]" : "blur-none")}>
           {isPurchaseOrderLoading ? placeholder(7, true) : purchaseOrder?.number}
@@ -147,6 +147,6 @@ export default function Page() {
         onTabChange={setTab}
         triggerClassName="mt-4"
       />
-    </>
+    </div>
   )
 }

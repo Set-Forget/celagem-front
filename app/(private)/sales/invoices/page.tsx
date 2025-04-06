@@ -16,7 +16,7 @@ export default function Page() {
   const { data: invoices, isLoading: isInvoicesLoading } = useListInvoicesQuery()
 
   return (
-    <>
+    <div>
       <Header>
         <Button
           className="ml-auto"
@@ -40,6 +40,6 @@ export default function Page() {
           loading={isInvoicesLoading}
         />
       </div>
-    </>
+    </div>
   )
 }

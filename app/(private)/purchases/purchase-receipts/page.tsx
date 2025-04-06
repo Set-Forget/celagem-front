@@ -16,7 +16,7 @@ export default function Page() {
   const { data: purchaseReceipts, isLoading } = useListPurchaseReceiptsQuery();
 
   return (
-    <>
+    <div>
       <Header>
         <Button
           className="ml-auto"
@@ -36,6 +36,6 @@ export default function Page() {
           loading={isLoading}
         />
       </div>
-    </>
+    </div>
   )
 }

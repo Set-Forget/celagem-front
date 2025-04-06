@@ -9,12 +9,12 @@ import { materialsInventoryEntriesColumns } from './components/columns';
 import Toolbar from './components/toolbar';
 import { materialsInventoryMock } from './mocks/materials-inventory';
 
-export default function ProductsPage() {
+export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
   return (
-    <>
+    <div>
       <Header title="Inventario de Materiales">
         <Button
           className="ml-auto"
@@ -33,6 +33,6 @@ export default function ProductsPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   );
 }

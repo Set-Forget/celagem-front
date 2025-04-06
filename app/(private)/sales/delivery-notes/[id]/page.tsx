@@ -54,7 +54,7 @@ const data: DeliveryNoteItems[] = [
   },
 ];
 
-export default function PurchaseRequestPage({
+export default function Page({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -66,7 +66,7 @@ export default function PurchaseRequestPage({
   };
 
   return (
-    <>
+    <div>
       <Header title="RC-2000342">
         <div className="ml-auto flex gap-2">
           <DropdownMenu>
@@ -152,6 +152,6 @@ export default function PurchaseRequestPage({
         </div>
         <Separator />
       </div>
-    </>
+    </div>
   );
 }

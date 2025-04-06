@@ -16,7 +16,7 @@ import { columnsMaterials } from './components/columns-materials';
 import { columnsMedicalExams } from './components/columns-medical-exams';
 import { columnsServices } from './components/columns-services';
 
-export default function PurchaseRequestPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
   const params = useParams()
@@ -60,7 +60,7 @@ export default function PurchaseRequestPage() {
   );
 
   return (
-    <>
+    <div>
       <Header title={procedure?.cups_code + ' - ' + procedure?.description}>
 
         <div className="ml-auto flex gap-2">
@@ -155,6 +155,6 @@ export default function PurchaseRequestPage() {
           </>
         )}
       </div>
-    </>
+    </div>
   );
 }
