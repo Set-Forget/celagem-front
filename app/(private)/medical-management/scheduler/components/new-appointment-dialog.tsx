@@ -146,6 +146,7 @@ export default function NewAppointmentDialog() {
         end_date: format(new Date(data.end_date), "yyyy-MM-dd"),
         start_time: format(new Date(data.start_time), "HH:mm"),
         end_time: format(new Date(data.end_time), "HH:mm"),
+        created_by: userProfile?.data.id ?? "",
       }).unwrap();
 
       if (response.status === "SUCCESS") {

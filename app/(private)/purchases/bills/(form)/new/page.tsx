@@ -17,8 +17,8 @@ import { FieldErrors, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { newBillGeneralSchema, newBillOthersSchema, newBillSchema } from "../../schemas/bills"
-import GeneralForm from "./components/general-form"
-import OthersForm from "./components/others-form"
+import GeneralForm from "../components/general-form"
+import OthersForm from "../components/others-form"
 
 const tabToFieldsMap = {
   "tab-1": getFieldPaths(newBillGeneralSchema),

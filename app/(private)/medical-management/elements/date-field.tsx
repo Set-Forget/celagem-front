@@ -15,7 +15,6 @@ export default function DateField({ field, formField }: {
         className="w-full"
         value={field.type.properties.defaultValue as DateValue}
         onChange={(value) => {
-          console.log(value);
           if (!value) {
             formField?.onChange(undefined);
             return;

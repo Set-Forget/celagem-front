@@ -6,9 +6,54 @@ import { es } from "date-fns/locale";
 import { AppointmentList } from "../schemas/appointments";
 import {
   calculateOverlaps,
+  getAppointmentColor,
   getTimeSlots,
   groupAppointmentsByDayExtended,
 } from "../utils";
+
+function parseTimeToMinutes(timeStr: string) {
+  const [h, m] = timeStr.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function assignStackIndexes(appointments: AppointmentList[]) {
+  const groups: AppointmentList[][] = [];
+  const sorted = [...appointments].sort(
+    (a, b) =>
+      parseTimeToMinutes(a.start_time) - parseTimeToMinutes(b.start_time)
+  );
+
+  sorted.forEach(app => {
+    const appStart = parseTimeToMinutes(app.start_time);
+    let placed = false;
+    for (const group of groups) {
+      const groupMaxEnd = Math.max(...group.map(a => parseTimeToMinutes(a.end_time)));
+      if (appStart < groupMaxEnd) {
+        group.push(app);
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) {
+      groups.push([app]);
+    }
+  });
+
+  const result: (AppointmentList & { stackIndex: number; duration: number })[] = [];
+  groups.forEach(group => {
+    const groupWithDuration = group.map(app => {
+      const start = parseTimeToMinutes(app.start_time);
+      const end = parseTimeToMinutes(app.end_time);
+      return { ...app, duration: end - start };
+    });
+    groupWithDuration.sort((a, b) => b.duration - a.duration);
+    groupWithDuration.forEach((app, index) => {
+      result.push({ ...app, stackIndex: index });
+    });
+  });
+
+  return result;
+}
 
 export default function DayColumn({
   day,
@@ -19,38 +64,25 @@ export default function DayColumn({
 }) {
   const timeSlots = getTimeSlots();
   const totalRows = timeSlots.length;
-
   const [firstHourStr, firstMinuteStr] = timeSlots[0].split(":");
   const gridStartMinutes = Number(firstHourStr) * 60 + Number(firstMinuteStr);
-
   const totalMinutes = timeSlots.length * 30;
-
   const isLastDay = day.getDay() === 6;
-
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  const isToday = day.toDateString() === currentTime.toDateString();
+  const isToday = day.toDateString() === new Date().toDateString();
 
   let linePositionPercent: number | null = null;
   if (isToday) {
-    const minutesFromStart =
-      currentTime.getHours() * 60 + currentTime.getMinutes() - gridStartMinutes;
-
+    const minutesFromStart = new Date().getHours() * 60 + new Date().getMinutes() - gridStartMinutes;
     if (minutesFromStart >= 0 && minutesFromStart <= totalMinutes) {
       linePositionPercent = (minutesFromStart / totalMinutes) * 100;
     }
   }
 
-  const dayAppointments = calculateOverlaps(
+  const dayAppointmentsRaw = calculateOverlaps(
     groupAppointmentsByDayExtended(appointments, day, timeSlots)
   );
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
+  const dayAppointments = assignStackIndexes(dayAppointmentsRaw);
 
   return (
     <div className={`grid grid-rows-[repeat(${totalRows},1fr)] relative z-0`}>
@@ -83,72 +115,54 @@ export default function DayColumn({
         </div>
       )}
 
-      {dayAppointments.map((appointment) => {
-        const [startHour, startMinute] = appointment.start_time
-          .split(":")
-          .map(Number);
+      {dayAppointments.map(appointment => {
+        const [startHour, startMinute] = appointment.start_time.split(":").map(Number);
         const appointmentStartMinutes = startHour * 60 + startMinute;
         const startRow = (appointmentStartMinutes - gridStartMinutes) / 30;
 
-        const [endHour, endMinute] = appointment.end_time
-          ? appointment.end_time.split(":").map(Number)
-          : [startHour, startMinute + 30];
+        const [endHour, endMinute] = appointment.end_time ? appointment.end_time.split(":").map(Number) : [startHour, startMinute + 30];
         const appointmentEndMinutes = endHour * 60 + endMinute;
         const endRow = (appointmentEndMinutes - gridStartMinutes) / 30;
 
-        const width = `calc((100% - ${(appointment.level - 1) * 2
-          }px) / ${appointment.level} - 1px)`;
-        const left = `calc(${appointment.position
-          } * ((100% - ${(appointment.level - 1) * 2}px) / ${appointment.level
-          }) + ${appointment.position * 2}px)`;
+        const offsetPx = appointment.stackIndex * 14;
+        const width = `calc(100% - ${offsetPx}px - 7px)`;
+        const left = `${offsetPx + 3}px`;
+        const zIndex = appointment.stackIndex + 1;
 
-        const startDateTimeISO = formatISO(
-          parse(
-            `${appointment.start_date} ${appointment.start_time}`,
-            "yyyy-MM-dd HH:mm",
-            new Date()
-          )
-        );
-        const endDateTimeISO = formatISO(
-          parse(
-            `${appointment.end_date} ${appointment.end_time}`,
-            "yyyy-MM-dd HH:mm",
-            new Date()
-          )
+        const startDateTimeISO = formatISO(parse(`${appointment.start_date} ${appointment.start_time}`, "yyyy-MM-dd HH:mm", new Date()));
+        const endDateTimeISO = formatISO(parse(`${appointment.end_date} ${appointment.end_time}`, "yyyy-MM-dd HH:mm", new Date()));
+        const appointmentColor = getAppointmentColor(appointment.id).base;
+        const isAppointmentInPast = new Date() > new Date(
+          `${appointment.start_date}T${appointment.start_time ?? '00:00'}:00`
         );
 
         return (
           <div
             key={appointment.id}
             className={cn(
-              "absolute cursor-pointer px-2 flex flex-col py-1 bg-primary text-background text-xs h-[calc(100%-4px)] text-left hover:bg-primary/90 transition !shadow-lg !shadow-primary/25",
-              new Date() > new Date(endDateTimeISO) && "opacity-50",
-              appointment.status === "CANCELLED" &&
-              "bg-red-500 hover:bg-red-500/90 !shadow-red-500/25",
-              appointment.status === "COMPLETED" &&
-              "bg-emerald-500 hover:bg-emerald-500/90 !shadow-emerald-500/25"
+              "absolute cursor-pointer px-2 flex flex-col py-1 text-background text-xs h-[calc(100%-4px)] text-left transition-all shadow-md",
+              appointmentColor
             )}
             style={{
               gridRowStart: Math.floor(startRow) + 1,
               gridRowEnd: Math.floor(endRow) + 1,
               width,
               left,
+              zIndex,
             }}
             onClick={() => {
               setDialogsState({
                 open: "appointment-details",
-                payload: {
-                  appointment_id: appointment.id,
-                },
+                payload: { appointment_id: appointment.id },
               });
             }}
           >
-            <p className="font-medium truncate">
+            <p className={cn("font-medium ml-0.5 truncate", (isAppointmentInPast || appointment.status === "CANCELLED") && "line-through")}>
               {appointment.patient.first_name} {appointment.patient.last_name}
             </p>
-            <p className="text-xs truncate">
-              {format(new Date(startDateTimeISO), "hh:mm", { locale: es })} a{" "}
-              {format(new Date(endDateTimeISO), "hh:mm a", { locale: es })}
+            <p className={cn("ml-0.5 truncate text-[11px] opacity-75", (isAppointmentInPast || appointment.status === "CANCELLED") && "line-through")}>
+              {format(new Date(startDateTimeISO), new Date(startDateTimeISO).getMinutes() === 0 ? "haaa" : "h:mmaaa")} a{" "}
+              {format(new Date(endDateTimeISO), new Date(endDateTimeISO).getMinutes() === 0 ? "haaa" : "h:mmaaa")}
             </p>
           </div>
         );
@@ -167,13 +181,7 @@ export default function DayColumn({
             setDialogsState({
               open: "new-appointment",
               payload: {
-                date: new Date(
-                  day.getFullYear(),
-                  day.getMonth(),
-                  day.getDate(),
-                  hour,
-                  minute
-                ),
+                date: new Date(day.getFullYear(), day.getMonth(), day.getDate(), hour, minute),
               },
             });
           }}

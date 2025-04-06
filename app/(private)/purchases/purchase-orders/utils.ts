@@ -3,8 +3,8 @@
 export const purchaseOrderStatus = {
   draft: {
     label: "Borrador",
-    bg_color: "bg-gray-100",
-    text_color: "text-gray-800",
+    bg_color: "bg-slate-100",
+    text_color: "text-slate-800",
   },
   "to approve": {
     label: "A aprobar",
@@ -23,7 +23,7 @@ export const purchaseOrderStatus = {
   },
   cancel: {
     label: "Cancelada",
-    bg_color: "bg-red-100",
-    text_color: "text-red-800",
+    bg_color: "bg-stone-100",
+    text_color: "text-stone-800",
   },
 };

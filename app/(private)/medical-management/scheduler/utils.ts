@@ -1,4 +1,4 @@
-import { isSameDay, parseISO, startOfDay } from "date-fns";
+import { isSameDay, parse, parseISO, startOfDay } from "date-fns";
 import { AppointmentList } from "./schemas/appointments";
 
 export const modesOfCare = {
@@ -29,6 +29,26 @@ export const appointmentStates = {
     shadow_color: "!shadow-indigo-500/50",
   },
 }
+
+export const appointmentColors = [
+  { base: 'bg-red-100/90 hover:bg-red-100/75 !shadow-red-100 hover:!shadow-red-100/75 text-red-900 backdrop-blur-md' },
+  { base: 'bg-orange-100/90 hover:bg-orange-100/75 !shadow-orange-100 hover:!shadow-orange-100/75 text-orange-900 backdrop-blur-md' },
+  { base: 'bg-amber-100/90 hover:bg-amber-100/75 !shadow-amber-100 hover:!shadow-amber-100/75 text-amber-900 backdrop-blur-md' },
+  { base: 'bg-yellow-100/90 hover:bg-yellow-100/75 !shadow-yellow-100 hover:!shadow-yellow-100/75 text-yellow-900 backdrop-blur-md' },
+  { base: 'bg-lime-100/90 hover:bg-lime-100/75 !shadow-lime-100 hover:!shadow-lime-100/75 text-lime-900 backdrop-blur-md' },
+  { base: 'bg-green-100/90 hover:bg-green-100/75 !shadow-green-100 hover:!shadow-green-100/75 text-green-900 backdrop-blur-md' },
+  { base: 'bg-emerald-100/90 hover:bg-emerald-100/75 !shadow-emerald-100 hover:!shadow-emerald-100/75 text-emerald-900 backdrop-blur-md' },
+  { base: 'bg-teal-100/90 hover:bg-teal-100/75 !shadow-teal-100 hover:!shadow-teal-100/75 text-teal-900 backdrop-blur-md' },
+  { base: 'bg-cyan-100/90 hover:bg-cyan-100/75 !shadow-cyan-100 hover:!shadow-cyan-100/75 text-cyan-900 backdrop-blur-md' },
+  { base: 'bg-sky-100/90 hover:bg-sky-100/75 !shadow-sky-100 hover:!shadow-sky-100/75 text-sky-900 backdrop-blur-md' },
+  { base: 'bg-blue-100/90 hover:bg-blue-100/75 !shadow-blue-100 hover:!shadow-blue-100/75 text-blue-900 backdrop-blur-md' },
+  { base: 'bg-indigo-100/90 hover:bg-indigo-100/75 !shadow-indigo-100 hover:!shadow-indigo-100/75 text-indigo-900 backdrop-blur-md' },
+  { base: 'bg-violet-100/90 hover:bg-violet-100/75 !shadow-violet-100 hover:!shadow-violet-100/75 text-violet-900 backdrop-blur-md' },
+  { base: 'bg-purple-100/90 hover:bg-purple-100/75 !shadow-purple-100 hover:!shadow-purple-100/75 text-purple-900 backdrop-blur-md' },
+  { base: 'bg-fuchsia-100/90 hover:bg-fuchsia-100/75 !shadow-fuchsia-100 hover:!shadow-fuchsia-100/75 text-fuchsia-900 backdrop-blur-md' },
+  { base: 'bg-pink-100/90 hover:bg-pink-100/75 !shadow-pink-100 hover:!shadow-pink-100/75 text-pink-900 backdrop-blur-md' },
+  { base: 'bg-rose-100/90 hover:bg-rose-100/75 !shadow-rose-100 hover:!shadow-rose-100/75 text-rose-900 backdrop-blur-md' },
+];
 
 export const getDaysInWeek = (date: Date) => {
   const startOfWeek = new Date(
@@ -150,4 +170,38 @@ export const groupAppointmentsByDayExtended = (
         end_time: effectiveEndTime,
       };
     });
+}
+
+export const getAppointmentColor = (appointmentId: string) => {
+  let hash = 0;
+  for (let i = 0; i < appointmentId.length; i++) {
+    const char = appointmentId.charCodeAt(i);
+    hash = char + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % appointmentColors.length;
+  return appointmentColors[index];
+};
+
+
+export const getCalendarDates = (selectedDate: Date): Date[] => {
+  const year = selectedDate.getFullYear();
+  const month = selectedDate.getMonth();
+
+  const firstDayOfMonth = new Date(year, month, 1);
+  const firstDayIndex = firstDayOfMonth.getDay();
+  const daysToShowBefore = firstDayIndex;
+  const totalCells = 42;
+  const dates: Date[] = [];
+  const startDate = new Date(year, month, 1 - daysToShowBefore);
+
+  for (let i = 0; i < totalCells; i++) {
+    const current = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate() + i
+    );
+    dates.push(current);
+  }
+
+  return dates;
 }

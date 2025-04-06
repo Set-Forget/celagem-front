@@ -14,7 +14,7 @@ export default function TimeSlots() {
           key={index}
           id={index.toString()}
           className={cn(
-            "text-center text-xs py-1 border-b relative last:border-b-0 h-10 border-r last:border-r-0",
+            "text-center text-xs py-1 border-b relative last:border-b-0 h-10 border-r",
           )}
         >
           <span

@@ -8,8 +8,8 @@ export const customerStatus = {
   },
   false: {
     label: "Inactivo",
-    bg_color: "bg-gray-100",
-    text_color: "text-gray-800",
-    pure_bg_color: "bg-gray-500",
+    bg_color: "bg-slate-100",
+    text_color: "text-slate-800",
+    pure_bg_color: "bg-slate-500",
   },
 }

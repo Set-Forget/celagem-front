@@ -2,9 +2,9 @@
 export const purchaseRequestStatus = {
   draft: {
     label: "Borrador",
-    bg_color: "bg-gray-100",
-    text_color: "text-gray-800",
-    pure_bg_color: "bg-gray-500",
+    bg_color: "bg-slate-100",
+    text_color: "text-slate-800",
+    pure_bg_color: "bg-slate-500",
   },
   approved: {
     label: "A ordenar",
@@ -20,8 +20,8 @@ export const purchaseRequestStatus = {
   },
   cancelled: {
     label: "Cancelada",
-    bg_color: "bg-red-100",
-    text_color: "text-red-800",
-    pure_bg_color: "bg-red-500",
+    bg_color: "bg-stone-100",
+    text_color: "text-stone-800",
+    pure_bg_color: "bg-stone-500",
   },
 };

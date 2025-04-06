@@ -33,6 +33,7 @@ export const costCentersApi = erpApi.injectEndpoints({
 
 export const {
   useListCostCentersQuery,
+  useLazyListCostCentersQuery,
   useGetCostCenterQuery,
   useUpdateCostCenterMutation,
   useCreateCostCenterMutation,

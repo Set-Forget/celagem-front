@@ -1,5 +1,7 @@
 import { cn } from "@/lib/utils";
 import { getDaysInWeek } from "../utils";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 export default function WeeklyViewHeader({ selectedDate }: { selectedDate: Date; }) {
   const days = getDaysInWeek(selectedDate);
@@ -15,11 +17,7 @@ export default function WeeklyViewHeader({ selectedDate }: { selectedDate: Date;
           className={cn("p-2 text-center text-xs font-semibold border-r last:border-r-0")}
         >
           <span className={cn(isToday && new Date().toDateString() === day.toDateString() && "bg-primary text-accent px-2 py-1 rounded-sm")}>
-            {day.toLocaleDateString('es-AR', {
-              weekday: 'short',
-              day: 'numeric',
-              month: 'short',
-            })}
+            {format(day, "EEE dd", { locale: es })}
           </span>
         </div>
       ))}

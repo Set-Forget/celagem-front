@@ -7,7 +7,7 @@ export const templateStatus = {
   },
   false: {
     label: "Inactiva",
-    bg_color: "bg-gray-100",
-    text_color: "text-gray-800",
+    bg_color: "bg-slate-100",
+    text_color: "text-slate-800",
   },
 };

@@ -28,11 +28,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks/use-debounce";
 
-const multiSelectVariants = cva("m-1 transition", {
+export const multiSelectVariants = cva("transition", {
   variants: {
     variant: {
       default: "border-foreground/10 text-foreground bg-card hover:bg-accent",
-      secondary: "border-foreground/10 bg-secondary text-secondary-foreground hover:bg-secondary/80",
+      secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary",
       destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
       inverted: "inverted",
     },
@@ -216,19 +216,18 @@ function AsyncMultiSelectInner<T, V>(
           variant="outline"
           onClick={() => setIsPopoverOpen((prev) => !prev)}
           className={cn(
-            "flex w-full pl-3 rounded-sm items-center justify-between [&_svg]:pointer-events-auto text-muted-foreground",
+            "flex w-full pl-3 rounded-sm items-center justify-between [&_svg]:pointer-events-auto text-muted-foreground group",
             selectedValues.length > 0 && "text-inherit",
             className
           )}
         >
           <div ref={containerRef} className="flex justify-between items-center w-full">
             {selectedValues.length > 0 && (
-              <div className="flex items-center">
+              <div className="flex items-center gap-1">
                 {selectedValues.slice(0, dynamicMaxCount).map((val) => {
-                  const option = options.find((o) => getOptionValue(o) === val)
-                    ?? knownItemsMap.get(val);
-
+                  const option = options.find((o) => getOptionValue(o) === val) ?? knownItemsMap.get(val);
                   if (!option) return null;
+
                   return (
                     <Badge
                       key={
@@ -237,7 +236,9 @@ function AsyncMultiSelectInner<T, V>(
                           : String(getOptionValue(option))
                       }
                       onMouseOver={(e) => e.stopPropagation()}
-                      className={cn("badge shadow-sm", multiSelectVariants({ variant }))}
+                      className={cn(
+                        "badge group-hover:border group-hover:border-border group-hover:shadow-border",
+                        multiSelectVariants({ variant }))}
                     >
                       {getDisplayValue(option)}
                       <X
@@ -250,7 +251,6 @@ function AsyncMultiSelectInner<T, V>(
                     </Badge>
                   );
                 })}
-
                 {selectedValues.length > dynamicMaxCount && (
                   <TooltipProvider delayDuration={0}>
                     <Tooltip>
@@ -259,7 +259,7 @@ function AsyncMultiSelectInner<T, V>(
                           <Badge
                             onMouseOver={(e) => e.stopPropagation()}
                             className={cn(
-                              "badge bg-transparent text-foreground border-foreground/1 hover:bg-transparent shadow-sm",
+                              "badge group-hover:border group-hover:border-border group-hover:shadow-border",
                               multiSelectVariants({ variant })
                             )}
                           >
@@ -279,16 +279,14 @@ function AsyncMultiSelectInner<T, V>(
                       <TooltipContent className="bg-background shadow-lg border border-border p-1 rounded-sm">
                         <div className="flex flex-col p-0">
                           {selectedValues.slice(dynamicMaxCount).map((val) => {
-                            const option = options.find((o) => getOptionValue(o) === val)
-                              ?? knownItemsMap.get(val);
-
+                            const option = options.find((o) => getOptionValue(o) === val) ?? knownItemsMap.get(val);
                             if (!option) {
                               return (
                                 <Badge
                                   key={String(val)}
                                   onMouseOver={(e) => e.stopPropagation()}
                                   className={cn(
-                                    "badge flex items-center justify-between",
+                                    "badge group-hover:border group-hover:border-border group-hover:shadow-border flex items-center justify-between",
                                     multiSelectVariants({ variant })
                                   )}
                                 >

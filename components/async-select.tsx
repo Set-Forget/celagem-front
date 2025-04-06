@@ -18,17 +18,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/use-debounce";
 
-export interface Option {
-  value: string;
-  label: string;
-  disabled?: boolean;
-  description?: string;
-  icon?: React.ReactNode;
-}
-
-// ! Tremenda refactorización hay que hacerle a este componente
-// ? (ya no tanta)
-
 export interface AsyncSelectProps<T, V = string> {
   /** Async function to fetch options */
   fetcher: (query?: string) => Promise<T[]>;
@@ -38,10 +27,6 @@ export interface AsyncSelectProps<T, V = string> {
   getOptionValue: (option: T) => V;
   /** Function to get the display value for the selected option */
   getDisplayValue: (option: T) => React.ReactNode;
-  /** Custom not found message */
-  notFound?: React.ReactNode;
-  /** Custom loading skeleton */
-  loadingSkeleton?: React.ReactNode;
   /** Currently selected value */
   value: V;
   /** Callback when selection changes */
@@ -52,8 +37,6 @@ export interface AsyncSelectProps<T, V = string> {
   placeholder?: string;
   /** Disable the entire select */
   disabled?: boolean;
-  /** Custom width for the popover */
-  width?: string | number;
   /** Custom class names */
   className?: string;
   /** Custom trigger button class names */
@@ -70,32 +53,39 @@ export interface AsyncSelectProps<T, V = string> {
   getOptionKey?: (option: T) => string;
   /** Initial options to show */
   initialOptions?: T[];
+  /** Mensaje de error o “sin resultados” */
+  notFound?: React.ReactNode;
+  /** Skeleton/loading custom */
+  loadingSkeleton?: React.ReactNode;
 }
 
-export function AsyncSelect<T, V>({
-  fetcher,
-  renderOption,
-  getOptionValue,
-  getDisplayValue,
-  notFound,
-  loadingSkeleton,
-  label,
-  placeholder = "Select...",
-  value,
-  onChange,
-  disabled = false,
-  modal = false,
-  className,
-  triggerClassName,
-  noResultsMessage,
-  actionButton,
-  getOptionKey,
-  initialOptions,
-}: AsyncSelectProps<T, V>) {
+export function AsyncSelect<T, V>(props: AsyncSelectProps<T, V>) {
+  const {
+    fetcher,
+    renderOption,
+    getOptionValue,
+    getDisplayValue,
+    value,
+    onChange,
+    label,
+    placeholder = "Select...",
+    disabled = false,
+    modal = false,
+    className,
+    triggerClassName,
+    noResultsMessage,
+    actionButton,
+    getOptionKey,
+    initialOptions,
+    notFound,
+    loadingSkeleton,
+  } = props;
+
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState<T[]>([]);
+  const [options, setOptions] = useState<T[]>(initialOptions || []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const [selectedOption, setSelectedOption] = useState<T | null>(null);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -104,15 +94,15 @@ export function AsyncSelect<T, V>({
   const handleFetch = useCallback(async () => {
     setLoading(true);
     setError(null);
-
     try {
       const fetched = await fetcher(searchTerm);
 
       if (selectedOption) {
         const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
-        const selKey = keyFn(selectedOption);
-        const alreadyIncluded = fetched.some((o) => keyFn(o) === selKey);
-        if (!alreadyIncluded) {
+        const soKey = keyFn(selectedOption);
+        const found = fetched.some((o) => keyFn(o) === soKey);
+
+        if (!found) {
           fetched.unshift(selectedOption);
         }
       }
@@ -123,59 +113,49 @@ export function AsyncSelect<T, V>({
     } finally {
       setLoading(false);
     }
-  }, [searchTerm, selectedOption]);
-
+  }, [searchTerm, fetcher, selectedOption, getOptionValue, getOptionKey]);
 
   useEffect(() => {
-    if (!searchTerm) return;
     void handleFetch();
-  }, [searchTerm]);
+  }, [debouncedSearchTerm]);
 
-  const handleSelect = useCallback((selectedKey: string) => {
-    const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
-    const opt = options.find((o) => keyFn(o) === selectedKey);
-    if (opt) {
-      setSelectedOption(opt);
-      onChange(getOptionValue(opt));
-    }
-  }, [options]);
+  const handleSelect = useCallback(
+    (selectedKey: string) => {
+      const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
+      const opt = options.find((o) => keyFn(o) === selectedKey);
+
+      if (opt) {
+        setSelectedOption(opt);
+        onChange(getOptionValue(opt));
+      }
+      setOpen(false);
+    },
+    [options, onChange, getOptionValue, getOptionKey]
+  );
 
   useEffect(() => {
-    if (!value || options.length === 0) {
+    if (!value) {
       setSelectedOption(null);
       return;
     }
-
-    let matchedOption: T | null = null;
-
-    if (typeof value === "object" && getOptionKey) {
-      const valueKey = getOptionKey(value as T);
-      matchedOption = options.find((option) => getOptionKey(option) === valueKey) || null;
-    } else {
-      matchedOption = options.find((option) => getOptionValue(option) === value) || null;
-    }
-
-    setSelectedOption(matchedOption);
-  }, [value, options]);
+    const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
+    const match = options.find((o) => keyFn(o) === String(value)) || null;
+    setSelectedOption(match);
+  }, [value, options, getOptionValue, getOptionKey]);
 
   useEffect(() => {
-    if (!initialOptions) return;
+    if (!initialOptions?.length) return;
     setOptions((prev) => {
-      const merged = [...prev];
+      const newSet = [...prev];
+      const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
       for (const item of initialOptions) {
-        const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
-        if (!merged.some((o) => keyFn(o) === keyFn(item))) {
-          merged.push(item);
+        if (!newSet.some((x) => keyFn(x) === keyFn(item))) {
+          newSet.push(item);
         }
       }
-      return merged;
+      return newSet;
     });
-  }, [initialOptions]);
-
-
-  useEffect(() => {
-    handleFetch();
-  }, [debouncedSearchTerm]);
+  }, [initialOptions, getOptionValue, getOptionKey]);
 
   return (
     <Popover modal={modal} open={open} onOpenChange={setOpen}>
@@ -184,13 +164,13 @@ export function AsyncSelect<T, V>({
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          disabled={disabled}
           className={cn(
             "justify-between font-normal pl-3",
             disabled && "opacity-50 cursor-not-allowed",
             !value && "text-muted-foreground",
             triggerClassName
           )}
-          disabled={disabled}
         >
           <span className="truncate">
             {selectedOption ? getDisplayValue(selectedOption) : placeholder}
@@ -201,7 +181,7 @@ export function AsyncSelect<T, V>({
       <PopoverContent className={cn("w-[--radix-popover-trigger-width] p-0", className)}>
         <Command>
           <div className="relative border-b w-full">
-            {loading && options?.length > 0 ? (
+            {loading && options.length > 0 ? (
               <div className="absolute left-2 top-1/2 transform -translate-y-1/2 flex items-center">
                 <Loader2 className="h-4 w-4 animate-spin" />
               </div>
@@ -221,26 +201,31 @@ export function AsyncSelect<T, V>({
                 {error}
               </div>
             )}
-            {loading && options?.length === 0 && (loadingSkeleton || <DefaultLoadingSkeleton />)}
-            {!loading && !error && options?.length === 0 && (
-              notFound || <CommandEmpty>{noResultsMessage ?? `No ${label.toLowerCase()} found.`}</CommandEmpty>
+            {loading && options.length === 0 && (loadingSkeleton || <DefaultLoadingSkeleton />)}
+            {!loading && !error && options.length === 0 && (
+              notFound || (
+                <CommandEmpty>
+                  {noResultsMessage ?? `No ${label.toLowerCase()} found.`}
+                </CommandEmpty>
+              )
             )}
             <CommandGroup>
-              {options?.map((option) => {
-                const optionKey = getOptionKey ? getOptionKey(option) : String(getOptionValue(option));
+              {options.map((option) => {
+                const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
+                const optionKey = keyFn(option);
+                const isSelected =
+                  selectedOption &&
+                  keyFn(selectedOption) === optionKey;
+
                 return (
-                  <CommandItem key={optionKey} value={optionKey} onSelect={handleSelect}>
+                  <CommandItem
+                    key={optionKey}
+                    value={optionKey}
+                    onSelect={handleSelect}
+                  >
                     {renderOption(option)}
                     <Check
-                      className={cn(
-                        "ml-auto h-3 w-3",
-                        selectedOption &&
-                          (getOptionKey
-                            ? getOptionKey(selectedOption)
-                            : String(getOptionValue(selectedOption))) === optionKey
-                          ? "opacity-100"
-                          : "opacity-0"
-                      )}
+                      className={cn("ml-auto h-3 w-3", isSelected ? "opacity-100" : "opacity-0")}
                     />
                   </CommandItem>
                 );

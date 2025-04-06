@@ -11,7 +11,7 @@ export interface FormTableColumn<TFormValues extends FieldValues> {
   align?: "left" | "center" | "right";
   cellClassName?: string;
   headerClassName?: string;
-  renderCell: (control: Control<TFormValues>, index: number) => React.ReactNode;
+  renderCell: (control: Control<TFormValues>, index: number, name: string) => React.ReactNode;
 }
 
 export interface FormTableProps<TFormValues extends FieldValues> {
@@ -90,7 +90,7 @@ export default function FormTable<TFormValues extends FieldValues>({
                       col.cellClassName
                     )}
                   >
-                    {col.renderCell(control, index)}
+                    {col.renderCell(control, index, name)}
                   </TableCell>
                 ))}
                 <TableCell className="py-0 pr-5 text-right">
@@ -99,7 +99,9 @@ export default function FormTable<TFormValues extends FieldValues>({
                     variant="ghost"
                     size="icon"
                     className="h-6 w-6 transition-opacity opacity-0 group-hover:opacity-100"
-                    onClick={() => removeItem(index)}
+                    onClick={() => {
+                      removeItem(index);
+                    }}
                   >
                     <Trash2 className="!h-3.5 !w-3.5 text-destructive" />
                   </Button>

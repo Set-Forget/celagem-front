@@ -1,5 +1,6 @@
 import { InvoiceDetail, InvoiceDetailResponse, InvoiceListResponse, NewInvoice, NewInvoiceResponse } from '@/app/(private)/sales/invoices/schemas/invoices';
 import { erpApi } from '@/lib/apis/erp-api';
+import { Overwrite } from '../utils';
 
 export const invoicesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -12,7 +13,7 @@ export const invoicesApi = erpApi.injectEndpoints({
       transformResponse: (response: InvoiceDetailResponse) => response.data,
       providesTags: ['Invoice'],
     }),
-    createInvoice: builder.mutation<NewInvoiceResponse, Omit<NewInvoice, 'cost_center' | 'notes' | 'accounting_account' | 'currency' | 'payment_term'> & { currency: number; payment_term: number }>({
+    createInvoice: builder.mutation<NewInvoiceResponse, Omit<Overwrite<NewInvoice, { accounting_date: string, payment_method: number, items: { product_id: number, taxes_id: number[] | undefined, quantity: number }[] }>, 'cost_center' | 'accounting_account'>>({
       query: (invoice) => ({
         url: '/sales_invoices',
         method: 'POST',
@@ -20,9 +21,9 @@ export const invoicesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Invoice'],
     }),
-    updateInvoice: builder.mutation<{ status: string, message: string }, Partial<InvoiceDetail>>({
-      query: (invoice) => ({
-        url: `/sales_invoices/${invoice.id}`,
+    updateInvoice: builder.mutation<{ status: string, message: string }, Partial<Omit<InvoiceDetail, 'status'> & { state: 'draft' | 'posted' | 'cancel' }>>({
+      query: ({ id, ...invoice }) => ({
+        url: `/sales_invoices/${id}`,
         method: 'PUT',
         body: invoice,
       }),

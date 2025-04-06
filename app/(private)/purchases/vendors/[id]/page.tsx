@@ -81,7 +81,7 @@ export default function SupplierPage() {
   const [tab, setTab] = useState(tabs[0].value)
 
   const { data: supplier, isLoading: isSupplierLoading } = useGetSupplierQuery(id)
-  console.log(supplier)
+
   return (
     <>
       <Header title={
