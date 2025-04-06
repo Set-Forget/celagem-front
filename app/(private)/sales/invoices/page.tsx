@@ -17,7 +17,7 @@ export default function Page() {
 
   return (
     <div>
-      <Header>
+      <Header title="Facturas de venta">
         <Button
           className="ml-auto"
           size="sm"

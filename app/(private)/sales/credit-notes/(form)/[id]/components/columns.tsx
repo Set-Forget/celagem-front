@@ -3,12 +3,12 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { DebitNoteItem } from "../../../schemas/debit-notes"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { CreditNoteItem } from "../../../schemas/credit-notes"
 
-export const columns: ColumnDef<DebitNoteItem & { currency: string }>[] = [
+export const columns: ColumnDef<CreditNoteItem & { currency: string }>[] = [
   {
     accessorKey: "product_name",
     header: "Nombre",
