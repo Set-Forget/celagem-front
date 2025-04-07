@@ -12,11 +12,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { ChevronDown } from 'lucide-react';
-import { DeliveryNoteItems } from '../schemas/delivery-notes';
-import { generateDeliveryNotePDF } from '../templates/delivery-note';
 import { columns } from './components/columns';
+import { generateDeliveryNotePDF } from '../../templates/delivery-note';
 
-const data: DeliveryNoteItems[] = [
+const data: any = [
   {
     item_code: 'ITEM-7882',
     item_name: 'Answer',
