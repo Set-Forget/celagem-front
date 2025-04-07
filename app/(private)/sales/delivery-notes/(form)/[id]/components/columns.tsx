@@ -1,9 +1,8 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { DeliveryNoteItems } from '../../schemas/delivery-notes';
 
-export const columns: ColumnDef<DeliveryNoteItems>[] = [
+export const columns: ColumnDef<any>[] = [
 	{
 		accessorKey: 'item_code',
 		header: 'Código',
