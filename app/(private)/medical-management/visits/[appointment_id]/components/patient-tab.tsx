@@ -73,7 +73,7 @@ export default function PatientTab() {
     {
       label: "Sede",
       placeholderLength: 14,
-      getValue: (p) => p.company_id,
+      getValue: (p) => p.company.name,
     },
     {
       label: "Tipo de documento",
