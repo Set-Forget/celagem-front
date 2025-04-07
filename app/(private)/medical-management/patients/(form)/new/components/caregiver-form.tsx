@@ -8,11 +8,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { Check, ChevronsUpDown } from "lucide-react"
 import * as RPNInput from "react-phone-number-input"
-import { documentTypes } from "../../utils"
-import { newPatientSchema } from "../../schema/patients"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { useLazyGetAutocompleteQuery } from "@/lib/services/google-places"
+import { documentTypes } from "../../../utils"
+import { newPatientSchema } from "../../../schema/patients"
 
 export default function CaregiverForm() {
   const { setValue } = useFormContext<z.infer<typeof newPatientSchema>>()
