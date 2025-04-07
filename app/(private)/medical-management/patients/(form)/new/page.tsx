@@ -16,12 +16,12 @@ import { FieldErrors, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { newPatientCareCompanySchema, newPatientCaregiverSchema, newPatientCompanionSchema, newPatientFiscalSchema, newPatientGeneralSchema, newPatientSchema } from "../../schema/patients"
-import CareCompanyForm from "../components/care_company-form"
-import CaregiverForm from "../components/caregiver-form"
-import CompanionForm from "../components/companion-form"
-import FiscalForm from "../components/fiscal-form"
-import GeneralForm from "../components/general-form"
 import { getFieldPaths } from "@/lib/utils"
+import GeneralForm from "./components/general-form"
+import CompanionForm from "./components/companion-form"
+import CaregiverForm from "./components/caregiver-form"
+import CareCompanyForm from "./components/care_company-form"
+import FiscalForm from "./components/fiscal-form"
 
 // ! Se puede unificar con el tabs de abajo.
 const tabToFieldsMap = {
