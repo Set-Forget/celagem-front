@@ -1,7 +1,7 @@
 'use client'
 
-import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
+import { StatusIndicator } from "@/components/status-indicator"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,24 +9,32 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { useGetSupplierQuery } from "@/lib/services/suppliers"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useGetCustomerQuery } from "@/lib/services/customers"
 import { cn, placeholder } from "@/lib/utils"
-import { formatDistanceToNow } from "date-fns"
-import { es } from "date-fns/locale"
-import { Calculator, Edit, FileText, Landmark, Pencil, Plus, X } from "lucide-react"
+import { Calculator, Edit, House, Landmark, Pencil, Plus, X } from "lucide-react"
 import { useParams } from "next/navigation"
-import { useState } from "react"
-import { SupplierDetail } from "../schema/suppliers"
+import { customerStatus } from "../../utils"
+import { CustomerDetail } from "../../schema/customers"
 import AccountingTab from "./components/accounting-tab"
 import FiscalTab from "./components/fiscal-tab"
+import DataTabs from "@/components/data-tabs"
+import { useState } from "react"
+import { formatDistanceToNow } from "date-fns"
+import { es } from "date-fns/locale"
 
 const notes = [
   { id: 1, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc." },
   { id: 2, content: "Nullam nec purus nec nunc. ac bibendum." },
   { id: 3, content: "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit" },
   { id: 4, content: "Sed pretium tortor nec ipsum interdum dictum. Aliquam erat volutpat. Phasellus pulvinar velit arcu, at interdum ligula volutpat id. Nulla et tellus vel ipsum scelerisque auctor eu non massa. Duis laoreet vel magna eu sodales. Maecenas bibendum nisl neque, quis auctor arcu pharetra commodo. Proin sit amet facilisis libero. Fusce sagittis purus ut aliquam accumsan. Fusce vel mauris nisi. Vestibulum lobortis." },
+]
+
+const tags = [
+  { id: 1, name: "Cliente" },
+  { id: 3, name: "VIP" },
 ]
 
 export type FieldDefinition<T> = {
@@ -36,7 +44,7 @@ export type FieldDefinition<T> = {
   className?: string;
 };
 
-const fields: FieldDefinition<SupplierDetail>[] = [
+const fields: FieldDefinition<CustomerDetail>[] = [
   {
     label: "Correo electrónico",
     placeholderLength: 16,
@@ -44,13 +52,8 @@ const fields: FieldDefinition<SupplierDetail>[] = [
   },
   {
     label: "Número de teléfono",
-    placeholderLength: 5,
+    placeholderLength: 10,
     getValue: (p) => p.phone || "No especificado",
-  },
-  {
-    label: "Sitio web",
-    placeholderLength: 12,
-    getValue: (p) => p.website || "No especificado",
   },
   {
     label: "Dirección",
@@ -80,27 +83,37 @@ export default function Page() {
 
   const [tab, setTab] = useState(tabs[0].value)
 
-  const { data: supplier, isLoading: isSupplierLoading } = useGetSupplierQuery(id)
+  const { data: customer, isLoading: isCustomerLoading } = useGetCustomerQuery(id)
+
+  const status = customerStatus[String(customer?.status) as keyof typeof customerStatus];
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <Header title={
-        <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isSupplierLoading ? "blur-[4px]" : "blur-none")}>
-          {isSupplierLoading ? placeholder(13, true) : supplier?.name}
+        <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isCustomerLoading ? "blur-[4px]" : "blur-none")}>
+          {isCustomerLoading ? placeholder(13, true) : customer?.name}
         </h1>
       }>
+        <div className="mr-auto">
+          <Badge
+            variant="custom"
+            className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
+          >
+            {status?.label}
+          </Badge>
+        </div>
         <Button className="ml-auto" size="sm">
           <Edit />
-          Editar proveedor
+          Editar cliente
         </Button>
       </Header>
       <ResizablePanelGroup className="flex !h-full !w-auto" direction="horizontal">
         <ResizablePanel defaultSize={70}>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
             {fields.map((field) => {
-              const displayValue = isSupplierLoading
+              const displayValue = isCustomerLoading
                 ? placeholder(field.placeholderLength)
-                : field.getValue(supplier!) ?? "";
+                : field.getValue(customer!) ?? "";
               return (
                 <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
                   <label className="text-muted-foreground text-sm">
@@ -109,7 +122,7 @@ export default function Page() {
                   <span
                     className={cn(
                       "text-sm transition-all duration-300",
-                      isSupplierLoading ? "blur-[4px]" : "blur-none"
+                      isCustomerLoading ? "blur-[4px]" : "blur-none"
                     )}
                   >
                     {displayValue}
@@ -168,8 +181,8 @@ export default function Page() {
               </Button>
             </div>
             <div className="flex gap-2">
-              {supplier?.tags.map((tag, idx) => (
-                <Badge key={idx} variant="secondary">{tag}</Badge>
+              {customer?.tags.map((tag) => (
+                <Badge key={tag.id} variant="secondary">{tag.text}</Badge>
               ))}
             </div>
           </div>
@@ -177,15 +190,15 @@ export default function Page() {
           <div className="p-4 flex flex-col gap-4">
             <h2 className="text-base font-medium">Actividad</h2>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Creado por <span className="font-medium">{supplier?.traceability.created_by}</span></label>
+              <label className="text-muted-foreground text-sm">Creado por <span className="font-medium">{customer?.traceability.created_by}</span></label>
               <span className="text-sm">
-                {supplier?.traceability.created_at && formatDistanceToNow(supplier?.traceability.created_at, { addSuffix: true, locale: es })}
+                hace {customer?.traceability.created_at && formatDistanceToNow(customer?.traceability.created_at, { locale: es })}
               </span>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Editado por <span className="font-medium">{supplier?.traceability.updated_by}</span></label>
+              <label className="text-muted-foreground text-sm">Editado por <span className="font-medium">{customer?.traceability.updated_by}</span></label>
               <span className="text-sm">
-                {supplier?.traceability.updated_at && formatDistanceToNow(supplier?.traceability.updated_at, { addSuffix: true, locale: es })}
+                hace {customer?.traceability.updated_at && formatDistanceToNow(customer?.traceability.updated_at, { locale: es })}
               </span>
             </div>
           </div>

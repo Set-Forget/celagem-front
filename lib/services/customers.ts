@@ -1,5 +1,6 @@
 import { CustomerDetail, CustomerDetailResponse, CustomerListResponse, NewCustomer, NewCustomerResponse } from '@/app/(private)/sales/customers/schema/customers';
 import { erpApi } from '../apis/erp-api';
+import { Overwrite } from '../utils';
 
 export const customersApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,12 +11,12 @@ export const customersApi = erpApi.injectEndpoints({
       }),
       providesTags: ['Customer']
     }),
-    getCustomer: builder.query<CustomerDetail, number>({
+    getCustomer: builder.query<CustomerDetail, string>({
       query: (id) => `/customers/${id}`,
       transformResponse: (response: CustomerDetailResponse) => response.data,
       providesTags: ['Customer']
     }),
-    createCustomer: builder.mutation<NewCustomerResponse, Omit<NewCustomer, 'property_payment_term'> & { property_payment_term: number }>({
+    createCustomer: builder.mutation<NewCustomerResponse, Overwrite<NewCustomer, { property_payment_term?: number, payment_method: number, economic_activity: number }>>({
       query: (data) => ({
         url: '/customers',
         method: 'POST',
