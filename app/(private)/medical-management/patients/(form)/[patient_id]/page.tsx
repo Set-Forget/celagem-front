@@ -73,7 +73,7 @@ export default function Page() {
   const [tab, setTab] = useState(tabs[0].value)
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <Header title="Detalles del paciente">
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
@@ -85,7 +85,7 @@ export default function Page() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => router.push(`/medical-management/medical-record/${patientId}`)} >
                   Ver historial
                 </DropdownMenuItem>
                 <DropdownMenuItem>
@@ -138,7 +138,6 @@ export default function Page() {
                       <X />
                     </Button>
                   </div>
-
                 </div>
               ))}
             </ScrollArea>

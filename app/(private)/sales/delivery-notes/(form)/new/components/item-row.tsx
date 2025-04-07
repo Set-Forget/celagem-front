@@ -11,7 +11,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { Trash2 } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
 import { z } from 'zod';
-import { newDeliveryNoteSchema } from '../../schemas/delivery-notes';
+import { newDeliveryNoteSchema } from '../../../schemas/delivery-notes';
 
 export default function ItemRow({
   index,

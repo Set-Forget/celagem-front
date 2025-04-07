@@ -1,10 +1,10 @@
 import { useGetPatientQuery } from "@/lib/services/patients";
 import { cn, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { PatientDetail } from "../../schema/patients";
+import { PatientDetail } from "../../../schema/patients";
 import { FieldDefinition } from "./general-tab";
 
-export default function CareCompanyTab() {
+export default function CompanionTab() {
   const params = useParams<{ patient_id: string }>();
   const patientId = params.patient_id;
 
@@ -12,20 +12,25 @@ export default function CareCompanyTab() {
 
   const fields: FieldDefinition<PatientDetail>[] = [
     {
-      label: "Empresa",
+      label: "Nombre",
       placeholderLength: 14,
-      getValue: (p) => p.care_company?.name ?? "No especificado",
+      getValue: (p) => p.companion?.name,
     },
     {
-      label: "Contrato",
-      placeholderLength: 14,
-      getValue: (p) => p.care_company?.contract_number ?? "No especificado",
+      label: "Dirección",
+      placeholderLength: 30,
+      getValue: (p) => p.companion?.address.formatted_address,
     },
     {
-      label: "Plan de cobertura",
+      label: "Número de teléfono",
       placeholderLength: 14,
-      getValue: (p) => p.care_company?.coverage ?? "No especificado",
-    }
+      getValue: (p) => p.companion?.phone_number,
+    },
+    {
+      label: "Parentesco",
+      placeholderLength: 14,
+      getValue: (p) => p.companion?.relationship,
+    },
   ]
 
   return (

@@ -1,10 +1,10 @@
 import { useGetPatientQuery } from "@/lib/services/patients";
 import { cn, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { PatientDetail } from "../../schema/patients";
+import { PatientDetail } from "../../../schema/patients";
 import { FieldDefinition } from "./general-tab";
 
-export default function CompanionTab() {
+export default function FiscalTab() {
   const params = useParams<{ patient_id: string }>();
   const patientId = params.patient_id;
 
@@ -12,26 +12,25 @@ export default function CompanionTab() {
 
   const fields: FieldDefinition<PatientDetail>[] = [
     {
-      label: "Nombre",
+      label: "Tipo de cliente",
       placeholderLength: 14,
-      getValue: (p) => p.companion?.name,
+      getValue: (p) => p.fiscal?.customer_type,
     },
     {
-      label: "Dirección",
-      placeholderLength: 30,
-      // @ts-expect-error - must be defined later
-      getValue: (p) => p.companion?.address,
+      label: "Razón social",
+      placeholderLength: 14,
+      getValue: (p) => p.fiscal?.registered_name || 'No aplica',
     },
     {
-      label: "Número de teléfono",
+      label: "Número de identificación fiscal",
       placeholderLength: 14,
-      getValue: (p) => p.companion?.phone_number,
+      getValue: (p) => p.fiscal?.tax_id,
     },
     {
-      label: "Parentesco",
+      label: "Condición frente al IVA",
       placeholderLength: 14,
-      getValue: (p) => p.companion?.relationship,
-    },
+      getValue: (p) => p.fiscal?.fiscal_category,
+    }
   ]
 
   return (

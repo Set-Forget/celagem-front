@@ -60,7 +60,7 @@ export default function Page() {
 
   return (
     <div>
-      <Header title="Paciente Juan Pérez" />
+      <Header title="Juan Pérez" />
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
         <DataTable
           data={PATIENT_DATA}

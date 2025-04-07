@@ -1,10 +1,10 @@
 import { useGetPatientQuery } from "@/lib/services/patients";
 import { cn, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { PatientDetail } from "../../schema/patients";
+import { PatientDetail } from "../../../schema/patients";
 import { FieldDefinition } from "./general-tab";
 
-export default function FiscalTab() {
+export default function CaregiverTab() {
   const params = useParams<{ patient_id: string }>();
   const patientId = params.patient_id;
 
@@ -12,25 +12,35 @@ export default function FiscalTab() {
 
   const fields: FieldDefinition<PatientDetail>[] = [
     {
-      label: "Tipo de cliente",
+      label: "Nombre",
       placeholderLength: 14,
-      getValue: (p) => p.fiscal?.customer_type,
+      getValue: (p) => p.caregiver?.name,
     },
     {
-      label: "Razón social",
-      placeholderLength: 14,
-      getValue: (p) => p.fiscal?.registered_name || 'No aplica',
+      label: "Dirección",
+      placeholderLength: 30,
+      getValue: (p) => p.caregiver?.address.formatted_address,
     },
     {
-      label: "Número de identificación fiscal",
+      label: "Tipo de documento",
       placeholderLength: 14,
-      getValue: (p) => p.fiscal?.tax_id,
+      getValue: (p) => p.caregiver?.document_type,
     },
     {
-      label: "Condición frente al IVA",
+      label: "Número de documento",
       placeholderLength: 14,
-      getValue: (p) => p.fiscal?.fiscal_category,
-    }
+      getValue: (p) => p.caregiver?.document_number,
+    },
+    {
+      label: "Número de teléfono",
+      placeholderLength: 14,
+      getValue: (p) => p.caregiver?.phone_number,
+    },
+    {
+      label: "Parentesco",
+      placeholderLength: 14,
+      getValue: (p) => p.caregiver?.relationship,
+    },
   ]
 
   return (

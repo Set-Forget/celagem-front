@@ -3,14 +3,14 @@ import { cn, placeholder } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useParams } from "next/navigation";
-import { PatientDetail } from "../../schema/patients";
+import { PatientDetail } from "../../../schema/patients";
 import {
   biologicalSexTypes,
   disabilityTypes,
   genderIdentityTypes,
   linkageTypes,
   maritalStatusTypes
-} from "../../utils";
+} from "../../../utils";
 
 export type FieldDefinition<T> = {
   label: string;
@@ -78,7 +78,7 @@ export default function GeneralTab() {
     {
       label: "Sede",
       placeholderLength: 14,
-      getValue: (p) => p.company_id,
+      getValue: (p) => p.company.name,
     },
     {
       label: "Tipo de documento",

@@ -19,7 +19,7 @@ import {
 import ItemRow from './item-row';
 import { cn } from '@/lib/utils';
 import TableFooter from './table-footer';
-import { newDeliveryNoteSchema } from '../../schemas/delivery-notes';
+import { newDeliveryNoteSchema } from '../../../schemas/delivery-notes';
 
 export default function ItemsTable({ className }: { className?: string }) {
 	const { control } = useFormContext<z.infer<typeof newDeliveryNoteSchema>>();

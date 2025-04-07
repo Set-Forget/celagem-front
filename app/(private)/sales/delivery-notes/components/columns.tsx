@@ -3,14 +3,16 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { format } from 'date-fns';
-import { DeliveryNote } from '../schemas/delivery-notes';
+import { DeliveryNoteList } from '../schemas/delivery-notes';
+import { es } from 'date-fns/locale';
+import { ArrowRight } from 'lucide-react';
 
-export const columns: ColumnDef<DeliveryNote>[] = [
+export const columns: ColumnDef<DeliveryNoteList>[] = [
   {
-    accessorKey: 'source_document',
+    accessorKey: 'number',
     header: 'Número',
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue('source_document')}</div>
+      <div className="font-medium">{row.getValue('number')}</div>
     ),
   },
   {
@@ -19,12 +21,23 @@ export const columns: ColumnDef<DeliveryNote>[] = [
     cell: ({ row }) => <div>{row.getValue('customer')}</div>,
   },
   {
-    accessorKey: 'delivered_at',
+    accessorKey: 'scheduled_date',
     header: 'Fecha de entrega',
     cell: ({ row }) => (
       <div>
-        {format(new Date(row.getValue('delivered_at')), 'dd MMM yyyy')}
+        {format(new Date(row.getValue('scheduled_date')), 'PPP', { locale: es })}
       </div>
     ),
   },
+  {
+    accessorKey: 'delivery_location',
+    header: 'Movimiento',
+    cell: ({ row }) => (
+      <div className="text-sm flex items-center gap-1">
+        {row.original.source_location}{' '}
+        <ArrowRight size={14} />{' '}
+        {row.original.delivery_location}
+      </div>
+    ),
+  }
 ];

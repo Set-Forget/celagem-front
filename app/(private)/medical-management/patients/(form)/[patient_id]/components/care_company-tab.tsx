@@ -1,10 +1,10 @@
 import { useGetPatientQuery } from "@/lib/services/patients";
 import { cn, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { PatientDetail } from "../../schema/patients";
+import { PatientDetail } from "../../../schema/patients";
 import { FieldDefinition } from "./general-tab";
 
-export default function CaregiverTab() {
+export default function CareCompanyTab() {
   const params = useParams<{ patient_id: string }>();
   const patientId = params.patient_id;
 
@@ -12,36 +12,20 @@ export default function CaregiverTab() {
 
   const fields: FieldDefinition<PatientDetail>[] = [
     {
-      label: "Nombre",
+      label: "Empresa",
       placeholderLength: 14,
-      getValue: (p) => p.caregiver?.name,
+      getValue: (p) => "No especificado",
     },
     {
-      label: "Dirección",
-      placeholderLength: 30,
-      // @ts-expect-error - must be defined later
-      getValue: (p) => p.caregiver?.address,
+      label: "Contrato",
+      placeholderLength: 14,
+      getValue: (p) => "No especificado",
     },
     {
-      label: "Tipo de documento",
+      label: "Plan de cobertura",
       placeholderLength: 14,
-      getValue: (p) => p.caregiver?.document_type,
-    },
-    {
-      label: "Número de documento",
-      placeholderLength: 14,
-      getValue: (p) => p.caregiver?.document_number,
-    },
-    {
-      label: "Número de teléfono",
-      placeholderLength: 14,
-      getValue: (p) => p.caregiver?.phone_number,
-    },
-    {
-      label: "Parentesco",
-      placeholderLength: 14,
-      getValue: (p) => p.caregiver?.relationship,
-    },
+      getValue: (p) => "No especificado",
+    }
   ]
 
   return (

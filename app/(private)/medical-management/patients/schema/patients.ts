@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const newPatientGeneralSchema = z.object({
-  // * Listo
   first_last_name: z
     .string({ required_error: "El apellido es requerido", })
     .nonempty({ message: "El apellido es requerido" })
@@ -140,6 +139,10 @@ export const patientListSchema = z.object({
   document_type: z.string(),
   document_number: z.string(),
   phone_number: z.string(),
+  class: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
 })
 
 export const patientCareCompanyListSchema = z.object({
@@ -163,6 +166,7 @@ export const patientDetailSchema = z.object({
   gender_identity: z.enum(["cisgender", "no-binary", "transgender", "fluent", "other"]),
   birth_date: z.string(),
   birth_place: z.object({
+    id: z.string(),
     place_id: z.string(),
     formatted_address: z.string(),
     latitude: z.number(),
@@ -187,13 +191,16 @@ export const patientDetailSchema = z.object({
     id: z.string(),
     name: z.string(),
   }),
-  company_id: z.string(),
   fiscal: z.object({
     id: z.string(),
     registered_name: z.string(),
     fiscal_category: z.string(),
     customer_type: z.string(),
     tax_id: z.string(),
+  }),
+  company: z.object({
+    id: z.string(),
+    name: z.string(),
   }),
   created_at: z.string(),
   created_by: z.object({
@@ -207,37 +214,46 @@ export const patientDetailSchema = z.object({
     first_name: z.string(),
     last_name: z.string(),
   }),
+  //clinics
   linkage: z.string().nullable(),
   companion: z.object({
+    id: z.string(),
     name: z.string(),
     address: z.object({
+      id: z.string(),
       place_id: z.string(),
       formatted_address: z.string(),
-      latitude: z.number(),
-      longitude: z.number(),
     }),
     phone_number: z.string(),
     relationship: z.string(),
   }),
   caregiver: z.object({
     name: z.string(),
-    address: z.object({
-      place_id: z.string(),
-      formatted_address: z.string(),
-      latitude: z.number(),
-      longitude: z.number(),
-    }),
-    phone_number: z.string(),
     document_type: z.string(),
     document_number: z.string(),
+    address: z.object({
+      id: z.string(),
+      place_id: z.string(),
+      formatted_address: z.string(),
+    }),
+    phone_number: z.string(),
     relationship: z.string(),
   }),
-  care_company: z.object({
-    id: z.string(),
-    name: z.string(),
+  care_company_plan: z.object({
+    care_company_id: z.string(),
     contract_number: z.string(),
     coverage: z.string(),
   }),
+  notes: z.array(z.object({
+    id: z.string(),
+    note: z.string(),
+  })),
+  /*   care_company: z.object({
+      id: z.string(),
+      name: z.string(),
+      contract_number: z.string(),
+      coverage: z.string(),
+    }), */
 })
 
 export const patientListResponseSchema = z.object({

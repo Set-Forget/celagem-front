@@ -18,6 +18,15 @@ export const deliveryNoteItemsSchema = z.object({
   id: z.string(),
 });
 
+export const deliveryNoteListSchema = z.object({
+  id: z.number(),
+  number: z.string(),
+  customer: z.string(),
+  scheduled_date: z.string(),
+  delivery_location: z.string(),
+  source_location: z.string(),
+})
+
 export const newDeliveryNoteSchema = z.object({
   headquarter: z.object({
     id: z.string({ required_error: 'La sede es requerida' }),
@@ -38,6 +47,14 @@ export const newDeliveryNoteSchema = z.object({
     .array(deliveryNoteItemsSchema)
     .nonempty('Al menos un item es requerido'),
 });
+
+export const deliveryNoteListResponseSchema = z.object({
+  status: z.string(),
+  data: z.array(deliveryNoteListSchema),
+});
+
+export type DeliveryNoteList = z.infer<typeof deliveryNoteListSchema>;
+export type DeliveryNoteListResponse = z.infer<typeof deliveryNoteListResponseSchema>;
 
 export type DeliveryNote = z.infer<typeof deliveryNoteSchema>;
 export type NewDeliveryNote = z.infer<typeof newDeliveryNoteSchema>;

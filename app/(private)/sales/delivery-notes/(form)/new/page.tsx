@@ -24,7 +24,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { v4 as uuidv4 } from "uuid";
-import { newDeliveryNoteSchema } from "../schemas/delivery-notes";
+import { newDeliveryNoteSchema } from "../../schemas/delivery-notes";
 import ItemsTable from "./components/items-table";
 
 export default function NewDeliveryNotePage() {

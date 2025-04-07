@@ -1,7 +1,7 @@
 import { useGetAppointmentQuery } from "@/lib/services/appointments";
 import { cn, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { FieldDefinition } from "../../../patients/[patient_id]/components/general-tab";
+import { FieldDefinition } from "../../../patients/(form)/[patient_id]/components/general-tab";
 import { AppointmentDetail } from "../../../scheduler/schemas/appointments";
 import { modesOfCare } from "../../../scheduler/utils";
 

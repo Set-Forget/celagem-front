@@ -1,7 +1,7 @@
 import { useParams } from "next/navigation";
 import { biologicalSexTypes, disabilityTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "../../../patients/utils";
 import { useGetPatientQuery } from "@/lib/services/patients";
-import { FieldDefinition } from "../../../patients/[patient_id]/components/general-tab";
+import { FieldDefinition } from "../../../patients/(form)/[patient_id]/components/general-tab";
 import { PatientDetail } from "../../../patients/schema/patients";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
