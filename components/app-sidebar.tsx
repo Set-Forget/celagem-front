@@ -177,8 +177,8 @@ const data = {
       icon: Stethoscope,
       items: [
         {
-          title: 'Agenda',
-          url: '/medical-management/scheduler',
+          title: 'Calendario',
+          url: '/medical-management/calendar',
         },
         {
           title: 'Pacientes',

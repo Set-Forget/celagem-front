@@ -24,7 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, useFormContext } from "react-hook-form";
-import { newTemplateSchema } from "@/app/(private)/medical-management/scheduler/schemas/templates";
+import { newTemplateSchema } from "@/app/(private)/medical-management/calendar/schemas/templates";
 import { useUpdateTemplateMutation } from "@/lib/services/templates";
 import { z } from "zod";
 import { NormalizedSchema } from "../page";

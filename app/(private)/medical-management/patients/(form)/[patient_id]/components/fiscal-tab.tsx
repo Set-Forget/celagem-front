@@ -3,6 +3,7 @@ import { cn, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { PatientDetail } from "../../../schema/patients";
 import { FieldDefinition } from "./general-tab";
+import { customerTypes, fiscalCategories } from "../../../utils";
 
 export default function FiscalTab() {
   const params = useParams<{ patient_id: string }>();
@@ -14,7 +15,8 @@ export default function FiscalTab() {
     {
       label: "Tipo de cliente",
       placeholderLength: 14,
-      getValue: (p) => p.fiscal?.customer_type,
+      getValue: (p) =>
+        customerTypes.find((type) => type.value === p.fiscal?.customer_type)?.label || "No aplica",
     },
     {
       label: "Razón social",
@@ -29,7 +31,8 @@ export default function FiscalTab() {
     {
       label: "Condición frente al IVA",
       placeholderLength: 14,
-      getValue: (p) => p.fiscal?.fiscal_category,
+      getValue: (p) =>
+        fiscalCategories.find((category) => category.value === p.fiscal?.fiscal_category)?.label || "No aplica",
     }
   ]
 

@@ -30,7 +30,7 @@ export default function MonthlyAppointmentCard({
   return (
     <div
       className={cn(
-        "appointment text-xs px-1.5 py-0.5 w-full truncate flex items-center gap-1 cursor-pointer transition-colors !shadow-md h-5",
+        "appointment text-xs px-1.5 py-0.5 w-full truncate flex items-center gap-1 cursor-pointer transition-colors h-5",
         appointmentColor,
         borderRadiusClass
       )}

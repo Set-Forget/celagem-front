@@ -46,7 +46,10 @@ export const appointmentDetailSchema = z.object({
   status: z.enum(["SCHEDULED", "COMPLETED", "CANCELLED"]),
   mode_of_care: z.enum(["VIRTUAL", "IN_PERSON"]),
   notes: z.string().nullable(),
-  template_id: z.number(),
+  template: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
   created_at: z.string(),
   updated_at: z.string(),
 })

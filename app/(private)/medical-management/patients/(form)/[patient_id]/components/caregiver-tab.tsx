@@ -3,6 +3,7 @@ import { cn, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { PatientDetail } from "../../../schema/patients";
 import { FieldDefinition } from "./general-tab";
+import { documentTypes } from "../../../utils";
 
 export default function CaregiverTab() {
   const params = useParams<{ patient_id: string }>();
@@ -17,14 +18,10 @@ export default function CaregiverTab() {
       getValue: (p) => p.caregiver?.name,
     },
     {
-      label: "Dirección",
-      placeholderLength: 30,
-      getValue: (p) => p.caregiver?.address.formatted_address,
-    },
-    {
       label: "Tipo de documento",
       placeholderLength: 14,
-      getValue: (p) => p.caregiver?.document_type,
+      getValue: (p) =>
+        documentTypes.find((d) => d.value === p.document_type)?.label || "No aplica",
     },
     {
       label: "Número de documento",
@@ -41,6 +38,12 @@ export default function CaregiverTab() {
       placeholderLength: 14,
       getValue: (p) => p.caregiver?.relationship,
     },
+    {
+      label: "Dirección",
+      placeholderLength: 30,
+      getValue: (p) => p.caregiver?.address.formatted_address,
+      className: "col-span-2",
+    }
   ]
 
   return (
@@ -50,7 +53,10 @@ export default function CaregiverTab() {
           ? placeholder(field.placeholderLength)
           : field.getValue(patient!) ?? "";
         return (
-          <div className="flex flex-col gap-1" key={field.label}>
+          <div
+            className={cn("flex flex-col gap-1", field.className)}
+            key={field.label}
+          >
             <label className="text-muted-foreground text-sm">
               {field.label}
             </label>

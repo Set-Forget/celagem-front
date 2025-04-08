@@ -29,7 +29,7 @@ const tabs = [
   }
 ]
 
-export default function NewPurchaseReceivePage() {
+export default function Page() {
   const searchParams = useSearchParams()
   const router = useRouter()
 

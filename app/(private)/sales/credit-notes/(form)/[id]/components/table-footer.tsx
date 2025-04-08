@@ -8,8 +8,8 @@ export default function TableFooter() {
   const { id } = useParams<{ id: string }>()
 
   const { data: creditNote } = useGetCreditNoteQuery(id)
-  const { data: invoice } = useGetInvoiceQuery(String(creditNote?.associated_invoice.id ?? ""), {
-    skip: !creditNote?.associated_invoice.id
+  const { data: invoice } = useGetInvoiceQuery(String(creditNote?.associated_invoice?.id ?? ""), {
+    skip: !creditNote?.associated_invoice?.id
   })
 
   const unitPrices = creditNote?.items.map(item => item.price_unit) || []

@@ -1,4 +1,4 @@
-import { NewField } from "@/app/(private)/medical-management/scheduler/schemas/templates";
+import { NewField } from "@/app/(private)/medical-management/calendar/schemas/templates";
 import { templateFields } from "@/app/(private)/medical-management/utils";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";

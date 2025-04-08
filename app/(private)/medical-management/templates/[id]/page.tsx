@@ -18,7 +18,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { newFieldSchema, newSectionSchema, newTemplateSchema, templateDetailSchema } from "../../scheduler/schemas/templates";
+import { newFieldSchema, newSectionSchema, newTemplateSchema, templateDetailSchema } from "../../calendar/schemas/templates";
 import { templateStatus } from "../utils";
 import EditFieldDialog from "./components/edit-field-dialog";
 import EditSectionDialog from "./components/edit-section-dialog";

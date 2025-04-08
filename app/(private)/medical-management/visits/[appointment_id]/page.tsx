@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import { useGetAppointmentQuery } from "@/lib/services/appointments"
 import { useGetTemplateQuery } from "@/lib/services/templates"
 import { cn, placeholder } from "@/lib/utils"
-import { FileText, Signature, User } from "lucide-react"
+import { FileText, Save, Signature, User } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useRef, useState } from "react"
 import PatientTab from "./components/patient-tab"
@@ -34,22 +34,23 @@ export default function Page() {
 
   const params = useParams<{ appointment_id: string }>();
 
+  const formRef = useRef<TemplateFormHandle>(null);
+
   const appointmentId = params.appointment_id
 
   const { data: appointment } = useGetAppointmentQuery(appointmentId)
-  const { data: template } = useGetTemplateQuery(appointment?.template_id!, { skip: !appointment })
-
-  const formRef = useRef<TemplateFormHandle>(null);
+  const { data: template } = useGetTemplateQuery(appointment?.template.id!, { skip: !appointment })
 
   return (
     <div>
-      <Header title="Visita N° xxxx">
+      <Header title="Nueva visita">
         <div className="flex gap-2 items-center ml-auto">
           <Button
             onClick={() => formRef.current?.submit()}
             variant="outline"
             size="sm"
           >
+            <Save />
             Guardar
           </Button>
           <Button size="sm">

@@ -13,7 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { useGetPatientQuery } from "@/lib/services/patients"
 import { cn, placeholder } from "@/lib/utils"
-import { Building, ChevronDown, House, Pencil, Plus, Shield, Users, Wallet, X } from "lucide-react"
+import { Building, ChevronDown, Ellipsis, House, Pencil, Plus, Shield, Users, Wallet, X } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 import CareCompanyTab from "./components/care_company-tab"
@@ -21,6 +21,7 @@ import CaregiverTab from "./components/caregiver-tab"
 import CompanionTab from "./components/companion-tab"
 import FiscalTab from "./components/fiscal-tab"
 import GeneralTab from "./components/general-tab"
+import Dropdown from "@/components/dropdown"
 
 const notes = [
   { id: 1, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc." },
@@ -76,24 +77,20 @@ export default function Page() {
     <div className="flex flex-col h-full">
       <Header title="Detalles del paciente">
         <div className="ml-auto flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="outline">
-                Acciones
-                <ChevronDown />
+          <Dropdown
+            trigger={
+              <Button size="icon" variant="outline" className="h-8 w-8">
+                <Ellipsis />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuGroup>
-                <DropdownMenuItem onSelect={() => router.push(`/medical-management/medical-record/${patientId}`)} >
-                  Ver historial
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  Crear visita
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            }
+          >
+            <DropdownMenuItem onSelect={() => router.push(`/medical-management/medical-record/${patientId}`)} >
+              Ver historial
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              Crear visita
+            </DropdownMenuItem>
+          </Dropdown>
           <Button
             onClick={() => router.push(`/medical-management/patients/edit/${patientId}`)}
             size="sm"

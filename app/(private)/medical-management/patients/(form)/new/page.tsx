@@ -78,6 +78,7 @@ export default function Page() {
   const [tab, setTab] = useState(tabs[0].value)
 
   const onSubmit = async (data: z.infer<typeof newPatientSchema>) => {
+    console.log(data)
     try {
       const response = await createPatient(data).unwrap()
 

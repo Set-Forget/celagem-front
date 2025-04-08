@@ -1,4 +1,4 @@
-import { NewSection } from "@/app/(private)/medical-management/scheduler/schemas/templates";
+import { NewSection } from "@/app/(private)/medical-management/calendar/schemas/templates";
 import { Button } from "@/components/ui/button";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuLabel, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { setDialogsState } from "@/lib/store/dialogs-store";

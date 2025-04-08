@@ -1,18 +1,75 @@
+import CustomSonner from "@/components/custom-sonner";
 import StatusDot from "@/components/status-dot";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useGetAppointmentQuery, useUpdateAppointmentMutation } from "@/lib/services/appointments";
 import { closeDialogs, DialogsState, dialogsStateObservable, setDialogsState as setMasterDialogsState } from "@/lib/store/dialogs-store";
 import { cn, placeholder } from "@/lib/utils";
-import { format, formatISO, parse } from "date-fns";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { ChevronDown, Hospital, MapPin, Microscope, Pencil, Stethoscope } from "lucide-react";
+import { ActivitySquare, CalendarCheck2, CalendarPlus, ChevronDown, Hospital, MapPin, Pencil, Stethoscope, Sticker } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { AppointmentDetail } from "../schemas/appointments";
 import { appointmentStates, modesOfCare } from "../utils";
-import { useGetTemplateQuery } from "@/lib/services/templates";
+
+export type FieldDefinition<T> = {
+  label: string;
+  placeholderLength: number;
+  getValue: (data: T) => string | undefined;
+  className?: string;
+  icon?: React.ReactNode;
+};
+
+const fields: FieldDefinition<AppointmentDetail>[] = [
+  {
+    label: "Fecha de inicio",
+    placeholderLength: 14,
+    getValue: (p) => p?.start_date ? format(new Date(`${p?.start_date} ${p?.start_time}`), "PPP hh:mmaaa", { locale: es }) : "No especificada",
+    icon: <CalendarPlus className="mr-1" size={16} />,
+  },
+  {
+    label: "Fecha de fin",
+    placeholderLength: 14,
+    getValue: (p) => p?.start_date ? format(new Date(`${p.end_date} ${p.end_time}`), "PPP hh:mmaaa", { locale: es }) : "No especificada",
+    icon: <CalendarCheck2 className="mr-1" size={16} />,
+  },
+  {
+    label: "Profesional",
+    placeholderLength: 10,
+    getValue: (p) => p?.doctor?.first_name + " " + p?.doctor?.last_name,
+    icon: <Stethoscope className="mr-1" size={16} />,
+  },
+  {
+    label: "Tipo de atención",
+    placeholderLength: 10,
+    getValue: (p) => p?.template?.name,
+    icon: <ActivitySquare className="mr-1" size={16} />,
+  },
+  {
+    label: "Sede",
+    placeholderLength: 20,
+    getValue: (p) => p?.clinic?.name || "No especificada",
+    icon: <Hospital className="mr-1" size={16} />,
+
+  },
+  {
+    label: "Modo de atención",
+    placeholderLength: 20,
+    getValue: (p) => p?.mode_of_care ? modesOfCare[p.mode_of_care as keyof typeof modesOfCare] : "No especificado",
+    icon: <MapPin className="mr-1" size={16} />,
+  },
+  {
+    label: "Notas",
+    placeholderLength: 20,
+    getValue: (p) => p?.notes || "No hay notas para mostrar",
+    className: "col-span-2",
+    icon: <Sticker className="mr-1" size={16} />,
+  }
+];
 
 export default function AppointmentDetailsDialog() {
   const router = useRouter()
@@ -21,13 +78,10 @@ export default function AppointmentDetailsDialog() {
 
   const appointmentId = dialogState?.payload?.appointment_id as string
 
-  const { data: appointment, isFetching: isAppointmentFetching } = useGetAppointmentQuery(appointmentId, { skip: !appointmentId })
-  const { data: template, isFetching: isTemplateFetching } = useGetTemplateQuery(appointment?.template_id as number, { skip: !appointment?.template_id })
-
+  const { data: appointment, isLoading: isAppointmentLoading } = useGetAppointmentQuery(appointmentId, {
+    skip: !appointmentId
+  });
   const [updateAppointment] = useUpdateAppointmentMutation()
-
-  const startDateTimeISO = appointment ? formatISO(parse(`${appointment?.start_date} ${appointment?.start_time}`, 'yyyy-MM-dd HH:mm', new Date())) : '';
-  const endDateTimeISO = appointment ? formatISO(parse(`${appointment?.end_date} ${appointment?.end_time}`, 'yyyy-MM-dd HH:mm', new Date())) : '';
 
   const onOpenChange = () => {
     closeDialogs()
@@ -35,12 +89,15 @@ export default function AppointmentDetailsDialog() {
 
   const handleUpdateAppointment = async ({ status }: { status: "SCHEDULED" | "CANCELLED" }) => {
     try {
-      await updateAppointment({
+      const response = await updateAppointment({
         id: appointment?.id as string,
         body: { status }
       }).unwrap()
-    } catch (error) {
-      console.error(error)
+      if (response.status === "SUCCESS") {
+        toast.custom((t) => <CustomSonner t={t} description="Turno actualizado correctamente" />);
+      }
+    } catch {
+      toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar el turno" variant="error" />);
     }
   }
 
@@ -59,8 +116,8 @@ export default function AppointmentDetailsDialog() {
       <DialogContent className="w-[500px] gap-6">
         <DialogHeader className="gap-1">
           <div className="flex items-center gap-2">
-            <DialogTitle className={cn("transition-all duration-300", isAppointmentFetching ? "blur-[4px]" : "blur-none")}>
-              {isAppointmentFetching ? placeholder(12) : appointment?.patient?.first_name} {appointment?.patient?.last_name}
+            <DialogTitle className={cn("transition-all duration-300", isAppointmentLoading ? "blur-[4px]" : "blur-none")}>
+              {isAppointmentLoading ? placeholder(12) : appointment?.patient?.first_name} {appointment?.patient?.last_name}
             </DialogTitle>
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -92,47 +149,31 @@ export default function AppointmentDetailsDialog() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <DialogDescription>
-            {appointment && (() => {
-              const start = new Date(startDateTimeISO);
-              const end = new Date(endDateTimeISO);
-              const isSameDay = start.toDateString() === end.toDateString();
-              return isSameDay
-                ? `${format(start, 'EEEE dd MMMM yyyy hh:mm a', { locale: es })} a ${format(end, 'hh:mm a', { locale: es })}`
-                : `${format(start, 'EEEE dd MMMM yyyy hh:mm a', { locale: es })} a ${format(end, 'EEEE dd MMMM yyyy hh:mm a', { locale: es })}`;
-            })()}
-          </DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-2 gap-4 mt-2">
-          <div className="flex gap-2">
-            <Hospital className="h-5 w-5 shrink-0" />
-            <span className="text-sm">
-              {appointment?.clinic?.name}
-            </span>
-          </div>
-          <div className="flex gap-2">
-            <Stethoscope className="h-5 w-5 shrink-0" />
-            <span className="text-sm">
-              Dr. {appointment?.doctor?.first_name} {appointment?.doctor?.last_name}
-            </span>
-          </div>
-          <div className="flex gap-2">
-            <MapPin className="h-5 w-5 shrink-0" />
-            <span className="text-sm">
-              {modesOfCare[appointment?.mode_of_care as keyof typeof modesOfCare]}
-            </span>
-          </div>
-          <div className="flex gap-2">
-            <Microscope className="h-5 w-5 shrink-0" />
-            <span className={cn("text-sm transition-all duration-300", !template || isTemplateFetching ? "blur-[4px]" : "blur-none")}>
-              {!template || isTemplateFetching ? placeholder(18) : template?.name || "No especificado"}
-            </span>
-          </div>
-        </div>
-        <div className="flex gap-2 bg-muted border p-2 rounded-sm">
-          <span className="text-xs">
-            {appointment?.notes || 'No se adjuntaron notas a este turno.'}
-          </span>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {fields.map((field) => {
+            const displayValue = isAppointmentLoading
+              ? placeholder(field.placeholderLength)
+              : field.getValue(appointment!) ?? "";
+            return (
+              <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
+                <div className="flex items-center gap-1">
+                  {field.icon && field.icon}
+                  <label className="text-muted-foreground text-sm">
+                    {field.label}
+                  </label>
+                </div>
+                <span
+                  className={cn(
+                    "text-sm transition-all duration-300",
+                    isAppointmentLoading ? "blur-[4px]" : "blur-none"
+                  )}
+                >
+                  {displayValue}
+                </span>
+              </div>
+            );
+          })}
         </div>
         <div className="flex gap-2 ml-auto">
           <Button

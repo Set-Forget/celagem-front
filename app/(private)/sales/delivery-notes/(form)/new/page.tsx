@@ -1,9 +1,10 @@
 "use client";
 
-import { Box, CalendarIcon, House } from "lucide-react";
+import DatePicker from "@/components/date-picker";
+import FormTable from "@/components/form-table";
+import Header from "@/components/header";
+import SearchSelect from "@/components/search-select";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -13,163 +14,220 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import { useCreateDeliveryMutation } from "@/lib/services/deliveries";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { Save } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import Header from "@/components/header";
-import { Input } from "@/components/ui/input";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { v4 as uuidv4 } from "uuid";
 import { newDeliveryNoteSchema } from "../../schemas/delivery-notes";
-import ItemsTable from "./components/items-table";
+import { columns } from "./components/columns";
+import TableFooter from "./components/table-footer";
+import CustomSonner from "@/components/custom-sonner";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { useGetInvoiceQuery } from "@/lib/services/invoices";
+import { useEffect } from "react";
 
-export default function NewDeliveryNotePage() {
+const source_locations = [
+  { value: "1", label: "Bodega principal" },
+  { value: "2", label: "Bodega secundaria" },
+  { value: "3", label: "Bodega de insumos" },
+  { value: "4", label: "Bodega de productos terminados" },
+]
+
+const reception_locations = [
+  { value: "1", label: "Bodega principal" },
+  { value: "2", label: "Bodega secundaria" },
+  { value: "3", label: "Bodega de insumos" },
+  { value: "4", label: "Bodega de productos terminados" },
+]
+
+export default function Page() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+
+  const invoiceId = searchParams.get("invoiceId")
+
+  const { data: invoice } = useGetInvoiceQuery(invoiceId!, { skip: !invoiceId })
+  const [createPurchaseReceipt, { isLoading: isCreatingDeliveryNote }] = useCreateDeliveryMutation()
+
   const newDeliveryNote = useForm<z.infer<typeof newDeliveryNoteSchema>>({
     resolver: zodResolver(newDeliveryNoteSchema),
     defaultValues: {
-      items: [
-        {
-          id: uuidv4(),
-          description: "Guantes de nitrilo talla M",
-          delivered_quantity: 0,
-          item_name: "Guante de nitrilo",
-          item_code: "GN-001",
-        },
-      ],
+      items: [],
     },
   });
 
-  const onSubmit = (data: z.infer<typeof newDeliveryNoteSchema>) => {
-    console.log(data);
-  };
+  const onSubmit = async (data: z.infer<typeof newDeliveryNoteSchema>) => {
+    try {
+      const response = await createPurchaseReceipt({
+        ...data,
+        reception_date: data.reception_date.toString(),
+        reception_location: 1, // ! A modo de prueba se está enviando un valor fijo
+        source_location: 1, // ! A modo de prueba se está enviando un valor fijo
+      }).unwrap()
+
+      if (response.status === "success") {
+        router.push(`/purchases/purchase-receipts/${response.data.id}`)
+        toast.custom((t) => <CustomSonner t={t} description="Remito creado exitosamente" variant="success" />)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear el remito" variant="error" />)
+    }
+  }
+
+  useEffect(() => {
+    if (invoice) {
+      newDeliveryNote.reset({
+        customer: invoice.customer.id,
+        move_type: "direct",
+        items: invoice.items.map((item) => ({
+          product_id: item.product_id,
+          name: item.product_name, // ! Esto no debería existir
+          quantity: item.quantity,
+          product_uom: 1,
+        }))
+      })
+    }
+  }, [invoice])
 
   return (
     <Form {...newDeliveryNote}>
       <Header title="Nuevo remito">
         <div className="flex justify-end gap-2 ml-auto">
-          <Button type="button" variant="ghost" size="sm">
-            Previsualizar
-          </Button>
-          <Button type="submit" onClick={newDeliveryNote.handleSubmit(onSubmit)} size="sm">
-            Crear remito
+          <Button
+            type="submit"
+            onClick={newDeliveryNote.handleSubmit(onSubmit)}
+            loading={isCreatingDeliveryNote}
+            size="sm"
+          >
+            <Save className={cn(isCreatingDeliveryNote && "hidden")} />
+            Guardar
           </Button>
         </div>
       </Header>
-      <Tabs className="mt-4" defaultValue="tab-1">
-        <ScrollArea>
-          <TabsList className="relative justify-start !pl-4 h-auto w-full gap-1 bg-transparent p-0 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-border">
-            <TabsTrigger
-              value="tab-1"
-              className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
-            >
-              <House className="-ms-0.5 me-1.5" size={16} aria-hidden="true" />
-              General
-            </TabsTrigger>
-            <TabsTrigger
-              value="tab-2"
-              className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none"
-            >
-              <Box className="-ms-0.5 me-1.5" size={16} aria-hidden="true" />
-              Otros
-            </TabsTrigger>
-          </TabsList>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
-        <TabsContent value="tab-1">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-            <FormField
-              control={newDeliveryNote.control}
-              name="purchase_order"
-              render={({ field }) => (
-                <FormItem className="flex flex-col w-full">
-                  <FormLabel className="w-fit">Número de orden de venta</FormLabel>
-                  <FormControl>
-                    <Input placeholder="432000003" {...field} />
-                  </FormControl>
-                  {newDeliveryNote.formState.errors.purchase_order ? (
-                    <FormMessage>
-                      {newDeliveryNote.formState.errors.purchase_order.message}
-                    </FormMessage>
-                  ) : (
-                    <FormDescription>
-                      Esta será la orden de venta a la que se asociará el remito.
-                    </FormDescription>
-                  )}
-                </FormItem>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
+        <FormField
+          control={newDeliveryNote.control}
+          name="source_location"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full">
+              <FormLabel className="w-fit">
+                Ubicación de origen
+              </FormLabel>
+              <FormControl>
+                <SearchSelect
+                  value={field.value}
+                  onSelect={field.onChange}
+                  options={source_locations}
+                  placeholder="Ubicación de origen"
+                  searchPlaceholder="Buscar..."
+                />
+              </FormControl>
+              {newDeliveryNote.formState.errors.source_location ? (
+                <FormMessage />
+              ) :
+                <FormDescription>
+                  Esta será la ubicación de origen del pedido.
+                </FormDescription>
+              }
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={newDeliveryNote.control}
+          name="reception_location"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full">
+              <FormLabel className="w-fit">
+                Ubicación de recepción
+              </FormLabel>
+              <FormControl>
+                <SearchSelect
+                  value={field.value}
+                  onSelect={field.onChange}
+                  options={reception_locations}
+                  placeholder="Ubicación de recepción"
+                  searchPlaceholder="Buscar..."
+                />
+              </FormControl>
+              {newDeliveryNote.formState.errors.reception_location ? (
+                <FormMessage />
+              ) :
+                <FormDescription>
+                  Esta será la ubicación en la que se recibió el pedido.
+                </FormDescription>
+              }
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={newDeliveryNote.control}
+          name="reception_date"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full">
+              <FormLabel className="w-fit">Fecha de entrega</FormLabel>
+              <FormControl>
+                <DatePicker
+                  value={field.value || null}
+                  onChange={(date) => field.onChange(date)}
+                />
+              </FormControl>
+              {newDeliveryNote.formState.errors.reception_date ? (
+                <FormMessage />
+              ) :
+                <FormDescription>
+                  Esta será la fecha en la que se entregó el pedido.
+                </FormDescription>
+              }
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={newDeliveryNote.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full md:col-span-2">
+              <FormLabel className="w-fit">Notas</FormLabel>
+              <FormControl>
+                <Textarea
+                  {...field}
+                  placeholder="Notas..."
+                  className="resize-none"
+                />
+              </FormControl>
+              <FormDescription>
+                Estas notas serán visibles en el remito.
+              </FormDescription>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={newDeliveryNote.control}
+          name="items"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full col-span-2">
+              <FormLabel className="w-fit">Items</FormLabel>
+              <FormControl>
+                <FormTable<z.infer<typeof newDeliveryNoteSchema>>
+                  columns={columns}
+                  footer={({ append }) => <TableFooter append={append} />}
+                  name="items"
+                  className="col-span-2"
+                />
+              </FormControl>
+              {newDeliveryNote.formState.errors.items?.message && (
+                <p className="text-destructive text-[12.8px] mt-1 font-medium">
+                  {newDeliveryNote.formState.errors.items.message}
+                </p>
               )}
-            />
-            <FormField
-              control={newDeliveryNote.control}
-              name="delivered_at"
-              render={({ field }) => (
-                <FormItem className="flex flex-col w-full">
-                  <FormLabel className="w-fit">Fecha de entrega</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Seleccioná una fecha</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value ? new Date(field.value) : undefined}
-                        onSelect={field.onChange}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  {newDeliveryNote.formState.errors.delivered_at ? (
-                    <FormMessage>
-                      {newDeliveryNote.formState.errors.delivered_at.message}
-                    </FormMessage>
-                  ) : (
-                    <FormDescription>
-                      Esta será la fecha en la que se entregó el pedido.
-                    </FormDescription>
-                  )}
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={newDeliveryNote.control}
-              name="notes"
-              render={({ field }) => (
-                <FormItem className="flex flex-col w-full md:col-span-2">
-                  <FormLabel className="w-fit">Notas</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} placeholder="Notas..." className="resize-none" />
-                  </FormControl>
-                  <FormDescription>
-                    Estas notas serán visibles en el remito.
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
-            <ItemsTable className="col-span-2" />
-          </div>
-        </TabsContent>
-        <TabsContent value="tab-2">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4"></div>
-        </TabsContent>
-      </Tabs>
+            </FormItem>
+          )}
+        />
+      </div>
     </Form>
   );
 }

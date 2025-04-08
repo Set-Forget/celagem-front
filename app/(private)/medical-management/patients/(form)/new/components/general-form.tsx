@@ -16,6 +16,8 @@ import { newPatientSchema } from "../../../schema/patients"
 import { biologicalSexTypes, disabilityTypes, documentTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "../../../utils"
 import { CountrySelect, FlagComponent, PhoneInput } from "@/components/phone-input"
 import * as RPNInput from "react-phone-number-input"
+import { useLazyListBusinessUnitsQuery } from "@/lib/services/business-units"
+import { AsyncMultiSelect } from "@/components/async-multi-select"
 
 export default function GeneralForm() {
   const { setValue, control } = useFormContext<z.infer<typeof newPatientSchema>>()
@@ -23,6 +25,7 @@ export default function GeneralForm() {
   const [getCompanies] = useLazyListCompaniesQuery()
   const [getClasses] = useLazyListClassesQuery()
   const [searchPlace] = useLazyGetAutocompleteQuery();
+  const [getBusinessUnits] = useLazyListBusinessUnitsQuery()
 
   const handleSearchPlace = async (query?: string) => {
     if (!query) return [];
@@ -60,6 +63,19 @@ export default function GeneralForm() {
       }))
     } catch (error) {
       console.error("Error al obtener la clase:", error)
+      return []
+    }
+  }
+
+  const handleGetBusinessUnits = async () => {
+    try {
+      const businessUnits = await getBusinessUnits().unwrap()
+      return businessUnits.data.map((bu) => ({
+        label: bu.name,
+        value: bu.id,
+      }))
+    } catch (error) {
+      console.error("Error al obtener unidades de negocio:", error)
       return []
     }
   }
@@ -383,6 +399,53 @@ export default function GeneralForm() {
       />
       <FormField
         control={control}
+        name="company_id"
+        render={({ field }) => (
+          <FormItem className="flex flex-col w-full">
+            <FormLabel>Compañia</FormLabel>
+            <FormControl>
+              <AsyncSelect<{ label: string, value: string }, string>
+                label="Compañia"
+                triggerClassName="!w-full"
+                placeholder="Seleccionar compañia"
+                fetcher={handleGetCompanies}
+                getDisplayValue={(item) => item.label}
+                getOptionValue={(item) => item.value}
+                renderOption={(item) => <div>{item.label}</div>}
+                onChange={field.onChange}
+                value={field.value}
+                noResultsMessage="No se encontraron compañias"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="clinics"
+        render={({ field }) => (
+          <FormItem className="flex flex-col w-full">
+            <FormLabel>Sedes</FormLabel>
+            <FormControl>
+              <AsyncMultiSelect<{ label: string, value: string }, string>
+                placeholder="Seleccionar sedes"
+                fetcher={handleGetBusinessUnits}
+                getDisplayValue={(item) => item.label}
+                getOptionValue={(item) => item.value}
+                renderOption={(item) => <div>{item.label}</div>}
+                onValueChange={field.onChange}
+                value={field.value}
+                noResultsMessage="No se encontraron sedes"
+                variant="secondary"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
         name="disability_type"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full mt-0.5">
@@ -440,30 +503,6 @@ export default function GeneralForm() {
                 </Command>
               </PopoverContent>
             </Popover>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name="company_id"
-        render={({ field }) => (
-          <FormItem className="flex flex-col w-full">
-            <FormLabel>Sede</FormLabel>
-            <FormControl>
-              <AsyncSelect<{ label: string, value: string }, string>
-                label="Sede"
-                triggerClassName="!w-full"
-                placeholder="Seleccionar sede"
-                fetcher={handleGetCompanies}
-                getDisplayValue={(item) => item.label}
-                getOptionValue={(item) => item.value}
-                renderOption={(item) => <div>{item.label}</div>}
-                onChange={field.onChange}
-                value={field.value}
-                noResultsMessage="No se encontraron sedes"
-              />
-            </FormControl>
             <FormMessage />
           </FormItem>
         )}

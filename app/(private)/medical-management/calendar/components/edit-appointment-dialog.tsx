@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useUpdateAppointmentMutation } from "@/lib/services/appointments";
+import { useGetAppointmentQuery, useUpdateAppointmentMutation } from "@/lib/services/appointments";
 import { useLazyListBusinessUnitsQuery } from "@/lib/services/business-units";
 import { useLazyListPatientsQuery } from "@/lib/services/patients";
 import { useLazyListTemplatesQuery } from "@/lib/services/templates";
@@ -29,7 +29,9 @@ import { AppointmentList, newAppointmentSchema } from "../schemas/appointments";
 export default function EditAppointmentDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
 
-  const appointment = dialogState.payload?.appointment as AppointmentList;
+  const appointmentId = (dialogState.payload?.appointment as AppointmentList)?.id
+
+  const { data: appointment, isFetching: isAppointmentFetching } = useGetAppointmentQuery(appointmentId, { skip: !appointmentId })
   const [updateAppointment, { isLoading }] = useUpdateAppointmentMutation();
 
   const [getBusinessUnits] = useLazyListBusinessUnitsQuery()
@@ -42,7 +44,7 @@ export default function EditAppointmentDialog() {
     defaultValues: {
       created_by: appointment?.created_by.id || "",
       care_type_id: 1,
-      status: appointment?.status || "",
+      status: appointment?.status || undefined,
       start_date: appointment?.start_date || "",
       start_time: appointment?.start_time || "",
       end_date: appointment?.end_date || "",
@@ -52,7 +54,7 @@ export default function EditAppointmentDialog() {
       clinic_id: appointment?.clinic.id || "",
       notes: appointment?.notes || "",
       mode_of_care: appointment?.mode_of_care,
-      template_id: appointment?.template_id
+      template_id: appointment?.template.id
     }
   });
 
@@ -142,7 +144,7 @@ export default function EditAppointmentDialog() {
   async function onSubmit(data: z.infer<typeof newAppointmentSchema>) {
     try {
       const response = await updateAppointment({
-        id: appointment?.id,
+        id: appointmentId,
         body: {
           ...data,
           start_date: format(new Date(data.start_date), "yyyy-MM-dd"),
@@ -184,12 +186,12 @@ export default function EditAppointmentDialog() {
       editAppointmentForm.setValue("patient_id", appointment.patient.id);
       editAppointmentForm.setValue("clinic_id", appointment.clinic.id);
       editAppointmentForm.setValue("status", appointment.status);
-      editAppointmentForm.setValue("template_id", appointment.template_id);
+      editAppointmentForm.setValue("template_id", appointment.template.id);
       editAppointmentForm.setValue("notes", appointment.notes || "");
       editAppointmentForm.setValue("mode_of_care", appointment.mode_of_care);
       editAppointmentForm.setValue("created_by", appointment.created_by.id);
     }
-  }, [appointment]);
+  }, [appointment, dialogState]);
 
   return (
     <Dialog

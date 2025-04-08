@@ -17,11 +17,6 @@ export default function CompanionTab() {
       getValue: (p) => p.companion?.name,
     },
     {
-      label: "Dirección",
-      placeholderLength: 30,
-      getValue: (p) => p.companion?.address.formatted_address,
-    },
-    {
       label: "Número de teléfono",
       placeholderLength: 14,
       getValue: (p) => p.companion?.phone_number,
@@ -30,6 +25,12 @@ export default function CompanionTab() {
       label: "Parentesco",
       placeholderLength: 14,
       getValue: (p) => p.companion?.relationship,
+    },
+    {
+      label: "Dirección",
+      placeholderLength: 30,
+      getValue: (p) => p.companion?.address.formatted_address,
+      className: "col-span-2",
     },
   ]
 
@@ -40,7 +41,10 @@ export default function CompanionTab() {
           ? placeholder(field.placeholderLength)
           : field.getValue(patient!) ?? "";
         return (
-          <div className="flex flex-col gap-1" key={field.label}>
+          <div
+            className={cn("flex flex-col gap-1", field.className)}
+            key={field.label}
+          >
             <label className="text-muted-foreground text-sm">
               {field.label}
             </label>

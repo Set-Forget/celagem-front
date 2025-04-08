@@ -1,4 +1,4 @@
-import { ListBusinessUnitResponse } from '@/app/(private)/medical-management/scheduler/schemas/business-units';
+import { ListBusinessUnitResponse } from '@/app/(private)/medical-management/calendar/schemas/business-units';
 import { usersApi } from '@/lib/apis/users-api';
 
 export const businessUnitsApi = usersApi.injectEndpoints({

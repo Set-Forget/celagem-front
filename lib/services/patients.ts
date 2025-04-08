@@ -9,15 +9,13 @@ export const patientsApi = hcApi.injectEndpoints({
       providesTags: ['Patient']
     }),
     listCareCompanies: builder.query<PatientCareCompanyListResponse, void>({
-      query: () => 'patient/care-company',
+      query: () => 'care-company',
     }),
-
     getPatient: builder.query<PatientDetail, string>({
       query: (id) => `patient/${id}`,
       transformResponse: (response: PatientDetailResponse) => response.data,
       providesTags: ['Patient']
     }),
-
     updatePatient: builder.mutation<{ status: string }, { id: string, body: Partial<NewPatient> }>({
       query: ({ id, body }) => ({
         url: `patient/${id}`,

@@ -1,37 +1,40 @@
-'use client';
+"use client"
 
-import { ColumnDef } from '@tanstack/react-table';
+import {
+	ColumnDef
+} from "@tanstack/react-table"
+import { DeliveryNoteItem } from "../../../schemas/delivery-notes"
 
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<DeliveryNoteItem>[] = [
 	{
-		accessorKey: 'item_code',
-		header: 'Código',
-		cell: ({ row }) => <div>{row.getValue('item_code')}</div>,
+		accessorKey: "display_name",
+		header: "Material",
+		size: 300,
+		cell: ({ row }) => (
+			<div className="font-medium">
+				{row.getValue("display_name")}
+			</div>
+		),
 	},
 	{
-		accessorKey: 'delivered_quantity',
-		header: 'Cantidad recibida',
+		accessorKey: "product_uom",
+		header: "Unidad de medida",
 		cell: ({ row }) => {
-			return <div>{row.getValue('delivered_quantity')}</div>;
+			return <div>{row.getValue("product_uom")}</div>
 		},
 	},
 	{
-		accessorKey: 'item_name',
-		header: 'Nombre',
+		accessorKey: "quantity",
+		header: "Cantidad ordenada",
 		cell: ({ row }) => {
-			return <div>{row.getValue('item_name')}</div>;
+			return <div>{row.getValue("quantity")}</div>
 		},
 	},
 	{
-		accessorKey: 'description',
-		header: 'Descripción',
-		cell: ({ row }) => <div>{row.getValue('description')}</div>,
-	},
-	{
-		id: 'actions',
-		enableHiding: false,
-		cell: () => {
-			return <></>;
+		accessorKey: "product_uom_qty",
+		header: "Cantidad recibida",
+		cell: ({ row }) => {
+			return <div>{row.getValue("product_uom_qty")}</div>
 		},
-	},
-];
+	}
+]

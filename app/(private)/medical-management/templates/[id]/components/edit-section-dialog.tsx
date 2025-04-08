@@ -9,7 +9,7 @@ import {
   NewTemplate,
   NewSection,
   newSectionSchema
-} from "@/app/(private)/medical-management/scheduler/schemas/templates";
+} from "@/app/(private)/medical-management/calendar/schemas/templates";
 import {
   DialogsState,
   dialogsStateObservable,

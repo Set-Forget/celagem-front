@@ -140,7 +140,7 @@ export default function DayColumn({
           <div
             key={appointment.id}
             className={cn(
-              "absolute cursor-pointer px-2 flex flex-col py-1 text-background text-xs h-[calc(100%-4px)] text-left transition-all shadow-md",
+              "absolute cursor-pointer px-2 flex flex-col py-1 text-background text-xs h-[calc(100%-4px)] text-left transition-all rounded-sm",
               appointmentColor
             )}
             style={{

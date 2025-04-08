@@ -1,17 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { TableFooter as ShadcnTableFooter, TableCell, TableRow } from "@/components/ui/table";
 import { Plus } from "lucide-react";
-import { v4 as uuidv4 } from 'uuid';
 
 export default function TableFooter({ append }: { append: (value: any) => void }) {
 
   const handleAddItem = () => {
     append({
-      id: uuidv4(),
-      description: "",
-      received_quantity: 0,
-      item_name: "",
-      item_code: "",
+      product_id: undefined,
+      name: "",
+      product_uom: 1,
+      quantity: 1,
     });
   }
 

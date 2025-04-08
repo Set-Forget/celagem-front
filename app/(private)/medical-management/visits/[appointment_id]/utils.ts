@@ -1,6 +1,6 @@
 import { DateValue, TimeValue } from "react-aria-components";
 import { z, ZodObject, ZodTypeAny } from "zod";
-import { Field, FieldType, Section, TemplateDetail } from "../../scheduler/schemas/templates";
+import { Field, FieldType, Section, TemplateDetail } from "../../calendar/schemas/templates";
 
 const isTimeValue = (value: unknown): value is TimeValue => {
   return (

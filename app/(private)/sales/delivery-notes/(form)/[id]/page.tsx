@@ -1,156 +1,121 @@
 'use client';
 
 import { DataTable } from '@/components/data-table';
+import DataTabs from '@/components/data-tabs';
 import Header from '@/components/header';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
-import { ChevronDown } from 'lucide-react';
+import { useGetDeliveryQuery } from '@/lib/services/deliveries';
+import { cn, placeholder } from '@/lib/utils';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { Box, FileText } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useState } from 'react';
+import { DeliveryNoteDetail } from '../../schemas/delivery-notes';
+import Actions from './actions';
 import { columns } from './components/columns';
-import { generateDeliveryNotePDF } from '../../templates/delivery-note';
+import CustomerTab from './components/customer-tab';
+import InvoiceTab from './components/invoice-tab';
 
-const data: any = [
+export type FieldDefinition<T> = {
+  label: string;
+  placeholderLength: number;
+  getValue: (data: T) => string | undefined;
+  className?: string;
+};
+
+const fields: FieldDefinition<DeliveryNoteDetail>[] = [
   {
-    item_code: 'ITEM-7882',
-    item_name: 'Answer',
-    description: 'Pattern tax these try dream.',
-    delivered_quantity: 12,
-    id: '7b140f23-e32b-4556-86c2-bedf237f43f5',
+    label: "Ubicación de origen",
+    placeholderLength: 14,
+    getValue: (p) => p.source_location || "No especificado",
   },
   {
-    item_code: 'ITEM-1814',
-    item_name: 'Hear',
-    description: 'Price cause debate leave situation result.',
-    delivered_quantity: 1,
-    id: '8ac65f9e-979f-4e54-b59d-0197511f7fd8',
+    label: "Ubicación de recepción",
+    placeholderLength: 14,
+    getValue: (p) => p.reception_location || "No especificado",
   },
   {
-    item_code: 'ITEM-2308',
-    item_name: 'Seek',
-    description: 'Subject collection young professor.',
-    delivered_quantity: 35,
-    id: '57515828-9775-4cf2-b37e-529aa5261dcd',
+    label: "Fecha de recepción",
+    placeholderLength: 12,
+    getValue: (p) => "xxxxx",
   },
   {
-    item_code: 'ITEM-1691',
-    item_name: 'Common',
-    description: 'Bag challenge source two military.',
-    delivered_quantity: 30,
-    id: '5f04feb7-c416-4d2c-88f0-a3e8934ee033',
+    label: "Fecha de requerimiento",
+    placeholderLength: 12,
+    getValue: (p) => format(new Date(p.scheduled_date), "PPP", { locale: es }),
   },
   {
-    item_code: 'ITEM-8413',
-    item_name: 'Quite',
-    description: 'Send full draw citizen air.',
-    delivered_quantity: 47,
-    id: 'e508cdfe-bcad-4c4c-9f3e-d6c5a27a20bb',
-  },
+    label: "Notas",
+    placeholderLength: 30,
+    getValue: (p) => p.note || "No hay notas para mostrar",
+  }
 ];
 
-export default function Page({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  //const customerId = (await params).id
+const tabs = [
+  {
+    value: "tab-1",
+    label: "Cliente",
+    icon: <Box className="mr-1.5" size={16} />,
+    content: <CustomerTab />
+  },
+  {
+    value: "tab-2",
+    label: "Factura",
+    icon: <FileText className="mr-1.5" size={16} />,
+    content: <InvoiceTab />
+  }
+]
 
-  const handleGeneratePDF = async () => {
-    generateDeliveryNotePDF();
-  };
+export default function Page() {
+  const { id } = useParams<{ id: string }>()
+
+  const [tab, setTab] = useState(tabs[0].value)
+
+  const { data: deliveryNote, isLoading: isDeliveryNoteLoading } = useGetDeliveryQuery(id);
 
   return (
     <div>
       <Header title="RC-2000342">
         <div className="ml-auto flex gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                size="sm"
-                variant="ghost"
-              >
-                Acciones
-                <ChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuGroup>
-                <DropdownMenuItem
-                  onClick={() => handleGeneratePDF()}
-                >
-                  Generar PDF
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="sm">
-                Crear
-                <ChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  Devolución de venta
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  Factura de venta
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Actions />
         </div>
       </Header>
-      <div className="flex flex-col gap-4 py-4 flex-1">
-        <div className="px-4 flex flex-col gap-4">
-          <h2 className="text-base font-medium">General</h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Número de remito
-              </label>
-              <span className="text-sm">4500009257</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Cliente
-              </label>
-              <span className="text-sm">Miller PLC</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Fecha de entrega
-              </label>
-              <span className="text-sm">
-                12 de febrero de 2022
-              </span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Sede
-              </label>
-              <span className="text-sm">Sede principal</span>
-            </div>
-          </div>
+      <div className="flex flex-col gap-4 p-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {fields.map((field) => {
+            const displayValue = isDeliveryNoteLoading
+              ? placeholder(field.placeholderLength)
+              : field.getValue(deliveryNote!) ?? "";
+            return (
+              <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
+                <label className="text-muted-foreground text-sm">
+                  {field.label}
+                </label>
+                <span
+                  className={cn(
+                    "text-sm transition-all duration-300",
+                    isDeliveryNoteLoading ? "blur-[4px]" : "blur-none"
+                  )}
+                >
+                  {displayValue}
+                </span>
+              </div>
+            );
+          })}
         </div>
-        <Separator />
-        <div className="px-4 flex flex-col gap-4">
-          <h2 className="text-base font-medium">Productos</h2>
-          <DataTable
-            data={data}
-            columns={columns}
-            pagination={false}
-          />
-        </div>
-        <Separator />
+        <DataTable
+          data={deliveryNote?.items ?? []}
+          loading={isDeliveryNoteLoading}
+          columns={columns}
+          pagination={false}
+        />
       </div>
+      <DataTabs
+        tabs={tabs}
+        activeTab={tab}
+        onTabChange={setTab}
+        triggerClassName="mt-4"
+      />
     </div>
   );
 }

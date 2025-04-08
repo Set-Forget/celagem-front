@@ -182,7 +182,6 @@ export const getAppointmentColor = (appointmentId: string) => {
   return appointmentColors[index];
 };
 
-
 export const getCalendarDates = (selectedDate: Date): Date[] => {
   const year = selectedDate.getFullYear();
   const month = selectedDate.getMonth();

@@ -9,8 +9,8 @@ export default function InvoiceTab() {
   const { id } = useParams<{ id: string }>()
 
   const { data: creditNote, isLoading: isCreditNoteLoading } = useGetCreditNoteQuery(id)
-  const { data: invoice, isLoading: isInvoiceLoading } = useGetInvoiceQuery(String(creditNote?.associated_invoice.id ?? ""), {
-    skip: !creditNote?.associated_invoice.id
+  const { data: invoice, isLoading: isInvoiceLoading } = useGetInvoiceQuery(String(creditNote?.associated_invoice?.id ?? ""), {
+    skip: !creditNote?.associated_invoice?.id
   });
 
   return (

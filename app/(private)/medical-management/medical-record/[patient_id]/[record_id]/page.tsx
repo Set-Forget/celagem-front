@@ -1,15 +1,25 @@
+'use client'
+
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FileDown } from "lucide-react";
 
 export default function MedicalRecord() {
+  const handleGeneratePDF = async () => {
+    const { generateMedicalRecordPDF } = await import("../../templates/medical-record")
+    generateMedicalRecordPDF()
+  }
 
   return (
     <div>
       <Header title="Visita N° 123456">
         <div className="ml-auto">
-          <Button size="sm" variant="outline">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleGeneratePDF}
+          >
             <FileDown />
             Exportar
           </Button>

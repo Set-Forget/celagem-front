@@ -3,7 +3,7 @@ import { DateInput } from "@/components/ui/datefield-rac";
 import { CalendarIcon } from "lucide-react";
 import { Button, DatePicker, DateValue, Dialog, Group, I18nProvider, Label, Popover } from "react-aria-components";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import { Field } from "../scheduler/schemas/templates";
+import { Field } from "../calendar/schemas/templates";
 
 export default function DateField({ field, formField }: {
   field: Field;

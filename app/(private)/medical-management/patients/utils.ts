@@ -1,157 +1,179 @@
 export const documentTypes = [
   {
-    value: "adult-without-identification",
+    value: "AdultWithoutIdentification",
     label: "Adulto sin identificación",
   },
   {
-    value: "citizen-id",
+    value: "CitizenId",
     label: "Cédula de ciudadanía",
   },
   {
-    value: "DNI",
+    value: "Dni",
     label: "Documento nacional de identidad",
   },
   {
-    value: "unique-population-registration-key",
+    value: "UniquePopulationRegistrationKey",
     label: "Clave única de registro de población",
   },
   {
-    value: "immigration-card",
+    value: "ImmigrationCard",
     label: "Cédula de extranjería",
   },
   {
-    value: "minor-without-identification",
+    value: "MinorWithoutIdentification",
     label: "Menor sin identificación",
   },
   {
-    value: "passport",
+    value: "Passport",
     label: "Pasaporte",
   },
   {
-    value: "civil-registry",
+    value: "CivilRegistry",
     label: "Registro civil",
   },
   {
-    value: "cuit",
+    value: "Cuit",
     label: "CUIT",
   },
-] as const
+] as const;
 
 export const biologicalSexTypes = [
   {
-    value: "male",
+    value: "Male",
     label: "Masculino",
   },
   {
-    value: "female",
+    value: "Female",
     label: "Femenino",
   },
   {
-    value: "both",
+    value: "Both",
     label: "Ambos",
   },
-] as const
+] as const;
 
 export const genderIdentityTypes = [
   {
-    value: "cisgender",
+    value: "Cisgender",
     label: "Cisgénero",
   },
   {
-    value: "no-binary",
+    value: "NoBinary",
     label: "No binario",
   },
   {
-    value: "transgender",
+    value: "Transgender",
     label: "Transgénero",
   },
   {
-    value: "fluent",
+    value: "Fluent",
     label: "Fluido",
   },
   {
-    value: "other",
+    value: "Other",
     label: "Otro",
   },
-] as const
+] as const;
 
 export const disabilityTypes = [
   {
-    value: "visual",
+    value: "Visual",
     label: "Discapacidad visual",
   },
   {
-    value: "physical",
+    value: "Physical",
     label: "Discapacidad física",
   },
   {
-    value: "hearing",
+    value: "Hearing",
     label: "Discapacidad auditiva",
   },
   {
-    value: "mental",
+    value: "Mental",
     label: "Discapacidad mental",
   },
   {
-    value: "intellectual",
+    value: "Intellectual",
     label: "Discapacidad intelectual",
   },
   {
-    value: "multiple",
+    value: "Multiple",
     label: "Discapacidad múltiple",
   },
   {
-    value: "psychosocial",
+    value: "Psychosocial",
     label: "Dispacidad psicosocial",
   },
   {
+    value: "Deafblindness",
     label: "Discapacidad sordoceguera",
-    value: "deafblindness",
   },
   {
-    value: "other",
+    value: "Other",
     label: "Otra",
   },
-] as const
+] as const;
 
 export const maritalStatusTypes = [
   {
-    value: "single",
+    value: "Single",
     label: "Soltero",
   },
   {
-    value: "married",
+    value: "Married",
     label: "Casado",
   },
   {
-    value: "divorced",
+    value: "Divorced",
     label: "Divorciado",
   },
   {
-    value: "widowed",
+    value: "Widowed",
     label: "Viudo",
   },
-] as const
+] as const;
 
 export const linkageTypes = [
   {
+    value: "Additional",
     label: "Adicional",
-    value: "additional"
   },
   {
+    value: "Beneficiary",
     label: "Beneficiario",
-    value: "beneficiary"
   },
   {
+    value: "Contributor",
     label: "Cotizante",
-    value: "contributor"
   },
   {
+    value: "Subsidized",
     label: "Subsidiado",
-    value: "subsidized"
   },
   {
+    value: "Particular",
     label: "Particular",
-    value: "particular"
+  },
+] as const;
+
+export const customerTypes = [
+  {
+    value: "Company",
+    label: "Empresa",
+  },
+  {
+    value: "Individual",
+    label: "Particular",
+  },
+] as const;
+
+export const fiscalCategories = [
+  {
+    value: "NaturalPerson",
+    label: "Persona natural",
+  },
+  {
+    value: "LegalEntity",
+    label: "Persona jurídica",
   }
-]
+] as const;

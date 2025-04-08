@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { PatientList } from "../schema/patients"
+import { documentTypes } from "../utils"
 
 export const columns: ColumnDef<PatientList>[] = [
   {
@@ -32,12 +33,14 @@ export const columns: ColumnDef<PatientList>[] = [
   {
     accessorKey: "name",
     header: "Nombre",
-    cell: ({ row }) => <div>{row.original.first_name + " " + row.original.first_last_name}</div>,
+    cell: ({ row }) => <div className="font-medium">{row.original.first_name + " " + row.original.first_last_name}</div>,
   },
   {
     accessorKey: "document_type",
     header: "Tipo de documento",
-    cell: ({ row }) => <div>{row.getValue("document_type")}</div>,
+    cell: ({ row }) => <div>
+      {documentTypes.find((d) => d.value === row.getValue("document_type"))?.label || "No aplica"}
+    </div>,
   },
   {
     accessorKey: "document_number",

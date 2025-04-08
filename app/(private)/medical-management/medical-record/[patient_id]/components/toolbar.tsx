@@ -33,8 +33,15 @@ const filtersConfig: Record<string, FilterConfig> = {
 };
 
 export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) {
-  console.log(table.getIsSomeRowsSelected())
-  console.log(table.getIsAllPageRowsSelected())
+  const handleGeneratePDF = async (selectedRows: any[]) => {
+    if (selectedRows.length > 1) {
+      const { generateMultipleVisitsPDF } = await import("../../templates/multiple-records")
+      generateMultipleVisitsPDF()
+    } else {
+      const { generateMedicalRecordPDF } = await import("../../templates/medical-record")
+      generateMedicalRecordPDF()
+    }
+  }
   return (
     <div className="flex gap-4 justify-between items-center">
       <FilterSelector filtersConfig={filtersConfig} />
@@ -43,12 +50,12 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
           size="sm"
           className="h-7"
           variant="outline"
+          onClick={() => handleGeneratePDF(table.getSelectedRowModel().flatRows)}
         >
           <FileDown />
           Exportar
         </Button>
       )}
-
     </div>
   )
 }

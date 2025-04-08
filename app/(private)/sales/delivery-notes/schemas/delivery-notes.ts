@@ -1,21 +1,11 @@
+import { CalendarDate } from '@internationalized/date';
 import { z } from 'zod';
 
-export const deliveryNoteSchema = z.object({
-  id: z.string(),
-  source_document: z.string(),
-  customer: z.string(),
-  created_at: z.string(),
-  delivered_at: z.string(),
-});
-
-export const deliveryNoteItemsSchema = z.object({
-  item_code: z.string(),
-  item_name: z.string(),
-  description: z.string(),
-  delivered_quantity: z.number({
-    required_error: 'La cantidad a entregar es requerida',
-  }),
-  id: z.string(),
+export const newDeliveryNoteItemSchema = z.object({
+  product_id: z.number({ required_error: "El producto es requerido" }),
+  product_uom: z.number({ required_error: "La unidad de medida es requerida" }),
+  name: z.string({ required_error: "El nombre es requerido" }), // ! Esto no debería ser requerido
+  quantity: z.number({ required_error: "La cantidad es requerida" }),
 });
 
 export const deliveryNoteListSchema = z.object({
@@ -28,24 +18,15 @@ export const deliveryNoteListSchema = z.object({
 })
 
 export const newDeliveryNoteSchema = z.object({
-  headquarter: z.object({
-    id: z.string({ required_error: 'La sede es requerida' }),
-    name: z.string({ required_error: 'La sede es requerida' }),
-  }),
-  purchase_order: z.string({
-    required_error: 'La orden de compra es requerida',
-  }),
-  supplier: z.string({ required_error: 'El cliente es requerido' }),
-  delivered_at: z.string({
-    required_error: 'La fecha de entrega es requerida',
-  }),
-  delivered_quantity: z.number({
-    required_error: 'La cantidad a entregar es requerida',
-  }),
+  customer: z.number({ required_error: "El proveedor es requerido" }),
+  reception_date: z.custom<CalendarDate>((data) => {
+    return data instanceof CalendarDate;
+  }, { message: "La fecha de recepción es requerida" }),
+  reception_location: z.string({ required_error: "La ubicación de recepción es requerida" }),
+  source_location: z.string().optional(),
+  move_type: z.enum(["direct"], { required_error: "El tipo de movimiento es requerido" }),
   notes: z.string().optional(),
-  items: z
-    .array(deliveryNoteItemsSchema)
-    .nonempty('Al menos un item es requerido'),
+  items: z.array(newDeliveryNoteItemSchema),
 });
 
 export const deliveryNoteListResponseSchema = z.object({
@@ -53,9 +34,52 @@ export const deliveryNoteListResponseSchema = z.object({
   data: z.array(deliveryNoteListSchema),
 });
 
+export const newDeliveryNoteResponseSchema = z.object({
+  status: z.string(),
+  message: z.string(),
+  data: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+});
+
+export const deliveryNoteItemSchema = z.object({
+  product_id: z.number(),
+  display_name: z.string(),
+  product_uom_qty: z.number(),
+  quantity: z.number(),
+  product_uom: z.string(),
+})
+
+export const deliveryNoteDetailSchema = z.object({
+  id: z.number(),
+  number: z.string(),
+  customer: z.object({
+    id: z.number(),
+    name: z.string(),
+    email: z.string(),
+    address: z.string(),
+    phone: z.string(),
+  }),
+  scheduled_date: z.string(),
+  note: z.string(),
+  reception_location: z.string(),
+  source_location: z.string(),
+  items: z.array(deliveryNoteItemSchema),
+});
+
+export const deliveryNoteDetailResponseSchema = z.object({
+  status: z.string(),
+  data: deliveryNoteDetailSchema,
+});
+
 export type DeliveryNoteList = z.infer<typeof deliveryNoteListSchema>;
 export type DeliveryNoteListResponse = z.infer<typeof deliveryNoteListResponseSchema>;
 
-export type DeliveryNote = z.infer<typeof deliveryNoteSchema>;
 export type NewDeliveryNote = z.infer<typeof newDeliveryNoteSchema>;
-export type DeliveryNoteItems = z.infer<typeof deliveryNoteItemsSchema>;
+export type NewDeliveryNoteResponse = z.infer<typeof newDeliveryNoteResponseSchema>;
+
+
+export type DeliveryNoteDetail = z.infer<typeof deliveryNoteDetailSchema>;
+export type DeliveryNoteItem = z.infer<typeof deliveryNoteItemSchema>;
+export type DeliveryNoteDetailResponse = z.infer<typeof deliveryNoteDetailResponseSchema>;

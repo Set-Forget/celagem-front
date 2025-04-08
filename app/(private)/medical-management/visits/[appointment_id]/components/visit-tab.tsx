@@ -2,8 +2,10 @@ import { useGetAppointmentQuery } from "@/lib/services/appointments";
 import { cn, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { FieldDefinition } from "../../../patients/(form)/[patient_id]/components/general-tab";
-import { AppointmentDetail } from "../../../scheduler/schemas/appointments";
-import { modesOfCare } from "../../../scheduler/utils";
+import { AppointmentDetail } from "../../../calendar/schemas/appointments";
+import { modesOfCare } from "../../../calendar/utils";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 export default function VisitTab() {
   const params = useParams<{ appointment_id: string }>();
@@ -13,24 +15,39 @@ export default function VisitTab() {
 
   const fields: FieldDefinition<AppointmentDetail>[] = [
     {
-      label: "Profesional",
+      label: "Fecha de inicio",
       placeholderLength: 14,
-      getValue: (a) => a.doctor.first_name + " " + a.doctor.last_name,
+      getValue: (p) => p?.start_date ? format(new Date(`${p?.start_date} ${p?.start_time}`), "PPP hh:mmaaa", { locale: es }) : "No especificada",
+    },
+    {
+      label: "Fecha de fin",
+      placeholderLength: 14,
+      getValue: (p) => p?.start_date ? format(new Date(`${p.end_date} ${p.end_time}`), "PPP hh:mmaaa", { locale: es }) : "No especificada",
+    },
+    {
+      label: "Profesional",
+      placeholderLength: 10,
+      getValue: (p) => p?.doctor?.first_name + " " + p?.doctor?.last_name,
+    },
+    {
+      label: "Tipo de atención",
+      placeholderLength: 10,
+      getValue: (p) => p?.template?.name,
     },
     {
       label: "Sede",
-      placeholderLength: 14,
-      getValue: (a) => a.clinic.name,
+      placeholderLength: 20,
+      getValue: (p) => p?.clinic?.name || "No especificada",
     },
     {
       label: "Modo de atención",
-      placeholderLength: 14,
-      getValue: (a) => modesOfCare[a.mode_of_care as keyof typeof modesOfCare],
+      placeholderLength: 20,
+      getValue: (p) => p?.mode_of_care ? modesOfCare[p.mode_of_care as keyof typeof modesOfCare] : "No especificado",
     },
     {
       label: "Notas",
-      placeholderLength: 14,
-      getValue: (a) => a.notes || "No hay notas",
+      placeholderLength: 20,
+      getValue: (p) => p?.notes || "No hay notas para mostrar",
       className: "col-span-2",
     }
   ];

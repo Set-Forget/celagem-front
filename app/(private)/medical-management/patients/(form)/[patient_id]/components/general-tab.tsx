@@ -7,6 +7,7 @@ import { PatientDetail } from "../../../schema/patients";
 import {
   biologicalSexTypes,
   disabilityTypes,
+  documentTypes,
   genderIdentityTypes,
   linkageTypes,
   maritalStatusTypes
@@ -70,20 +71,26 @@ export default function GeneralTab() {
       getValue: (p) => p.address?.formatted_address,
     },
     {
+      label: "Compañia",
+      placeholderLength: 14,
+      getValue: (p) => p.company.name,
+    },
+    {
+      label: "Sede",
+      placeholderLength: 14,
+      getValue: (p) => p.clinics.map((c) => c.name).join(", "),
+    },
+    {
       label: "Discapacidad",
       placeholderLength: 14,
       getValue: (p) =>
         disabilityTypes.find((d) => d.value === p.disability_type)?.label || "No aplica",
     },
     {
-      label: "Sede",
-      placeholderLength: 14,
-      getValue: (p) => p.company.name,
-    },
-    {
       label: "Tipo de documento",
       placeholderLength: 14,
-      getValue: (p) => p.document_type,
+      getValue: (p) =>
+        documentTypes.find((d) => d.value === p.document_type)?.label || "No aplica",
     },
     {
       label: "Número de documento",

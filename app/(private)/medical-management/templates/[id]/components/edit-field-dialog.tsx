@@ -1,6 +1,6 @@
 "use client";
 
-import { NewField, newFieldSchema, NewSection, NewTemplate, typeSchema } from "@/app/(private)/medical-management/scheduler/schemas/templates";
+import { NewField, newFieldSchema, NewSection, NewTemplate, typeSchema } from "@/app/(private)/medical-management/calendar/schemas/templates";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import {

@@ -3,7 +3,7 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { TemplateList } from "../../scheduler/schemas/templates"
+import { TemplateList } from "../../calendar/schemas/templates"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { templateStatus } from "../utils"

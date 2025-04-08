@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { UseFormSetValue } from "react-hook-form";
-import { Field } from "../scheduler/schemas/templates";
+import { Field } from "../calendar/schemas/templates";
 
 export default function FileField({ field, setValue }: {
   field: Field;
