@@ -5,8 +5,11 @@ import { hcApi } from '@/lib/apis/hc-api';
 export const templatesApi = hcApi.injectEndpoints({
   endpoints: (builder) => ({
     //--- Templates ---
-    listTemplates: builder.query<TemplateListResponse, void>({
-      query: () => 'template',
+    listTemplates: builder.query<TemplateListResponse, { name?: string } | void>({
+      query: (data) => ({
+        url: 'template',
+        params: data || {}
+      }),
       providesTags: ['Template']
     }),
     getTemplate: builder.query<TemplateDetail, number>({

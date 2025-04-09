@@ -245,7 +245,7 @@ export default function Page() {
           <div className="grid grid-cols-1 gap-4 p-4">
             <div className="flex items-center gap-2">
               <h2 className="text-base font-medium">Secciones</h2>
-              <DropdownMenu>
+              <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <Button
                     size="icon"

@@ -7,8 +7,11 @@ export const userApi = usersApi.injectEndpoints({
     listClasses: builder.query<ClassListResponse, void>({
       query: () => 'classes',
     }),
-    listUsers: builder.query<UserListResponse, void>({
-      query: () => 'users',
+    listUsers: builder.query<UserListResponse, { name?: string } | void>({
+      query: (data) => ({
+        url: 'users',
+        params: data || {}
+      }),
     }),
     listCompanies: builder.query<CompaniesListResponse, void>({
       query: () => 'companies',

@@ -86,9 +86,9 @@ export default function NewAppointmentDialog() {
     field.onChange(newDate.toISOString());
   };
 
-  const handleGetTemplates = async () => {
+  const handleGetTemplates = async (query?: string) => {
     try {
-      const templates = await getTemplates().unwrap()
+      const templates = await getTemplates({ name: query }).unwrap()
       return templates.data.map((template) => ({
         label: template.name,
         value: template.id,
@@ -99,9 +99,9 @@ export default function NewAppointmentDialog() {
     }
   }
 
-  const handleGetPatients = async () => {
+  const handleGetPatients = async (query?: string) => {
     try {
-      const patients = await getPatients().unwrap()
+      const patients = await getPatients(/* { name: query } */).unwrap()
       return patients.data.map((patient) => ({
         label: `${patient.first_name} ${patient.first_last_name}`,
         value: patient.id,
@@ -112,9 +112,9 @@ export default function NewAppointmentDialog() {
     }
   }
 
-  const handleGetDoctors = async () => {
+  const handleGetDoctors = async (query?: string) => {
     try {
-      const doctors = await getDoctors().unwrap()
+      const doctors = await getDoctors({ name: query }).unwrap()
       return doctors.data.map((doctor) => ({
         label: `${doctor.first_name} ${doctor.last_name}`,
         value: doctor.id,
@@ -665,3 +665,40 @@ export default function NewAppointmentDialog() {
     </Dialog>
   )
 }
+
+
+/* 
+
+    <Dialog
+      open={dialogState.open === "new-appointment"}
+      onOpenChange={onOpenChange}
+    >
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Seleccionar Fecha</DialogTitle>
+        </DialogHeader>
+        <div className="py-4">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn("w-full justify-start text-left font-normal")}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        <DialogFooter>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+
+*/

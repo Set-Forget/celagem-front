@@ -1,21 +1,20 @@
 'use client'
 
+import CustomSonner from "@/components/custom-sonner";
+import SearchSelect from "@/components/search-select";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useCreateCostCenterMutation } from "@/lib/services/cost-centers";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { newCostCenterSchema } from "../schemas/cost-centers";
-import SearchSelect from "@/components/search-select";
-import { useCreateCostCenterMutation } from "@/lib/services/cost-centers";
-import CustomSonner from "@/components/custom-sonner";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 const plans = [
   {
@@ -223,7 +222,8 @@ export default function NewCostCenterDialog() {
   return (
     <Dialog
       open={dialogState.open === "new-cost-center"}
-      onOpenChange={onOpenChange}>
+      onOpenChange={onOpenChange}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Nuevo centro de costos</DialogTitle>

@@ -1,7 +1,7 @@
 import FilterSelector, { FilterConfig } from "@/components/filter-selector";
 import { Button } from "@/components/ui/button";
 import { Table } from "@tanstack/react-table";
-import { CalendarFold, CalendarSearch, CircleDashed, FileDown, Search, Tag } from "lucide-react";
+import { CalendarSearch, FileDown, Search } from "lucide-react";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -42,6 +42,7 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
       generateMedicalRecordPDF()
     }
   }
+
   return (
     <div className="flex gap-4 justify-between items-center">
       <FilterSelector filtersConfig={filtersConfig} />
