@@ -116,6 +116,14 @@ const data = {
           title: "Reportes",
           url: "/accounting/reports",
         },
+        {
+          title: "Tipos de cuentas",
+          url: "/accounting/account-types-master",
+        },
+        {
+          title: "Extras",
+          url: "/accounting/extras",
+        },
       ],
     },
     {

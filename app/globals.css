@@ -133,3 +133,17 @@
 }
 
 @layer base { img { display: initial; } }
+
+@media print {
+  .pdf-table {
+    break-inside: auto;
+  }
+  
+  .pdf-table tr {
+    break-inside: avoid;
+  }
+  
+  .pdf-page-break {
+    break-before: page;
+  }
+}
