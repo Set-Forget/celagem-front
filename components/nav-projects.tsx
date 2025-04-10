@@ -19,7 +19,7 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
+  MenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,

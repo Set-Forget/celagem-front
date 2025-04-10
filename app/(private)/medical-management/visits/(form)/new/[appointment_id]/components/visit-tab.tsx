@@ -1,17 +1,20 @@
 import { useGetAppointmentQuery } from "@/lib/services/appointments";
 import { cn, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { FieldDefinition } from "../../../patients/(form)/[patient_id]/components/general-tab";
-import { AppointmentDetail } from "../../../calendar/schemas/appointments";
-import { modesOfCare } from "../../../calendar/utils";
+import { FieldDefinition } from "../../../../../patients/(form)/[patient_id]/components/general-tab";
+import { AppointmentDetail } from "../../../../../calendar/schemas/appointments";
+import { modesOfCare } from "../../../../../calendar/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { useGetVisitQuery } from "@/lib/services/visits";
 
 export default function VisitTab() {
   const params = useParams<{ appointment_id: string }>();
 
+
   const appointmentId = params.appointment_id
-  const { data: appointment, isLoading: isAppointmentLoading } = useGetAppointmentQuery(appointmentId)
+
+  const { data: appointment, isLoading: isAppointmentLoading } = useGetAppointmentQuery(appointmentId!, { skip: !appointmentId })
 
   const fields: FieldDefinition<AppointmentDetail>[] = [
     {

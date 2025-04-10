@@ -109,7 +109,7 @@ export default function Page() {
   const adaptedSelectedDate = adaptSelectedDate();
 
   return (
-    <div>
+    <div className='flex flex-col h-full'>
       <Header title={view === 'table' ? 'Tabla' : 'Agenda'}>
         <div className='flex items-center gap-2 ml-auto'>
           <Button

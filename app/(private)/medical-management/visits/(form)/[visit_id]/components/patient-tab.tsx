@@ -1,19 +1,20 @@
-import { useParams } from "next/navigation";
-import { biologicalSexTypes, disabilityTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "../../../patients/utils";
+import { useGetAppointmentQuery } from "@/lib/services/appointments";
 import { useGetPatientQuery } from "@/lib/services/patients";
-import { FieldDefinition } from "../../../patients/(form)/[patient_id]/components/general-tab";
-import { PatientDetail } from "../../../patients/schema/patients";
+import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { cn, placeholder } from "@/lib/utils";
-import { useGetAppointmentQuery } from "@/lib/services/appointments";
+import { useParams } from "next/navigation";
+import { useGetVisitQuery } from "@/lib/services/visits";
+import { PatientDetail } from "@/app/(private)/medical-management/patients/schema/patients";
+import { biologicalSexTypes, disabilityTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "@/app/(private)/medical-management/patients/utils";
 
 export default function PatientTab() {
-  const params = useParams<{ appointment_id: string }>();
+  const params = useParams<{ visit_id: string }>();
 
-  const appointmentId = params.appointment_id
+  const visitId = params.visit_id
 
-  const { data: appointment } = useGetAppointmentQuery(appointmentId)
+  const { data: visit } = useGetVisitQuery(visitId)
+  const { data: appointment } = useGetAppointmentQuery(visit?.appointment_id!, { skip: !visit?.appointment_id })
 
   const patientId = appointment?.patient.id;
   const { data: patient, isLoading: isPatientLoading } = useGetPatientQuery(patientId!, {

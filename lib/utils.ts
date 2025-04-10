@@ -4,6 +4,13 @@ import { z } from "zod";
 
 export type Overwrite<T, U> = Omit<T, keyof U> & U;
 
+export type FieldDefinition<T> = {
+  label: string;
+  placeholderLength: number;
+  getValue: (data: T) => string | undefined;
+  className?: string;
+};
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }

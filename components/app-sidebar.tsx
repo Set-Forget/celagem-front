@@ -185,6 +185,10 @@ const data = {
           url: '/medical-management/patients',
         },
         {
+          title: 'Visitas',
+          url: '/medical-management/visits',
+        },
+        {
           title: "Plantillas",
           url: "/medical-management/templates",
         }

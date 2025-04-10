@@ -190,7 +190,7 @@ export default function AppointmentDetailsDialog() {
             size="sm"
             onClick={() => {
               closeDialogs()
-              router.push(`/medical-management/visits/${appointment?.id}`)
+              router.push(`/medical-management/visits/new/${appointment?.id}`)
             }}
           >
             Iniciar visita
