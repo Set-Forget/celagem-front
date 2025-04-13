@@ -36,16 +36,17 @@ export const columns: ColumnDef<PatientList>[] = [
     cell: ({ row }) => <div className="font-medium">{row.original.first_name + " " + row.original.first_last_name}</div>,
   },
   {
-    accessorKey: "document_type",
-    header: "Tipo de documento",
-    cell: ({ row }) => <div>
-      {documentTypes.find((d) => d.value === row.getValue("document_type"))?.label || "No aplica"}
-    </div>,
+    accessorKey: "class",
+    header: "Clase",
+    cell: ({ row }) => <div className="font-medium">{row.original.class.name}</div>,
   },
   {
-    accessorKey: "document_number",
-    header: "Número de documento",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("document_number")}</div>,
+    accessorKey: "document_type",
+    header: "Documento",
+    cell: ({ row }) => <div>
+      <span className="font-medium">{documentTypes.find((d) => d.value === row.getValue("document_type"))?.short || ""}{" "}</span>
+      {row.original.document_number}
+    </div>,
   },
   {
     accessorKey: "phone_number",

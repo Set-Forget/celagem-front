@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useLazyListCareCompaniesQuery } from "@/lib/services/patients"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
-import { newPatientSchema } from "../../../schema/patients"
+import { newPatientSchema } from "../../schema/patients"
 
 export default function CareCompanyForm() {
   const { control } = useFormContext<z.infer<typeof newPatientSchema>>()

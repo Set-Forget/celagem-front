@@ -19,7 +19,7 @@ export default function DatePicker({ value, onChange }: { value: CalendarDate | 
           <Group className="w-full">
             <DateInput className="date-input pe-9 rounded-sm shadow-sm" />
           </Group>
-          <Button className="text-muted-foreground group-[&:has(.react-aria-Input[value=''])]:hover:text-foreground z-10 -ms-9 -me-px flex w-9 items-center justify-center rounded-e-sm transition-[color,box-shadow] outline-none">
+          <Button className="text-muted-foreground group-[&:has(.react-aria-Input[value=''])]:hover:text-foreground z-10 -ms-11 -me-px flex w-9 items-center justify-center rounded-e-sm transition-[color,box-shadow] outline-none">
             <CalendarIcon size={16} className="opacity-50 group-[&:has(.react-aria-Input:not([value='']))]:opacity-100 transition-opacity" />
           </Button>
         </div>

@@ -2,39 +2,88 @@ export const documentTypes = [
   {
     value: "AdultWithoutIdentification",
     label: "Adulto sin identificación",
+    short: "ASI"
   },
   {
     value: "CitizenId",
     label: "Cédula de ciudadanía",
+    short: "CC"
   },
   {
     value: "Dni",
     label: "Documento nacional de identidad",
+    short: "DNI"
   },
   {
     value: "UniquePopulationRegistrationKey",
     label: "Clave única de registro de población",
+    short: "CUP"
   },
   {
     value: "ImmigrationCard",
     label: "Cédula de extranjería",
+    short: "CE"
+  },
+  {
+    label: "Paciente investigación",
+    value: "ResearchParticipant",
+    short: "PI"
   },
   {
     value: "MinorWithoutIdentification",
     label: "Menor sin identificación",
+    short: "MSI"
   },
   {
     value: "Passport",
     label: "Pasaporte",
+    short: "PAS"
+  },
+  {
+    label: "Número único de id. personal",
+    value: "UniquePersonalIdentificationNumber",
+    short: "NUIP"
   },
   {
     value: "CivilRegistry",
     label: "Registro civil",
+    short: "RC"
   },
   {
-    value: "Cuit",
-    label: "CUIT",
+    label: "Tarjeta de identidad",
+    value: "IdentityCard",
+    short: "TI"
   },
+  {
+    label: "Permiso especial de permanencia",
+    value: "SpecialPermanencePermission",
+    short: "PEP"
+  },
+  {
+    label: "Permiso de protección personal",
+    value: "PersonalProtectionPermission",
+    short: "PPP"
+  },
+  {
+    label: "Clave única de identificación tributaria",
+    value: "UniqueTaxpayerIdentificationKey",
+    short: "CUIT"
+  },
+  {
+    label: "Institutio nacional electoral",
+    value: "NationalElectoralInstitute",
+    short: "INE"
+  },
+  {
+    label: "Registro federal de contribuyentes",
+    value: "FederalContributorRegistry",
+    short: "RFC"
+  },
+  {
+    label: "Forma migratoria",
+    value: "MigrationForm",
+    short: "FM"
+  }
 ] as const;
 
 export const biologicalSexTypes = [

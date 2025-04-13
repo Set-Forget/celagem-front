@@ -3,9 +3,13 @@ import { CountrySelect, FlagComponent, PhoneInput } from "@/components/phone-inp
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useLazyGetAutocompleteQuery } from "@/lib/services/google-places"
+import { useFormContext } from "react-hook-form"
 import * as RPNInput from "react-phone-number-input"
+import { z } from "zod"
+import { newPatientSchema } from "../../schema/patients"
 
-export default function CompanionForm() {
+export default function ContactForm() {
+  const { control } = useFormContext<z.infer<typeof newPatientSchema>>()
 
   const [searchPlace] = useLazyGetAutocompleteQuery();
 
@@ -26,52 +30,11 @@ export default function CompanionForm() {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       <FormField
-        name="companion.name"
+        control={control}
+        name="phone_number"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">Nombre</FormLabel>
-            <FormControl>
-              <Input
-                {...field}
-                value={field.value ?? ""}
-                placeholder="Nombre del acompañante"
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="companion.address"
-        render={({ field }) => (
-          <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">Dirección</FormLabel>
-            <FormControl>
-              <AsyncSelect<{ formatted_address: string, place_id: string }, { formatted_address: string, place_id: string } | undefined>
-                label="Dirección"
-                triggerClassName="!w-full"
-                placeholder="Seleccionar dirección"
-                fetcher={handleSearchPlace}
-                getDisplayValue={(item) => item.formatted_address}
-                getOptionValue={(item) => item}
-                renderOption={(item) => <div>{item.formatted_address}</div>}
-                onChange={field.onChange}
-                value={field.value}
-                getOptionKey={(item) => item.place_id}
-                noResultsMessage="Podrías ingresar 'Calle 123, Bogotá, Colombia'"
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="companion.phone_number"
-        render={({ field }) => (
-          <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">
-              Número de teléfono
-            </FormLabel>
+            <FormLabel className="w-fit">Número de teléfono</FormLabel>
             <FormControl>
               <RPNInput.default
                 className="flex rounded-md shadow-xs"
@@ -90,15 +53,42 @@ export default function CompanionForm() {
         )}
       />
       <FormField
-        name="companion.relationship"
+        control={control}
+        name="email"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">Parentesco</FormLabel>
+            <FormLabel className="w-fit">Correo electrónico</FormLabel>
             <FormControl>
               <Input
                 {...field}
                 value={field.value ?? ""}
-                placeholder="Seleccionar parentesco"
+                placeholder="ventas@guantes.com"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="address"
+        render={({ field }) => (
+          <FormItem className="flex flex-col w-full">
+            <FormLabel className="w-fit">Dirección de residencia</FormLabel>
+            <FormControl>
+              <AsyncSelect<{ formatted_address: string, place_id: string }, { formatted_address: string, place_id: string }>
+                label="Dirección de residencia"
+                triggerClassName="!w-full"
+                placeholder="Seleccionar dirección de residencia"
+                fetcher={handleSearchPlace}
+                getDisplayValue={(item) => item.formatted_address}
+                getOptionValue={(item) => item}
+                renderOption={(item) => <div>{item.formatted_address}</div>}
+                onChange={field.onChange}
+                value={field.value}
+                getOptionKey={(item) => item.place_id}
+                noResultsMessage="Podrías ingresar 'Calle 123, Bogotá, Colombia'"
+                initialOptions={field.value ? [field.value] : []}
               />
             </FormControl>
             <FormMessage />

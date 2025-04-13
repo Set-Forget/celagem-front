@@ -187,6 +187,11 @@ function AsyncMultiSelectInner<T, V>(
     };
   }, [calculateMaxTags]);
 
+  useEffect(() => {
+    if (defaultValue.length === 0 || !defaultValue) return;
+    setSelectedValues(defaultValue);
+  }, [defaultValue]);
+
   const toggleOption = useCallback(
     (option: T) => {
       const optionVal = getOptionValue(option);
@@ -237,7 +242,7 @@ function AsyncMultiSelectInner<T, V>(
                       }
                       onMouseOver={(e) => e.stopPropagation()}
                       className={cn(
-                        "badge group-hover:border group-hover:border-border group-hover:shadow-border",
+                        "badge group-hover:bg-background group-hover:shadow-background",
                         multiSelectVariants({ variant }))}
                     >
                       {getDisplayValue(option)}
@@ -259,7 +264,7 @@ function AsyncMultiSelectInner<T, V>(
                           <Badge
                             onMouseOver={(e) => e.stopPropagation()}
                             className={cn(
-                              "badge group-hover:border group-hover:border-border group-hover:shadow-border",
+                              "badge group-hover:bg-background group-hover:shadow-background",
                               multiSelectVariants({ variant })
                             )}
                           >
@@ -286,7 +291,7 @@ function AsyncMultiSelectInner<T, V>(
                                   key={String(val)}
                                   onMouseOver={(e) => e.stopPropagation()}
                                   className={cn(
-                                    "badge group-hover:border group-hover:border-border group-hover:shadow-border flex items-center justify-between",
+                                    "badge group-hover:bg-background group-hover:shadow-background flex items-center justify-between",
                                     multiSelectVariants({ variant })
                                   )}
                                 >

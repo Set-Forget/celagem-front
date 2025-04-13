@@ -11,11 +11,11 @@ import * as RPNInput from "react-phone-number-input"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { useLazyGetAutocompleteQuery } from "@/lib/services/google-places"
-import { documentTypes } from "../../../utils"
-import { newPatientSchema } from "../../../schema/patients"
+import { documentTypes } from "../../utils"
+import { newPatientSchema } from "../../schema/patients"
 
 export default function CaregiverForm() {
-  const { setValue } = useFormContext<z.infer<typeof newPatientSchema>>()
+  const { setValue, control } = useFormContext<z.infer<typeof newPatientSchema>>()
 
   const [searchPlace] = useLazyGetAutocompleteQuery();
 
@@ -36,6 +36,7 @@ export default function CaregiverForm() {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       <FormField
+        control={control}
         name="caregiver.name"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -52,6 +53,7 @@ export default function CaregiverForm() {
         )}
       />
       <FormField
+        control={control}
         name="caregiver.document_type"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -114,6 +116,7 @@ export default function CaregiverForm() {
         )}
       />
       <FormField
+        control={control}
         name="caregiver.document_number"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -130,6 +133,7 @@ export default function CaregiverForm() {
         )}
       />
       <FormField
+        control={control}
         name="caregiver.address"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -147,6 +151,7 @@ export default function CaregiverForm() {
                 value={field.value}
                 getOptionKey={(item) => item.place_id}
                 noResultsMessage="Podrías ingresar 'Calle 123, Bogotá, Colombia'"
+                initialOptions={field.value?.place_id ? [field.value] : undefined}
               />
             </FormControl>
             <FormMessage />
@@ -154,6 +159,7 @@ export default function CaregiverForm() {
         )}
       />
       <FormField
+        control={control}
         name="caregiver.phone_number"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -178,6 +184,7 @@ export default function CaregiverForm() {
         )}
       />
       <FormField
+        control={control}
         name="caregiver.relationship"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">

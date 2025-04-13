@@ -14,17 +14,17 @@ export default function CareCompanyTab() {
     {
       label: "Empresa",
       placeholderLength: 14,
-      getValue: (p) => "No especificado",
+      getValue: (p) => p.care_company_plan.care_company.name || "No especificado",
     },
     {
       label: "Contrato",
       placeholderLength: 14,
-      getValue: (p) => "No especificado",
+      getValue: (p) => p.care_company_plan.contract_number || "No especificado",
     },
     {
       label: "Plan de cobertura",
       placeholderLength: 14,
-      getValue: (p) => "No especificado",
+      getValue: (p) => p.care_company_plan.coverage || "No especificado",
     }
   ]
 

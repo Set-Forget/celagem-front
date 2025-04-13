@@ -2,13 +2,13 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useWatch } from "react-hook-form"
-import { customerTypes, fiscalCategories } from "../../../utils"
+import { customerTypes, fiscalCategories } from "../../utils"
 
 export default function FiscalForm() {
 
   const isCompany = useWatch({
     name: "fiscal.customer_type",
-  }) === "company"
+  }) === "Company"
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">

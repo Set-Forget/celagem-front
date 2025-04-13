@@ -36,7 +36,7 @@ export default function GeneralTab() {
       label: "Tipo de vinculación",
       placeholderLength: 14,
       getValue: (p) =>
-        linkageTypes.find((l) => l.value === p.linkage)?.label || "No aplica",
+        linkageTypes.find((l) => l.value === p.linkage)?.label || "No especificado",
     },
     {
       label: "Clase",
@@ -47,18 +47,18 @@ export default function GeneralTab() {
       label: "Sexo biológico",
       placeholderLength: 14,
       getValue: (p) =>
-        biologicalSexTypes.find((b) => b.value === p.biological_sex)?.label || "No aplica",
+        biologicalSexTypes.find((b) => b.value === p.biological_sex)?.label || "No especificado",
     },
     {
       label: "Identidad de género",
       placeholderLength: 14,
       getValue: (p) =>
-        genderIdentityTypes.find((g) => g.value === p.gender_identity)?.label || "No aplica",
+        genderIdentityTypes.find((g) => g.value === p.gender_identity)?.label || "No especificado",
     },
     {
       label: "Fecha de nacimiento",
       placeholderLength: 13,
-      getValue: (p) => p.birth_date ? format(p.birth_date, "PPP", { locale: es }) : 'No aplica',
+      getValue: (p) => p.birth_date ? format(p.birth_date, "PPP", { locale: es }) : 'No especificado',
     },
     {
       label: "Lugar de nacimiento",
@@ -84,13 +84,13 @@ export default function GeneralTab() {
       label: "Discapacidad",
       placeholderLength: 14,
       getValue: (p) =>
-        disabilityTypes.find((d) => d.value === p.disability_type)?.label || "No aplica",
+        disabilityTypes.find((d) => d.value === p.disability_type)?.label || "No especificado",
     },
     {
       label: "Tipo de documento",
       placeholderLength: 14,
       getValue: (p) =>
-        documentTypes.find((d) => d.value === p.document_type)?.label || "No aplica",
+        documentTypes.find((d) => d.value === p.document_type)?.label || "No especificado",
     },
     {
       label: "Número de documento",
@@ -100,43 +100,43 @@ export default function GeneralTab() {
     {
       label: "Número de teléfono",
       placeholderLength: 10,
-      getValue: (p) => p.phone_number,
+      getValue: (p) => p.phone_number || "No especificado",
     },
     {
       label: "Email",
       placeholderLength: 14,
-      getValue: (p) => p.email,
+      getValue: (p) => p.email || "No especificado",
     },
     {
       label: "Nombre del padre",
       placeholderLength: 14,
-      getValue: (p) => p.father_name,
+      getValue: (p) => p.father_name || "No especificado",
     },
     {
       label: "Nombre de la madre",
       placeholderLength: 14,
-      getValue: (p) => p.mother_name,
+      getValue: (p) => p.mother_name || "No especificado",
     },
     {
       label: "Estado civil",
       placeholderLength: 14,
       getValue: (p) =>
-        maritalStatusTypes.find((m) => m.value === p.marital_status)?.label || "No aplica",
+        maritalStatusTypes.find((m) => m.value === p.marital_status)?.label || "No especificado",
     },
     {
       label: "Entidad/IPS remitente",
       placeholderLength: 14,
-      getValue: (p) => p.referring_entity,
+      getValue: (p) => p.referring_entity || "No especificado",
     },
     {
       label: "Aseguradora",
       placeholderLength: 14,
-      getValue: (p) => p.insurance_provider || "No aplica",
+      getValue: (p) => p.insurance_provider || "No especificado",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       {fields.map((field) => {
         const displayValue = isPatientLoading
           ? placeholder(field.placeholderLength)

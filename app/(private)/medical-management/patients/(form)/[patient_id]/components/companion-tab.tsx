@@ -19,17 +19,17 @@ export default function CompanionTab() {
     {
       label: "Número de teléfono",
       placeholderLength: 14,
-      getValue: (p) => p.companion?.phone_number,
+      getValue: (p) => p.companion?.phone_number || "No especificado",
     },
     {
       label: "Parentesco",
       placeholderLength: 14,
-      getValue: (p) => p.companion?.relationship,
+      getValue: (p) => p.companion?.relationship || "No especificado",
     },
     {
       label: "Dirección",
       placeholderLength: 30,
-      getValue: (p) => p.companion?.address.formatted_address,
+      getValue: (p) => p.companion?.address.formatted_address || "No especificado",
       className: "col-span-2",
     },
   ]

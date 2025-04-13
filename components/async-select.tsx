@@ -140,11 +140,19 @@ export function AsyncSelect<T, V>(props: AsyncSelectProps<T, V>) {
     }
     const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
 
-    const opt = options.find((o) => keyFn(o) === String(value));
+    const valueKey =
+      typeof value === "object"
+        ? getOptionKey
+          ? getOptionKey(value as T)
+          : String(getOptionValue(value as unknown as T))
+        : String(value);
+
+    const opt = options.find((o) => keyFn(o) === valueKey);
     if (opt) {
       setSelectedOption(opt);
     }
   }, [value, options, getOptionValue, getOptionKey]);
+
 
   useEffect(() => {
     if (!initialOptions?.length) return;

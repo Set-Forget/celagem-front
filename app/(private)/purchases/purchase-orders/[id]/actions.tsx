@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useUpdatePurchaseOrderMutation } from "@/lib/services/purchase-orders";
 import { updateStateMessageMap } from "./utils";
+import { generatePDF } from "@/templates/utils.client";
 
 export default function Actions({ state }: { state?: "draft" | "sent" | "to approve" | "purchase" | "done" | "cancel" }) {
   const router = useRouter()
@@ -33,9 +34,16 @@ export default function Actions({ state }: { state?: "draft" | "sent" | "to appr
   }
 
   const handleGeneratePDF = async () => {
-    const { generatePurchaseOrderPDF } = await import("../templates/purchase-order")
-    generatePurchaseOrderPDF()
-  }
+    try {
+      const pdf = await generatePDF({
+        templateName: 'purchaseOrder',
+        data: { orderNumber: "1437" },
+      });
+      pdf.view();
+    } catch (error) {
+      console.error('Error al generar el PDF:', error);
+    }
+  };
 
   if (!state) {
     return null

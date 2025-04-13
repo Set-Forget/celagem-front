@@ -33,30 +33,24 @@ const notes = [
 const tabs = [
   {
     value: "tab-1",
-    label: "General",
-    icon: <House className="mr-1.5" size={16} />,
-    content: <GeneralTab />
-  },
-  {
-    value: "tab-2",
     label: "Acompañante",
     icon: <Users className="mr-1.5" size={16} />,
     content: <CompanionTab />
   },
   {
-    value: "tab-3",
+    value: "tab-2",
     label: "Responsable",
     icon: <Shield className="mr-1.5" size={16} />,
     content: <CaregiverTab />
   },
   {
-    value: "tab-4",
+    value: "tab-3",
     label: "Empresa responsable",
     icon: <Building className="mr-1.5" size={16} />,
     content: <CareCompanyTab />
   },
   {
-    value: "tab-5",
+    value: "tab-4",
     label: "Fiscal",
     icon: <Wallet className="mr-1.5" size={16} />,
     content: <FiscalTab />
@@ -92,7 +86,7 @@ export default function Page() {
             </DropdownMenuItem>
           </Dropdown>
           <Button
-            onClick={() => router.push(`/medical-management/patients/edit/${patientId}`)}
+            onClick={() => router.push(`/medical-management/patients/${patientId}/edit`)}
             size="sm"
           >
             <Pencil className="w-4 h-4" />
@@ -102,11 +96,11 @@ export default function Page() {
       </Header>
       <ResizablePanelGroup className="flex !h-full !w-full" direction="horizontal">
         <ResizablePanel defaultSize={70}>
+          <GeneralTab />
           <DataTabs
             tabs={tabs}
             activeTab={tab}
             onTabChange={setTab}
-            triggerClassName="mt-4"
             contentClassName="p-4"
           />
         </ResizablePanel>
@@ -143,6 +137,7 @@ export default function Page() {
           <div className="p-4 flex flex-col gap-4">
             <div className="flex justify-between items-center">
               <h2 className="text-base font-medium">Última visita</h2>
+              xxxx
             </div>
           </div>
           <Separator />
@@ -152,7 +147,7 @@ export default function Page() {
               <label className="text-muted-foreground text-sm">
                 Creado por{" "}
                 <span className="font-medium">
-                  John Doe
+                  xxxx
                 </span>
               </label>
               <span
@@ -180,7 +175,7 @@ export default function Page() {
                   isPatientLoading ? "blur-[4px]" : "blur-none"
                 )}
               >
-                Hace 2 días
+                xxxx
               </span>
             </div>
           </div>

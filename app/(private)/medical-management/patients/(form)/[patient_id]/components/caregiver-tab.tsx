@@ -26,22 +26,22 @@ export default function CaregiverTab() {
     {
       label: "Número de documento",
       placeholderLength: 14,
-      getValue: (p) => p.caregiver?.document_number,
+      getValue: (p) => p.caregiver?.document_number || "No especificado",
     },
     {
       label: "Número de teléfono",
       placeholderLength: 14,
-      getValue: (p) => p.caregiver?.phone_number,
+      getValue: (p) => p.caregiver?.phone_number || "No especificado",
     },
     {
       label: "Parentesco",
       placeholderLength: 14,
-      getValue: (p) => p.caregiver?.relationship,
+      getValue: (p) => p.caregiver?.relationship || "No especificado",
     },
     {
       label: "Dirección",
       placeholderLength: 30,
-      getValue: (p) => p.caregiver?.address.formatted_address,
+      getValue: (p) => p.caregiver?.address.formatted_address || "No especificado",
       className: "col-span-2",
     }
   ]

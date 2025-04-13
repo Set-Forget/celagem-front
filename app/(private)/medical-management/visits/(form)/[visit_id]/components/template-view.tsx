@@ -9,7 +9,6 @@ interface TemplateViewProps {
 export const TemplateView = ({ template, data }: TemplateViewProps) => {
   const parsedTemplate = templateDetailSchema.parse(template);
   const medicalRecord = JSON.parse(data ?? "{}") as Record<string, any>
-  console.log(medicalRecord)
 
   return (
     <div className="flex flex-col gap-4 p-4">
