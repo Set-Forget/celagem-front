@@ -1,16 +1,13 @@
 import { useGetAppointmentQuery } from "@/lib/services/appointments";
-import { cn, placeholder } from "@/lib/utils";
-import { useParams } from "next/navigation";
-import { FieldDefinition } from "../../../../../patients/(form)/[patient_id]/components/general-tab";
-import { AppointmentDetail } from "../../../../../calendar/schemas/appointments";
-import { modesOfCare } from "../../../../../calendar/utils";
+import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { useGetVisitQuery } from "@/lib/services/visits";
+import { useParams } from "next/navigation";
+import { AppointmentDetail } from "../../../calendar/schemas/appointments";
+import { modesOfCare } from "../../../calendar/utils";
 
-export default function VisitTab() {
+export default function AppointmentTab() {
   const params = useParams<{ appointment_id: string }>();
-
 
   const appointmentId = params.appointment_id
 

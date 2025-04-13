@@ -21,11 +21,20 @@ export const visitsApi = hcApi.injectEndpoints({
       transformResponse: (response: VisitDetailResponse) => response.data,
       providesTags: ['Visit'],
     }),
+    updateVisit: builder.mutation<VisitDetailResponse, { id: string, body: Partial<NewVisit> }>({
+      query: ({ id, body }) => ({
+        url: `visit/${id}`,
+        method: 'PATCH',
+        body: body,
+      }),
+      invalidatesTags: ['Visit'],
+    }),
   }),
 });
 
 export const {
   useListVisitsQuery,
   useCreateVisitMutation,
+  useUpdateVisitMutation,
   useGetVisitQuery,
 } = visitsApi;

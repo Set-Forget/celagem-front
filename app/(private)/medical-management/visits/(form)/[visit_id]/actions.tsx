@@ -2,8 +2,13 @@ import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { EditIcon, Ellipsis, FileDown, FileTextIcon, Signature } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 
 export default function Actions({ state }: { state?: 'DRAFT' | 'SIGNED' }) {
+  const router = useRouter()
+  const params = useParams<{ visit_id: string }>();
+
+  const visitId = params.visit_id
 
   if (!state) {
     return null
@@ -23,7 +28,7 @@ export default function Actions({ state }: { state?: 'DRAFT' | 'SIGNED' }) {
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => console.log("Editar")}>
+          <DropdownMenuItem onSelect={() => router.push(`/medical-management/visits/${visitId}/edit`)}>
             <EditIcon />
             Editar
           </DropdownMenuItem>

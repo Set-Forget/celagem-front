@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import CustomSonner from "@/components/custom-sonner";
@@ -7,15 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useGetAppointmentQuery } from "@/lib/services/appointments";
 import { useGetTemplateQuery } from "@/lib/services/templates";
-import { useCreateVisitMutation } from "@/lib/services/visits";
+import { useGetVisitQuery, useUpdateVisitMutation } from "@/lib/services/visits";
 import { cn, placeholder } from "@/lib/utils";
-import { FileText, Save, Signature, User } from "lucide-react";
+import { FileText, Save, User } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import PatientTab from "../../components/patient-tab";
 import { TemplateForm, TemplateFormHandle } from "../../components/template-form";
-import AppointmentTab from "../../components/appointment-tab";
+import PatientTab from "../components/patient-tab";
+import AppointmentTab from "../components/appointment-tab";
 
 const tabs = [
   {
@@ -38,53 +40,65 @@ export default function Page() {
   const [tab, setTab] = useState(tabs[0].value);
   const formRef = useRef<TemplateFormHandle>(null);
 
-  const params = useParams<{ appointment_id: string }>();
-  const appointmentId = params.appointment_id;
+  const params = useParams<{ visit_id: string }>();
+  const visitId = params.visit_id;
 
-  const { data: appointment } = useGetAppointmentQuery(appointmentId!, { skip: !appointmentId });
+  const { data: visit, isLoading: isVisitLoading } = useGetVisitQuery(visitId!, { skip: !visitId })
+  const { data: appointment } = useGetAppointmentQuery(visit?.appointment_id!, { skip: !visit?.appointment_id });
   const { data: template } = useGetTemplateQuery(appointment?.template.id!, {
     skip: !appointment?.template.id,
   });
 
-  const [createVisit, { isLoading: isCreatingVisit }] = useCreateVisitMutation();
+  const [updateVisit, { isLoading: isUpdatingVisit }] = useUpdateVisitMutation();
 
   const handleSubmit = async (formData: any, templateName: string) => {
+    if (!visit?.appointment_id) {
+      return console.warn("No se ha podido obtener el id del turno");
+    }
+
     try {
-      const response = await createVisit({
-        appointment_id: appointmentId!,
-        medical_record: {
-          name: templateName,
-          data: JSON.stringify(formData),
+      const response = await updateVisit({
+        id: visitId!,
+        body: {
+          medical_record: {
+            name: templateName,
+            data: JSON.stringify(formData),
+          },
         },
       }).unwrap();
 
       if (response.status === "SUCCESS") {
         router.push(`/medical-management/visits/${response.data.id}`)
-        toast.custom((t) => <CustomSonner t={t} description="Visita creada exitosamente" />)
+        toast.custom((t) => <CustomSonner t={t} description="Visita actualizada exitosamente" />)
       }
     } catch (error) {
       console.error(error)
-      toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la visita" variant="error" />)
+      toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar la visita" variant="error" />)
     }
   };
 
+  useEffect(() => {
+    if (visit && template && formRef.current) {
+      const visitData = JSON.parse(visit.medical_record ?? "{}") as Record<string, any>;
+      formRef.current.reset(visitData);
+    }
+  }, [visit, template]);
+
   return (
     <div>
-      <Header title="Nueva visita">
+      <Header title={
+        <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isVisitLoading ? "blur-[4px]" : "blur-none")}>
+          Editar visita N° {isVisitLoading ? placeholder(3, true) : visit?.visit_number}
+        </h1>
+      }>
         <div className="flex gap-2 items-center ml-auto">
           <Button
             onClick={() => formRef.current?.submit()}
-            variant="outline"
             size="sm"
-            loading={isCreatingVisit}
+            loading={isUpdatingVisit}
           >
-            <Save className={cn(isCreatingVisit && "hidden")} />
+            <Save className={cn(isUpdatingVisit && "hidden")} />
             Guardar
-          </Button>
-
-          <Button size="sm">
-            <Signature />
-            Firmar visita
           </Button>
         </div>
       </Header >

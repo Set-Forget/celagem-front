@@ -14,15 +14,15 @@ import { useState } from "react"
 import { visitStatus } from "../../utils"
 import Actions from "./actions"
 import { TemplateView } from "./components/template-view"
-import VisitTab from "./components/visit-tab"
+import AppointmentTab from "./components/appointment-tab"
 import PatientTab from "./components/patient-tab"
 
 const tabs = [
   {
     value: "tab-1",
-    label: "Visita",
+    label: "Turno",
     icon: <FileText className="mr-1.5" size={16} />,
-    content: <VisitTab />
+    content: <AppointmentTab />
   },
   {
     value: "tab-2",
@@ -49,7 +49,7 @@ export default function Page() {
     <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isVisitLoading ? "blur-[4px]" : "blur-none")}>
-          {isVisitLoading ? placeholder(3, true) : visit?.visit_number}
+          Visita N° {isVisitLoading ? placeholder(3, true) : visit?.visit_number}
         </h1>
       }>
         <div className="mr-auto">

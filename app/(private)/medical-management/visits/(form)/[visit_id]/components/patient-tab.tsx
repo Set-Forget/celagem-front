@@ -6,7 +6,7 @@ import { es } from "date-fns/locale";
 import { useParams } from "next/navigation";
 import { useGetVisitQuery } from "@/lib/services/visits";
 import { PatientDetail } from "@/app/(private)/medical-management/patients/schema/patients";
-import { biologicalSexTypes, disabilityTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "@/app/(private)/medical-management/patients/utils";
+import { biologicalSexTypes, disabilityTypes, documentTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "@/app/(private)/medical-management/patients/utils";
 
 export default function PatientTab() {
   const params = useParams<{ visit_id: string }>();
@@ -25,102 +25,65 @@ export default function PatientTab() {
     {
       label: "Nombre",
       placeholderLength: 14,
-      getValue: (p) => p.first_name + " " + p.first_last_name,
+      getValue: (p) => p.first_name + " " + p.first_last_name
     },
     {
       label: "Tipo de vinculación",
       placeholderLength: 14,
       getValue: (p) =>
-        linkageTypes.find((l) => l.value === p.linkage)?.label || "No aplica",
+        linkageTypes.find((l) => l.value === p.linkage)?.label || "No especificado",
     },
     {
       label: "Clase",
       placeholderLength: 14,
-      getValue: (p) => p.class?.name,
+      getValue: (p) => p.class?.name || "No especificado",
     },
     {
       label: "Sexo biológico",
       placeholderLength: 14,
       getValue: (p) =>
-        biologicalSexTypes.find((b) => b.value === p.biological_sex)?.label || "No aplica",
-    },
-    {
-      label: "Identidad de género",
-      placeholderLength: 14,
-      getValue: (p) =>
-        genderIdentityTypes.find((g) => g.value === p.gender_identity)?.label || "No aplica",
+        biologicalSexTypes.find((b) => b.value === p.biological_sex)?.label || "No especificado",
     },
     {
       label: "Fecha de nacimiento",
       placeholderLength: 13,
-      getValue: (p) => p.birth_date ? format(p.birth_date, "PPP", { locale: es }) : 'No aplica',
-    },
-    {
-      label: "Lugar de nacimiento",
-      placeholderLength: 14,
-      getValue: (p) => p.birth_place?.formatted_address,
+      getValue: (p) => p.birth_date ? format(p.birth_date, "PPP", { locale: es }) : 'No especificado',
     },
     {
       label: "Dirección de residencia",
       placeholderLength: 14,
-      getValue: (p) => p.address?.formatted_address,
+      getValue: (p) => p.address?.formatted_address || "No especificado",
     },
     {
       label: "Discapacidad",
       placeholderLength: 14,
       getValue: (p) =>
-        disabilityTypes.find((d) => d.value === p.disability_type)?.label || "No aplica",
-    },
-    {
-      label: "Sede",
-      placeholderLength: 14,
-      getValue: (p) => p.company.name,
-    },
-    {
-      label: "Tipo de documento",
-      placeholderLength: 14,
-      getValue: (p) => p.document_type,
+        disabilityTypes.find((d) => d.value === p.disability_type)?.label || "No especificado",
     },
     {
       label: "Número de documento",
       placeholderLength: 14,
-      getValue: (p) => p.document_number,
+      getValue: (p) => `${documentTypes.find((d) => d.value === p.document_type)?.short || ""} ${p.document_number || "No especificado"}`,
     },
     {
       label: "Número de teléfono",
       placeholderLength: 10,
-      getValue: (p) => p.phone_number,
+      getValue: (p) => p.phone_number || "No especificado",
     },
     {
       label: "Email",
       placeholderLength: 14,
-      getValue: (p) => p.email,
-    },
-    {
-      label: "Nombre del padre",
-      placeholderLength: 14,
-      getValue: (p) => p.father_name,
-    },
-    {
-      label: "Nombre de la madre",
-      placeholderLength: 14,
-      getValue: (p) => p.mother_name,
-    },
-    {
-      label: "Estado civil",
-      placeholderLength: 14,
-      getValue: (p) =>
-        maritalStatusTypes.find((m) => m.value === p.marital_status)?.label || "No aplica",
+      getValue: (p) => p.email || "No especificado",
     },
     {
       label: "Entidad/IPS remitente",
       placeholderLength: 14,
-      getValue: (p) => p.referring_entity,
+      getValue: (p) => p.referring_entity || "No especificado",
     },
     {
       label: "Aseguradora",
       placeholderLength: 14,
-      getValue: (p) => p.insurance_provider || "No aplica",
+      getValue: (p) => p.insurance_provider || "No especificado",
     },
   ];
 

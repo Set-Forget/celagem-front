@@ -4,17 +4,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { forwardRef, useImperativeHandle } from "react";
 import { cn } from "@/lib/utils";
-import {
-  Field,
-  Section,
-  TemplateDetail,
-  templateDetailSchema,
-} from "../../../../../calendar/schemas/templates";
-import { generateDefaultValues, generateFormSchema } from "../../../utils";
-import RenderField from "@/app/(private)/medical-management/components/render-field";
+import { Field, Section, TemplateDetail, templateDetailSchema } from "../../../calendar/schemas/templates";
+import { generateDefaultValues, generateFormSchema } from "../utils";
+import RenderField from "../../../components/render-field";
 
 export interface TemplateFormHandle {
   submit: () => void;
+  reset: (values?: any) => void;
 }
 
 interface TemplateFormProps {
@@ -40,6 +36,9 @@ export const TemplateForm = forwardRef<TemplateFormHandle, TemplateFormProps>(
 
     useImperativeHandle(ref, () => ({
       submit: form.handleSubmit(handleFormSubmit),
+      reset: (values = defaultValues) => {
+        form.reset(values);
+      },
     }));
 
     return (
