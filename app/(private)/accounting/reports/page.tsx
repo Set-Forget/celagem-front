@@ -33,7 +33,7 @@ export default function Page() {
           className="hover:underline cursor-pointer"
           href="/accounting/reports/balance"
         >
-          Balance
+          Balance general
         </Link>
         <Link
           className="hover:underline cursor-pointer"
@@ -43,7 +43,7 @@ export default function Page() {
         </Link>
         <Link
           className="hover:underline cursor-pointer"
-          href="/accounting/reports/cash-flow"
+          href="/accounting/reports/cashflow"
         >
           Flujo de efectivo
         </Link>

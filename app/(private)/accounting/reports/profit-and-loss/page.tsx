@@ -5,11 +5,11 @@ import { ChevronDown } from "lucide-react";
 import NestedAccountTable from "./components/nested-account-table";
 import sampleData from "./data/accounts.json";
 
-export default function ChartOfAccountsPage() {
+export default function ProfitAndLossPage() {
 
   return (
     <>
-      <Header title="Plan de cuentas">
+      <Header title="Estado de resultados">
         <DropdownMenu>
           <DropdownMenuTrigger className="ml-auto" asChild>
             <Button size="sm">
