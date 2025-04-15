@@ -13,6 +13,10 @@ export type DialogsState = {
   | "edit-template"
   | "edit-appointment"
   | "import-section"
+  | "new-role"
+  | "edit-role"
+  | "new-class"
+  | "edit-class"
   | false,
   payload?: any
 }

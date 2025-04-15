@@ -8,6 +8,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { classesColumns } from './components/columns';
 import Toolbar from './components/toolbar';
 import { useListClassesQuery } from '@/lib/services/classes';
+import { setDialogsState } from '@/lib/store/dialogs-store';
+import NewClass from './components/new-class-dialog';
 
 export default function CompaniesPage() {
   const pathname = usePathname();
@@ -24,7 +26,11 @@ export default function CompaniesPage() {
         <Button
           className="ml-auto"
           size="sm"
-          onClick={() => router.push(`${pathname}/new`)}
+          onClick={() => {
+            setDialogsState({
+              open: 'new-class',
+            });
+          }}
         >
           <Plus className="w-4 h-4" />
           Crear clase
@@ -40,6 +46,7 @@ export default function CompaniesPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
+      <NewClass />
     </>
   );
 }

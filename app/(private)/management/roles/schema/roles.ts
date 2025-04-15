@@ -5,7 +5,7 @@ export const newRoleGeneralSchema = z.object({
     .string({ required_error: 'El nombre es requerido' })
     .nonempty({ message: 'El nombre es requerido' })
     .default(''),
-  company_id: z.string(),
+  status: z.enum(['active', 'inactive']),
   created_by: z.string(),
 });
 
@@ -14,6 +14,7 @@ export const newRoleSchema = newRoleGeneralSchema;
 export const rolesSchema = z.object({
   id: z.string(),
   name: z.string(),
+  status: z.enum(['active', 'inactive']),
   created_at: z.string(),
   created_by: z.object({
     id: z.string(),
@@ -62,6 +63,7 @@ export const roleCreateBodySchema = z.object({
 
 export const roleUpdateBodySchema = z.object({
   name: z.string(),
+  status: z.enum(['active', 'inactive']),
 });
 
 export const roleAddPermissionBodySchema = z.object({

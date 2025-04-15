@@ -35,6 +35,7 @@ import { useState } from 'react';
 
 import GeneralTab from './components/general-tab';
 import { useGetClassQuery } from '@/lib/services/classes';
+import EditClass from './components/edit-class-dialog';
 
 const notes = [
   {
@@ -218,6 +219,7 @@ export default function Page() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
+      <EditClass />
     </>
   );
 }

@@ -5,6 +5,7 @@ export const newClassGeneralSchema = z.object({
     .string({ required_error: 'El nombre es requerido' })
     .nonempty({ message: 'El nombre es requerido' })
     .default(''),
+  status: z.enum(['active', 'inactive']), 
   created_by: z.string(),
 });
 
@@ -13,6 +14,7 @@ export const newClassSchema = newClassGeneralSchema;
 export const classesSchema = z.object({
   id: z.string(),
   name: z.string(),
+  status: z.enum(['active', 'inactive']), 
   created_at: z.string(),
   created_by: z.object({
     id: z.string(),

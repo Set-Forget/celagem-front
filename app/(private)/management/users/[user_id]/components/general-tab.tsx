@@ -4,6 +4,8 @@ import { useParams } from 'next/navigation';
 
 import { Users } from '../../schema/users';
 import { useGetUserQuery } from '@/lib/services/users';
+import { useGetRoleQuery } from '@/lib/services/roles';
+import { useGetCompanyQuery } from '@/lib/services/companies';
 
 export type FieldDefinition<T> = {
   label: string;
@@ -18,6 +20,14 @@ export default function GeneralTab() {
 
   const { data: user, isLoading: isUserLoading } = useGetUserQuery(userId);
 
+  const { data: role, isLoading: isRoleLoading } = useGetRoleQuery(
+    user?.role_id ?? ''
+  );
+
+  const { data: company, isLoading: isCompanyLoading } = useGetCompanyQuery(
+    user?.company_id ?? ''
+  );
+
   const fields: FieldDefinition<Users>[] = [
     {
       label: 'Nombre',
@@ -28,6 +38,21 @@ export default function GeneralTab() {
       label: 'Correo Electrónico',
       placeholderLength: 14,
       getValue: (p) => p.email,
+    },
+    {
+      label: 'Sede',
+      placeholderLength: 14,
+      getValue: (p) => company?.name ?? 'No especificado',
+    },
+    {
+      label: 'Rol',
+      placeholderLength: 14,
+      getValue: (p) => role?.name ?? 'No especificado',
+    },
+    {
+      label: 'Confirmado',
+      placeholderLength: 14,
+      getValue: (p) => (p.is_email_confirmed ? 'Sí' : 'No'),
     },
   ];
 

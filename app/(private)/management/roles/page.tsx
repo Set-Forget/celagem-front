@@ -8,6 +8,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { rolesColumns } from './components/columns';
 import Toolbar from './components/toolbar';
 import { useLazyListRolesQuery, useListRolesQuery } from '@/lib/services/roles';
+import { setDialogsState } from '@/lib/store/dialogs-store';
+import NewRole from './components/new-role';
 
 export default function RolesPage() {
   const pathname = usePathname();
@@ -21,7 +23,11 @@ export default function RolesPage() {
         <Button
           className="ml-auto"
           size="sm"
-          onClick={() => router.push(`${pathname}/new`)}
+          onClick={() => {
+            setDialogsState({
+              open: 'new-role',
+            });
+          }}
         >
           <Plus className="w-4 h-4" />
           Crear rol
@@ -37,6 +43,7 @@ export default function RolesPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
+      <NewRole />
     </>
   );
 }

@@ -8,6 +8,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { businessUnitsColumns } from './components/columns';
 // import Toolbar from './components/toolbar';
 import { useListBusinessUnitsQuery } from '@/lib/services/business-units';
+import Toolbar from './components/toolbar';
 
 export default function BusinessUnitsPage() {
   const pathname = usePathname();
@@ -37,6 +38,7 @@ export default function BusinessUnitsPage() {
           loading={isLoading}
           columns={businessUnitsColumns}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
+          toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
     </>

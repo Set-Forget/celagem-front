@@ -2,9 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { UserList } from '@/lib/schemas/users'; 
+import { Users } from '../schema/users';
 
-export const usersColumns: ColumnDef<Partial<UserList>>[] = [
+export const usersColumns: ColumnDef<Partial<Users>>[] = [
   {
     id: 'select',
     header: ({ table }) => (

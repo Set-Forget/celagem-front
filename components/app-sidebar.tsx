@@ -13,6 +13,8 @@ import {
   ShoppingCart,
   Stethoscope,
   Building,
+  Map,
+  Settings,
 } from 'lucide-react';
 import * as React from 'react';
 
@@ -132,7 +134,7 @@ const data = {
     {
       title: 'Administracion',
       url: '#',
-      icon: Building,
+      icon: Settings,
       items: [
         {
           title: 'Usuarios',
@@ -159,7 +161,7 @@ const data = {
     {
       title: 'Hojas de ruta',
       url: '#',
-      icon: Building,
+      icon: Map,
       items: [
         {
           title: 'Puestos de trabajo',

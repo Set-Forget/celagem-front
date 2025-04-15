@@ -7,13 +7,13 @@ import { Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { usersColumns } from './components/columns';
 import Toolbar from './components/toolbar';
-import { useLazyListUsersQuery } from '@/lib/services/users';
+import { useListUsersQuery } from '@/lib/services/users';
 
 export default function UsersPage() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [listUsers, { data: users, isLoading }] = useLazyListUsersQuery();
+  const { data: users, isLoading } = useListUsersQuery();
 
   return (
     <>

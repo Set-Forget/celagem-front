@@ -15,6 +15,8 @@ import { useState } from 'react';
 import GeneralTab from './components/general-tab';
 import { Separator } from '@/components/ui/separator';
 import { cn, placeholder } from '@/lib/utils';
+import EditRole from './components/edit-role';
+import { setDialogsState } from '@/lib/store/dialogs-store';
 
 const notes = [
   {
@@ -84,7 +86,10 @@ export default function RolePage() {
           </DropdownMenu>
           <Button
             onClick={() =>
-              router.push(`/management/roles/edit/${roleId}`)
+              setDialogsState({
+                open: 'edit-role',
+                payload: { role },
+              })
             }
             size="sm"
           >
@@ -201,6 +206,7 @@ export default function RolePage() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
+      <EditRole />
     </>
   );
 }
