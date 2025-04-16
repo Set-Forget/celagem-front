@@ -208,7 +208,7 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data }) => {
             <Search />
           </Button>
         </div>
-        <div className={cn('grid gap-2 w-64')}>
+        {/* <div className={cn('grid gap-2 w-64')}>
           <Select
             onValueChange={(data) => setRange(data as unknown as Range)}
             defaultValue={undefined}
@@ -237,7 +237,7 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data }) => {
               <SelectItem value="yearly">Anual</SelectItem>
             </SelectContent>
           </Select>
-        </div>
+        </div> */}
         <div className={cn('grid gap-2')}>
           <Popover>
             <PopoverTrigger asChild>

@@ -28,7 +28,7 @@ export default function Page() {
         <div className="flex justify-end gap-2 ml-auto"></div>
       </Header>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-64 ">
+      <div className="grid grid-cols-1 gap-4 p-64 ">
         <Link
           className="hover:underline cursor-pointer"
           href="/accounting/reports/balance"
