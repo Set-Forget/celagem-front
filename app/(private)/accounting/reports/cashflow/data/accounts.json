@@ -1,56 +1,409 @@
 [
   {
-    "id": "1",
-    "name": "Operaciones",
-    "balance": 4263,
+    "id": "",
+    "name": "Flujos de Efectivo de Actividades de Operación:",
+    "balance": 0,
     "children": [
       {
-        "id": "11",
-        "name": "Depreciacion",
+        "id": "",
+        "name": "Utilidad (Pérdida) Neta del Período",
         "balance": 3113,
         "children": []
       },
       {
-        "id": "12",
-        "name": "Cuentas a cobrar",
-        "balance": 4336,
+        "id": "",
+        "name": "Ajustes por partidas no monetarias:",
+        "balance": 0,
+        "children": [
+          {
+            "id": "51",
+            "name": "GASTOS DE ADMINSITRACION",
+            "balance": 1960,
+            "children": [
+              {
+                "id": "5118",
+                "name": "DEPRECIACIÓN DE PROPIEDADES PLANTA Y EQUIPO",
+                "balance": 1960,
+                "children": [
+                  {
+                    "id": "511803",
+                    "name": "DPRECIACION EQUIPO DE OFICINA",
+                    "balance": 1960,
+                    "children": []
+                  },
+                  {
+                    "id": "511804",
+                    "name": "DEPRECIACION EQ COMPUTACION Y COMUNICACION",
+                    "balance": 1960,
+                    "children": []
+                  },
+                  {
+                    "id": "511812",
+                    "name": "DEPRECIACION MEJORAS PROPIEDAD AJENA",
+                    "balance": 1960,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "5121",
+                "name": "DETERIORO DE CUENTAS POR COBRAR",
+                "balance": 1960,
+                "children": [
+                  {
+                    "id": "512101",
+                    "name": "DEUDORES DEL SISTEMA COSTO",
+                    "balance": 1960,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "5123",
+                "name": "DETERIORO DE PROPIEDADES, PLANTA Y EQUIPO MODELO DEL COSTO",
+                "balance": 1960,
+                "children": [
+                  {
+                    "id": "512304",
+                    "name": "DETERIORO EQUIPO DE OFICINA",
+                    "balance": 1960,
+                    "children": []
+                  },
+                  {
+                    "id": "512303",
+                    "name": "DETERIORO MAQUINARIA Y EQUIPO",
+                    "balance": 1960,
+                    "children": []
+                  },
+                  {
+                    "id": "512305",
+                    "name": "DETERIORO EQUIPO DE COPMPUTACION Y COMUNICACION",
+                    "balance": 1960,
+                    "children": []
+                  },
+                  {
+                    "id": "512306",
+                    "name": "DETERIORO EQUIPO MEDICO CIENTIFICO",
+                    "balance": 1960,
+                    "children": []
+                  },
+                  {
+                    "id": "512308",
+                    "name": "DETERIORO EQUIPO DE TRANSPORTE",
+                    "balance": 1960,
+                    "children": []
+                  },
+                  {
+                    "id": "512312",
+                    "name": "DETERIORO MEJORAS EN PROPIEDAD AJENA",
+                    "balance": 1960,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "5130",
+                "name": "AMORTIZACIÓN ACTIVOS INTANGIBLES AL COSTO",
+                "balance": 1960,
+                "children": [
+                  {
+                    "id": "513003",
+                    "name": "PROGRAMAS Y APLICACIONES INFORMATICAS",
+                    "balance": 1960,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "52",
+            "name": "OPERACIONALES DE VENTAS",
+            "balance": 1124,
+            "children": [
+              {
+                "id": "5222",
+                "name": "DETERIORO DE INVENTARIO",
+                "balance": 1124,
+                "children": [
+                  {
+                    "id": "522203",
+                    "name": "INV PARA SER CONSUMIDO EN LA PREST DEL SERVICIO",
+                    "balance": 1124,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "61",
+            "name": "COSTOS POR ATENCIÓN EN SALUD",
+            "balance": 1124,
+            "children": [
+              {
+                "id": "6101",
+                "name": "PRESTACION DE SERVICIOS DE SALUD",
+                "balance": 1124,
+                "children": [
+                  {
+                    "id": "610108",
+                    "name": "OTRAS ACTIVIDADES RELACIONADAS CON LA SALUD",
+                    "balance": 1124,
+                    "children": [
+                      {
+                        "id": "610108601",
+                        "name": "DEPRECIACION DE EQUIPO MÉDICO CIENTÍFICO",
+                        "balance": 1124,
+                        "children": []
+                      },
+                      {
+                        "id": "610108602",
+                        "name": "DEPRECIACION MEJORAS EN PROPIEDAD AJENA",
+                        "balance": 1124,
+                        "children": []
+                      },
+                      {
+                        "id": "610108603",
+                        "name": "DEPRECIACION DE EQ OFICINA",
+                        "balance": 1124,
+                        "children": []
+                      },
+                      {
+                        "id": "610108604",
+                        "name": "DEPRECIACION EQ COMPUTACION",
+                        "balance": 1124,
+                        "children": []
+                      },
+                      {
+                        "id": "610108605",
+                        "name": "DEPRECIACION EQ TELECOMUNICACIONES",
+                        "balance": 1124,
+                        "children": []
+                      },
+                      {
+                        "id": "610108606",
+                        "name": "DEPRECIACION EQ DE TRANSPORTE",
+                        "balance": 1124,
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "",
+            "name": "Ganancias / (+) Pérdidas en Activos",
+            "balance": 0,
+            "children": [
+              {
+                "id": "420102",
+                "name": "GANACIAS EN ACTIVOS FINANCIEROS MEDIDOS AL COSTO AMORTIZADO",
+                "balance": 1124,
+                "children": [
+                  {
+                    "id": "420102061",
+                    "name": "UTILIDAD EN RETIRO DE PROPIEDAD PLANTA Y EQUIPO",
+                    "balance": 1124,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "5302",
+                "name": "PERDIDA EN INVERSIONES E INSTRUMENTOS FINANCIEROS",
+                "balance": 1124,
+                "children": [
+                  {
+                    "id": "530201",
+                    "name": "PERDIDA EN ACTIVOS FINANCIEROS MEDIDOS A VALOR RAZONABLE",
+                    "balance": 1124,
+                    "children": [
+                      {
+                        "id": "530201061",
+                        "name": "PERDIDA EN RETIRO DE ACTIVOS",
+                        "balance": 1124,
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "26",
+            "name": "Variación en PASIVOS ESTIMADOS Y PROVISIONES",
+            "balance": 0,
+            "children": [
+              {
+                "id": "2695",
+                "name": "PROVISIONES DIVERSAS",
+                "balance": 1124,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "",
+        "name": "Utilidad (Pérdida) Neta del Período",
+        "balance": 3113,
         "children": []
       },
       {
-        "id": "13",
-        "name": "Cuentas a Pagar",
-        "balance": 1960,
-        "children": []
-      },
-      {
-        "id": "14",
-        "name": "Inventario",
+        "id": "",
+        "name": "Cambios en Activos y Pasivos Operacionales (Análisis de Variación):",
         "balance": 1124,
-        "children": []
+        "children": [
+          {
+            "id": "13",
+            "name": "Variación en CUENTAS POR COBRAR",
+            "balance": 1124,
+            "children": []
+          },
+          {
+            "id": "14",
+            "name": "Variación en INVENTARIOS",
+            "balance": 1124,
+            "children": []
+          },
+          {
+            "id": "1314",
+            "name": "Variación en ANTICIPO DE IMPUESTOS Y CONTRIBUCIONES O SALDOS A",
+            "balance": 1124,
+            "children": []
+          },
+          {
+            "id": "1313",
+            "name": "Variación en ACTIVOS NO FINANCIEROS ANTICIPOS",
+            "balance": 1124,
+            "children": []
+          },
+          {
+            "id": "2105",
+            "name": "Variación en OBLIGACIONES FINANCIERAS > CUENTAS POR PAGAR AL COSTO",
+            "balance": 1124,
+            "children": []
+          },
+          {
+            "id": "2113",
+            "name": "Variación en OBLIGACIONES FINANCIERAS > CUENTAS POR PAGAR CON CONTRATISTAS AL COSTO",
+            "balance": 1124,
+            "children": []
+          },
+          {
+            "id": "2120",
+            "name": "Variación en OBLIGACIONES FINANCIERAS > COSTOS Y GASTOS POR PAGAR AL COSTO",
+            "balance": 1124,
+            "children": []
+          },
+          {
+            "id": "22",
+            "name": "Variación en IMPUESTOS GRAVAMENES Y TASAS",
+            "balance": 1124,
+            "children": []
+          },
+          {
+            "id": "23",
+            "name": "Variación en BENEFICIOS A LOS EMPLEADOS",
+            "balance": 1124,
+            "children": []
+          },
+          {
+            "id": "25",
+            "name": "Variación en OTROS PASIVOS ANTICIPOS Y AVANCES RECIBIDOS",
+            "balance": 1124,
+            "children": []
+          }
+        ]
       }
     ]
   },
   {
-    "id": "2",
-    "name": "Inversiones",
+    "id": "",
+    "name": "Flujos de Efectivo de Actividades de Inversión:",
     "balance": 4891,
     "children": [
       {
-        "id": "21",
-        "name": "Activos No Corrientes",
+        "id": "15",
+        "name": "Pagos por Adquisición de PROPIEDAD PLANTA Y EQUIPO",
+        "balance": 3110,
+        "children": []
+      },
+      {
+        "id": "15",
+        "name": "Cobros por Venta de PROPIEDAD PLANTA Y EQUIPO",
+        "balance": 3110,
+        "children": []
+      },
+      {
+        "id": "17",
+        "name": "Pagos por Adquisición de ACTIVOS INTANGIBLES DISTINTOS A LA PLUSVALIA",
+        "balance": 3110,
+        "children": []
+      },
+      {
+        "id": "17",
+        "name": "Cobros por Venta de ACTIVOS INTANGIBLES DISTINTOS A LA PLUSVALIA",
+        "balance": 3110,
+        "children": []
+      },
+      {
+        "id": "12",
+        "name": "Pagos por Adquisición de INVERSIONES E INSTRUMENTOS DERIVADOS",
+        "balance": 3110,
+        "children": []
+      },
+      {
+        "id": "12",
+        "name": "Cobros por Venta/Redención de INVERSIONES E INSTRUMENTOS DERIVADOS",
+        "balance": 3110,
+        "children": []
+      },
+      {
+        "id": "1308",
+        "name": "Variación en CUENTAS POR COBRAR A SOCIOS Y ACCIONISTAS AL COSTO",
+        "balance": 3110,
+        "children": []
+      },
+      {
+        "id": "1316",
+        "name": "Variación en CUENTAS POR COBRAR A TRABAJADORES BENEFICIOS",
         "balance": 3110,
         "children": []
       }
     ]
   },
   {
-    "id": "3",
-    "name": "Finanzas",
+    "id": "",
+    "name": "Flujos de Efectivo de Actividades de Financiación:",
     "balance": 2069,
     "children": [
       {
+        "id": "21",
+        "name": "Variación en OBLIGACIONES FINANCIERAS",
+        "balance": 1524,
+        "children": []
+      },
+      {
+        "id": "2109",
+        "name": "Variación en CUENTAS POR PAGAR A VINCULADOS ECONOMICOS / SOCIOS",
+        "balance": 1524,
+        "children": []
+      },
+      {
         "id": "31",
-        "name": "Capital",
+        "name": "Emisión de CAPITAL SOCIAL",
+        "balance": 1524,
+        "children": []
+      },
+      {
+        "id": "35",
+        "name": "Pago de Dividendos",
         "balance": 1524,
         "children": []
       }
