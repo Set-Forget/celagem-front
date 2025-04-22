@@ -74,6 +74,7 @@ export default function GeneralTab() {
             data={businessUnit?.patients || []}
             columns={columnsPatients}
             pagination={true}
+            pageSizeProp={5}
           />
         </div>
         <div className="px-4 flex flex-col gap-4 flex-1 h-1/2">
@@ -84,6 +85,7 @@ export default function GeneralTab() {
             data={businessUnit?.users || []}
             columns={columnsUsers}
             pagination={true}
+            pageSizeProp={5}
           />
         </div>
       </div>
