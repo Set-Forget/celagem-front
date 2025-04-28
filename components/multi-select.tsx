@@ -118,7 +118,9 @@ function MultiSelectInner<T, V>(
       newSelectedValues = [...selectedValues, optionValue];
     }
     setSelectedValues(newSelectedValues);
-    onValueChange && onValueChange(newSelectedValues);
+    if (onValueChange) {
+      onValueChange(newSelectedValues);
+    }
   };
 
   const handleTogglePopover = () => {
@@ -184,7 +186,9 @@ function MultiSelectInner<T, V>(
                                 event.stopPropagation();
                                 const newSelectedValues = selectedValues.slice(0, dynamicMaxCount);
                                 setSelectedValues(newSelectedValues);
-                                onValueChange && onValueChange(newSelectedValues);
+                                if (onValueChange) {
+                                  onValueChange(newSelectedValues);
+                                }
                               }}
                             />
                           </Badge>
