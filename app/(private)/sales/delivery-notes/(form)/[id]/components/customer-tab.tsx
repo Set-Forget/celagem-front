@@ -1,10 +1,9 @@
 'use client'
 
 import { useGetDeliveryQuery } from "@/lib/services/deliveries";
-import { cn, placeholder } from "@/lib/utils";
+import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { DeliveryNoteDetail } from "../../../schemas/delivery-notes";
-import { FieldDefinition } from "../page";
 
 const fields: FieldDefinition<DeliveryNoteDetail>[] = [
   {

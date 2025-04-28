@@ -3,37 +3,22 @@
 import { DataTable } from "@/components/data-table"
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
-import { cn, placeholder } from "@/lib/utils"
+import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 
 import DataTabs from "@/components/data-tabs"
-import { Box, ChevronDown, Paperclip } from "lucide-react"
-import { useParams, usePathname, useRouter } from "next/navigation"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
+import { Box, Paperclip } from "lucide-react"
+import { useParams } from "next/navigation"
 import { useState } from "react"
 import { PurchaseOrderDetail } from "../schemas/purchase-orders"
 import { purchaseOrderStatus } from "../utils"
+import Actions from "./actions"
 import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
 import SupplierTab from "./components/supplier-tab"
 import TableFooter from "./components/table-footer"
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
-import Actions from "./actions"
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<PurchaseOrderDetail>[] = [
   {

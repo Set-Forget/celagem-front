@@ -1,31 +1,18 @@
 'use client'
 
 import { DataTable } from "@/components/data-table"
-import Dropdown from "@/components/dropdown"
 import Header from "@/components/header"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenuItem
-} from "@/components/ui/dropdown-menu"
+import { Badge } from "@/components/ui/badge"
 import { useGetJournalEntryQuery } from "@/lib/services/journal-entries"
-import { cn, placeholder } from "@/lib/utils"
+import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { Ellipsis } from "lucide-react"
 import { useParams } from "next/navigation"
 import { JournalEntryDetail } from "../schemas/journal-entries"
+import { journalEntryStatus } from "../utils"
+import Actions from "./actions"
 import { columns } from "./components/columns"
 import TableFooter from "./components/table-footer"
-import Actions from "./actions"
-import { Badge } from "@/components/ui/badge"
-import { journalEntryStatus } from "../utils"
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<JournalEntryDetail>[] = [
   {

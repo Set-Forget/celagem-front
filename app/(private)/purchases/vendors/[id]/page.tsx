@@ -12,16 +12,16 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { useGetSupplierQuery } from "@/lib/services/suppliers"
-import { cn, placeholder } from "@/lib/utils"
+import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { formatDistanceToNow } from "date-fns"
 import { es } from "date-fns/locale"
-import { Calculator, Edit, FileText, Landmark, Pencil, Plus, X } from "lucide-react"
+import { Calculator, Edit, Landmark, Pencil, Plus, X } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
 import { SupplierDetail } from "../schema/suppliers"
+import { supplierStatus } from "../utils"
 import AccountingTab from "./components/accounting-tab"
 import FiscalTab from "./components/fiscal-tab"
-import { supplierStatus } from "../utils"
 
 const notes = [
   { id: 1, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc." },
@@ -29,13 +29,6 @@ const notes = [
   { id: 3, content: "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit" },
   { id: 4, content: "Sed pretium tortor nec ipsum interdum dictum. Aliquam erat volutpat. Phasellus pulvinar velit arcu, at interdum ligula volutpat id. Nulla et tellus vel ipsum scelerisque auctor eu non massa. Duis laoreet vel magna eu sodales. Maecenas bibendum nisl neque, quis auctor arcu pharetra commodo. Proin sit amet facilisis libero. Fusce sagittis purus ut aliquam accumsan. Fusce vel mauris nisi. Vestibulum lobortis." },
 ]
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<SupplierDetail>[] = [
   {

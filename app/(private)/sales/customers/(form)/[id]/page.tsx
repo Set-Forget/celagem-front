@@ -12,7 +12,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { useGetCustomerQuery } from "@/lib/services/customers"
-import { cn, placeholder } from "@/lib/utils"
+import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { formatDistanceToNow } from "date-fns"
 import { es } from "date-fns/locale"
 import { Calculator, Edit, Landmark, Pencil, Plus, X } from "lucide-react"
@@ -34,13 +34,6 @@ const tags = [
   { id: 1, name: "Cliente" },
   { id: 3, name: "VIP" },
 ]
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<CustomerDetail>[] = [
   {

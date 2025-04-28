@@ -1,14 +1,7 @@
-import { cn, placeholder } from "@/lib/utils";
+import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { InvoiceDetail } from "../../../schemas/invoices";
 import { useGetInvoiceQuery } from "@/lib/services/invoices";
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<InvoiceDetail>[] = [
   {

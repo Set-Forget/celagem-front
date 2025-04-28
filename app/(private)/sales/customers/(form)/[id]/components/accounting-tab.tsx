@@ -1,15 +1,8 @@
 import { StatusIndicator } from "@/components/status-indicator";
 import { useGetCustomerQuery } from "@/lib/services/customers";
-import { cn, placeholder } from "@/lib/utils";
+import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { CustomerDetail } from "../../../schema/customers";
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<CustomerDetail>[] = [
   {

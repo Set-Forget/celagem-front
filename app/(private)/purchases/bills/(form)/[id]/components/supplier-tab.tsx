@@ -1,14 +1,7 @@
 import { useGetBillQuery } from "@/lib/services/bills";
-import { cn, placeholder } from "@/lib/utils";
+import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { BillDetail } from "../../../schemas/bills";
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<BillDetail>[] = [
   {

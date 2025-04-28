@@ -1,7 +1,6 @@
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
-import { cn, placeholder } from "@/lib/utils";
+import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { FieldDefinition } from "../page";
 import { PurchaseReceiptDetail } from "../../schemas/purchase-receipts";
 import { useGetPurchaseReceiptQuery } from "@/lib/services/purchase-receipts";
 

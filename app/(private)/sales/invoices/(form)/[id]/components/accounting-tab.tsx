@@ -1,16 +1,9 @@
 import { useGetInvoiceQuery } from "@/lib/services/invoices";
-import { cn, placeholder } from "@/lib/utils";
+import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useParams } from "next/navigation";
 import { InvoiceDetail } from "../../../schemas/invoices";
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<InvoiceDetail>[] = [
   {

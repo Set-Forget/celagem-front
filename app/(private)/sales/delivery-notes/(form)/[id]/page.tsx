@@ -4,7 +4,7 @@ import { DataTable } from '@/components/data-table';
 import DataTabs from '@/components/data-tabs';
 import Header from '@/components/header';
 import { useGetDeliveryQuery } from '@/lib/services/deliveries';
-import { cn, placeholder } from '@/lib/utils';
+import { cn, FieldDefinition, placeholder } from '@/lib/utils';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Box, FileText } from 'lucide-react';
@@ -15,13 +15,6 @@ import Actions from './actions';
 import { columns } from './components/columns';
 import CustomerTab from './components/customer-tab';
 import InvoiceTab from './components/invoice-tab';
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<DeliveryNoteDetail>[] = [
   {

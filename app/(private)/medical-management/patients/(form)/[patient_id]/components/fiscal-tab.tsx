@@ -1,8 +1,7 @@
 import { useGetPatientQuery } from "@/lib/services/patients";
-import { cn, placeholder } from "@/lib/utils";
+import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { PatientDetail } from "../../../schema/patients";
-import { FieldDefinition } from "./general-tab";
 import { customerTypes, fiscalCategories } from "../../../utils";
 
 export default function FiscalTab() {

@@ -5,7 +5,7 @@ import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { useGetDebitNoteQuery } from "@/lib/services/debit-notes"
-import { cn, placeholder } from "@/lib/utils"
+import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { Box, Receipt } from "lucide-react"
@@ -18,13 +18,6 @@ import { columns } from "./components/columns"
 import CustomerTab from "./components/customer-tab"
 import InvoiceTab from "./components/invoice-tab"
 import TableFooter from "./components/table-footer"
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<DebitNoteDetail>[] = [
   {

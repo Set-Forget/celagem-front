@@ -4,7 +4,7 @@ import { DataTable } from "@/components/data-table"
 import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
-import { cn, placeholder } from "@/lib/utils"
+import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { Box, Receipt } from "lucide-react"
@@ -18,13 +18,6 @@ import TableFooter from "./components/table-footer"
 import { CreditNoteDetail } from "../../schemas/credit-notes"
 import { useGetCreditNoteQuery } from "@/lib/services/credit-notes"
 import { creditNoteStatus } from "../../utils"
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<CreditNoteDetail>[] = [
   {

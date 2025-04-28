@@ -4,7 +4,7 @@ import { DataTable } from "@/components/data-table"
 import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
 import { useGetPurchaseReceiptQuery } from "@/lib/services/purchase-receipts"
-import { cn, placeholder } from "@/lib/utils"
+import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { Box, Paperclip } from "lucide-react"
@@ -15,13 +15,6 @@ import Actions from "./actions"
 import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
 import SupplierTab from "./components/supplier-tab"
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<PurchaseReceiptDetail>[] = [
   {
