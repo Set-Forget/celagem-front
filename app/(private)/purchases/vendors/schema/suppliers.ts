@@ -39,6 +39,7 @@ export const supplierListSchema = z.object({
   contact_address_inline: z.string(),
   purchase_order_count: z.number(), // ? Esto creo que no es muy útil.
   tax_id: z.string(),
+  status: z.boolean(),
 })
 
 export const supplierDetailSchema = z.object({
@@ -49,26 +50,39 @@ export const supplierDetailSchema = z.object({
   contact_address_inline: z.string(),
   purchase_order_count: z.number(), // ? Esto creo que no es muy útil.
   tax_id: z.string(),
+  status: z.boolean(),
   payment_amount_due: z.number(),
   payment_amount_overdue: z.number(),
   total_invoiced: z.number(),
-  property_payment_term: z.string(), // ? Esto no se bien que es.
+  property_payment_term: z.object({
+    id: z.number(),
+    name: z.string(),
+  }).nullable(),
   property_account_position: z.string().nullable(), // ? Esto no se bien que es.
   commercial_company_name: z.string(), // ? Esto no se bien que es.
-  currency: z.string(), // ! Debería venir con el formato {id: number, name: string}.
+  currency: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
   phone: z.string(),
   internal_notes: z.string(), // ! Debería ser un array de notas.
   tags: z.array(z.string()),
-  tax_regime: z.string(), // @ U_HBT_RegTrib - Código del regimen tributario.
   tax_type: z.string(), // @ U_HBT_TipDoc - Código del tipo de documento.
-  economic_activity: z.string(), // @ U_HBT_ActEco - Código de la actividad económica.
   entity_type: z.string(), // @ U_HBT_TipEnt - Código del tipo de entidad.
   nationality_type: z.string(), // @ U_HBT_Nacional - Código de la nacionalidad.
+  tax_regime: z.string(), // @ U_HBT_RegTrib - Código del regimen tributario.
   tax_category: z.string(), // @ U_HBT_RegFis - Regimen Fiscal.
-  payment_method: z.string(), // @ U_HBT_MedPag - Medio de Pago.
   is_resident: z.boolean(), // @ U_HBT_Residente - Residente.
   tax_information: z.string(), // @ U_HBT_InfoTrib - Información Tributaria.
   fiscal_responsibility: z.string(), // @ U_HBT_ResFis1 - Responsabilidad Fiscal.
+  economic_activity: z.object({
+    id: z.number(),
+    name: z.string(),
+  }), // @ U_HBT_ActEco - Código de la actividad económica.
+  payment_method: z.object({
+    id: z.number(),
+    name: z.string(),
+  }), // @ U_HBT_MedPag - Medio de Pago.
   traceability: z.object({
     created_by: z.string(),
     created_at: z.string(),

@@ -5,15 +5,25 @@ import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { useListPurchaseRequestsQuery } from "@/lib/services/purchase-requests";
 import { Plus } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 
 export default function Page() {
+  const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
 
-  const { data: purchaseRequests, isLoading } = useListPurchaseRequestsQuery();
+  const status = searchParams.get('status')
+  const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
+  const date_range = JSON.parse(searchParams.get('date_range') || '{}') as { field: string, from: string, to: string }
+
+  const { data: purchaseRequests, isLoading } = useListPurchaseRequestsQuery({
+    status: status ? JSON.parse(status).join(',') : undefined,
+    name: search.field === "name" ? search?.query : undefined,
+    request_date_start: date_range?.field === "request_date" ? date_range.from : undefined,
+    request_date_end: date_range?.field === "request_date" ? date_range.to : undefined,
+  }, { refetchOnMountOrArgChange: true })
 
   return (
     <div>

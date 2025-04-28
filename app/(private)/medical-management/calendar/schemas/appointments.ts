@@ -5,7 +5,6 @@ export const newAppointmentSchema = z.object({
   end_date: z.string({ required_error: "La fecha de fin es requerida" }).min(1, { message: "La fecha de fin es requerida" }),
   start_time: z.string({ required_error: "La hora de inicio es requerida" }).min(1, { message: "La hora de inicio es requerida" }),
   end_time: z.string({ required_error: "La hora de fin es requerida" }).min(1, { message: "La hora de fin es requerida" }),
-  created_by: z.string(),
   doctor_id: z.string({ required_error: "El doctor es requerido" }).min(1, { message: "El doctor es requerido" }),
   patient_id: z.string({ required_error: "El paciente es requerido" }).min(1, { message: "El paciente es requerido" }),
   clinic_id: z.string({ required_error: "La clinica es requerida" }).min(1, { message: "La clinica es requerida" }),

@@ -1,37 +1,24 @@
 'use client'
 
-import CustomSonner from "@/components/custom-sonner"
 import { DataTable } from "@/components/data-table"
+import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useDeleteInvoiceMutation, useGetInvoiceQuery, useListInvoicesQuery, useUpdateInvoiceMutation } from "@/lib/services/invoices"
+import { useGetInvoiceQuery, useListInvoicesQuery } from "@/lib/services/invoices"
 import { cn, placeholder } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { Box, Check, ChevronDown, Edit, Ellipsis, Eye, FileText, Paperclip, Trash2 } from "lucide-react"
-import { useParams, useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { invoiceStatus, invoiceTypes } from "../../utils"
-import { columns } from "./components/columns"
-import TableFooter from "./components/table-footer"
-import { InvoiceDetail } from "../../schemas/invoices"
-import CustomerTab from "./components/customer-tab"
-import AccountingTab from "./components/accounting-tab"
-import DocumentsTab from "./components/documents-tab"
-import DataTabs from "@/components/data-tabs"
+import { Box, FileText, Paperclip } from "lucide-react"
+import { useParams } from "next/navigation"
 import { useState } from "react"
+import { InvoiceDetail } from "../../schemas/invoices"
+import { invoiceStatus } from "../../utils"
 import Actions from "./actions"
+import AccountingTab from "./components/accounting-tab"
+import { columns } from "./components/columns"
+import CustomerTab from "./components/customer-tab"
+import DocumentsTab from "./components/documents-tab"
+import TableFooter from "./components/table-footer"
 
 export type FieldDefinition<T> = {
   label: string;

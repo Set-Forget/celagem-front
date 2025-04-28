@@ -1,7 +1,7 @@
 'use client'
 
+import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
-import { StatusIndicator } from "@/components/status-indicator"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,21 +9,19 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useGetCustomerQuery } from "@/lib/services/customers"
 import { cn, placeholder } from "@/lib/utils"
-import { Calculator, Edit, House, Landmark, Pencil, Plus, X } from "lucide-react"
-import { useParams } from "next/navigation"
-import { customerStatus } from "../../utils"
-import { CustomerDetail } from "../../schema/customers"
-import AccountingTab from "./components/accounting-tab"
-import FiscalTab from "./components/fiscal-tab"
-import DataTabs from "@/components/data-tabs"
-import { useState } from "react"
 import { formatDistanceToNow } from "date-fns"
 import { es } from "date-fns/locale"
+import { Calculator, Edit, Landmark, Pencil, Plus, X } from "lucide-react"
+import { useParams } from "next/navigation"
+import { useState } from "react"
+import { CustomerDetail } from "../../schema/customers"
+import { customerStatus } from "../../utils"
+import AccountingTab from "./components/accounting-tab"
+import FiscalTab from "./components/fiscal-tab"
 
 const notes = [
   { id: 1, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc." },

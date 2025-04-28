@@ -12,7 +12,7 @@ export default function TimeField({ field, formField }: {
     <I18nProvider locale="es-419">
       <AriaTimeField
         className="w-full"
-        value={field.type.properties.defaultValue as Time}
+        value={field?.type?.properties?.defaultValue as Time}
         onChange={(value) => {
           if (!value) {
             formField?.onChange(undefined);

@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 export default function SectionField({ field }: { field: Omit<NewField, "id"> & { id: number } }) {
-
   const FieldComponent = field.type.primitive_type !== 'title'
     ? templateFields[field.type.primitive_type as keyof typeof templateFields]
     : null;
@@ -14,7 +13,7 @@ export default function SectionField({ field }: { field: Omit<NewField, "id"> & 
       {field.title && (
         <Label
           className={cn(
-            !field.isRequired && "font-normal text-accent-foreground/75",
+            !field.is_required && "font-normal text-accent-foreground/75",
             field.type.primitive_type === "title" && "font-semibold py-1"
           )}
         >

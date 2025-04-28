@@ -7,7 +7,7 @@ import { useGetVisitQuery } from "@/lib/services/visits";
 import { AppointmentDetail } from "@/app/(private)/medical-management/calendar/schemas/appointments";
 import { modesOfCare } from "@/app/(private)/medical-management/calendar/utils";
 
-export default function VisitTab() {
+export default function AppointmentTab() {
   const params = useParams<{ visit_id: string }>();
 
   const visitId = params.visit_id
@@ -47,6 +47,18 @@ export default function VisitTab() {
       getValue: (p) => p?.mode_of_care ? modesOfCare[p.mode_of_care as keyof typeof modesOfCare] : "No especificado",
     },
     {
+      label: "Firmado por",
+      placeholderLength: 10,
+      className: visit?.status === "DRAFT" ? "hidden" : "",
+      getValue: (p) => "xxxx",
+    },
+    {
+      label: "Fecha de firma",
+      placeholderLength: 10,
+      className: visit?.status === "DRAFT" ? "hidden" : "",
+      getValue: (p) => visit?.signed_at ? format(new Date(visit?.signed_at), "PPP", { locale: es }) : "No especificado",
+    },
+    {
       label: "Notas",
       placeholderLength: 20,
       getValue: (p) => p?.notes || "No hay notas para mostrar",
@@ -55,7 +67,7 @@ export default function VisitTab() {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       {fields.map((field) => {
         const displayValue = isVisitLoading || isAppointmentLoading
           ? placeholder(field.placeholderLength)

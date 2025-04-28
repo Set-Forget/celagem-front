@@ -21,7 +21,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "date_range",
     options: [
       { label: "Fecha de vencimiento", value: "due_date" },
-      { label: "Fecha de emisión", value: "issue_date" },
+      { label: "Fecha de emisión", value: "date" },
     ],
     label: "Rango de fecha",
     key: "date_range",
@@ -31,7 +31,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "search",
     label: "Buscar",
     options: [
-      { label: "Número de factura", value: "invoice_number" },
+      { label: "Número de factura", value: "number" },
       { label: "Cliente", value: "customer" },
     ],
     key: "search",

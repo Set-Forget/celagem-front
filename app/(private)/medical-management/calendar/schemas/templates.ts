@@ -50,7 +50,9 @@ const primitiveTypeSchema = z.enum([
   "time",
   "file",
   "select",
-  "title"
+  "title",
+  "imc",
+  "multiselect",
 ]);
 
 const baseTypeSchema = z.object({
@@ -131,8 +133,25 @@ const selectSchema = baseTypeSchema.extend({
   })
 });
 
+const multiSelectSchema = baseTypeSchema.extend({
+  primitive_type: z.literal("multiselect"),
+  properties: baseTypeSchema.shape.properties.extend({
+    defaultValue: z.array(z.string()).optional(),
+    options: z.array(z.object({ value: z.string(), label: z.string() })).nonempty({
+      message: "Debe ingresar al menos una opción para este tipo de campo",
+    }).default([{ value: "0", label: "Seleccione una opción" }]),
+  })
+});
+
 const titleSchema = baseTypeSchema.extend({
   primitive_type: z.literal("title"),
+  properties: baseTypeSchema.shape.properties.extend({
+    defaultValue: z.string().optional(),
+  }),
+});
+
+const imcSchema = baseTypeSchema.extend({
+  primitive_type: z.literal("imc"),
   properties: baseTypeSchema.shape.properties.extend({
     defaultValue: z.string().optional(),
   }),
@@ -152,7 +171,9 @@ export const typeSchema = z.preprocess((val) => {
         "time",
         "file",
         "select",
-        "title"
+        "multiselect",
+        "title",
+        "imc",
       ];
       const newPrimitiveType = allowed.includes(obj.primitive_type) ? obj.primitive_type : "text";
       return {
@@ -173,43 +194,48 @@ export const typeSchema = z.preprocess((val) => {
   timeSchema,
   fileSchemaSchema,
   selectSchema,
+  multiSelectSchema,
   titleSchema,
+  imcSchema,
 ]));
 
 const fieldSchema = z.object({
   id: z.number(),
   title: z.string(),
   code: z.string(),
-  isRule: z.boolean(),
-  isValidFormula: z.boolean(),
+  is_rule: z.boolean(),
+  is_valid_formula: z.boolean(),
   formula: z.string().nullable(),
   rule: z.string().nullable(),
-  isAlert: z.boolean(),
-  isConditionalSection: z.boolean(),
-  isConditionalField: z.boolean(),
-  isVisible: z.boolean(),
-  isEditable: z.boolean(),
-  isRequired: z.boolean(),
-  isActive: z.boolean(),
+  is_alert: z.boolean(),
+  is_conditional_section: z.boolean(),
+  is_conditional_field: z.boolean(),
+  is_visible: z.boolean(),
+  is_editable: z.boolean(),
+  is_required: z.boolean(),
+  is_active: z.boolean(),
   section_id: z.number(),
   type: typeSchema,
 });
 
 export const newFieldSchema = z.object({
   id: z.number(),
-  title: z.string({ required_error: "El título es requerido" }).min(1, { message: "El título es requerido" }),
+  title: z
+    .string({ required_error: "El título es requerido" })
+    .trim()
+    .min(1, { message: "El título es requerido" }),
   code: z.string(),
-  isRule: z.boolean(),
-  isValidFormula: z.boolean(),
+  is_rule: z.boolean(),
+  is_valid_formula: z.boolean(),
   formula: z.string().nullable(),
   rule: z.string().nullable(),
-  isAlert: z.boolean(),
-  isConditionalSection: z.boolean(),
-  isConditionalField: z.boolean(),
-  isVisible: z.boolean(),
-  isEditable: z.boolean(),
-  isRequired: z.boolean(),
-  isActive: z.boolean(),
+  is_alert: z.boolean(),
+  is_conditional_section: z.boolean(),
+  is_conditional_field: z.boolean(),
+  is_visible: z.boolean(),
+  is_editable: z.boolean(),
+  is_required: z.boolean(),
+  is_active: z.boolean(),
   section_id: z.number(),
   type: typeSchema,
 })
@@ -227,8 +253,8 @@ export const newSectionSchema = z.object({
     },
     z.string({ required_error: "La descripción es requerida" }).min(1, { message: "La descripción es requerida" })
   ),
-  isActive: z.boolean(),
-  isForPrintInColumns: z.boolean(),
+  is_active: z.boolean(),
+  is_for_print_in_columns: z.boolean(),
   fields: z.array(z.number()),
 });
 
@@ -247,8 +273,8 @@ export const sectionSchema = z.object({
     z.enum(["form", "table"])
   ),
   description: z.string(),
-  isActive: z.boolean(),
-  isForPrintInColumns: z.boolean(),
+  is_active: z.boolean(),
+  is_for_print_in_columns: z.boolean(),
   fields: z.array(fieldSchema),
 });
 
@@ -258,12 +284,12 @@ export const newTemplateSchema = z.object({
   layout: z.string().optional(),
   type: z.string().optional(),
   description: z.preprocess((val) => (val == null ? "No hay descripción" : val), z.string({ required_error: "La descripción es requerida" }).min(1, { message: "La descripción es requerida" })),
-  isActive: z.boolean(),
-  isEpicrisis: z.boolean(),
-  isForSendEmailToInsuranceProvider: z.boolean(),
-  isForPrintIndependently: z.boolean(),
-  isForPrintWithAllTheTemplates: z.boolean(),
-  isForSendOrderToAppointmentBox: z.boolean(),
+  is_active: z.boolean(),
+  is_epicrisis: z.boolean(),
+  is_for_send_email_to_insurance_provider: z.boolean(),
+  is_for_print_independently: z.boolean(),
+  is_for_print_with_all_the_templates: z.boolean(),
+  is_for_send_order_to_appointment_box: z.boolean(),
   sections: z.array(z.number()),
 });
 
@@ -273,16 +299,16 @@ export const templateDetailSchema = z.object({
   layout: z.string(),
   type: z.string(),
   description: z.string().nullable(),
-  isActive: z.boolean(),
-  createdBy: z.string(),
-  createdAt: z.string().datetime(),
-  updatedBy: z.string().nullable(),
-  updatedAt: z.string().datetime().nullable(),
-  isEpicrisis: z.boolean(),
-  isForSendEmailToInsuranceProvider: z.boolean(),
-  isForPrintIndependently: z.boolean(),
-  isForPrintWithAllTheTemplates: z.boolean(),
-  isForSendOrderToAppointmentBox: z.boolean(),
+  is_active: z.boolean(),
+  created_by: z.string(),
+  created_at: z.string().datetime(),
+  updated_by: z.string().nullable(),
+  updated_at: z.string().datetime().nullable(),
+  is_epicrisis: z.boolean(),
+  is_for_send_email_to_insurance_provider: z.boolean(),
+  is_for_print_independently: z.boolean(),
+  is_for_print_with_all_the_templates: z.boolean(),
+  is_for_send_order_to_appointment_box: z.boolean(),
   sections: z.array(sectionSchema),
 });
 
@@ -332,7 +358,7 @@ export const newFieldResponseSchema = z.object({
   status: z.string(),
   code: z.number(),
   message: z.string(),
-  data: newFieldSchema.omit({ isRule: true, isValidFormula: true, isAlert: true, isConditionalSection: true, isConditionalField: true, isVisible: true, isEditable: true, isRequired: true, isActive: true, id: true }).extend({ id: z.number() }),
+  data: newFieldSchema.omit({ is_rule: true, is_valid_formula: true, is_alert: true, is_conditional_section: true, is_conditional_field: true, is_visible: true, is_editable: true, is_required: true, is_active: true, id: true }).extend({ id: z.number() }),
 });
 
 export const newTemplateResponseSchema = z.object({

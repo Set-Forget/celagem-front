@@ -4,10 +4,24 @@ import { Overwrite } from '../utils';
 
 export const invoicesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listInvoices: builder.query<InvoiceListResponse, void>({
-      query: () => 'sales_invoices',
-      providesTags: ['Invoice'],
-    }),
+    listInvoices: builder.query
+      <InvoiceListResponse,
+        {
+          number?: string,
+          status?: "draft" | "posted" | "cancel",
+          type?: "invoice" | "credit_note" | "debit_note",
+          date_start?: string,
+          date_end?: string,
+          due_date_start?: string,
+          due_date_end?: string,
+        } | void
+      >({
+        query: (data) => ({
+          url: '/sales_invoices',
+          params: data || {},
+        }),
+        providesTags: ['Invoice'],
+      }),
     getInvoice: builder.query<InvoiceDetail, string>({
       query: (id) => `sales_invoices/${id}`,
       transformResponse: (response: InvoiceDetailResponse) => response.data,
@@ -41,6 +55,7 @@ export const invoicesApi = erpApi.injectEndpoints({
 
 export const {
   useListInvoicesQuery,
+  useLazyListInvoicesQuery,
   useGetInvoiceQuery,
   useCreateInvoiceMutation,
   useUpdateInvoiceMutation,

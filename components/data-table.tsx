@@ -28,6 +28,7 @@ interface DataTableProps<TData, TValue> {
   pagination?: boolean
   loading?: boolean
   sorting?: SortingState
+  className?: string
   setSorting?: OnChangeFn<SortingState>
   onRowClick?: (row: TData) => void
   toolbar?: (props: { table: Table<TData> }) => React.ReactNode
@@ -39,6 +40,7 @@ const pageSize = 20
 export function DataTable<TData, TValue>({
   columns,
   data,
+  className,
   loading,
   sorting,
   setSorting,
@@ -79,11 +81,12 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="space-y-4 flex flex-col justify-between">
+    <div className={cn("space-y-4 flex flex-col justify-between", className)}>
       {toolbar && toolbar({ table })}
       <div className="overflow-hidden rounded-sm border border-border bg-background shadow-sm">
         <ShadcnTable className="[&_td]:border-border [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
-          <TableHeader className="sticky top-0 z-10 bg-accent/90 backdrop-blur-sm">
+          <TableHeader
+            className="sticky top-0 z-10 bg-accent/90 backdrop-blur-sm after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-border">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="border-b" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -133,7 +136,7 @@ export function DataTable<TData, TValue>({
             {table?.getRowModel()?.rows?.length > 0 && table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className={cn("h-10", onRowClick && "cursor-pointer")}
+                className={cn("h-10 group", onRowClick && "cursor-pointer")}
                 data-state={row.getIsSelected() && "selected"}
                 onClick={() => onRowClick?.(row.original)}
               >

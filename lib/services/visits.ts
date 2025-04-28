@@ -37,4 +37,5 @@ export const {
   useCreateVisitMutation,
   useUpdateVisitMutation,
   useGetVisitQuery,
+  useLazyGetVisitQuery,
 } = visitsApi;

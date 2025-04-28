@@ -98,7 +98,7 @@ function AsyncMultiSelectInner<T, V>(
     maxCount: userDefinedMaxCount,
     modalPopover = false,
     className,
-    variant,
+    variant = "secondary",
     noResultsMessage = "No hay opciones disponibles",
     errorMessage,
     loadingSkeleton,
@@ -282,7 +282,7 @@ function AsyncMultiSelectInner<T, V>(
                         </span>
                       </TooltipTrigger>
                       <TooltipContent className="bg-background shadow-lg border border-border p-1 rounded-sm">
-                        <div className="flex flex-col p-0">
+                        <div className="flex flex-col p-0 gap-1">
                           {selectedValues.slice(dynamicMaxCount).map((val) => {
                             const option = options.find((o) => getOptionValue(o) === val) ?? knownItemsMap.get(val);
                             if (!option) {
@@ -297,7 +297,7 @@ function AsyncMultiSelectInner<T, V>(
                                 >
                                   {String(val)}
                                   <X
-                                    className="!h-3 !w-3 text-muted-foreground hover:text-foreground transition ml-1 shadow-sm"
+                                    className="!h-3 !w-3 text-muted-foreground hover:text-foreground transition ml-1"
                                     onClick={(event) => {
                                       event.stopPropagation();
                                       setSelectedValues((prev) => {
@@ -325,7 +325,7 @@ function AsyncMultiSelectInner<T, V>(
                               >
                                 {getDisplayValue(option)}
                                 <X
-                                  className="!h-3 !w-3 text-muted-foreground hover:text-foreground transition ml-1 shadow-sm"
+                                  className="!h-3 !w-3 text-muted-foreground hover:text-foreground transition ml-1"
                                   onClick={(event) => {
                                     event.stopPropagation();
                                     toggleOption(option);

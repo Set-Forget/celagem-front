@@ -5,15 +5,23 @@ import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { useListSuppliersQuery } from "@/lib/services/suppliers";
 import { Plus } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 
 export default function Page() {
+  const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
 
-  const { data: suppliers, isLoading: isSuppliersLoading } = useListSuppliersQuery()
+  const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
+  const status = searchParams.get('status')
+
+  const { data: suppliers, isLoading: isSuppliersLoading } = useListSuppliersQuery({
+    name: search.field === "supplier" ? search?.query : undefined,
+    tax_id: search.field === "tax_id" ? search?.query : undefined,
+    status: status === "true" ? true : status === "false" ? false : undefined,
+  }, { refetchOnMountOrArgChange: true })
 
   return (
     <div>

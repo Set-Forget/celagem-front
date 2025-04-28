@@ -1,10 +1,13 @@
 import { NewSection } from "@/app/(private)/medical-management/calendar/schemas/templates";
+import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuLabel, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { setDialogsState } from "@/lib/store/dialogs-store";
 import { cn } from "@/lib/utils";
+import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, Plus, SquarePen, Trash2 } from "lucide-react";
 import { useFormContext, useWatch } from "react-hook-form";
+import { resolveFieldDisplayValue } from "../../../visits/(form)/[visit_id]/components/template-view";
 import { NormalizedSchema } from "../page";
 import SectionField from "./section-field";
 
@@ -59,6 +62,105 @@ export default function TemplateSection({ section, className }: { section: NewSe
       setValue(`sections.${sectionIndex}.fields`, newFieldIds, { shouldDirty: true, shouldValidate: true });
     }
   };
+
+  if (section.type === "table") {
+    const columns: ColumnDef<Record<number, any>, any>[] = sectionFields.map(field => ({
+      accessorFn: row => row[field.id],
+      id: String(field.id),
+      header: field.title,
+      cell: info => resolveFieldDisplayValue(field, info.getValue()),
+    }))
+
+    return (
+      <div className="flex flex-col gap-4 w-full">
+        <div className="grid grid-cols-1 gap-4">
+          <fieldset className={cn(
+            "border border-input rounded-md p-4 !shadow-sm min-w-0 w-full flex flex-col gap-4 hover:[&:not(:has(.field:hover))]:border-primary transition-colors",
+            className
+          )}>
+            {section.name && <legend className="text-xs px-2 border rounded-sm font-medium">{section.name}</legend>}
+            {!sectionFields.length && (
+              <div className="flex justify-center items-center gap-2">
+                <p className="text-muted-foreground text-sm">
+                  No hay campos en esta sección
+                </p>
+                <Button
+                  size="icon"
+                  className="h-7 w-7"
+                  variant="outline"
+                  onClick={() => setDialogsState({ open: "new-field", payload: { sectionId: section.id } })}
+                >
+                  <Plus />
+                </Button>
+              </div>
+            )}
+            <div className="grid grid-cols-2 gap-4">
+              {sectionFields?.map((field) => (
+                <ContextMenu modal={false} key={field.id}>
+                  <div className={cn("field ring-transparent ring-1 ring-offset-2 w-full rounded-sm transition-all hover:ring-primary")}>
+                    <ContextMenuTrigger className="flex flex-col w-full">
+                      <SectionField field={field} />
+                    </ContextMenuTrigger>
+                    <ContextMenuContent className="w-64">
+                      <ContextMenuLabel className="py-0.5">
+                        {field.title}
+                      </ContextMenuLabel>
+                      <ContextMenuSeparator />
+                      <div className="flex gap-2">
+                        <ContextMenuItem
+                          onClick={() => handleMoveFieldUp(field.id)}
+                          className="gap-1.5 w-full"
+                        >
+                          <ArrowUp className="w-4 h-4" />
+                          Subir
+                        </ContextMenuItem>
+                        <ContextMenuItem
+                          onClick={() => handleMoveFieldDown(field.id)}
+                          className="gap-1.5 w-full"
+                        >
+                          <ArrowDown className="w-4 h-4" />
+                          Bajar
+                        </ContextMenuItem>
+                      </div>
+                      <ContextMenuSeparator />
+                      <ContextMenuItem
+                        onClick={() => setDialogsState({ open: "edit-field", payload: { fieldId: field.id } })}
+                        className="gap-1.5"
+                      >
+                        <SquarePen className="w-4 h-4" />
+                        Editar
+                      </ContextMenuItem>
+                      <ContextMenuItem
+                        onClick={() => handleRemoveField(field.id)}
+                        className="gap-1.5 text-destructive hover:!text-destructive"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Eliminar
+                      </ContextMenuItem>
+                    </ContextMenuContent>
+                  </div>
+                </ContextMenu>
+              ))}
+              <Button
+                className="w-fit col-start-2 justify-self-end self-end"
+                size="sm"
+                disabled
+              >
+                <Plus />
+                Agregar
+              </Button>
+              <DataTable
+                className="col-span-2"
+                pagination={false}
+                columns={columns}
+                data={[]}
+              />
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 w-full">

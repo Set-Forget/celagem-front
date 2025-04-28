@@ -8,7 +8,11 @@ export default function SelectField({ field, formField }: {
 }) {
 
   return (
-    <Select onValueChange={formField?.onChange} defaultValue={formField?.value}>
+    <Select
+      onValueChange={formField?.onChange}
+      defaultValue={field?.type?.properties?.defaultValue as string}
+      value={formField?.value}
+    >
       <SelectTrigger>
         <SelectValue
           placeholder="Seleccioná una opción"

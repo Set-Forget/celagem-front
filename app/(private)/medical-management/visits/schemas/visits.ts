@@ -5,6 +5,24 @@ export const visitListSchema = z.object({
   appointment_id: z.string(),
   visit_number: z.number(),
   createdAt: z.string(),
+  doctor: z.object({
+    id: z.string(),
+    name: z.string(),
+    specialty: z.string(),
+  }),
+  patient: z.object({
+    id: z.string(),
+    first_name: z.string(),
+    first_last_name: z.string(),
+  }),
+  template: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  clinic: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
   status: z.enum(["DRAFT", "SIGNED"]),
 })
 
@@ -40,8 +58,9 @@ export const visitDetailResponseSchema = z.object({
 export const createVisitSchema = z.object({
   appointment_id: z.string(),
   medical_record: z.object({
-    name: z.string(),
-    data: z.string()
+    name: z.string().optional(),
+    data: z.string().optional(),
+    is_signed: z.boolean().optional(),
   })
 })
 
@@ -53,7 +72,7 @@ export const createVisitResponseSchema = z.object({
     id: z.string(),
     appointment_id: z.string(),
     notes: z.string().optional(),
-    createdAt: z.string(),
+    created_at: z.string(),
     visit_number: z.number(),
     doctor: z.object({
       id: z.string(),

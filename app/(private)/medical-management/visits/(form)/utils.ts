@@ -59,10 +59,16 @@ const fieldSchemaGenerators: Record<FieldType["primitive_type"], (field: Field) 
   time: (_field: Field) => timeSchema,
   file: (_field: Field) => z.instanceof(File, { message: "Campo requerido" }),
   select: (_field: Field) => z.string(),
+  multiselect: (_field: Field) => z.array(z.string(), { message: "Campo requerido" }),
   title: (_field: Field) => z.string(),
+  imc: (_field: Field) => z.object({
+    height: z.number().optional(),
+    weight: z.number().optional(),
+    imc: z.string().optional(),
+  })
 };
 
-const generateFieldSchema = (field: Field): ZodTypeAny => {
+export const generateFieldSchema = (field: Field): ZodTypeAny => {
   const primitiveType: FieldType["primitive_type"] = field.type.primitive_type;
   const generatorFn = fieldSchemaGenerators[primitiveType];
   if (!generatorFn) {
@@ -70,7 +76,7 @@ const generateFieldSchema = (field: Field): ZodTypeAny => {
   }
   let schema = generatorFn(field);
 
-  if (field.isRequired) {
+  if (field.is_required) {
     schema = schema.refine(
       (value) => value !== undefined && value !== null && value !== "",
       { message: "Campo requerido" }
@@ -85,54 +91,73 @@ export const generateFormSchema = (template: TemplateDetail): ZodObject<Record<s
   const shape: Record<string, ZodTypeAny> = {};
 
   template.sections.forEach((section: Section) => {
-    section.fields.forEach((field: Field) => {
-      shape[field.code] = generateFieldSchema(field);
-    });
+    if (section.type === "table") {
+      const rowShape: Record<string, ZodTypeAny> = {};
+      section.fields.forEach((field: Field) => {
+        rowShape[field.code] = generateFieldSchema(field);
+      });
+      shape[section.name] = z.array(z.object(rowShape));
+    } else {
+      section.fields.forEach((field: Field) => {
+        shape[field.code] = generateFieldSchema(field);
+      });
+    }
   });
 
   return z.object(shape);
-}
+};
 
 export const generateDefaultValues = (template: TemplateDetail): Record<string, unknown> => {
   const defaults: Record<string, unknown> = {};
-  template.sections.forEach((section: Section) => {
-    section.fields.forEach((field: Field) => {
-      const properties = field.type.properties;
-      const fieldType = field.type.primitive_type;
-      let defaultValue: unknown = undefined;
 
-      /* eslint-disable indent */
-      switch (fieldType) {
-        case "text":
-        case "textarea":
-        case "datetime":
-        case "select":
-          defaultValue = properties?.defaultValue ?? "";
-          break;
-        case "number":
-          defaultValue = properties?.defaultValue ? Number(properties.defaultValue) : undefined;
-          break;
-        case "checkbox":
-          if (properties?.defaultValue !== undefined) {
-            if (typeof properties.defaultValue === "boolean") {
-              defaultValue = properties.defaultValue;
-            } else if (typeof properties.defaultValue === "string") {
-              defaultValue = properties.defaultValue.toLowerCase() === "true";
+  template.sections.forEach((section: Section) => {
+    if (section.type === "table") {
+      defaults[section.name] = [];
+    } else {
+      section.fields.forEach((field: Field) => {
+        const props = field.type.properties;
+        const t = field.type.primitive_type;
+        let defaultValue: unknown;
+
+        switch (t) {
+          case "text":
+          case "textarea":
+          case "datetime":
+          case "select":
+            defaultValue = props?.defaultValue ?? "";
+            break;
+          case "number":
+            defaultValue = props?.defaultValue !== undefined
+              ? Number(props.defaultValue)
+              : undefined;
+            break;
+          case "checkbox":
+            if (props?.defaultValue !== undefined) {
+              defaultValue = typeof props.defaultValue === "boolean"
+                ? props.defaultValue
+                : String(props.defaultValue).toLowerCase() === "true";
             } else {
               defaultValue = false;
             }
-          } else {
-            defaultValue = false;
-          }
-          break;
-        case "file":
-          defaultValue = null;
-          break;
-        default:
-          defaultValue = undefined;
-      }
-      defaults[field.code] = defaultValue;
-    });
+            break;
+          case "file":
+            defaultValue = undefined;
+            break;
+          case "imc":
+            defaultValue = {
+              height: undefined,
+              weight: undefined,
+              imc: undefined,
+            }
+            break;
+          default:
+            defaultValue = undefined;
+        }
+
+        defaults[field.code] = defaultValue;
+      });
+    }
   });
+
   return defaults;
-}
+};

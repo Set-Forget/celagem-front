@@ -3,28 +3,50 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
+import { PaymentList } from "../schemas/payments"
+import { paymentStatus } from "../utils"
 
-import { format } from "date-fns"
-import { PAYMENT_MODE_ADAPTER } from "../adapters/payments"
-
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<PaymentList>[] = [
   {
-    accessorKey: "transaction_id",
-    header: "ID de transacción",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("transaction_id")}</div>,
+    accessorKey: "name",
+    header: "Número",
+    cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "payment_mode",
-    header: "Modo de pago",
+    accessorKey: "state",
+    header: "Estado",
     cell: ({ row }) => {
-      return <div>{PAYMENT_MODE_ADAPTER[row.getValue("payment_mode") as keyof typeof PAYMENT_MODE_ADAPTER]}</div>
+      const status = paymentStatus[row.getValue("state") as keyof typeof paymentStatus];
+
+      return (
+        <Badge
+          variant="custom"
+          className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
+        >
+          {status?.label}
+        </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: "partner",
+    header: "Proveedor",
+    cell: ({ row }) => <div>{row.getValue("partner")}</div>,
+  },
+  {
+    accessorKey: "payment_method",
+    header: "Método de pago",
+    cell: ({ row }) => {
+      return <div>xxxx</div>
     },
   },
   {
     accessorKey: "payment_date",
     header: "Fecha de pago",
     cell: ({ row }) => <div>
-      {format(new Date(row.getValue("payment_date")), "dd MMM yyyy")}
+      xxxx
     </div>,
   },
   {

@@ -21,7 +21,9 @@ export const erpApi = createApi({
     'JournalEntry',
     'AccountsPayable',
     'AccountsReceivable',
-    'CostCenter'
+    'CostCenter',
+    'Payment',
+    'Receipt'
   ],
   endpoints: () => ({}),
 });

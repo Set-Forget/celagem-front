@@ -65,18 +65,15 @@ export const customerDetailSchema = z.object({
   email: z.string(),
   website: z.string(), // ! No debería mostrarse en clientes.
   contact_address_inline: z.string(),
-  purchase_order_count: z.number(),
-  tax_id: z.string(),
-  payment_amount_due: z.number(),
-  payment_amount_overdue: z.number(),
   total_invoiced: z.number(),
+  tax_id: z.string(),
+  status: z.boolean(),
   property_payment_term: z.object({
     id: z.number(),
     name: z.string(),
   }).nullable(),
   property_account_position: z.string().nullable(),
   commercial_company_name: z.string(),
-  status: z.boolean(),
   currency: z.object({
     id: z.number(),
     name: z.string(),
@@ -87,28 +84,32 @@ export const customerDetailSchema = z.object({
     id: z.string(),
     text: z.string(),
   })),
-  tax_regime: z.string(), // @ U_HBT_RegTrib - Código del regimen tributario.
   tax_type: z.string(), // @ U_HBT_TipDoc - Código del tipo de documento.
+  entity_type: z.string(), // @ U_HBT_TipEnt - Código del tipo de entidad.
+  nationality_type: z.string(), // @ U_HBT_Nacional - Código de la nacionalidad.
+  tax_regime: z.string(), // @ U_HBT_RegTrib - Código del regimen tributario.
+  tax_category: z.string(), // @ U_HBT_RegFis - Regimen Fiscal.
+  is_resident: z.boolean(), // @ U_HBT_Residente - Residente.
+  tax_information: z.string(), // @ U_HBT_InfoTrib - Información Tributaria.
+  fiscal_responsibility: z.string(), // @ U_HBT_ResFis1 - Responsabilidad Fiscal.
   economic_activity: z.object({
     id: z.number(),
     name: z.string(),
   }), // @ U_HBT_ActEco - Código de la actividad económica.
-  entity_type: z.string(), // @ U_HBT_TipEnt - Código del tipo de entidad.
-  nationality_type: z.string(), // @ U_HBT_Nacional - Código de la nacionalidad.
-  tax_category: z.string(), // @ U_HBT_RegFis - Regimen Fiscal.
   payment_method: z.object({
     id: z.number(),
     name: z.string(),
   }), // @ U_HBT_MedPag - Medio de Pago.
-  is_resident: z.boolean(), // @ U_HBT_Residente - Residente.
-  tax_information: z.string(), // @ U_HBT_InfoTrib - Información Tributaria.
-  fiscal_responsibility: z.string(), // @ U_HBT_ResFis1 - Responsabilidad Fiscal.
   traceability: z.object({
     created_by: z.string(),
     created_at: z.string(),
     updated_by: z.string(),
     updated_at: z.string(),
   }),
+
+  /*   purchase_order_count: z.number(),
+    payment_amount_due: z.number(),
+    payment_amount_overdue: z.number(), */
   // ! Falta accounting_account.
 })
 

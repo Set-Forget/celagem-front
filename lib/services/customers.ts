@@ -4,13 +4,18 @@ import { Overwrite } from '../utils';
 
 export const customersApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listCustomers: builder.query<CustomerListResponse, { name?: string } | void>({
-      query: (data) => ({
-        url: '/customers',
-        params: data || {},
+    listCustomers: builder.query<CustomerListResponse,
+      {
+        name?: string
+        status?: true | false
+        tax_id?: string
+      } | void>({
+        query: (data) => ({
+          url: '/customers',
+          params: data || {},
+        }),
+        providesTags: ['Customer']
       }),
-      providesTags: ['Customer']
-    }),
     getCustomer: builder.query<CustomerDetail, string>({
       query: (id) => `/customers/${id}`,
       transformResponse: (response: CustomerDetailResponse) => response.data,

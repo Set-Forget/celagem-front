@@ -25,7 +25,7 @@ const fields: FieldDefinition<CustomerDetail>[] = [
   {
     label: "Método de pago",
     placeholderLength: 16,
-    getValue: (p) => p.payment_method.name || "No especificado",
+    getValue: (p) => p.payment_method?.name || "No especificado",
   },
   /*   {
       label: "Cuenta contable",

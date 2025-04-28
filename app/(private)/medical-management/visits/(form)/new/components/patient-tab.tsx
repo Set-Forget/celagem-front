@@ -4,8 +4,8 @@ import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useParams } from "next/navigation";
-import { biologicalSexTypes, disabilityTypes, documentTypes, genderIdentityTypes, linkageTypes, maritalStatusTypes } from "../../../patients/utils";
-import { PatientDetail } from "../../../patients/schema/patients";
+import { PatientDetail } from "../../../../patients/schema/patients";
+import { biologicalSexTypes, disabilityTypes, documentTypes, linkageTypes } from "../../../../patients/utils";
 
 export default function PatientTab() {
   const params = useParams<{ appointment_id: string }>();
@@ -86,7 +86,7 @@ export default function PatientTab() {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       {fields.map((field) => {
         const displayValue = isPatientLoading
           ? placeholder(field.placeholderLength)

@@ -1,6 +1,6 @@
 import FilterSelector, { FilterConfig } from "@/components/filter-selector";
 import { Table } from "@tanstack/react-table";
-import { CalendarFold, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -11,7 +11,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "search",
     label: "Buscar",
     options: [
-      { label: "Nombre de la plantilla", value: "template_name" },
+      { label: "Nombre de la plantilla", value: "name" },
     ],
     key: "search",
     icon: Search

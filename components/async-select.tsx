@@ -30,7 +30,7 @@ export interface AsyncSelectProps<T, V = string> {
   /** Currently selected value */
   value: V;
   /** Callback when selection changes */
-  onChange: (value: V) => void;
+  onChange: (value: V, option: T) => void;
   /** Label for the select field */
   label: string;
   /** Placeholder text when no selection */
@@ -126,7 +126,7 @@ export function AsyncSelect<T, V>(props: AsyncSelectProps<T, V>) {
 
       if (opt) {
         setSelectedOption(opt);
-        onChange(getOptionValue(opt));
+        onChange(getOptionValue(opt), opt);
       }
       setOpen(false);
     },
@@ -183,13 +183,13 @@ export function AsyncSelect<T, V>(props: AsyncSelectProps<T, V>) {
             triggerClassName
           )}
         >
-          <span className="truncate">
+          <p className="truncate">
             {selectedOption ? getDisplayValue(selectedOption) : placeholder}
-          </span>
+          </p>
           <ChevronsUpDown className="opacity-50" size={10} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("w-[--radix-popover-trigger-width] p-0", className)}>
+      <PopoverContent align="start" className={cn("min-w-[--radix-popover-trigger-width] p-0", className)}>
         <Command>
           <div className="relative border-b w-full">
             {loading && options.length > 0 ? (

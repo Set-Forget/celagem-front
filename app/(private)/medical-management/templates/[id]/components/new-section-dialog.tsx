@@ -69,8 +69,8 @@ export default function NewSectionDialog() {
       name: "",
       type: "form",
       description: "",
-      isActive: true,
-      isForPrintInColumns: false,
+      is_active: true,
+      is_for_print_in_columns: false,
       fields: [],
     });
   }, [dialogState.open]);

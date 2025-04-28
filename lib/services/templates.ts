@@ -21,10 +21,7 @@ export const templatesApi = hcApi.injectEndpoints({
       query: ({ id, ...newTemplate }) => ({
         url: `template/${id}`,
         method: 'PATCH',
-        body: {
-          ...newTemplate,
-          updatedBy: '0194cd16-08cb-7146-b224-52417ab62d3b' //esto deberia ser el ID del usuario logueado
-        }
+        body: newTemplate,
       }),
       invalidatesTags: ['Template']
     }),
@@ -57,8 +54,11 @@ export const templatesApi = hcApi.injectEndpoints({
       }),
       invalidatesTags: ['Section']
     }),
-    listSections: builder.query<SectionListResponse, void>({
-      query: () => 'section',
+    listSections: builder.query<SectionListResponse, { name?: string } | void>({
+      query: (data) => ({
+        url: 'section',
+        params: data || {}
+      }),
       providesTags: ['Section']
     }),
     getSections: builder.query<SectionDetail, number>({
@@ -90,6 +90,7 @@ export const templatesApi = hcApi.injectEndpoints({
 export const {
   useListTemplatesQuery,
   useGetTemplateQuery,
+  useLazyGetTemplateQuery,
   useLazyListTemplatesQuery,
 
   useLazyListSectionsQuery,

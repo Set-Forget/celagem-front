@@ -88,7 +88,7 @@ export default function PatientTab() {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       {fields.map((field) => {
         const displayValue = isPatientLoading
           ? placeholder(field.placeholderLength)

@@ -3,13 +3,18 @@ import { erpApi } from '../apis/erp-api';
 
 export const suppliersApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listSuppliers: builder.query<SupplierListResponse, { name?: string } | void>({
-      query: (data) => ({
-        url: '/suppliers',
-        params: data || {},
+    listSuppliers: builder.query<SupplierListResponse,
+      {
+        name?: string
+        status?: true | false
+        tax_id?: string
+      } | void>({
+        query: (data) => ({
+          url: '/suppliers',
+          params: data || {},
+        }),
+        providesTags: ['Supplier']
       }),
-      providesTags: ['Supplier']
-    }),
     getSupplier: builder.query<SupplierDetail, string>({
       query: (id) => `/suppliers/${id}`,
       transformResponse: (response: SupplierDetailResponse) => response.data,

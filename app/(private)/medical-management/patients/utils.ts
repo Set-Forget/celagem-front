@@ -92,11 +92,23 @@ export const biologicalSexTypes = [
     label: "Masculino",
   },
   {
+    value: "male",
+    label: "Masculino",
+  },
+  {
     value: "Female",
     label: "Femenino",
   },
   {
+    value: "female",
+    label: "Femenino",
+  },
+  {
     value: "Both",
+    label: "Ambos",
+  },
+  {
+    value: "both",
     label: "Ambos",
   },
 ] as const;

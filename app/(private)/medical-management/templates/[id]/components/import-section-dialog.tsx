@@ -31,9 +31,11 @@ export default function ImportSectionDialog() {
     form.reset();
   };
 
-  const handleGetSections = async () => {
+  const handleGetSections = async (query?: string) => {
     try {
-      const sections = await getSections().unwrap()
+      const sections = await getSections({
+        name: query,
+      }).unwrap()
       return sections.data.map((sections) => ({
         label: sections.name,
         value: sections.id,
@@ -89,9 +91,9 @@ export default function ImportSectionDialog() {
     <Dialog open={dialogState.open === "import-section"} onOpenChange={onOpenChange}>
       <DialogContent className="w-[500px] max-w-none">
         <DialogHeader>
-          <DialogTitle>Nueva sección</DialogTitle>
+          <DialogTitle>Importar sección</DialogTitle>
           <DialogDescription>
-            Crea una nueva sección para la plantilla.
+            Importá una nueva sección para la plantilla.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -114,6 +116,7 @@ export default function ImportSectionDialog() {
                       onChange={field.onChange}
                       value={field.value}
                       noResultsMessage="No se encontraron secciones"
+                      modal
                     />
                     <FormMessage />
                   </FormItem>

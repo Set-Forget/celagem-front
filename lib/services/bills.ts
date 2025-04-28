@@ -3,10 +3,22 @@ import { erpApi } from '@/lib/apis/erp-api';
 
 export const billsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listBills: builder.query<BillListResponse, void>({
-      query: () => 'purchase_invoices',
-      providesTags: ['Bill'],
-    }),
+    listBills: builder.query<BillListResponse,
+      {
+        number?: string,
+        supplier?: string,
+        status?: "draft" | "posted" | "cancel",
+        date_start?: string,
+        date_end?: string,
+        due_date_start?: string,
+        due_date_end?: string,
+      } | void>({
+        query: (data) => ({
+          url: '/purchase_invoices',
+          params: data || {},
+        }),
+        providesTags: ['Bill'],
+      }),
     getBill: builder.query<BillDetail, string>({
       query: (id) => `/purchase_invoices/${id}`,
       transformResponse: (response: BillDetailResponse) => response.data,
@@ -40,7 +52,9 @@ export const billsApi = erpApi.injectEndpoints({
 
 export const {
   useListBillsQuery,
+  useLazyListBillsQuery,
   useGetBillQuery,
+  useLazyGetBillQuery,
   useCreateBillMutation,
   useUpdateBillMutation,
   useDeleteBillMutation,

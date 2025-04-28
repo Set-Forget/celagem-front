@@ -1,5 +1,5 @@
 import { useGetPatientQuery } from "@/lib/services/patients";
-import { cn, placeholder } from "@/lib/utils";
+import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useParams } from "next/navigation";
@@ -12,13 +12,6 @@ import {
   linkageTypes,
   maritalStatusTypes
 } from "../../../utils";
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 export default function GeneralTab() {
   const params = useParams<{ patient_id: string }>();
@@ -33,15 +26,9 @@ export default function GeneralTab() {
       getValue: (p) => p.first_name + " " + p.first_last_name,
     },
     {
-      label: "Tipo de vinculación",
+      label: "Número de documento",
       placeholderLength: 14,
-      getValue: (p) =>
-        linkageTypes.find((l) => l.value === p.linkage)?.label || "No especificado",
-    },
-    {
-      label: "Clase",
-      placeholderLength: 14,
-      getValue: (p) => p.class?.name,
+      getValue: (p) => `${documentTypes.find((d) => d.value === p.document_type)?.short || ""} ${p.document_number}`,
     },
     {
       label: "Sexo biológico",
@@ -66,46 +53,16 @@ export default function GeneralTab() {
       getValue: (p) => p.birth_place?.formatted_address,
     },
     {
-      label: "Dirección de residencia",
+      label: "Estado civil",
       placeholderLength: 14,
-      getValue: (p) => p.address?.formatted_address,
-    },
-    {
-      label: "Compañia",
-      placeholderLength: 14,
-      getValue: (p) => p.company.name,
-    },
-    {
-      label: "Sede",
-      placeholderLength: 14,
-      getValue: (p) => p.clinics.map((c) => c.name).join(", "),
+      getValue: (p) =>
+        maritalStatusTypes.find((m) => m.value === p.marital_status)?.label || "No especificado",
     },
     {
       label: "Discapacidad",
       placeholderLength: 14,
       getValue: (p) =>
         disabilityTypes.find((d) => d.value === p.disability_type)?.label || "No especificado",
-    },
-    {
-      label: "Tipo de documento",
-      placeholderLength: 14,
-      getValue: (p) =>
-        documentTypes.find((d) => d.value === p.document_type)?.label || "No especificado",
-    },
-    {
-      label: "Número de documento",
-      placeholderLength: 14,
-      getValue: (p) => p.document_number,
-    },
-    {
-      label: "Número de teléfono",
-      placeholderLength: 10,
-      getValue: (p) => p.phone_number || "No especificado",
-    },
-    {
-      label: "Email",
-      placeholderLength: 14,
-      getValue: (p) => p.email || "No especificado",
     },
     {
       label: "Nombre del padre",
@@ -116,22 +73,6 @@ export default function GeneralTab() {
       label: "Nombre de la madre",
       placeholderLength: 14,
       getValue: (p) => p.mother_name || "No especificado",
-    },
-    {
-      label: "Estado civil",
-      placeholderLength: 14,
-      getValue: (p) =>
-        maritalStatusTypes.find((m) => m.value === p.marital_status)?.label || "No especificado",
-    },
-    {
-      label: "Entidad/IPS remitente",
-      placeholderLength: 14,
-      getValue: (p) => p.referring_entity || "No especificado",
-    },
-    {
-      label: "Aseguradora",
-      placeholderLength: 14,
-      getValue: (p) => p.insurance_provider || "No especificado",
     },
   ];
 

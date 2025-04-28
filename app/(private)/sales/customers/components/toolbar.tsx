@@ -10,8 +10,8 @@ const filtersConfig: Record<string, FilterConfig> = {
   status: {
     type: "multiple",
     options: [
-      { label: "Activo", value: "active" },
-      { label: "Inactivo", value: "inactive" },
+      { label: "Activo", value: "true" },
+      { label: "Inactivo", value: "false" },
     ], label: "Estado",
     key: "status",
     icon: CircleDashed
@@ -20,8 +20,8 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "search",
     label: "Buscar",
     options: [
-      { label: "Cliente", value: "customer" },
-      { label: "CUIT", value: "cuit" },
+      { label: "Nombre", value: "name" },
+      { label: "Identificación fiscal", value: "tax_id" },
     ],
     key: "search",
     icon: Search
@@ -32,34 +32,6 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
   return (
     <div className="flex items-center justify-between">
       <div className="flex gap-4">
-        {/*         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="ml-auto">
-              Columnas
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {typeof column.columnDef.header === "string" && column.columnDef.header}
-                    {typeof column.columnDef.header === "function" && column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu> */}
         <FilterSelector filtersConfig={filtersConfig} />
       </div>
     </div>

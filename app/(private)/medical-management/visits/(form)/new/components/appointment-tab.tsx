@@ -3,8 +3,8 @@ import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useParams } from "next/navigation";
-import { AppointmentDetail } from "../../../calendar/schemas/appointments";
-import { modesOfCare } from "../../../calendar/utils";
+import { AppointmentDetail } from "../../../../calendar/schemas/appointments";
+import { modesOfCare } from "../../../../calendar/utils";
 
 export default function AppointmentTab() {
   const params = useParams<{ appointment_id: string }>();
@@ -53,7 +53,7 @@ export default function AppointmentTab() {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       {fields.map((field) => {
         const displayValue = isAppointmentLoading
           ? placeholder(field.placeholderLength)

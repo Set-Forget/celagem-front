@@ -112,7 +112,7 @@ export default function EditTemplateDialog() {
               />
               <FormField
                 control={form.control}
-                name="isActive"
+                name="is_active"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-md border px-3 h-9 shadow-sm">
                     <FormLabel>¿Está activa?</FormLabel>

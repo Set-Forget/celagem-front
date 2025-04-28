@@ -23,7 +23,7 @@ import { useEffect } from "react"
 import { toast } from "sonner"
 import GeneralForm from "../components/general-form"
 
-export default function NewPurchaseOrderPage() {
+export default function Page() {
   const router = useRouter()
   const searchParams = useSearchParams()
 

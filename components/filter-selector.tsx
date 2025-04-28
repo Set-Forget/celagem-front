@@ -33,6 +33,7 @@ import { ActiveFilterChip } from "./active-filter-chip"
 import { Calendar } from "./ui/calendar"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
+import { es } from "date-fns/locale"
 
 type DateRangeFilter = { field: string, from: Date; to: Date };
 type SearchFilter = { field: string; query: string };
@@ -177,11 +178,11 @@ const DateRangeFilter = ({
               {localDate?.from ? (
                 localDate?.to ? (
                   <>
-                    {format(localDate.from, "LLL dd, y")} -{" "}
-                    {format(localDate.to, "LLL dd, y")}
+                    {format(localDate.from, "LLL dd, y", { locale: es })} -{" "}
+                    {format(localDate.to, "LLL dd, y", { locale: es })}
                   </>
                 ) : (
-                  format(localDate.from, "LLL dd, y")
+                  format(localDate.from, "LLL dd, y", { locale: es })
                 )
               ) : (
                 <span>Seleccioná un rango</span>
@@ -292,7 +293,7 @@ const DateFilter = ({
               )}
             >
               {localDate ? (
-                format(localDate, "LLL dd, y")
+                format(localDate, "LLL dd, y", { locale: es })
               ) : (
                 <span>Selecciona una fecha</span>
               )}
@@ -737,7 +738,7 @@ export default function FilterSelector({
               Array.isArray(val)
                 ? getLabelsFromValues(key, val)
                 : isDateRange(val)
-                  ? `${format(val.from, 'LLL dd, yyyy')} - ${format(val.to, 'LLL dd, yyyy')}`
+                  ? `${format(val.from, 'LLL dd, yyyy', { locale: es })} - ${format(val.to, 'LLL dd, yyyy', { locale: es })}`
                   : isSearchFilter(val)
                     ? `"${val.query}"`
                     : typeof val === 'object' && 'field' in val && 'value' in val

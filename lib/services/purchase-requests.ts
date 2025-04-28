@@ -4,13 +4,19 @@ import { Overwrite } from '../utils';
 
 export const purchaseRequestsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listPurchaseRequests: builder.query<PurchaseRequestListResponse, { name?: string } | void>({
-      query: (data) => ({
-        url: '/purchase_requests',
-        params: data || {},
+    listPurchaseRequests: builder.query<PurchaseRequestListResponse,
+      {
+        name?: string,
+        status?: "draft" | "approved" | "ordered" | "cancelled",
+        request_date_start?: string,
+        request_date_end?: string,
+      } | void>({
+        query: (data) => ({
+          url: '/purchase_requests',
+          params: data || {},
+        }),
+        providesTags: ['PurchaseRequest'],
       }),
-      providesTags: ['PurchaseRequest'],
-    }),
     getPurchaseRequest: builder.query<PurchaseRequestDetail, string>({
       query: (id) => `purchase_requests/${id}`,
       transformResponse: (response: PurchaseRequestDetailResponse) => response.data,

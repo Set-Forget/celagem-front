@@ -11,9 +11,11 @@ const filtersConfig: Record<string, FilterConfig> = {
   status: {
     type: "multiple",
     options: [
-      { label: "Pendiente", value: "pending" },
-      { label: "Cancelada", value: "canceled" },
-      { label: "Completada", value: "completed" },
+      { label: "Borrador", value: "draft" },
+      { label: "A aprobar", value: "to approve" },
+      { label: "A recibir", value: "purchase" },
+      { label: "Completa", value: "done" },
+      { label: "Cancelada", value: "cancel" },
     ], label: "Estado",
     key: "status",
     icon: CircleDashed
@@ -22,7 +24,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "date_range",
     options: [
       { label: "Fecha de creación", value: "created_at" },
-      { label: "Fecha de entrega", value: "required_by" },
+      { label: "Fecha de requerimiento", value: "required_date" },
     ],
     label: "Rango de fecha",
     key: "date_range",
@@ -41,49 +43,9 @@ const filtersConfig: Record<string, FilterConfig> = {
 };
 
 export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) {
-  const searchParams = useSearchParams();
-
-  const allParams = Object.fromEntries(
-    Array.from(searchParams.entries()).map(([key, value]) => {
-      try {
-        return [key, JSON.parse(decodeURIComponent(value))];
-      } catch {
-        return [key, value];
-      }
-    })
-  );
-
   return (
     <div className="flex items-center justify-between">
       <div className="flex gap-4">
-        {/*         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="ml-auto">
-              Columnas
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {typeof column.columnDef.header === "string" && column.columnDef.header}
-                    {typeof column.columnDef.header === "function" && column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu> */}
         <FilterSelector filtersConfig={filtersConfig} />
       </div>
     </div>

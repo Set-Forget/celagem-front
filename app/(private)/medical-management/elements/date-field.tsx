@@ -4,16 +4,24 @@ import { CalendarIcon } from "lucide-react";
 import { Button, DatePicker, DateValue, Dialog, Group, I18nProvider, Label, Popover } from "react-aria-components";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
 import { Field } from "../calendar/schemas/templates";
+import { CalendarDate } from "@internationalized/date";
 
 export default function DateField({ field, formField }: {
   field: Field;
   formField?: ControllerRenderProps<FieldValues, string>;
 }) {
+  const day = formField?.value?.day;
+  const month = formField?.value?.month;
+  const year = formField?.value?.year;
+
+  const value = day && month && year ? new CalendarDate(year, month, day) : undefined;
+
   return (
     <I18nProvider locale="es-419">
       <DatePicker
         className="w-full"
-        value={field.type.properties.defaultValue as DateValue}
+        defaultValue={field?.type?.properties?.defaultValue as DateValue}
+        value={value}
         onChange={(value) => {
           if (!value) {
             formField?.onChange(undefined);

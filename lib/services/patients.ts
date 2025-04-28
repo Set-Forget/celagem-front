@@ -20,7 +20,7 @@ export const patientsApi = hcApi.injectEndpoints({
       transformResponse: (response: PatientDetailResponse) => response.data,
       providesTags: ['Patient']
     }),
-    updatePatient: builder.mutation<NewPatientResponse, { id: string, body: Partial<Overwrite<NewPatient, { birthdate: string }>> }>({
+    updatePatient: builder.mutation<NewPatientResponse, { id: string, body: Partial<Overwrite<NewPatient, { birth_date: string }>> }>({
       query: ({ id, body }) => ({
         url: `patient/${id}`,
         method: 'PATCH',
@@ -44,6 +44,7 @@ export const {
   useLazyListPatientsQuery,
   useLazyListCareCompaniesQuery,
   useGetPatientQuery,
+  useLazyGetPatientQuery,
   useCreatePatientMutation,
   useUpdatePatientMutation
 } = patientsApi;

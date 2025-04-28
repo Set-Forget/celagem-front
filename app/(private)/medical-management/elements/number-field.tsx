@@ -13,12 +13,14 @@ export default function NumberField({ field, formField }: {
   field?: Field;
   formField?: ControllerRenderProps<FieldValues, string>;
 }) {
+
   return (
     <AriaNumberField
       {...formField}
       {...(field?.type.properties)}
       className="w-full"
-      defaultValue={typeof field?.type.properties?.defaultValue === "number" ? field?.type.properties.defaultValue : undefined}
+      value={typeof formField?.value === "number" ? formField?.value : NaN}
+      defaultValue={typeof field?.type.properties?.defaultValue === "number" ? field?.type.properties.defaultValue : NaN}
     >
       <Label className="sr-only">
         {field?.title}

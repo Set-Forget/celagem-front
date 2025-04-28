@@ -58,17 +58,17 @@ export const columns: ColumnDef<VisitList>[] = [
   {
     accessorKey: "doctor",
     header: "Profesional",
-    cell: ({ row }) => <div>xxxx</div>
+    cell: ({ row }) => <div>{row.original.doctor.name}</div>
   },
   {
     accessorKey: "patient",
     header: "Paciente",
-    cell: ({ row }) => <div>xxxx</div>
+    cell: ({ row }) => <div>{row.original.patient.first_name} {row.original.patient.first_last_name}</div>
   },
   {
     accessorKey: "template",
     header: "Tipo de atención",
-    cell: ({ row }) => <div>xxxx</div>
+    cell: ({ row }) => <div>{row.original.template.name}</div>
   },
   {
     accessorKey: "clinic",

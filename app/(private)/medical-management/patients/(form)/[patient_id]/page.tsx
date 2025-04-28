@@ -13,7 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { useGetPatientQuery } from "@/lib/services/patients"
 import { cn, placeholder } from "@/lib/utils"
-import { Building, ChevronDown, Ellipsis, House, Pencil, Plus, Shield, Users, Wallet, X } from "lucide-react"
+import { Building, ChevronDown, Ellipsis, Hospital, House, Mail, Pencil, Plus, Shield, Users, Wallet, X } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 import CareCompanyTab from "./components/care_company-tab"
@@ -22,6 +22,10 @@ import CompanionTab from "./components/companion-tab"
 import FiscalTab from "./components/fiscal-tab"
 import GeneralTab from "./components/general-tab"
 import Dropdown from "@/components/dropdown"
+import ContactTab from "./components/contact-tab"
+import AffiliationTab from "./components/affiliation-tab"
+import { formatDistanceToNow } from "date-fns"
+import { es } from "date-fns/locale"
 
 const notes = [
   { id: 1, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc." },
@@ -33,24 +37,36 @@ const notes = [
 const tabs = [
   {
     value: "tab-1",
+    label: "Contacto",
+    icon: <Mail className="mr-1.5" size={16} />,
+    content: <ContactTab />
+  },
+  {
+    value: "tab-2",
+    label: "Afiliación",
+    icon: <Hospital className="mr-1.5" size={16} />,
+    content: <AffiliationTab />
+  },
+  {
+    value: "tab-3",
     label: "Acompañante",
     icon: <Users className="mr-1.5" size={16} />,
     content: <CompanionTab />
   },
   {
-    value: "tab-2",
+    value: "tab-4",
     label: "Responsable",
     icon: <Shield className="mr-1.5" size={16} />,
     content: <CaregiverTab />
   },
   {
-    value: "tab-3",
+    value: "tab-5",
     label: "Empresa responsable",
     icon: <Building className="mr-1.5" size={16} />,
     content: <CareCompanyTab />
   },
   {
-    value: "tab-4",
+    value: "tab-6",
     label: "Fiscal",
     icon: <Wallet className="mr-1.5" size={16} />,
     content: <FiscalTab />
@@ -143,41 +159,46 @@ export default function Page() {
           <Separator />
           <div className="p-4 flex flex-col gap-4">
             <h2 className="text-base font-medium">Actividad</h2>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Creado por{" "}
-                <span className="font-medium">
-                  xxxx
+            {(!isPatientLoading && patient?.created_by) &&
+              <div className="flex flex-col gap-1">
+                <label className="text-muted-foreground text-sm">
+                  Creado por{" "}
+                  <span className="font-medium">
+                    {isPatientLoading ? placeholder(13) : patient?.created_by?.first_name + " " + patient?.created_by?.last_name}
+                  </span>
+                </label>
+                <span
+                  className={cn(
+                    "text-sm transition-all duration-300",
+                    isPatientLoading ? "blur-[4px]" : "blur-none"
+                  )}
+                >
+                  {isPatientLoading ? placeholder(13) : formatDistanceToNow(patient?.created_at, { addSuffix: true, locale: es })}
                 </span>
-              </label>
-              <span
-                className={cn(
-                  "text-sm transition-all duration-300",
-                  isPatientLoading ? "blur-[4px]" : "blur-none"
-                )}
-              >
-                {isPatientLoading ? placeholder(13) : "Hace 3 días"}
-              </span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Editado por{" "}
-                <span className={cn(
-                  "font-medium transition-all duration-300",
-                  isPatientLoading ? "blur-[4px]" : "blur-none"
-                )}>
-                  {isPatientLoading ? placeholder(13) : patient?.updated_by?.first_name + " " + patient?.updated_by?.last_name}
+              </div>
+            }
+            {(!isPatientLoading && patient?.updated_by) &&
+              <div className="flex flex-col gap-1">
+                <label className="text-muted-foreground text-sm">
+                  Editado por{" "}
+                  <span className={cn(
+                    "font-medium transition-all duration-300",
+                    isPatientLoading ? "blur-[4px]" : "blur-none"
+                  )}>
+                    {isPatientLoading ? placeholder(13) : patient?.updated_by?.first_name + " " + patient?.updated_by?.last_name}
+                  </span>
+                </label>
+                <span
+                  className={cn(
+                    "text-sm transition-all duration-300",
+                    isPatientLoading ? "blur-[4px]" : "blur-none"
+                  )}
+                >
+                  {isPatientLoading ? placeholder(13) : formatDistanceToNow(patient?.updated_at, { addSuffix: true, locale: es })}
                 </span>
-              </label>
-              <span
-                className={cn(
-                  "text-sm transition-all duration-300",
-                  isPatientLoading ? "blur-[4px]" : "blur-none"
-                )}
-              >
-                xxxx
-              </span>
-            </div>
+              </div>
+            }
+            {(!isPatientLoading && !patient?.created_by && !patient?.updated_by) && <span className="text-muted-foreground text-sm">No hay actividad</span>}
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

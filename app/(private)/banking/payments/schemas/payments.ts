@@ -1,62 +1,118 @@
+import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
-export const invoicesToPaySchema = z.object({
-  id: z.string(),
-  status: z.enum(["overdue", "paid", "pending"]),
-  provider: z.string(),
-  invoice_number: z.string(),
-  invoice_date: z.string(),
-  due_date: z.string(),
-  amount: z.string(),
-  balance: z.number(),
+export const paymentListSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  amount: z.number(),
+  state: z.string(),
   currency: z.string(),
+  partner: z.string(),
+  journal: z.string(),
+  source_account: z.string()
+
+  // ! Falta la fecha de pago.
+  // ! Falta el metodo de pago.
+})
+
+export const paymentDetailSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  amount: z.number(),
+  date: z.string(),
+  state: z.string(),
+  company: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  currency: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  partner: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  journal: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  source_account: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  payment_method: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  payment_reference: z.string(), // ? No sé que es.
+  invoices: z.array(z.object({
+    id: z.number(),
+    name: z.string(),
+    amount: z.number(),
+    payment_state: z.string(),
+  })),
+  credit_notes: z.array(z.object({
+    id: z.number(),
+    name: z.string(),
+    amount_total: z.number(),
+  })),
+  debit_notes: z.array(z.object({
+    id: z.number(),
+    name: z.string(),
+    amount_total: z.number(),
+  })),
+  reconciled_invoices: z.array(z.object({
+    id: z.number(),
+    name: z.string(),
+    amount: z.number(),
+  })),
+  reconciled_bills: z.array(z.object({
+    id: z.number(),
+    name: z.string(),
+    amount: z.number(),
+  })),
+  traceability: z.object({
+    created_by: z.string(),
+    created_at: z.string(),
+    updated_by: z.string(),
+    updated_at: z.string(),
+  }),
 })
 
 export const newPaymentSchema = z.object({
-  payment_type: z.enum(["pay", "receive", "transfer"]),
-  payment_mode: z.enum(["cash", "check", "credit_card", "debit_card", "bank_transfer"]),
-  payment_date: z.string(),
-  party_type: z.enum(["customer", "supplier"]),
-  party: z.object({
-    id: z.string(),
-    name: z.string(),
-    balance: z.number(),
-  }),
-  company_bank_account: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  party_bank_account: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  party_contact: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  account: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  account_paid_from: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  account_paid_to: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  amount: z.number(),
-  currency: z.string(),
-  invoice_reference: z.string(),
-  purchase_order_reference: z.string(),
-  transaction_id: z.string(),
-  cost_center: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  invoices: z.array(invoicesToPaySchema),
-  notes: z.string(),
+  amount: z.number({ required_error: "El monto es requerido" }),
+  date: z.custom<CalendarDate>((data) => {
+    return data instanceof CalendarDate;
+  }, { message: "La fecha de pago es requerida" }),
+  currency: z.number({ required_error: "La moneda es requerida" }),
+  journal: z.number({ required_error: "El diario contable es requerido" }),
+  partner: z.number({ required_error: "El proveedor es requerido" }),
+  payment_method: z.number({ required_error: "El método de pago es requerido" }),
+  payment_reference: z.string({ required_error: "La referencia de pago es requerida" }),
+  name: z.string({ required_error: "El nombre es requerido" }),
+  invoice_ids: z.array(z.number()).optional(),
+
+  // ! Esto no existe
+  invoices: z.array(z.object({
+    invoice_id: z.number({ required_error: "La factura es requerida" }),
+    amount: z.number({ required_error: "El monto es requerido" }).min(1, { message: "El monto es requerido" }),
+    withholding_ids: z.array(z.number()).optional(),
+  })).optional(),
 })
 
-export type NewPayment = z.infer<typeof newPaymentSchema>
+export const paymentListResponseSchema = z.object({
+  status: z.string(),
+  data: z.array(paymentListSchema),
+})
+
+export const paymentDetailResponseSchema = z.object({
+  status: z.string(),
+  data: paymentDetailSchema,
+})
+
+export type PaymentList = z.infer<typeof paymentListSchema>;
+export type PaymentListResponse = z.infer<typeof paymentListResponseSchema>;
+
+export type PaymentDetail = z.infer<typeof paymentDetailSchema>;
+export type PaymentDetailResponse = z.infer<typeof paymentDetailResponseSchema>;

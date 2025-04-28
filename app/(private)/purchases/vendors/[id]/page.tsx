@@ -21,6 +21,7 @@ import { useState } from "react"
 import { SupplierDetail } from "../schema/suppliers"
 import AccountingTab from "./components/accounting-tab"
 import FiscalTab from "./components/fiscal-tab"
+import { supplierStatus } from "../utils"
 
 const notes = [
   { id: 1, content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc." },
@@ -82,6 +83,8 @@ export default function Page() {
 
   const { data: supplier, isLoading: isSupplierLoading } = useGetSupplierQuery(id)
 
+  const status = supplierStatus[String(supplier?.status) as keyof typeof supplierStatus];
+
   return (
     <div>
       <Header title={
@@ -89,6 +92,14 @@ export default function Page() {
           {isSupplierLoading ? placeholder(13, true) : supplier?.name}
         </h1>
       }>
+        <div className="mr-auto">
+          <Badge
+            variant="custom"
+            className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
+          >
+            {status?.label}
+          </Badge>
+        </div>
         <Button className="ml-auto" size="sm">
           <Edit />
           Editar proveedor

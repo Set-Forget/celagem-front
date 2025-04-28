@@ -46,6 +46,7 @@ export const appointmentsApi = hcApi.injectEndpoints({
 
 export const {
   useListAppointmentsQuery,
+  useLazyGetAppointmentQuery,
   useSearchAppointmentsQuery,
   useCreateAppointmentMutation,
   useDeleteAppointmentMutation,

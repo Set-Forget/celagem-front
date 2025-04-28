@@ -5,17 +5,22 @@ import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { useListTemplatesQuery } from "@/lib/services/templates";
 import { Plus } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 import NewTemplateDialog from "./[id]/components/new-template-dialog";
 import { setDialogsState } from "@/lib/store/dialogs-store";
 
 export default function Page() {
+  const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
 
-  const { data: templates, isLoading: isTemplatesLoading } = useListTemplatesQuery()
+  const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
+
+  const { data: templates, isLoading: isTemplatesLoading } = useListTemplatesQuery({
+    name: search.field === "name" ? search?.query.trim() : undefined,
+  }, { refetchOnMountOrArgChange: true })
 
   return (
     <div>

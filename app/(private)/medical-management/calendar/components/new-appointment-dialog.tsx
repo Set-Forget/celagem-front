@@ -44,7 +44,6 @@ export default function NewAppointmentDialog() {
   const newAppointmentForm = useForm<z.infer<typeof newAppointmentSchema>>({
     resolver: zodResolver(newAppointmentSchema),
     defaultValues: {
-      created_by: "",
       status: "SCHEDULED",
       care_type_id: 1,
       start_date: "",
@@ -146,7 +145,6 @@ export default function NewAppointmentDialog() {
         end_date: format(new Date(data.end_date), "yyyy-MM-dd"),
         start_time: format(new Date(data.start_time), "HH:mm"),
         end_time: format(new Date(data.end_time), "HH:mm"),
-        created_by: userProfile?.data.id ?? "",
       }).unwrap();
 
       if (response.status === "SUCCESS") {
@@ -178,12 +176,6 @@ export default function NewAppointmentDialog() {
       newAppointmentForm.setValue("start_time", selectedDate.toISOString())
     }
   }, [selectedDate])
-
-  useEffect(() => {
-    if (userProfile) {
-      newAppointmentForm.setValue("created_by", userProfile.data.id)
-    }
-  }, [userProfile])
 
   return (
     <Dialog
@@ -665,40 +657,3 @@ export default function NewAppointmentDialog() {
     </Dialog>
   )
 }
-
-
-/* 
-
-    <Dialog
-      open={dialogState.open === "new-appointment"}
-      onOpenChange={onOpenChange}
-    >
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Seleccionar Fecha</DialogTitle>
-        </DialogHeader>
-        <div className="py-4">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn("w-full justify-start text-left font-normal")}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        <DialogFooter>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-
-*/

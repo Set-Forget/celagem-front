@@ -1,6 +1,16 @@
+import CustomSonner from "@/components/custom-sonner";
 import FilterSelector, { FilterConfig } from "@/components/filter-selector";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useLazyGetAppointmentQuery } from "@/lib/services/appointments";
+import { useLazyGetPatientQuery } from "@/lib/services/patients";
+import { useLazyGetVisitQuery } from "@/lib/services/visits";
+import { cn } from "@/lib/utils";
+import { generatePDF, mergePDFs } from "@/templates/utils.client";
 import { Table } from "@tanstack/react-table";
-import { CalendarFold, CircleDashed, Search } from "lucide-react";
+import { CalendarFold, CircleDashed, File, FileDown, FileStack, Search } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -40,9 +50,105 @@ const filtersConfig: Record<string, FilterConfig> = {
 };
 
 export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+  const selectedRows = table.getFilteredSelectedRowModel().rows
+
+  const [loading, setLoading] = useState(false)
+
+  const [getVisit] = useLazyGetVisitQuery()
+  const [getAppointment] = useLazyGetAppointmentQuery()
+  const [getPatient] = useLazyGetPatientQuery()
+
+  const handleGeneratePDF = async (mode: "single" | "merged") => {
+    if (!selectedRows.length) return
+
+    setLoading(true)
+    try {
+      if (mode === "single") {
+        for (const row of selectedRows) {
+          const visit = await getVisit((row.original as { id: string }).id).unwrap()
+          const appointment = await getAppointment(visit.appointment_id!).unwrap()
+          const patient = await getPatient(appointment.patient.id!).unwrap()
+
+          const { save } = await generatePDF({
+            templateName: "visitRecord",
+            data: {
+              visit,
+              appointment,
+              patient,
+              data: visit.medical_record || "{}",
+            },
+          })
+          save(`visita-${visit.visit_number}.pdf`)
+        }
+      } else {
+        const base64List: string[] = await Promise.all(
+          selectedRows.map(async row => {
+            const visit = await getVisit((row.original as { id: string }).id).unwrap()
+            const appointment = await getAppointment(visit.appointment_id!).unwrap()
+            const patient = await getPatient(appointment.patient.id!).unwrap()
+
+            const { base64 } = await generatePDF({
+              templateName: "visitRecord",
+              data: {
+                visit,
+                appointment,
+                patient,
+                data: visit.medical_record || "{}",
+              },
+            })
+            return base64
+          })
+        )
+
+        const merged = await mergePDFs(base64List)
+        merged.view()
+      }
+    } catch (err) {
+      toast.custom(t => (
+        <CustomSonner
+          t={t}
+          description="Error generating PDF(s)"
+          variant="error"
+        />
+      ))
+      console.error("Error generating PDF:", err)
+    } finally {
+      setLoading(false)
+      table.toggleAllRowsSelected(false)
+    }
+  }
+
   return (
     <div className="flex items-center justify-between">
       <FilterSelector filtersConfig={filtersConfig} />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            size="sm"
+            className="h-7"
+            disabled={!selectedRows.length || loading}
+            loading={loading}
+          >
+            <FileDown className={cn(loading && "hidden")} />
+            Exportar
+            {selectedRows.length > 0 && <p className="font-mono">{selectedRows.length}</p>}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onSelect={() => handleGeneratePDF("merged")}
+          >
+            <File />
+            Único documento
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={() => handleGeneratePDF("single")}
+          >
+            <FileStack />
+            Múltiples documentos
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }

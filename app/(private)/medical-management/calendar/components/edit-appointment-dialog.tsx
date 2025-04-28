@@ -42,7 +42,6 @@ export default function EditAppointmentDialog() {
   const editAppointmentForm = useForm<z.infer<typeof newAppointmentSchema>>({
     resolver: zodResolver(newAppointmentSchema),
     defaultValues: {
-      created_by: appointment?.created_by.id || "",
       care_type_id: 1,
       status: appointment?.status || undefined,
       start_date: appointment?.start_date || "",
@@ -89,9 +88,9 @@ export default function EditAppointmentDialog() {
     field.onChange(newDate.toISOString());
   };
 
-  const handleGetTemplates = async () => {
+  const handleGetTemplates = async (query?: string) => {
     try {
-      const templates = await getTemplates().unwrap()
+      const templates = await getTemplates({ name: query }).unwrap()
       return templates.data.map((template) => ({
         label: template.name,
         value: template.id,
@@ -189,7 +188,6 @@ export default function EditAppointmentDialog() {
       editAppointmentForm.setValue("template_id", appointment.template.id);
       editAppointmentForm.setValue("notes", appointment.notes || "");
       editAppointmentForm.setValue("mode_of_care", appointment.mode_of_care);
-      editAppointmentForm.setValue("created_by", appointment.created_by.id);
     }
   }, [appointment, dialogState]);
 

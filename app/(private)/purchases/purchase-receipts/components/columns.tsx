@@ -17,10 +17,10 @@ export const columns: ColumnDef<PurchaseReceiptList>[] = [
     cell: ({ row }) => <div>{row.getValue("supplier")}</div>,
   },
   {
-    accessorKey: "received_at",
+    accessorKey: "reception_date",
     header: "Fecha de recepción",
     cell: ({ row }) => <div>
-      {format(new Date(row.getValue("received_at")), "PPP", { locale: es })}
+      {format(new Date(row.getValue("reception_date")), "PPP", { locale: es })}
     </div>,
   },
   {

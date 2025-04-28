@@ -93,12 +93,13 @@ export default function Page() {
   const [tab, setTab] = useState(tabs[0].value)
 
   const onSubmit = async (data: z.infer<typeof newPatientSchema>) => {
+    const { created_by, birthdate, ...rest } = data
     try {
       const response = await updatePatient({
         id: patientId,
         body: {
-          ...data,
-          birthdate: data.birthdate.toString(),
+          ...rest,
+          birth_date: data.birthdate.toString(),
         },
       }).unwrap()
 

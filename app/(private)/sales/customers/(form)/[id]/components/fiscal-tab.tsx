@@ -44,7 +44,7 @@ const fields: FieldDefinition<CustomerDetail>[] = [
   {
     label: "Actividad económica",
     placeholderLength: 16,
-    getValue: (p) => p.economic_activity.name || "No especificado",
+    getValue: (p) => p.economic_activity?.name || "No especificado",
   },
   {
     label: "Tipo de entidad",

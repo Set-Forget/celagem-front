@@ -1,6 +1,8 @@
 import DateField from "./elements/date-field";
 import DatetimeField from "./elements/datetime-field";
 import FileField from "./elements/file-field";
+import ImcField from "./elements/imc-field";
+import MultiSelectField from "./elements/multi-select-field";
 import NumberField from "./elements/number-field";
 import SelectField from "./elements/select-field";
 import TextField from "./elements/text-field";
@@ -12,8 +14,10 @@ export const templateFields = {
   'text': TextField,
   'number': NumberField,
   'select': SelectField,
+  'multiselect': MultiSelectField,
   'file': FileField,
   'time': TimeField,
   'date': DateField,
-  'datetime': DatetimeField
+  'datetime': DatetimeField,
+  'imc': ImcField
 }

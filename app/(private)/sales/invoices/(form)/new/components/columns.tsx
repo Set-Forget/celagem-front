@@ -4,8 +4,8 @@ import { AsyncMultiSelect } from "@/components/async-multi-select";
 import { AsyncSelect } from "@/components/async-select";
 import { FormTableColumn } from "@/components/form-table";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
-import { materials } from "@/lib/mocks/materials";
 import { useListCurrenciesQuery } from "@/lib/services/currencies";
+import { useLazyGetMaterialQuery, useLazyListMaterialsQuery } from "@/lib/services/materials";
 import { useLazyListTaxesQuery } from "@/lib/services/taxes";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
@@ -17,9 +17,25 @@ import { newInvoiceSchema } from "../../../schemas/invoices";
 const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof newInvoiceSchema>>; index: number }) => {
   const { setValue } = useFormContext<z.infer<typeof newInvoiceSchema>>()
 
+  const [searchMaterials] = useLazyListMaterialsQuery()
+  const [getMaterial] = useLazyGetMaterialQuery()
+
   const handleSearchMaterial = async (query?: string) => {
-    if (!query) return materials
-    return materials.filter((material) => material.name.toLowerCase().includes(query.toLowerCase())) || []
+    try {
+      const response = await searchMaterials({
+        name: query,
+      }).unwrap()
+
+      return response.data?.map(material => ({
+        id: material.id,
+        name: material.name,
+        standard_price: material.standard_price
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
   }
 
   return <FormField
@@ -28,7 +44,7 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
     render={({ field }) => (
       <FormItem className="flex flex-col w-full">
         <FormControl>
-          <AsyncSelect<{ id: number, name: string, lst_price: number }, number>
+          <AsyncSelect<{ id: number, name: string, standard_price: number }, number>
             label="Material"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
@@ -46,12 +62,11 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
             )}
             getOptionValue={(item) => item.id}
             renderOption={(item) => <>{item.name} ({item.id})</>}
-            onChange={(value) => {
+            onChange={async (value) => {
               field.onChange(value)
-              const selectedMaterial = materials.find((material) => material.id === value)
-              if (selectedMaterial) {
-                setValue(`items.${index}.unit_price`, selectedMaterial.lst_price)
-              }
+              const item = await getMaterial(value).unwrap()
+              console.log(item)
+              setValue(`items.${index}.unit_price`, item.sale_price || 0, { shouldValidate: true })
             }}
             value={field.value}
             getOptionKey={(item) => String(item.id)}

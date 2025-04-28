@@ -15,17 +15,17 @@ const fields: FieldDefinition<SupplierDetail>[] = [
   {
     label: "Moneda",
     placeholderLength: 16,
-    getValue: (p) => p.currency || "No especificado",
+    getValue: (p) => p.currency?.name || "No especificado",
   },
   {
     label: "Condición de pago",
     placeholderLength: 16,
-    getValue: (p) => p.property_payment_term || "No especificado",
+    getValue: (p) => p.property_payment_term?.name || "No especificado",
   },
   {
     label: "Método de pago",
     placeholderLength: 16,
-    getValue: (p) => p.payment_method || "No especificado",
+    getValue: (p) => p.payment_method?.name || "No especificado",
   }
 ];
 

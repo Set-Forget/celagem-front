@@ -29,12 +29,12 @@ export default function NewTemplateDialog() {
       sections: [],
       layout: "tab",
       type: "template",
-      isActive: true,
-      isEpicrisis: false,
-      isForSendEmailToInsuranceProvider: false,
-      isForPrintIndependently: false,
-      isForPrintWithAllTheTemplates: false,
-      isForSendOrderToAppointmentBox: false
+      is_active: true,
+      is_epicrisis: false,
+      is_for_send_email_to_insurance_provider: false,
+      is_for_print_independently: false,
+      is_for_print_with_all_the_templates: false,
+      is_for_send_order_to_appointment_box: false
     },
   });
 

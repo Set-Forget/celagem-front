@@ -4,8 +4,15 @@ import { Overwrite } from '../utils';
 
 export const deliveriesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listDeliveries: builder.query<DeliveryNoteListResponse, void>({
-      query: () => 'deliveries',
+    listDeliveries: builder.query<DeliveryNoteListResponse, {
+      received_at_start?: string,
+      received_at_end?: string,
+      number?: string,
+    } | void>({
+      query: (data) => ({
+        url: 'deliveries',
+        params: data || {},
+      }),
       providesTags: ['DeliveryNote'],
     }),
     createDelivery: builder.mutation<NewDeliveryNoteResponse, Overwrite<NewDeliveryNote, { reception_date: string, reception_location: number, source_location: number }>>({

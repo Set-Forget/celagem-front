@@ -1,22 +1,22 @@
 'use client'
 
+import CustomSonner from "@/components/custom-sonner"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
+import { useSignInMutation } from "@/lib/services/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Cookies from "js-cookie"
 import { Eye, EyeOff } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { z } from "zod"
 import { signInSchema } from "./schemas/sign-in"
-import { useSignInMutation } from "@/lib/services/auth"
-import Cookies from "js-cookie"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import CustomSonner from "@/components/custom-sonner"
+import { jwtDecode } from "jwt-decode";
 
-export default function SignInPage() {
+export default function Page() {
   const router = useRouter()
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -35,13 +35,18 @@ export default function SignInPage() {
 
   async function onSubmit(values: z.infer<typeof signInSchema>) {
     try {
-      const response = await signIn(values).unwrap()
+      const { code, data: token, message } = await signIn(values).unwrap();
+      if (code !== 200) throw new Error(message);
 
-      if (response.code === 200) {
-        Cookies.set('sessionToken', response.data, { expires: 30 })
-      } else {
-        throw new Error(response.message)
-      }
+      const { exp } = jwtDecode<{ exp: number }>(token);
+      const expires = new Date(exp * 1000);
+
+      Cookies.set("sessionToken", token, {
+        expires,
+        path: "/",
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+      });
 
       router.push("/")
     } catch (err: any) {

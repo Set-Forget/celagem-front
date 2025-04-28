@@ -1,34 +1,36 @@
 'use client'
 
+import CustomSonner from "@/components/custom-sonner";
 import Header from "@/components/header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuLabel, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useCreateFieldMutation, useCreateSectionMutation, useGetTemplateQuery, useUpdateFieldMutation, useUpdateSectionMutation, useUpdateTemplateMutation } from "@/lib/services/templates";
 import { setDialogsState } from "@/lib/store/dialogs-store";
 import { cn, placeholder } from "@/lib/utils";
-import { useCreateFieldMutation, useCreateSectionMutation, useGetTemplateQuery, useUpdateFieldMutation, useUpdateSectionMutation, useUpdateTemplateMutation } from "@/lib/services/templates";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Loader2, Plus, PlusSquare, Save, SquarePen, Trash2 } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { newFieldSchema, newSectionSchema, newTemplateSchema, templateDetailSchema } from "../../calendar/schemas/templates";
 import { templateStatus } from "../utils";
 import EditFieldDialog from "./components/edit-field-dialog";
 import EditSectionDialog from "./components/edit-section-dialog";
+import EditTemplateDialog from "./components/edit-template-dialog";
+import ImportSectionDialog from "./components/import-section-dialog";
 import NewFieldDialog from "./components/new-field-dialog";
 import NewSectionDialog from "./components/new-section-dialog";
 import TemplateSection from "./components/template-section";
 import { getDiffs } from "./utils";
-import EditTemplateDialog from "./components/edit-template-dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import ImportSectionDialog from "./components/import-section-dialog";
 
 const normalizedSchema = z.object({
   template: newTemplateSchema,
@@ -78,10 +80,7 @@ export default function Page() {
     const oldSections = normalizedTemplate.sections;
     const oldFields = normalizedTemplate.fields;
 
-    const diffs = getDiffs(
-      { template: oldTemplate, sections: oldSections, fields: oldFields },
-      data
-    );
+    const diffs = getDiffs({ template: oldTemplate, sections: oldSections, fields: oldFields }, data);
 
     const {
       newSections,
@@ -155,8 +154,13 @@ export default function Page() {
         ...data.template,
         sections: finalSectionIds,
       };
-      await updateTemplate(templateToUpdate).unwrap();
+
+      const response = await updateTemplate(templateToUpdate).unwrap();
+      if (response.status === "SUCCESS") {
+        toast.custom((t) => <CustomSonner t={t} description="Plantilla actualizada exitosamente" />)
+      }
     } catch (err) {
+      toast.custom((t) => <CustomSonner t={t} description="Error al actualizar la plantilla" variant="error" />)
       console.error("Error actualizando template:", err);
     }
   };
@@ -174,7 +178,9 @@ export default function Page() {
   }
 
   const sections = useWatch({ control: form.control, name: "sections" })
-  const status = templateStatus[template?.isActive.toString() as keyof typeof templateStatus]
+  const status = templateStatus[template?.is_active.toString() as keyof typeof templateStatus]
+
+  const { isDirty } = form.formState;
 
   useEffect(() => {
     if (!template) return
@@ -184,6 +190,20 @@ export default function Page() {
       fields: normalizedTemplate!.fields
     })
   }, [template])
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (isDirty) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isDirty]);
 
   return (
     <div>
@@ -233,7 +253,7 @@ export default function Page() {
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">Fecha de creación</label>
               <span className={cn("text-sm transition-all duration-300", isTemplateLoading ? "blur-[4px]" : "blur-none")}>
-                {!template ? placeholder(13) : format(template?.createdAt, "dd MMM yyyy", { locale: es })}
+                {!template ? placeholder(13) : format(template?.created_at, "dd MMM yyyy", { locale: es })}
               </span>
             </div>
           </div>

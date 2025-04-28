@@ -41,7 +41,7 @@ export interface MultiSelectProps<T, V>
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'defaultValue'>,
   VariantProps<typeof multiSelectVariants> {
   options: T[];
-  onValueChange: (value: V[]) => void;
+  onValueChange?: (value: V[]) => void;
   defaultValue?: V[];
   placeholder?: string;
   maxCount?: number;
@@ -61,8 +61,8 @@ function MultiSelectInner<T, V>(
     onValueChange,
     variant,
     defaultValue = [],
-    placeholder = "Select options",
-    searchPlaceholder = "Search...",
+    placeholder = "Seleccionar opciones",
+    searchPlaceholder = "Buscar...",
     maxCount: userDefinedMaxCount,
     modalPopover = false,
     asChild = false,
@@ -104,6 +104,10 @@ function MultiSelectInner<T, V>(
     };
   }, [calculateMaxTags]);
 
+  React.useEffect(() => {
+    setSelectedValues(defaultValue);
+  }, [defaultValue]);
+
   const toggleOption = (option: T) => {
     const optionValue = getOptionValue(option);
     const isSelected = selectedValues.some((val) => val === optionValue);
@@ -114,7 +118,7 @@ function MultiSelectInner<T, V>(
       newSelectedValues = [...selectedValues, optionValue];
     }
     setSelectedValues(newSelectedValues);
-    onValueChange(newSelectedValues);
+    onValueChange && onValueChange(newSelectedValues);
   };
 
   const handleTogglePopover = () => {
@@ -180,7 +184,7 @@ function MultiSelectInner<T, V>(
                                 event.stopPropagation();
                                 const newSelectedValues = selectedValues.slice(0, dynamicMaxCount);
                                 setSelectedValues(newSelectedValues);
-                                onValueChange(newSelectedValues);
+                                onValueChange && onValueChange(newSelectedValues);
                               }}
                             />
                           </Badge>

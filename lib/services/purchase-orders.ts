@@ -3,13 +3,22 @@ import { erpApi } from '@/lib/apis/erp-api';
 
 export const purchaseOrdersApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listPurchaseOrders: builder.query<PurchaseOrderListResponse, { number?: string } | void>({
-      query: (data) => ({
-        url: '/purchase_orders',
-        params: data || {},
+    listPurchaseOrders: builder.query<PurchaseOrderListResponse,
+      {
+        number?: string,
+        status?: "draft" | "sent" | "to approve" | "purchase" | "done" | "cancel",
+        supplier?: string,
+        created_at_start?: string,
+        created_at_end?: string,
+        required_date_start?: string,
+        required_date_end?: string,
+      } | void>({
+        query: (data) => ({
+          url: '/purchase_orders',
+          params: data || {},
+        }),
+        providesTags: ['PurchaseOrder'],
       }),
-      providesTags: ['PurchaseOrder'],
-    }),
     getPurchaseOrder: builder.query<PurchaseOrderDetail, string>({
       query: (id) => `/purchase_orders/${id}`,
       transformResponse: (response: PurchaseOrderDetailResponse) => response.data,
