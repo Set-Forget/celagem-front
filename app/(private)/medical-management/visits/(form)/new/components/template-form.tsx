@@ -31,9 +31,6 @@ export const TemplateForm = forwardRef<TemplateFormHandle, TemplateFormProps>(
       defaultValues,
     });
 
-    console.log(form.watch())
-    console.log(form.formState.errors)
-
     const handleFormSubmit = (data: z.infer<typeof formSchema>) => {
       onSubmit(data, parsedTemplate.name);
     };

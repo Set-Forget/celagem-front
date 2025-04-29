@@ -20,8 +20,6 @@ export default function Page() {
     console.log(data)
   }
 
-  console.log(newPaymentForm.watch())
-
   return (
     <Form {...newPaymentForm}>
       <Header title="Registrar pago">

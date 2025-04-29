@@ -110,7 +110,7 @@ function MultiSelectInner<T, V>(
 
   const toggleOption = (option: T) => {
     const optionValue = getOptionValue(option);
-    const isSelected = selectedValues.some((val) => val === optionValue);
+    const isSelected = selectedValues?.some((val) => val === optionValue);
     let newSelectedValues: V[];
     if (isSelected) {
       newSelectedValues = selectedValues.filter((val) => val !== optionValue);

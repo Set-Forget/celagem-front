@@ -37,7 +37,9 @@ const generateDefaultValues = (section: SectionDetail): Record<string, unknown> 
       case "textarea":
         defaultValue = props?.defaultValue ?? "";
         break;
+      case "date":
       case "datetime":
+      case "time":
         defaultValue = props?.defaultValue ?? null;
         break;
       case "select":

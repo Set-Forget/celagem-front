@@ -12,16 +12,11 @@ export default function TextField({ field, formField }: {
     ...safeProperties
   } = field.type.properties || {};
 
-  const safeDefaultValue = typeof defaultValue === 'boolean'
-    ? defaultValue.toString()
-    : defaultValue;
-
   return (
     <Input
       {...formField}
       {...safeProperties}
       maxLength={maxLength}
-      defaultValue={safeDefaultValue as string | number | readonly string[] | undefined}
     />
   );
 }

@@ -1,28 +1,18 @@
 import { Clock } from "lucide-react";
 import { DateInput as AriaDateInput, TimeField as AriaTimeField, DateSegment, I18nProvider, Label } from "react-aria-components";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import { Field } from "../calendar/schemas/templates";
-import { Time } from "@internationalized/date";
 
-export default function TimeField({ field, formField }: {
-  field: Field;
+export default function TimeField({ formField }: {
   formField?: ControllerRenderProps<FieldValues, string>;
 }) {
   return (
     <I18nProvider locale="es-419">
       <AriaTimeField
+        {...formField}
         className="w-full"
-        value={field?.type?.properties?.defaultValue as Time}
-        onChange={(value) => {
-          if (!value) {
-            formField?.onChange(undefined);
-            return;
-          }
-          formField?.onChange({ ...value });
-        }}
       >
         <Label className="sr-only">
-          {field.title}
+          Hora
         </Label>
         <div className="relative w-full">
           <AriaDateInput className="relative inline-flex h-9 w-full items-center overflow-hidden whitespace-nowrap rounded-sm border border-input bg-background px-3 py-2 pe-9 text-sm shadow-sm shadow-black/5 transition-shadow data-[focus-within]:border-ring data-[disabled]:opacity-50 data-[focus-within]:outline-none">

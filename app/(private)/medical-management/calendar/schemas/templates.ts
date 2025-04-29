@@ -98,21 +98,21 @@ const checkboxSchema = baseTypeSchema.extend({
 const dateSchema = baseTypeSchema.extend({
   primitive_type: z.literal("date"),
   properties: baseTypeSchema.shape.properties.extend({
-    defaultValue: dateValueSchema.optional(),
+    defaultValue: dateValueSchema.optional().nullable(),
   }),
 });
 
 const dateTimeSchema = baseTypeSchema.extend({
   primitive_type: z.literal("datetime"),
   properties: baseTypeSchema.shape.properties.extend({
-    defaultValue: dateTimeValueSchema.optional(),
+    defaultValue: dateTimeValueSchema.optional().nullable(),
   }),
 });
 
 const timeSchema = baseTypeSchema.extend({
   primitive_type: z.literal("time"),
   properties: baseTypeSchema.shape.properties.extend({
-    defaultValue: timeValueSchema.optional(),
+    defaultValue: timeValueSchema.optional().nullable(),
   }),
 });
 

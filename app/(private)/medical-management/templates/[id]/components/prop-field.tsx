@@ -114,15 +114,8 @@ const defaultValueRenderers: Record<
   date: (field) => (
     <I18nProvider locale="es-419">
       <DatePicker
+        {...field}
         className="w-full"
-        value={field.value}
-        onChange={(value) => {
-          if (!value) {
-            field?.onChange(undefined);
-            return;
-          }
-          field?.onChange(value);
-        }}
       >
         <Label className="sr-only">Date</Label>
         <div className="flex">
@@ -222,7 +215,6 @@ function getRenderer(propKey: string, primitiveType?: string) {
   DefaultInputRenderer.displayName = `DefaultInputRenderer(${propKey})`;
   return DefaultInputRenderer;
 }
-
 
 type DynamicFieldProps = {
   propKey: string;

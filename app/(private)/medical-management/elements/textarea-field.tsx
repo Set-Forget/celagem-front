@@ -12,17 +12,12 @@ export default function TextAreaField({ field, formField }: {
     ...safeProperties
   } = field.type.properties || {};
 
-  const safeDefaultValue = typeof defaultValue === 'boolean'
-    ? defaultValue.toString()
-    : defaultValue;
-
   return (
     <Textarea
       {...formField}
       {...safeProperties}
       className={`resize-none`}
       maxLength={maxLength}
-      defaultValue={safeDefaultValue as string | number | readonly string[] | undefined}
     />
   );
 }

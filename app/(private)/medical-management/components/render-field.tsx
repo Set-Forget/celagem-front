@@ -51,6 +51,7 @@ export default function RenderField({
       key={field.id}
       control={control}
       name={field.code}
+      defaultValue={field.type.properties?.defaultValue}
       render={({ field: formField }) => (
         <FormItem className="flex flex-col w-full">
           {field.title && (

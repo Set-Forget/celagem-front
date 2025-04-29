@@ -81,7 +81,6 @@ export default function ImcField({ field }: {
 
   useEffect(() => {
     if (imcState && (!height && !weight)) {
-      console.log(imcState)
       form.reset({
         height: imcState.height,
         weight: imcState.weight,

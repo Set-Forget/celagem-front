@@ -1,5 +1,5 @@
-import { NewField, NewSection, NewTemplate } from "../../calendar/schemas/templates";
 import { isEqual } from "lodash";
+import { NewField, NewSection } from "../../calendar/schemas/templates";
 import { NormalizedSchema } from "./page";
 
 export const propFieldAdapter = {

@@ -65,7 +65,6 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
             onChange={async (value) => {
               field.onChange(value)
               const item = await getMaterial(value).unwrap()
-              console.log(item)
               setValue(`items.${index}.unit_price`, item.sale_price || 0, { shouldValidate: true })
             }}
             value={field.value}

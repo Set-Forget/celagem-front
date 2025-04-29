@@ -1,38 +1,27 @@
 import { Calendar } from "@/components/ui/calendar-rac";
 import { DateInput } from "@/components/ui/datefield-rac";
-import { CalendarIcon } from "lucide-react";
-import { Button, DatePicker, DateValue, Dialog, Group, I18nProvider, Label, Popover } from "react-aria-components";
-import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import { Field } from "../calendar/schemas/templates";
 import { CalendarDate } from "@internationalized/date";
+import { CalendarIcon } from "lucide-react";
+import { Button, DatePicker, Dialog, Group, I18nProvider, Label, Popover } from "react-aria-components";
+import { ControllerRenderProps, FieldValues } from "react-hook-form";
 
-export default function DateField({ field, formField }: {
-  field: Field;
+export default function DateField({ formField }: {
   formField?: ControllerRenderProps<FieldValues, string>;
 }) {
   const day = formField?.value?.day;
   const month = formField?.value?.month;
   const year = formField?.value?.year;
 
-  const value = day && month && year ? new CalendarDate(year, month, day) : undefined;
+  const value = day && month && year ? new CalendarDate(year, month, day) : null;
 
   return (
     <I18nProvider locale="es-419">
       <DatePicker
-        className="w-full"
-        defaultValue={field?.type?.properties?.defaultValue as DateValue}
+        {...formField}
         value={value}
-        onChange={(value) => {
-          if (!value) {
-            formField?.onChange(undefined);
-            return;
-          }
-          formField?.onChange(value);
-        }}
+        className="w-full"
       >
-        <Label className="sr-only">
-          {field.title}
-        </Label>
+        <Label className="sr-only">Fecha</Label>
         <div className="flex">
           <Group className="w-full">
             <DateInput className="pe-9" />

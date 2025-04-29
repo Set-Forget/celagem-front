@@ -3,6 +3,7 @@ import { z, ZodObject, ZodTypeAny } from "zod";
 import { Field, FieldType, Section, TemplateDetail } from "../../calendar/schemas/templates";
 
 const isTimeValue = (value: unknown): value is TimeValue => {
+  if (value === null) return true;
   return (
     typeof value === "object" &&
     value !== null &&
