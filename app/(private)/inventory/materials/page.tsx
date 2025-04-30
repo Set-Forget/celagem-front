@@ -8,10 +8,24 @@ import { usePathname, useRouter } from 'next/navigation';
 import { materialsInventoryEntriesColumns } from './components/columns';
 import Toolbar from './components/toolbar';
 import { materialsInventoryMock } from './mocks/materials-inventory';
+import { TableCell, TableFooter, TableRow } from '@/components/ui/table';
 
 export default function ProductsPage() {
   const pathname = usePathname();
   const router = useRouter();
+
+  function ProductTableFooter() {
+    return (
+      <TableFooter>
+        <TableRow>
+          <TableCell colSpan={9}>Total Inventario</TableCell>
+          <TableCell className="text-left">
+            ${materialsInventoryMock.reduce((a, b) => a + (b.qty * b.cost_unit_price), 0)}
+          </TableCell>
+        </TableRow>
+      </TableFooter>
+    );
+  };
 
   return (
     <>
@@ -31,6 +45,7 @@ export default function ProductsPage() {
           columns={materialsInventoryEntriesColumns}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
+          footer={() => <ProductTableFooter />}
         />
       </div>
     </>
