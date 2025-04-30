@@ -39,9 +39,13 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useGetProcedureQuery } from '@/lib/services/procedures';
 import { useLazyListMaterialsQuery } from '@/lib/services/materials';
-import { Materials, materialsSchema } from '../../../materials/schema/materials';
+import {
+  Materials,
+  materialsSchema,
+} from '../../../materials/schema/materials';
 import { ColumnDef } from '@tanstack/react-table';
 import { columnsMaterials } from '../../[procedure_id]/components/columns-materials';
+import { materialsMock } from '../../../materials/mocks/materials';
 
 export default function MaterialsForm() {
   const params = useParams<{ procedure_id: string }>();
@@ -61,7 +65,7 @@ export default function MaterialsForm() {
 
   const handleGetMaterials = async () => {
     try {
-      const materials = await getMaterials().unwrap();
+      const materials = { data: materialsMock };
       return materials.data.map((material) => ({
         label: material.code,
         value: material.id,
@@ -92,7 +96,11 @@ export default function MaterialsForm() {
     })
   );
 
-  const columnsMaterialsExtended = [
+  interface MaterialExtended extends Materials {
+    qty: number;
+  }
+
+  const columnsMaterialsExtended: ColumnDef<Partial<Materials>>[] = [
     ...columnsMaterials.filter((column) => column.id !== 'select'),
     {
       accessorKey: 'qty',
@@ -181,20 +189,30 @@ export default function MaterialsForm() {
             <h2 className="text-base font-medium">Materiales</h2>
           </div>
           <DataTable
-            data={materials ? materials.data
-              .filter((material) =>
-                watch('materials')
-                  .map((material) => material.id)
-                  .includes(material.id)
-              )
-              .map((material) => ({
-                ...material,
-                qty: watch('materials').find((m) => m.id === material.id)?.qty || 0,
-                unit_cost: material.cost_unit_price || 0,
-                total_cost: (watch('materials').find((m) => m.id === material.id)?.qty || 0) * (material.cost_unit_price || 0),
-                unit: "Eventos" as const
-              })) : []}
-            isLoading={isProcedureLoading}
+            data={
+              materials
+                ? materials.data
+                    .filter((material) =>
+                      watch('materials')
+                        .map((material) => material.id)
+                        .includes(material.id.toString())
+                    )
+                    .map((material) => ({
+                      ...material,
+                      qty:
+                        watch('materials').find(
+                          (m) => m.id === material.id.toString()
+                        )?.qty || 0,
+                      unit_cost: material.cost_unit_price || 0,
+                      total_cost:
+                        (watch('materials').find(
+                          (m) => m.id === material.id.toString()
+                        )?.qty || 0) * (material.cost_unit_price || 0),
+                      unit: 'Eventos' as const,
+                    }))
+                : []
+            }
+            // isLoading={isProcedureLoading}
             columns={columnsMaterialsExtended}
             pagination={false}
           />

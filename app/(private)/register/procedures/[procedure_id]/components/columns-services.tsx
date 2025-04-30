@@ -8,7 +8,7 @@ export const columnsServices: ColumnDef<Services>[] = [
     accessorKey: 'code',
     header: 'Código',
     cell: ({ row }) => <div>{row.getValue('code')}</div>,
-    size: 100,
+    size: 300,
   },
   {
     accessorKey: 'unit',

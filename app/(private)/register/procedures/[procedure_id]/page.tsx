@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { jobPositionsMock } from '../../job-positions/mocks/job-positions-mock';
-import { JobPosition } from '../../job-positions/schema/job-positions';
+import { JobPositions } from '../../job-positions/schema/job-positions';
 import { materialsMock } from '../../materials/mocks/materials';
 import { medicalExamsMock } from '../../medical-exams/mocks/medical-exams-mock';
 import { servicesMock } from '../../services/mocks/servicesMock';
@@ -21,7 +21,7 @@ export default function PurchaseRequestPage() {
   const router = useRouter();
   const params = useParams();
 
-  const procedureId = params.id as string;
+  const procedureId = params.procedure_id as string;
 
   const procedure = proceduresMock.find(
     (procedure) => procedure.id === parseInt(procedureId)
@@ -31,7 +31,7 @@ export default function PurchaseRequestPage() {
     ? procedure?.job_description.map(({ id }) => id)
     : [];
 
-  const procedureJobPositions: JobPosition[] = jobPositionsMock.filter(
+  const procedureJobPositions: JobPositions[] = jobPositionsMock.filter(
     (jobPosition) => procedureJobPositionsIds.includes(jobPosition.id)
   );
 
