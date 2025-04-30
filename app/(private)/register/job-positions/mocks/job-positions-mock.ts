@@ -1,6 +1,6 @@
-import { JobPosition } from '../schema/job-positions';
+import { JobPositions } from '../schema/job-positions';
 
-export const jobPositionsMock: JobPosition[] = [
+export const jobPositionsMock: JobPositions[] = [
   {
     id: 1,
     code: 'MED-GEN-BOG',

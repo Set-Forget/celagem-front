@@ -19,7 +19,6 @@ export default function NewRole() {
     resolver: zodResolver(newRoleSchema),
     defaultValues: {
       name: '',
-      status: 'active',
     },
   });
 
@@ -61,30 +60,6 @@ export default function NewRole() {
                   </FormControl>
                   <FormDescription>
                     Este será el nombre del rol.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={newCostCenterForm.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Estado</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona un estado" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="active">Activo</SelectItem>
-                      <SelectItem value="inactive">Inactivo</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    Este será el estado del rol. Puedes cambiarlo en cualquier momento.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

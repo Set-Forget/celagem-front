@@ -39,7 +39,9 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useGetProcedureQuery } from '@/lib/services/procedures';
 import { useLazyListMaterialsQuery } from '@/lib/services/materials';
-import { materialsSchema } from '../../../materials/schema/materials';
+import { Materials, materialsSchema } from '../../../materials/schema/materials';
+import { ColumnDef } from '@tanstack/react-table';
+import { columnsMaterials } from '../../[procedure_id]/components/columns-materials';
 
 export default function MaterialsForm() {
   const params = useParams<{ procedure_id: string }>();
@@ -90,8 +92,8 @@ export default function MaterialsForm() {
     })
   );
 
-  const columnsJobPositionsExtended = [
-    ...columnsJobPositions.filter((column) => column.id !== 'select'),
+  const columnsMaterialsExtended = [
+    ...columnsMaterials.filter((column) => column.id !== 'select'),
     {
       accessorKey: 'qty',
       header: 'Cantidad',
@@ -164,7 +166,6 @@ export default function MaterialsForm() {
         <Button
           type="submit"
           size="default"
-          // className="mt-2"
           onClick={() => {
             materialsOnSubmit(materialsForm.getValues());
           }}
@@ -188,12 +189,13 @@ export default function MaterialsForm() {
               )
               .map((material) => ({
                 ...material,
-                qty:
-                  watch('materials')
-                    .find((material) => material.id === material.id)?.qty || 0,
+                qty: watch('materials').find((m) => m.id === material.id)?.qty || 0,
+                unit_cost: material.cost_unit_price || 0,
+                total_cost: (watch('materials').find((m) => m.id === material.id)?.qty || 0) * (material.cost_unit_price || 0),
+                unit: "Eventos" as const
               })) : []}
             isLoading={isProcedureLoading}
-            columns={columnsJobPositionsExtended}
+            columns={columnsMaterialsExtended}
             pagination={false}
           />
         </div>

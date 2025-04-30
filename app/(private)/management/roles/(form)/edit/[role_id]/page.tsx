@@ -84,7 +84,6 @@ export default function Page() {
     if (role) {
       form.reset({
         ...role,
-        created_by: role.created_by?.id,
       })
     }
   }, [role])

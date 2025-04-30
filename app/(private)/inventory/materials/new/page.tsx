@@ -127,8 +127,7 @@ export default function NewMaterialInventoryEntryPage() {
                           >
                             {field.value
                               ? materials.find(
-                                (material) => field.value === material.value
-                              )?.label
+                                (material) => field.value?.toString() === material.value.toString()                              )?.label
                               : 'Selecciona un material'}
                             <ChevronsUpDown className="opacity-50" />
                           </Button>
@@ -152,22 +151,20 @@ export default function NewMaterialInventoryEntryPage() {
                                   onSelect={() => {
                                     newMaterialInventoryEntryForm.setValue(
                                       'id',
-                                      material.value
+                                      parseInt(material.value)
                                     );
-                                  }}
-                                >
+                                  }}                                >
                                   {material.label}
                                   <Check
                                     className={cn(
                                       'ml-auto',
-                                      field.value === material.value
+                                      field.value?.toString() === material.value
                                         ? 'opacity-100'
                                         : 'opacity-0'
                                     )}
                                   />
                                 </CommandItem>
-                              ))}
-                            </CommandGroup>
+                              ))}                            </CommandGroup>
                           </CommandList>
                         </Command>
                       </PopoverContent>

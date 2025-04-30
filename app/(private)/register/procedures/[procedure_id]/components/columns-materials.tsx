@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Materials } from '@/app/(private)/register/materials/schema/materials';
 
-export const columnsMaterials: ColumnDef<Materials>[] = [
+export const columnsMaterials: ColumnDef<Partial<Materials>>[] = [
   {
     accessorKey: 'code',
     header: 'Código',

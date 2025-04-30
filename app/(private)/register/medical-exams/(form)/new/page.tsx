@@ -18,15 +18,13 @@ import { z } from 'zod';
 
 import GeneralForm from '../components/general-form';
 import { getFieldPaths } from '../utils';
-import {
-  newClassGeneralSchema,
-  newClassSchema,
-} from '../../schema/medical-exams';
-import { useCreateClassMutation } from '@/lib/services/classes';
+import { newMedicalExamGeneralSchema, newMedicalExamSchema } from '../../schema/medical-exams';
+import { useCreateMedicalExamMutation } from '@/lib/services/medical-exams';
+
 
 // ! Se puede unificar con el tabs de abajo.
 const tabToFieldsMap = {
-  'tab-1': getFieldPaths(newClassGeneralSchema),
+  'tab-1': getFieldPaths(newMedicalExamGeneralSchema),
 };
 
 const tabs = [
@@ -46,26 +44,27 @@ const tabs = [
 export default function Page() {
   const router = useRouter();
 
-  const [createClass, { isLoading: isCreatingClass }] =
-    useCreateClassMutation();
+  const [createMedicalExam, { isLoading: isCreatingMedicalExam }] =
+    useCreateMedicalExamMutation();
   const { data: profile } = useGetProfileQuery();
 
-  const newClassForm = useForm<z.infer<typeof newClassSchema>>({
-    resolver: zodResolver(newClassSchema),
+  const newMedicalExamForm = useForm<z.infer<typeof newMedicalExamSchema>>({
+    resolver: zodResolver(newMedicalExamSchema),
   });
 
   const [tab, setTab] = useState('tab-1');
 
-  const onSubmit = async (data: z.infer<typeof newClassSchema>) => {
+  const onSubmit = async (data: z.infer<typeof newMedicalExamSchema>) => {
     try {
-      const response = await createClass(data).unwrap();
+      const response = await createMedicalExam(data).unwrap();
 
       if (response.status === 'SUCCESS') {
-        router.push(`/management/classes/${response.data.id}`);
+
+        router.push(`/register/medical-exams/${response.data.id}`);
         toast.custom((t) => (
           <CustomSonner
             t={t}
-            description="Clase creada exitosamente"
+            description="Examen médico creado exitosamente"
             variant="success"
           />
         ));
@@ -75,14 +74,14 @@ export default function Page() {
       toast.custom((t) => (
         <CustomSonner
           t={t}
-          description="Error al crear clase"
+          description="Error al crear examen médico"
           variant="error"
         />
       ));
     }
   };
 
-  const onError = (errors: FieldErrors<z.infer<typeof newClassSchema>>) => {
+  const onError = (errors: FieldErrors<z.infer<typeof newMedicalExamSchema>>) => {
     for (const [tabKey, fields] of Object.entries(tabToFieldsMap)) {
       const hasError = fields.some((fieldPath) => {
         return get(errors, fieldPath) != null;
@@ -96,21 +95,21 @@ export default function Page() {
 
   useEffect(() => {
     if (profile) {
-      newClassForm.setValue('created_by', profile.data.id);
+      newMedicalExamForm.setValue('created_by', profile.data.id);
     }
   }, [profile]);
 
   return (
-    <Form {...newClassForm}>
-      <Header title="Nueva clase">
+    <Form {...newMedicalExamForm}>
+      <Header title="Nuevo examen médico">
         <Button
           type="submit"
-          onClick={newClassForm.handleSubmit(onSubmit, onError)}
+          onClick={newMedicalExamForm.handleSubmit(onSubmit, onError)}
           size="sm"
           className="ml-auto"
-          loading={isCreatingClass}
+          loading={isCreatingMedicalExam}
         >
-          Crear clase
+          Crear examen médico
         </Button>
       </Header>
       <DataTabs

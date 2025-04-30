@@ -4,10 +4,10 @@ export const materialsInventoryMock: MaterialsInventoryEntry[] = [
   {
     id: 1,
     location: 'Sede Asistencial Bogotá',
-    code: '1100000001',
-    name: 'ACEITE DE ALTA DENSIDAD 100 ml',
+    code: '1100000005',
+    name: 'Aceite Mineral USP 100 ml',
     fraction: 'FRASCO',
-    lot_number: '123',
+    lot_number: 'AM2023-0612',
     purchase_unit: 'Caja',
     purchase_unit_price: 10000,
     convertion_rate_purchase_to_cost_unit: 36,
@@ -18,10 +18,10 @@ export const materialsInventoryMock: MaterialsInventoryEntry[] = [
   {
     id: 2,
     location: 'Sede Asistencial Bogotá',
-    code: '1100000002',
-    name: 'ACEITE DE ALTA DENSIDAD 200 ml',
+    code: '1100001009',
+    name: 'Solución Salina Estéril 200 ml',
     fraction: 'FRASCO',
-    lot_number: '123',
+    lot_number: 'SS2023-0823',
     purchase_unit: 'Caja',
     purchase_unit_price: 10000,
     convertion_rate_purchase_to_cost_unit: 18,
@@ -32,10 +32,10 @@ export const materialsInventoryMock: MaterialsInventoryEntry[] = [
   {
     id: 3,
     location: 'Sede Asistencial Bogotá',
-    code: '1100000003',
-    name: 'ACEITE DE ALTA DENSIDAD 300 ml',
+    code: '1100001014',
+    name: 'Gel Lubricante Médico 300 ml',
     fraction: 'FRASCO',
-    lot_number: '123',
+    lot_number: 'GL2023-0715',
     purchase_unit: 'Caja',
     purchase_unit_price: 10000,
     convertion_rate_purchase_to_cost_unit: 24,
@@ -46,10 +46,10 @@ export const materialsInventoryMock: MaterialsInventoryEntry[] = [
   {
     id: 4,
     location: 'Sede Asistencial Bogotá',
-    code: '1100000004',
-    name: 'ACEITE DE ALTA DENSIDAD 400 ml',
+    code: '1100001509',
+    name: 'Alcohol Isopropílico 70% 400 ml',
     fraction: 'FRASCO',
-    lot_number: '123',
+    lot_number: 'AI2023-0930',
     purchase_unit: 'Caja',
     purchase_unit_price: 10000,
     convertion_rate_purchase_to_cost_unit: 12,
@@ -66,6 +66,6 @@ export const materialsInventoryMock: MaterialsInventoryEntry[] = [
   //   lot_number: '123',
   //   qty: 10,
   // }
-]
+];
 
 

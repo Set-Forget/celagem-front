@@ -11,23 +11,11 @@ export const newJobPositionGeneralSchema = z.object({
 export const newJobPositionSchema = newJobPositionGeneralSchema;
 
 export const jobPositionSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   code: z.string(),
   total_cost: z.number(),
   unit_cost: z.number(),
   unit: z.enum(['Minutos', 'Eventos']),
-  created_at: z.string(),
-  created_by: z.object({
-    id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-  }),
-  modified_at: z.string(),
-  updated_by: z.object({
-    id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-  }),
 });
 
 export const jobPositionListResponseSchema = z.object({

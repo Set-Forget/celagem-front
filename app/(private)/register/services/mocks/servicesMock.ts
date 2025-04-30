@@ -1,6 +1,6 @@
 import { Services } from '../schema/services';
 
-export const servicesMock: Services[] = [
+export const servicesMock: Partial<Services>[] = [
   {
     id: 1,
     code: 'COST FIJOS-BOG',

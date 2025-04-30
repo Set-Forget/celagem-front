@@ -1,0 +1,55 @@
+'use client';
+
+import { ColumnDef } from '@tanstack/react-table';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Warehouses } from '../schema/warehouses';
+
+export const warehousesColumns: ColumnDef<Warehouses>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+    size: 10,
+  },
+  {
+    accessorKey: 'code',
+    header: 'Código',
+    cell: ({ row }) => (
+      <div className="capitalize flex gap-1">
+        <div>{row.original.code}</div>
+      </div>
+    ),
+  },
+  {
+    accessorKey: 'name',
+    header: 'Nombre',
+    cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
+  },
+  {
+    accessorKey: 'company',
+    header: 'Sede',
+    cell: ({ row }) => <div className="font-medium">{row.original.company.name}</div>,
+  },
+  {
+    accessorKey: 'active',
+    header: 'Estado',
+    cell: ({ row }) => <div>{row.original.active ? 'Activo' : 'Inactivo'}</div>,
+  },
+];

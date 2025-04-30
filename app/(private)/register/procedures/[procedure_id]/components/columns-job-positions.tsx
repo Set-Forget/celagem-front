@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { JobPositions } from '@/app/(private)/register/job-positions/schema/job-positions';
 
-export const columnsJobPositions: ColumnDef<JobPositions>[] = [
+export const columnsJobPositions: ColumnDef<Partial<JobPositions>>[] = [
   {
     accessorKey: 'code',
     header: 'Código',

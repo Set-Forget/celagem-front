@@ -90,11 +90,11 @@ export default function Page() {
     }
   };
 
-  useEffect(() => {
-    if (profile) {
-      newRoleForm.setValue('created_by', profile.data.id);
-    }
-  }, [profile]);
+  // useEffect(() => {
+  //   if (profile) {
+  //     newRoleForm.setValue('created_by', profile.data.id);
+  //   }
+  // }, [profile]);
 
   return (
     <Form {...newRoleForm}>

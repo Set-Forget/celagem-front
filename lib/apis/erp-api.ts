@@ -18,6 +18,12 @@ export const erpApi = createApi({
     'JobPosition',
     'Procedure',
     'MedicalExam',
+    'Attribute',
+    'InternalTransfer',
+    'ProductTemplate',
+    'Product',
+    'Warehouse',
+    'Location',
   ],
   endpoints: () => ({}),
 });

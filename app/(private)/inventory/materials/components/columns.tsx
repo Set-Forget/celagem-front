@@ -39,11 +39,6 @@ export const materialsInventoryEntriesColumns: ColumnDef<MaterialsInventoryEntry
       ),
     },
     {
-      accessorKey: 'brand',
-      header: 'Marca',
-      cell: ({ row }) => <div>{row.original.brand ?? 'Generico'}</div>,
-    },
-    {
       accessorKey: 'name',
       header: 'Nombre',
       cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,

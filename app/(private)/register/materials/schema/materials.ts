@@ -29,7 +29,7 @@ export const newMaterialSchema = newMaterialGeneralSchema
   .merge(newMaterialPurchaseSchema);
 
 export const materialsSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   location: z.enum(['Sede Asistencial Bogotá']),
   code: z.string(),
   name: z.string(),
@@ -41,18 +41,6 @@ export const materialsSchema = z.object({
   convertion_rate_purchase_to_cost_unit: z.number().optional(),
   cost_unit: z.string(),
   cost_unit_price: z.number().optional(),
-  created_at: z.string(),
-  created_by: z.object({
-    id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-  }),
-  modified_at: z.string(),
-  updated_by: z.object({
-    id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-  }),
 });
 
 export const materialsListResponseSchema = z.object({

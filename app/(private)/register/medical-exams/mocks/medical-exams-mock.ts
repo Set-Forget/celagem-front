@@ -1,6 +1,6 @@
-import { MedicalExam } from '../schema/medical-exams';
+import { MedicalExams } from '../schema/medical-exams';
 
-export const medicalExamsMock: MedicalExam[] = [
+export const medicalExamsMock: Partial<MedicalExams>[] = [
   {
     id: 1,
     code: '100001',

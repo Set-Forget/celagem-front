@@ -18,7 +18,7 @@ export const newMedicalExamGeneralSchema = z.object({
 export const newMedicalExamSchema = newMedicalExamGeneralSchema;
 
 export const medicalExamSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   code: z.string(),
   status: z.enum(['INTERNO', 'EXTERNO']),
   cups_code: z.string().optional(),

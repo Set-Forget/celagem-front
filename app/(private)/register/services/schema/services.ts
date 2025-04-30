@@ -15,7 +15,7 @@ export const newServiceGeneralSchema = z.object({
 export const newServiceSchema = newServiceGeneralSchema;
 
 export const servicesSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   code: z.string(),
   total_cost: z.number(),
   unit_cost: z.number(),

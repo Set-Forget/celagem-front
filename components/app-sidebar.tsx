@@ -198,6 +198,26 @@ const data = {
           title: 'Almacenes',
           url: '/inventory/warehouses',
         },
+        {
+          title: 'Locaciones',
+          url: '/inventory/locations',
+        },
+        {
+          title: 'Productos',
+          url: '/inventory/products',
+        },
+        // {
+        //   title: 'Atributos',
+        //   url: '/inventory/attributes',
+        // },
+        {
+          title: 'Transferencias internas',
+          url: '/inventory/internal-transfers',
+        },
+        // {
+        //   title: 'Cantidades',
+        //   url: '/inventory/quantities',
+        // },
       ],
     },
     {
