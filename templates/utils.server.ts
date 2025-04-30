@@ -39,7 +39,10 @@ export async function generatePDFBuffer<K extends keyof TemplateMap>(options: {
     throw new Error(`No se encontró la plantilla: ${options.templateName}`);
   }
 
-  const component = React.createElement(TemplateComponent, { data: options.data });
+  const component = React.createElement(
+    TemplateComponent as React.ComponentType<{ data: typeof options.data }>,
+    { data: options.data }
+  );
 
   const pdfBuffer = await generatePDFFromComponent(component);
 
