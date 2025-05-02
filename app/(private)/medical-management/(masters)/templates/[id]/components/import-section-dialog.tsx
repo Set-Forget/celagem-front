@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useLazyGetSectionQuery, useLazyListSectionsQuery } from "@/lib/services/templates";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
-import { NormalizedSchema } from "../page";
+import { NormalizedSchema } from "../../../schemas/masters";
 
 export default function ImportSectionDialog() {
   const { getValues, setValue } = useFormContext<NormalizedSchema>();
