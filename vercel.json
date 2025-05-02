@@ -1,5 +1,3 @@
 {
-  "build": {
-    "installCommand": "npm ci --legacy-peer-deps"
-  }
+  "installCommand": "npm ci --legacy-peer-deps"
 }
