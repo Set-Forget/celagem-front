@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Plus, Trash2 } from "lucide-react";
 import { useFieldArray, useForm, useFormContext, useWatch } from "react-hook-form";
 import { z, ZodObject, ZodTypeAny } from "zod";
-import { Field, Section, SectionDetail } from "../../../../calendar/schemas/templates";
+import { Field, Section, SectionDetail } from "../../../../(masters)/schemas/templates";
 import RenderField from "../../../../components/render-field";
 import { resolveFieldDisplayValue } from "../../[visit_id]/components/template-view";
 import { generateFieldSchema } from "../../utils";

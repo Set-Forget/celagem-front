@@ -1,6 +1,6 @@
 "use client";
 
-import { TemplateDetail } from "@/app/(private)/medical-management/calendar/schemas/templates";
+import { TemplateDetail } from "@/app/(private)/medical-management/(masters)/schemas/templates";
 import CustomSonner from "@/components/custom-sonner";
 import DataTabs from "@/components/data-tabs";
 import Header from "@/components/header";

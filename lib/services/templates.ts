@@ -1,4 +1,4 @@
-import { NewField, NewFieldResponse, NewSection, NewSectionResponse, NewTemplate, NewTemplateResponse, SectionDetail, SectionDetailResponse, SectionListResponse, TemplateDetail, TemplateDetailResponse, TemplateListResponse } from '@/app/(private)/medical-management/calendar/schemas/templates';
+import { NewField, NewFieldResponse, NewSection, NewSectionResponse, NewTemplate, NewTemplateResponse, SectionDetail, SectionDetailResponse, SectionListResponse, TemplateDetail, TemplateDetailResponse, TemplateListResponse } from '@/app/(private)/medical-management/(masters)/schemas/templates';
 import { hcApi } from '@/lib/apis/hc-api';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
@@ -31,7 +31,7 @@ export const templatesApi = hcApi.injectEndpoints({
         method: 'POST',
         body: {
           ...newTemplate,
-          createdBy: '0194cd16-08cb-7146-b224-52417ab62d3b' //esto deberia ser el ID del usuario logueado
+          created_by: '0194cd16-08cb-7146-b224-52417ab62d3b'
         }
       }),
       invalidatesTags: ['Template']
@@ -61,10 +61,17 @@ export const templatesApi = hcApi.injectEndpoints({
       }),
       providesTags: ['Section']
     }),
-    getSections: builder.query<SectionDetail, number>({
+    getSection: builder.query<SectionDetail, number>({
       query: (id) => `section/${id}`,
       transformResponse: (response: SectionDetailResponse) => response.data,
       providesTags: ['Section']
+    }),
+    deleteSection: builder.mutation<NewSectionResponse, number>({
+      query: (id) => ({
+        url: `section/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['Section']
     }),
 
     //--- Fields ---
@@ -93,10 +100,13 @@ export const {
   useLazyGetTemplateQuery,
   useLazyListTemplatesQuery,
 
+  useGetSectionQuery,
+  useListSectionsQuery,
   useLazyListSectionsQuery,
   useCreateSectionMutation,
   useUpdateSectionMutation,
-  useLazyGetSectionsQuery,
+  useLazyGetSectionQuery,
+  useDeleteSectionMutation,
 
   useCreateFieldMutation,
   useUpdateFieldMutation,

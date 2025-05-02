@@ -11,7 +11,7 @@ import {
 } from "react-aria-components";
 import { useForm, useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { Field } from "../calendar/schemas/templates";
+import { Field } from "../(masters)/schemas/templates";
 import { Input } from "@/components/ui/input";
 import { useEffect, useMemo } from "react";
 import { Label } from "@/components/ui/label";

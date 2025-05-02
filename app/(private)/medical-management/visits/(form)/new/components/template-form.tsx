@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Field, Section, TemplateDetail, templateDetailSchema } from "../../../../calendar/schemas/templates";
+import { Field, Section, TemplateDetail, templateDetailSchema } from "../../../../(masters)/schemas/templates";
 import RenderField from "../../../../components/render-field";
 import { generateDefaultValues, generateFormSchema } from "../../utils";
 import { TableSection } from "./table-section";

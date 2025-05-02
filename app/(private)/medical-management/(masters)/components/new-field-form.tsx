@@ -7,11 +7,11 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useFormContext, useWatch } from "react-hook-form";
-import { propFieldAdapter } from "../utils";
-import PropField from "./prop-field";
-import { newFieldSchema } from "../../../calendar/schemas/templates";
+import { propFieldAdapter } from "../templates/[id]/utils";
+import PropField from "../templates/[id]/components/prop-field";
 import { z } from "zod";
-import { fieldTypes, propertiesByType } from "../../utils";
+import { fieldTypes, propertiesByType } from "../templates/utils";
+import { newFieldSchema } from "../schemas/templates";
 
 export default function NewFieldForm() {
   const { control, setValue } = useFormContext<z.infer<typeof newFieldSchema>>();

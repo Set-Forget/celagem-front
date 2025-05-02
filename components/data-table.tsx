@@ -83,10 +83,10 @@ export function DataTable<TData, TValue>({
   return (
     <div className={cn("space-y-4 flex flex-col justify-between", className)}>
       {toolbar && toolbar({ table })}
-      <div className="overflow-hidden rounded-sm border border-border bg-background shadow-sm">
+      <div className="overflow-hidden rounded-sm border border-border bg-background shadow-sm shadow-border">
         <ShadcnTable className="[&_td]:border-border [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
           <TableHeader
-            className="sticky top-0 z-10 bg-accent/90 backdrop-blur-sm after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-border">
+            className="sticky top-0 z-10 bg-sidebar backdrop-blur-sm after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-border rounded-t-sm">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="border-b" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

@@ -1,4 +1,4 @@
-import { TemplateDetail } from "@/app/(private)/medical-management/calendar/schemas/templates";
+import { TemplateDetail } from "@/app/(private)/medical-management/(masters)/schemas/templates";
 import { cn, placeholder } from "@/lib/utils";
 import { TemplateForm } from "../../new/components/template-form";
 

@@ -1,6 +1,6 @@
 import { Textarea } from "@/components/ui/textarea";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import { Field } from "../calendar/schemas/templates";
+import { Field } from "../(masters)/schemas/templates";
 
 export default function TextAreaField({ field, formField }: {
   field: Field;

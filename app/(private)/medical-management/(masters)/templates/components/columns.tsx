@@ -3,21 +3,16 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { TemplateList } from "../../calendar/schemas/templates"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { templateStatus } from "../utils"
+import { TemplateList } from "../../schemas/templates"
 
 export const columns: ColumnDef<TemplateList>[] = [
   {
     accessorKey: "name",
     header: "Nombre",
     cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
-  },
-  {
-    accessorKey: "sections",
-    header: "Secciones",
-    cell: ({ row }) => <div>{row.original.sections.length}</div>
   },
   {
     accessorKey: "is_active",
@@ -31,5 +26,10 @@ export const columns: ColumnDef<TemplateList>[] = [
         {status.label}
       </Badge>
     },
+  },
+  {
+    accessorKey: "sections",
+    header: "Secciones",
+    cell: ({ row }) => <div>{row.original.sections.length}</div>
   }
 ]

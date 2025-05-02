@@ -1,5 +1,10 @@
 import { CalendarDate, CalendarDateTime, Time } from "@internationalized/date";
 import { z } from "zod";
+import { fieldTypes } from "../templates/utils";
+
+type PrimitiveType = typeof fieldTypes[number]['value'];
+
+const primitiveTypes = fieldTypes.map(f => f.value) as [PrimitiveType, ...PrimitiveType[]];
 
 const dateValueSchema = z.preprocess((data) => {
   if (data instanceof CalendarDate) return data;
@@ -40,28 +45,39 @@ const dateTimeValueSchema = z.preprocess((data) => {
 
 const fileSchema = z.instanceof(File);
 
-const primitiveTypeSchema = z.enum([
-  "textarea",
-  "text",
-  "number",
-  "checkbox",
-  "date",
-  "datetime",
-  "time",
-  "file",
-  "select",
-  "title",
-  "imc",
-  "multiselect",
-]);
+const primitiveTypeSchema = z.enum(primitiveTypes);
 
 const baseTypeSchema = z.object({
   primitive_type: primitiveTypeSchema,
   properties: z.object({
-    maxLength: z.number().optional(),
-    maxValue: z.number().optional(),
-    minValue: z.number().optional(),
-    decimalPlaces: z.number().optional(),
+    maxLength: z.preprocess(
+      val => (val === null ? undefined : val),
+      z.number({
+        invalid_type_error: 'Campo requerido',
+        required_error: 'Campo requerido',
+      }).optional()
+    ),
+    maxValue: z.preprocess(
+      val => (val === null ? undefined : val),
+      z.number({
+        invalid_type_error: 'Campo requerido',
+        required_error: 'Campo requerido',
+      }).optional()
+    ),
+    minValue: z.preprocess(
+      val => (val === null ? undefined : val),
+      z.number({
+        invalid_type_error: 'Campo requerido',
+        required_error: 'Campo requerido',
+      }).optional()
+    ),
+    decimalPlaces: z.preprocess(
+      val => (val === null ? undefined : val),
+      z.number({
+        invalid_type_error: 'Campo requerido',
+        required_error: 'Campo requerido',
+      }).optional()
+    ),
     isConditionalForNextStep: z.boolean().optional(),
     options: z.array(z.object({ value: z.string(), label: z.string() })).optional(),
   }),
@@ -84,7 +100,13 @@ const textSchema = baseTypeSchema.extend({
 const numberSchema = baseTypeSchema.extend({
   primitive_type: z.literal("number"),
   properties: baseTypeSchema.shape.properties.extend({
-    defaultValue: z.number().optional(),
+    defaultValue: z.preprocess(
+      val => (val === null ? undefined : val),
+      z.number({
+        invalid_type_error: 'Campo requerido',
+        required_error: 'Campo requerido',
+      }).optional()
+    ),
   }),
 });
 
@@ -160,28 +182,17 @@ const imcSchema = baseTypeSchema.extend({
 export const typeSchema = z.preprocess((val) => {
   if (typeof val === "object" && val !== null) {
     const obj = val as Record<string, unknown>;
-    if (typeof obj.primitive_type === "string") {
-      const allowed = [
-        "textarea",
-        "text",
-        "number",
-        "checkbox",
-        "date",
-        "datetime",
-        "time",
-        "file",
-        "select",
-        "multiselect",
-        "title",
-        "imc",
-      ];
-      const newPrimitiveType = allowed.includes(obj.primitive_type) ? obj.primitive_type : "text";
-      return {
-        ...obj,
-        primitive_type: newPrimitiveType,
-        properties: obj.properties ?? {}
-      };
-    }
+    if (typeof obj.primitive_type !== "string") return
+
+    const newPrimitiveType = primitiveTypes.includes(obj.primitive_type as typeof primitiveTypes[number])
+      ? (obj.primitive_type as typeof primitiveTypes[number])
+      : "text";
+
+    return {
+      ...obj,
+      primitive_type: newPrimitiveType,
+      properties: obj.properties ?? {}
+    };
   }
   return val;
 }, z.discriminatedUnion("primitive_type", [
@@ -262,7 +273,7 @@ export const importSectionSchema = z.object({
   id: z.number()
 });
 
-export const sectionSchema = z.object({
+export const sectionDetailSchema = z.object({
   id: z.number(),
   name: z.string(),
   type: z.preprocess(
@@ -309,7 +320,7 @@ export const templateDetailSchema = z.object({
   is_for_print_independently: z.boolean(),
   is_for_print_with_all_the_templates: z.boolean(),
   is_for_send_order_to_appointment_box: z.boolean(),
-  sections: z.array(sectionSchema),
+  sections: z.array(sectionDetailSchema),
 });
 
 export const templateListSchema = z.object({
@@ -372,7 +383,7 @@ export const sectionDetailResponseSchema = z.object({
   status: z.string(),
   code: z.number(),
   message: z.string(),
-  data: sectionSchema
+  data: sectionDetailSchema
 });
 
 export type FieldType = z.infer<typeof typeSchema>;
@@ -382,12 +393,12 @@ export type Field = z.infer<typeof fieldSchema>;
 
 export type NewSection = z.infer<typeof newSectionSchema>;
 export type NewSectionResponse = z.infer<typeof newSectionResponseSchema>;
-export type Section = z.infer<typeof sectionSchema>;
+export type Section = z.infer<typeof sectionDetailSchema>;
 
 export type SectionList = z.infer<typeof sectionListSchema>;
 export type SectionListResponse = z.infer<typeof sectionListResponseSchema>;
 export type SectionDetailResponse = z.infer<typeof sectionDetailResponseSchema>;
-export type SectionDetail = z.infer<typeof sectionSchema>;
+export type SectionDetail = z.infer<typeof sectionDetailSchema>;
 
 export type NewTemplate = z.infer<typeof newTemplateSchema>;
 export type NewTemplateResponse = z.infer<typeof newTemplateResponseSchema>;

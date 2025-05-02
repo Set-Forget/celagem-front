@@ -1,6 +1,6 @@
 import { isEqual } from "lodash";
-import { NewField, NewSection } from "../../calendar/schemas/templates";
-import { NormalizedSchema } from "./page";
+import { NewField, NewSection } from "../../schemas/templates";
+import { NormalizedSchema } from "../../schemas/masters";
 
 export const propFieldAdapter = {
   "defaultValue": "Valor por defecto",
@@ -24,6 +24,8 @@ function deepEqualIgnoringId<T extends object>(a: T, b: T): boolean {
 }
 
 export function getDiffs(original: NormalizedSchema, updated: NormalizedSchema) {
+  if (original.kind !== 'template' || updated.kind !== 'template') return
+
   const originalSectionsMap = new Map<number, NewSection>();
   for (const s of original.sections) {
     originalSectionsMap.set(s.id, s);

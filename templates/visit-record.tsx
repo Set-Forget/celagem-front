@@ -1,5 +1,5 @@
 import { AppointmentDetail } from '@/app/(private)/medical-management/calendar/schemas/appointments';
-import { Section, TemplateDetail, templateDetailSchema } from '@/app/(private)/medical-management/calendar/schemas/templates';
+import { Section, TemplateDetail, templateDetailSchema } from '@/app/(private)/medical-management/(masters)/schemas/templates';
 import { modesOfCare } from '@/app/(private)/medical-management/calendar/utils';
 import { PatientDetail } from '@/app/(private)/medical-management/patients/schema/patients';
 import { biologicalSexTypes, disabilityTypes, documentTypes } from '@/app/(private)/medical-management/patients/utils';

@@ -1,6 +1,6 @@
 import { MultiSelect } from "@/components/multi-select";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import { Field } from "../calendar/schemas/templates";
+import { Field } from "../(masters)/schemas/templates";
 
 export default function MultiSelectField({ field, formField }: {
   field: Field;

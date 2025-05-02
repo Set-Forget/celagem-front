@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { newFieldSchema } from "../calendar/schemas/templates";
+import { newFieldSchema } from "../schemas/templates";
 
 export const templateStatus = {
   true: {

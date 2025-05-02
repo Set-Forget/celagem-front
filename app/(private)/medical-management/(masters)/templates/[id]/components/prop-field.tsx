@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TagInput } from "emblor";
 import { CalendarIcon, Clock, Minus, Plus } from "lucide-react";
-import { useState } from "react";
+import { JSX, useState } from "react";
 import {
   Button as AriaButton,
   DateInput as AriaDateInput,

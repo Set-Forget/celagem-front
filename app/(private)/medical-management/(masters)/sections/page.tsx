@@ -3,13 +3,13 @@
 import { DataTable } from "@/components/data-table";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
-import { useListTemplatesQuery } from "@/lib/services/templates";
+import { useListSectionsQuery } from "@/lib/services/templates";
+import { setDialogsState } from "@/lib/store/dialogs-store";
 import { Plus } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
-import NewTemplateDialog from "./[id]/components/new-template-dialog";
-import { setDialogsState } from "@/lib/store/dialogs-store";
+import NewSectionDialog from "./components/new-section-dialog";
 
 export default function Page() {
   const searchParams = useSearchParams()
@@ -18,34 +18,34 @@ export default function Page() {
 
   const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
 
-  const { data: templates, isLoading: isTemplatesLoading } = useListTemplatesQuery({
+  const { data: sections, isLoading: isSectionsLoading } = useListSectionsQuery({
     name: search.field === "name" ? search?.query.trim() : undefined,
   }, { refetchOnMountOrArgChange: true })
 
   return (
     <div>
-      <Header title="Plantillas">
+      <Header title="Secciones">
         <Button
           className="ml-auto"
           size="sm"
-          onClick={() => setDialogsState({ open: "new-template" })}
+          onClick={() => setDialogsState({ open: "new-section" })}
         >
           <Plus
             className="w-4 h-4"
           />
-          Nueva plantilla
+          Nueva sección
         </Button>
       </Header>
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
         <DataTable
-          data={templates?.data ?? []}
+          data={sections?.data ?? []}
           columns={columns}
-          loading={isTemplatesLoading}
+          loading={isSectionsLoading}
           toolbar={({ table }) => <Toolbar table={table} />}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
         />
       </div>
-      <NewTemplateDialog />
+      <NewSectionDialog />
     </div>
   )
 }

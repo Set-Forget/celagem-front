@@ -6,7 +6,7 @@ import {
   NumberField as AriaNumberField,
 } from "react-aria-components";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import { Field } from "../calendar/schemas/templates";
+import { Field } from "../(masters)/schemas/templates";
 import { Minus, Plus } from "lucide-react";
 
 export default function NumberField({ field, formField }: {

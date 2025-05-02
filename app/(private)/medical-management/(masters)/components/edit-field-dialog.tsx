@@ -1,6 +1,5 @@
 "use client";
 
-import { newFieldSchema, typeSchema } from "@/app/(private)/medical-management/calendar/schemas/templates";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,8 +15,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
-import { NormalizedSchema } from "../page";
+import { NormalizedSchema } from "../schemas/masters";
 import NewFieldForm from "./new-field-form";
+import { newFieldSchema, typeSchema } from "../schemas/templates";
 
 export default function EditFieldDialog() {
   const { getValues, setValue } = useFormContext<NormalizedSchema>();

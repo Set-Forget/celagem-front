@@ -15,30 +15,23 @@ import { cn, placeholder } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Loader2, Plus, PlusSquare, Save, SquarePen, Trash2 } from "lucide-react";
+import { FormInput, LayoutPanelTop, Loader2, Plus, PlusSquare, Save, SquarePen, Trash2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { newFieldSchema, newSectionSchema, newTemplateSchema, templateDetailSchema } from "../../calendar/schemas/templates";
+import EditFieldDialog from "../../components/edit-field-dialog";
+import NewFieldDialog from "../../components/new-field-dialog";
+import { TemplateSchema, templateSchema } from "../../schemas/masters";
+import { newFieldSchema, templateDetailSchema } from "../../schemas/templates";
+import EditSectionDialog from "../components/edit-section-dialog";
 import { templateStatus } from "../utils";
-import EditFieldDialog from "./components/edit-field-dialog";
-import EditSectionDialog from "./components/edit-section-dialog";
 import EditTemplateDialog from "./components/edit-template-dialog";
 import ImportSectionDialog from "./components/import-section-dialog";
-import NewFieldDialog from "./components/new-field-dialog";
 import NewSectionDialog from "./components/new-section-dialog";
-import TemplateSection from "./components/template-section";
+import SectionField from "./components/section-field";
 import { getDiffs } from "./utils";
-
-const normalizedSchema = z.object({
-  template: newTemplateSchema,
-  sections: z.array(newSectionSchema),
-  fields: z.array(newFieldSchema)
-})
-
-export type NormalizedSchema = z.infer<typeof normalizedSchema>
 
 export default function Page() {
   const params = useParams<{ id: string }>();
@@ -59,28 +52,42 @@ export default function Page() {
     const normalizedTemplate = { ...template, sections: template.sections.map((section) => section.id) };
 
     return {
+      kind: "template",
       template: normalizedTemplate,
       sections: normalizedSections,
       fields: allFields
     };
-  }).pipe(normalizedSchema)
+  }).pipe(templateSchema)
 
   const normalizedTemplate = template && normalizedTemplateSchema.parse(template)
 
-  const form = useForm<z.infer<typeof normalizedSchema>>({
-    resolver: zodResolver(normalizedSchema),
+  const form = useForm<z.infer<typeof templateSchema>>({
+    resolver: zodResolver(templateSchema),
   });
 
-  const onSubmit = async (data: NormalizedSchema) => {
+  const onSubmit = async (data: TemplateSchema) => {
     if (!normalizedTemplate) {
-      return console.warn("No se ha podido obtener la plantilla normalizada");
+      console.warn("No se ha podido obtener la plantilla normalizada");
+      return;
     }
 
-    const oldTemplate = normalizedTemplate.template;
-    const oldSections = normalizedTemplate.sections;
-    const oldFields = normalizedTemplate.fields;
+    const isTempId = (id: number) => id < 0;
+    const tmpSecToReal: Record<number, number> = {};
+    const tmpFldToReal: Record<number, number> = {};
 
-    const diffs = getDiffs({ template: oldTemplate, sections: oldSections, fields: oldFields }, data);
+    const { template: oldTemplate, sections: oldSections, fields: oldFields } =
+      normalizedTemplate;
+
+    const diffs = getDiffs(
+      { kind: "template", template: oldTemplate, sections: oldSections, fields: oldFields },
+      data
+    ) ?? {
+      newSections: [],
+      updatedSections: [],
+      deletedSections: [],
+      newFields: [],
+      updatedFields: [],
+    };
 
     const {
       newSections,
@@ -90,28 +97,21 @@ export default function Page() {
       updatedFields,
     } = diffs;
 
-    const localToRealSectionId: Record<number, number> = {};
-
-    for (const sec of newSections) {
+    for (const sec of newSections.filter(s => isTempId(s.id))) {
       try {
-        const { fields, ...secWithoutFields } = sec;
-        const createdSec = await createSection(secWithoutFields).unwrap();
-        localToRealSectionId[sec.id] = createdSec.data.id;
-
-        updatedSections.push({
-          ...sec,
-          id: createdSec.data.id,
-        });
+        const { fields, ...payload } = sec;
+        const created = await createSection(payload).unwrap();
+        tmpSecToReal[sec.id] = created.data.id;
       } catch (err) {
         console.error("Error creando sección:", err);
       }
     }
 
-    const localToRealFieldId: Record<number, number> = {};
-    for (const f of newFields) {
+    for (const fld of newFields.filter(f => isTempId(f.id))) {
       try {
-        const createdField = await createField(f).unwrap();
-        localToRealFieldId[f.id] = createdField.data.id;
+        const payload = newFieldSchema.parse(fld);
+        const created = await createField(payload).unwrap();
+        tmpFldToReal[fld.id] = created.data.id;
       } catch (err) {
         console.error("Error creando field:", err);
       }
@@ -119,16 +119,15 @@ export default function Page() {
 
     for (const sec of updatedSections) {
       try {
-        const realSecId = localToRealSectionId[sec.id] ?? sec.id;
-        const finalFieldIds = sec.fields.map((fid) =>
-          localToRealFieldId[fid] ?? fid
+        const realSecId = isTempId(sec.id)
+          ? tmpSecToReal[sec.id]
+          : sec.id;
+
+        const finalFieldIds = sec.fields.map(fid =>
+          isTempId(fid) ? tmpFldToReal[fid] : fid
         );
 
-        const secToUpdate = {
-          ...sec,
-          id: realSecId,
-          fields: finalFieldIds,
-        };
+        const secToUpdate = { ...sec, id: realSecId, fields: finalFieldIds };
         await updateSection(secToUpdate).unwrap();
       } catch (err) {
         console.error("Error actualizando sección:", err);
@@ -137,30 +136,32 @@ export default function Page() {
 
     for (const fld of updatedFields) {
       try {
-        const realFieldId = localToRealFieldId[fld.id] ?? fld.id;
-        await updateField({ ...fld, id: realFieldId }).unwrap();
+        const realFldId = isTempId(fld.id) ? tmpFldToReal[fld.id] : fld.id;
+        const payload = newFieldSchema.parse(fld);
+        await updateField({ ...payload, id: realFldId }).unwrap();
       } catch (err) {
         console.error("Error actualizando field:", err);
       }
     }
 
     try {
-      const deletedSectionIds = new Set(deletedSections.map((ds) => ds.id));
+      const deletedSecIds = new Set(deletedSections.map(ds => ds.id));
+
       const finalSectionIds = data.sections
-        .filter((sec) => !deletedSectionIds.has(sec.id))
-        .map((sec) => localToRealSectionId[sec.id] ?? sec.id);
+        .filter(sec => !deletedSecIds.has(sec.id))
+        .map(sec => (isTempId(sec.id) ? tmpSecToReal[sec.id] : sec.id));
 
       const templateToUpdate = {
         ...data.template,
         sections: finalSectionIds,
       };
 
-      const response = await updateTemplate(templateToUpdate).unwrap();
-      if (response.status === "SUCCESS") {
-        toast.custom((t) => <CustomSonner t={t} description="Plantilla actualizada exitosamente" />)
+      const res = await updateTemplate(templateToUpdate).unwrap();
+      if (res.status === "SUCCESS") {
+        toast.custom(t => <CustomSonner t={t} description="Plantilla actualizada exitosamente" />);
       }
     } catch (err) {
-      toast.custom((t) => <CustomSonner t={t} description="Error al actualizar la plantilla" variant="error" />)
+      toast.custom(t => <CustomSonner t={t} description="Error al actualizar la plantilla" variant="error" />);
       console.error("Error actualizando template:", err);
     }
   };
@@ -185,6 +186,7 @@ export default function Page() {
   useEffect(() => {
     if (!template) return
     form.reset({
+      kind: "template",
       template: normalizedTemplate!.template,
       sections: normalizedTemplate!.sections,
       fields: normalizedTemplate!.fields
@@ -206,7 +208,7 @@ export default function Page() {
   }, [isDirty]);
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isTemplateLoading ? "blur-[4px]" : "blur-none")}>
           {!template ? placeholder(14, true) : template.name}
@@ -232,7 +234,7 @@ export default function Page() {
       </Header>
       <div className="grid grid-cols-1 gap-4 p-4">
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex gap-2">
             <h2 className="text-base font-medium">General</h2>
             <Button
               size="icon"
@@ -262,7 +264,7 @@ export default function Page() {
       <Separator />
       <Form {...form}>
         <TooltipProvider delayDuration={0}>
-          <div className="grid grid-cols-1 gap-4 p-4">
+          <div className="flex flex-col gap-4 p-4 h-full items-start relative">
             <div className="flex items-center gap-2">
               <h2 className="text-base font-medium">Secciones</h2>
               <DropdownMenu modal={false}>
@@ -291,19 +293,70 @@ export default function Page() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <div className="flex flex-col gap-4">
-              {sections?.length === 0 && (
+            <div className="flex flex-col gap-4 w-full h-full p-4 rounded-lg bg-sidebar shadow-lg shadow-sidebar">
+              {(isTemplateLoading || !sections) && (
                 <div className="flex flex-col gap-4">
-                  <p className="text-muted-foreground text-sm">No hay secciones en esta plantilla</p>
+                  {[1, 2].map((section) => (
+                    <fieldset key={section} className="border border-input rounded-md p-4 bg-background">
+                      <legend className="text-xs px-2 border rounded-sm bg-background">
+                        <span className="font-medium blur-[4px]">
+                          {placeholder(10)}
+                        </span>
+                      </legend>
+                      <div className="grid grid-cols-1 gap-4">
+                        {[1, 2, 3].map((field) => (
+                          <div key={field} className="flex flex-col gap-2">
+                            <span className="text-sm blur-[4px]">
+                              {placeholder(9)}
+                            </span>
+                            <span className="bg-accent blur-[2px] border rounded-md h-9"></span>
+                          </div>
+                        ))}
+                      </div>
+                    </fieldset>
+                  ))}
+                </div>
+              )}
+              {sections?.length === 0 && (
+                <div className="flex flex-col gap-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                  <div className="flex flex-col gap-4 items-center">
+                    <div className="bg-background p-3 rounded-full shadow-lg shadow-background">
+                      <LayoutPanelTop className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                    <p className="text-muted-foreground text-xs">
+                      No hay secciones en esta plantilla, puedes crear una nueva o importar una existente.
+                    </p>
+                  </div>
                 </div>
               )}
               {sections?.map((section) => (
                 <ContextMenu modal={false} key={section.id}>
-                  <ContextMenuTrigger className="flex flex-col">
-                    <TemplateSection
-                      key={section.id}
-                      section={section}
-                    />
+                  <ContextMenuTrigger className="flex flex-col w-full">
+                    <div className="flex flex-col gap-4 w-full">
+                      <div className="grid grid-cols-1 gap-4 w-full">
+                        <fieldset className={cn(
+                          "border bg-background border-input rounded-md p-4 !shadow-sm min-w-0 w-full flex flex-col gap-4 hover:[&:not(:has(.field:hover))]:border-primary transition-colors"
+                        )}>
+                          {section.name && <legend className="text-xs px-2 border rounded-sm font-medium bg-background">{section.name}</legend>}
+                          {!section.fields.length ? (
+                            <div className="flex justify-center items-center gap-2">
+                              <div className="flex flex-col gap-4">
+                                <div className="flex flex-col gap-4 items-center">
+                                  <div className="bg-secondary p-3 rounded-full shadow-lg shadow-secondary">
+                                    <FormInput className="w-6 h-6 text-muted-foreground" />
+                                  </div>
+                                  <p className="text-muted-foreground text-xs">
+                                    No hay campos en esta sección, podes agregar uno haciendo click derecho en la sección
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          ) :
+                            <SectionField sectionId={section.id} isTable={section.type !== "form"} />
+                          }
+                        </fieldset>
+                      </div>
+                    </div>
                   </ContextMenuTrigger>
                   <ContextMenuContent className="w-64">
                     <ContextMenuLabel className="py-0.5">

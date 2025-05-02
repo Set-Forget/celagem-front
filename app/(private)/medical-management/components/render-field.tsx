@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Control, useFormContext } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../components/ui/form";
-import { Field } from "../calendar/schemas/templates";
+import { Field } from "../(masters)/schemas/templates";
 import { templateFields } from "../utils";
 import NumberField from "../elements/number-field";
 

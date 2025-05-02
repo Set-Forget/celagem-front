@@ -1,4 +1,4 @@
-import { Field, Section, TemplateDetail, templateDetailSchema } from "@/app/(private)/medical-management/calendar/schemas/templates";
+import { Field, Section, TemplateDetail, templateDetailSchema } from "@/app/(private)/medical-management/(masters)/schemas/templates";
 import { DataTable } from "@/components/data-table";
 import { cn } from "@/lib/utils";
 import { CalendarDate, CalendarDateTime } from "@internationalized/date";
