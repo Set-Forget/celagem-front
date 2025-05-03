@@ -1,10 +1,3 @@
-import { cva, type VariantProps } from "class-variance-authority";
-import {
-  ChevronDown,
-  X,
-} from "lucide-react";
-import * as React from "react";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +14,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
+import {
+  ChevronDown,
+  X,
+} from "lucide-react";
+import * as React from "react";
+import { JSX } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 const multiSelectVariants = cva("transition", {

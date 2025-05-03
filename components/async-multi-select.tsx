@@ -6,6 +6,7 @@ import React, {
   Ref,
   forwardRef,
 } from "react";
+import type { JSX } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Check, ChevronDown, Loader2, Search, X } from "lucide-react";
 
