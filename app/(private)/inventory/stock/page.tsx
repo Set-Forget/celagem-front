@@ -18,7 +18,7 @@ export default function ProductsPage() {
     return (
       <TableFooter>
         <TableRow>
-          <TableCell colSpan={9}>Total Inventario</TableCell>
+          <TableCell colSpan={9}>Valoración Inventario</TableCell>
           <TableCell className="text-left">
             ${materialsInventoryMock.reduce((a, b) => a + (b.qty * b.cost_unit_price), 0)}
           </TableCell>
@@ -29,7 +29,7 @@ export default function ProductsPage() {
 
   return (
     <>
-      <Header title="Inventario de Materiales">
+      <Header title="Stock">
         <Button
           className="ml-auto"
           size="sm"

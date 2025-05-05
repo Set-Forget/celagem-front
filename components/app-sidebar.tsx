@@ -191,8 +191,8 @@ const data = {
       icon: Box,
       items: [
         {
-          title: 'Materiales',
-          url: '/inventory/materials',
+          title: 'Stock',
+          url: '/inventory/stock',
         },
         {
           title: 'Almacenes',
