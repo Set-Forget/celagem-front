@@ -2,7 +2,7 @@ import Header from "@/components/header"
 import { Separator } from "@/components/ui/separator"
 import { ReceiptInvoicesTable } from "./components/receipt-invoices-table"
 
-export default async function ReceiptPage({
+export default async function Page({
   params,
 }: {
   params: Promise<{ id: string }>
@@ -10,7 +10,7 @@ export default async function ReceiptPage({
   //const customerId = (await params).id
 
   return (
-    <>
+    <div>
       <Header title="Recepción 321461560092" />
       <Separator />
       <div className="flex flex-col gap-4 py-4 flex-1">
@@ -50,6 +50,6 @@ export default async function ReceiptPage({
           <ReceiptInvoicesTable />
         </div>
       </div>
-    </>
+    </div>
   )
 }

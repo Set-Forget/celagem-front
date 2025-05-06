@@ -7,29 +7,18 @@ import { setDialogsState } from "@/lib/store/dialogs-store";
 import { Plus } from "lucide-react";
 import { columns } from "./components/columns";
 import NewCostCenterDialog from "./components/new-cost-center-dialog";
-import { CostCenter } from "./schemas/cost-centers";
 import { usePathname, useRouter } from "next/navigation";
 import Toolbar from "./components/toolbar";
+import { useListCostCentersQuery } from "@/lib/services/cost-centers";
 
-const data: CostCenter[] = [
-  {
-    "id": "3a5e0cfc-5d62-4a9b-a7f8-82f1b98fa89a",
-    "name": "MAIN Argentina",
-    "status": "active"
-  },
-  {
-    "id": "4d29b26a-79e2-4cbf-a626-9530f508eb06",
-    "name": "MAIN Colombia",
-    "status": "inactive"
-  },
-]
-
-export default function CostsCenterPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
+  const { data: costCenters, isLoading: isCostCentersLoading } = useListCostCentersQuery()
+
   return (
-    <>
+    <div>
       <Header title="Centro de costos">
         <Button
           size="sm"
@@ -46,13 +35,14 @@ export default function CostsCenterPage() {
       </Header>
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
         <DataTable
-          data={data}
+          data={costCenters?.data || []}
+          loading={isCostCentersLoading}
           columns={columns}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
       <NewCostCenterDialog />
-    </>
+    </div>
   )
 }

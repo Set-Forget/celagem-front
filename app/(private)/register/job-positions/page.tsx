@@ -9,7 +9,7 @@ import Toolbar from './components/toolbar';
 import { jobPositionsMock } from './mocks/job-positions-mock';
 import { DataTable } from '@/components/data-table';
 
-export default function JobPositionsPage() {
+export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -19,7 +19,7 @@ export default function JobPositionsPage() {
   // });
 
   return (
-    <>
+    <div>
       <Header title="Puestos de trabajo">
         <Button
           className="ml-auto"
@@ -40,6 +40,6 @@ export default function JobPositionsPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   );
 }

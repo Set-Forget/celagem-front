@@ -9,3 +9,25 @@ export const materialsInventorySchema = z.object({
 });
 
 export type MaterialsInventory = z.infer<typeof materialsInventorySchema>;
+
+// --- 
+
+export const materialListSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  type: z.string(),
+  sale_price: z.number(),
+  cost: z.number(),
+  active: z.boolean(),
+  uom: z.string(),
+  category: z.string(),
+  // ! Falta code.
+})
+
+export const materialListResponseSchema = z.object({
+  status: z.string(),
+  data: z.array(materialListSchema),
+})
+
+export type MaterialList = z.infer<typeof materialListSchema>;
+export type MaterialListResponse = z.infer<typeof materialListResponseSchema>;

@@ -13,7 +13,6 @@ export const columns: ColumnDef<AccountsPayableList>[] = [
   {
     accessorKey: "date",
     header: "Fecha de emisión",
-    size: 100,
     cell: ({ row }) => {
       if (!row.original.date) return <div>&nbsp;</div>
       return <div className="truncate">
@@ -26,7 +25,7 @@ export const columns: ColumnDef<AccountsPayableList>[] = [
     header: "Proveedor",
     cell: ({ row }) =>
       <div className={cn("truncate", row.original.id === -1 ? "font-semibold" : "")}>
-        {row.original.supplier}
+        {row.original.customer}
       </div>,
   },
   {

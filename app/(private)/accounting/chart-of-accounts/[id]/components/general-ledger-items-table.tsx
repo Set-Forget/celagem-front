@@ -11,10 +11,8 @@ import {
   useReactTable,
   VisibilityState
 } from "@tanstack/react-table"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import * as React from "react"
 
-import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -26,9 +24,8 @@ import {
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 import { columns } from "./columns"
-import { JournalEntryItem } from "@/app/(private)/accounting/journal-entries/schemas/journal-entries"
 
-const data: JournalEntryItem[] = [
+const data = [
   {
     "date": "2024-02-14",
     "account": "EFECTIVO Y EQUIVALENTES AL EFECTIVO",

@@ -1,6 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import { Field } from "../scheduler/schemas/templates";
+import { Field } from "../calendar/schemas/templates";
 
 export default function SelectField({ field, formField }: {
   field: Field;

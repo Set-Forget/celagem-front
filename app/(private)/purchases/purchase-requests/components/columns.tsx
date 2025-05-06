@@ -7,32 +7,34 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { PURCHASE_REQUEST_STATUS } from "../adapters/customers"
+import { purchaseRequestStatus } from "../utils"
+import { PurchaseRequestList } from "../schemas/purchase-requests"
+import { es } from "date-fns/locale"
 
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<PurchaseRequestList>[] = [
   {
-    accessorKey: "title",
+    accessorKey: "name",
     header: "Titulo",
-    cell: ({ row }) => <div>{row.getValue("title")}</div>,
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "status",
+    accessorKey: "state",
     header: "Estado",
     cell: ({ row }) => {
-      const status = PURCHASE_REQUEST_STATUS[row.getValue("status") as keyof typeof PURCHASE_REQUEST_STATUS]
+      const status = purchaseRequestStatus[row.getValue("state") as keyof typeof purchaseRequestStatus]
       return <Badge
-        variant="outline"
-        className={cn(`${status.bg_color} ${status.text_color} border-none rounded-sm`)}
+        variant="custom"
+        className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
       >
-        {status.label}
+        {status?.label}
       </Badge>
     },
   },
   {
-    accessorKey: "required_by",
+    accessorKey: "request_date",
     header: "Fecha de requerimiento",
     cell: ({ row }) => <div>
-      {format(new Date(row.getValue("required_by")), "dd MMM yyyy")}
+      {format(new Date(row.getValue("request_date")), "PPP", { locale: es })}
     </div>,
   },
   {

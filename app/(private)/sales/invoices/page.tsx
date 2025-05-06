@@ -9,15 +9,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 
-export default function InvoicesPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   const { data: invoices, isLoading: isInvoicesLoading } = useListInvoicesQuery()
 
   return (
-    <>
-      <Header>
+    <div>
+      <Header title="Facturas de venta">
         <Button
           className="ml-auto"
           size="sm"
@@ -31,11 +31,15 @@ export default function InvoicesPage() {
         <DataTable
           data={invoices?.data || []}
           columns={columns}
-          onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
+          onRowClick={(row) => {
+            if (row.type === "debit_note") return router.push(`${pathname.replace("invoices", "debit-notes")}/${row.id}`)
+            if (row.type === "credit_note") return router.push(`${pathname.replace("invoices", "credit-notes")}/${row.id}`)
+            return router.push(`${pathname}/${row.id}`)
+          }}
           toolbar={({ table }) => <Toolbar table={table} />}
           loading={isInvoicesLoading}
         />
       </div>
-    </>
+    </div>
   )
 }

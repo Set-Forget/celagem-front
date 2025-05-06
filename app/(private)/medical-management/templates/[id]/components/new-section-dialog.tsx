@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 
-import { newSectionSchema } from "@/app/(private)/medical-management/scheduler/schemas/templates";
+import { newSectionSchema } from "@/app/(private)/medical-management/calendar/schemas/templates";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";

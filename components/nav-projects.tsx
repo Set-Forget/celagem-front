@@ -19,10 +19,10 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
+  SidebarMenuAction,
 } from "@/components/ui/sidebar"
 
 export function NavProjects({

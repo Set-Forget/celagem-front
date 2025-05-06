@@ -4,19 +4,9 @@ export const newDebitNoteLineSchema = z.object({
   product_id: z.number({ required_error: "El producto es requerido" }),
   quantity: z.number(),
   taxes_id: z.array(z.number()).optional(),
-});
 
-export const debitNoteListSchema = z.object({
-  id: z.number(),
-  number: z.string(),
-  partner: z.string(),
-  status: z.string(),
-  date: z.string(),
-  due_date: z.string(),
-  amount_total: z.number(),
-  currency: z.string(),
-  move_type: z.string(), // ? Esto es lo que diferencia una nota de crédito de una nota de débito.
-})
+  unit_price: z.number(), // ! No existe en el backend.
+});
 
 export const debitNoteLineSchema = z.object({
   id: z.number(),
@@ -25,46 +15,57 @@ export const debitNoteLineSchema = z.object({
   quantity: z.number(),
   price_unit: z.number(),
   price_subtotal: z.number(),
-  // ! Falta price_tax.
+  price_tax: z.number(),
   taxes: z.array(z.object({ id: z.number(), name: z.string(), amount: z.number() })),
 })
 
 export const debitNoteDetailSchema = z.object({
   id: z.number(),
   number: z.string(),
-  partner: z.string(),
-  status: z.string(),
+  partner: z.object({
+    id: z.number(),
+    name: z.string(),
+    phone: z.string(),
+    email: z.string(),
+    address: z.string(),
+  }),
+  status: z.enum(["draft", "posted", "cancel"]),
   date: z.string(),
-  due_date: z.string(), // ! No existe en la respuesta.
-  accounting_date: z.string(), // ! No existe en la respuesta.
-  currency: z.string(),
-  payment_term: z.string(), // ! No existe en la respuesta.
-  payment_method: z.string(), // ! No existe en la respuesta.
-  move_type: z.string(),
-  // ! Falta related_docs.
-  related_invoice: z.object({
+  due_date: z.string(),
+  accounting_date: z.string(),
+  currency: z.object({
+    id: z.number(),
+    name: z.string()
+  }),
+  payment_term: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  payment_method: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  internal_notes: z.string(),
+  associated_invoice: z.object({
     id: z.number(),
     number: z.string(),
-  }), // ! No existe en la respuesta.
-  items: z.array(debitNoteLineSchema), // ! No existe en la respuesta.
+  }),
+  items: z.array(debitNoteLineSchema)
 })
 
 export const newDebitNoteSchema = z.object({
   partner: z.number(),
-  number: z.string(),
   date: z.string({ required_error: "La fecha de emisión es requerida" }).nonempty({ message: "La fecha de emisión no puede estar vacía" }),
+  number: z.string().optional(), // ! Debería autogenerarse, pero no lo hace.
   accounting_date: z.string({ required_error: "La fecha contable es requerida" }).nonempty({ message: "La fecha contable no puede estar vacía" }),
   currency: z.number(),
-  payment_term: z.string({ required_error: "La condición de pago es requerida" }), // ! Debe ser un number, pero primero necesito tener el endpoint.
+  payment_term: z.number({ required_error: "La condición de pago es requerida" }),
+  payment_method: z.string().optional(), // ! No existe en el backend.
   move_type: z.string(),
-  related_invoice: z.number(),
+  internal_notes: z.string().optional(),
+  associated_invoice: z.number(),
   items: z.array(newDebitNoteLineSchema),
 })
-
-export const debitNotesListResponseSchema = z.object({
-  status: z.string(),
-  data: z.array(debitNoteListSchema)
-});
 
 export const debitNoteDetailResponseSchema = z.object({
   status: z.string(),
@@ -79,9 +80,6 @@ export const newDebitNoteResponseSchema = z.object({
     name: z.string(),
   })
 });
-
-export type DebitNotesList = z.infer<typeof debitNoteListSchema>;
-export type DebitNotesListResponse = z.infer<typeof debitNotesListResponseSchema>;
 
 export type DebitNoteDetail = z.infer<typeof debitNoteDetailSchema>;
 export type DebitNoteDetailResponse = z.infer<typeof debitNoteDetailResponseSchema>;

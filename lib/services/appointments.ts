@@ -1,4 +1,4 @@
-import { AppointmentDetail, AppointmentDetailResponse, AppointmentListResponse, NewAppointment } from '@/app/(private)/medical-management/scheduler/schemas/appointments';
+import { AppointmentDetail, AppointmentDetailResponse, AppointmentListResponse, NewAppointment } from '@/app/(private)/medical-management/calendar/schemas/appointments';
 import { hcApi } from '@/lib/apis/hc-api';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
@@ -14,7 +14,7 @@ export const appointmentsApi = hcApi.injectEndpoints({
       providesTags: ['Appointment'],
     }),
     searchAppointments: builder.query<AppointmentListResponse, { range_start_date: string, range_end_date: string, status?: string }>({
-      query: ({ range_start_date, range_end_date, status }) => `appointment/search?range_start_date=${range_start_date}&range_end_date=${range_end_date}${status ? `&status=${status}` : ''}`,
+      query: ({ range_start_date, range_end_date, status }) => `appointment?range_start_date=${range_start_date}&range_end_date=${range_end_date}${status ? `&status=${status}` : ''}`,
       providesTags: ['Appointment'],
     }),
     //---

@@ -10,7 +10,7 @@ import Toolbar from './components/toolbar';
 import { proceduresMock } from './mocks/procedures-mock';
 import { useListProceduresQuery } from '@/lib/services/procedures';
 
-export default function ProceduresPage() {
+export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -20,7 +20,7 @@ export default function ProceduresPage() {
   // });
 
   return (
-    <>
+    <div>
       <Header title="Actos Clinicos">
         <Button
           className="ml-auto"
@@ -41,6 +41,6 @@ export default function ProceduresPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   );
 }

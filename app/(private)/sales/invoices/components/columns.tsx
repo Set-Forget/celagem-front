@@ -10,7 +10,9 @@ import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { InvoiceList } from "../schemas/invoices"
-import { invoiceStatus } from "../utils"
+import { invoiceStatus, invoiceTypes } from "../utils"
+import { creditNoteStatus } from "../../credit-notes/utils"
+import { debitNoteStatus } from "../../debit-notes/utils"
 
 export const columns: ColumnDef<InvoiceList>[] = [
   {
@@ -39,7 +41,15 @@ export const columns: ColumnDef<InvoiceList>[] = [
   {
     accessorKey: "number",
     header: "Número",
-    cell: ({ row }) => <div className="font-medium">{row.original.number}</div>
+    cell: ({ row }) => {
+      const type = invoiceTypes[row.original.type as keyof typeof invoiceTypes]
+      return <div className="gap-2 flex items-center">
+        <Badge className="px-1" variant="outline">{type?.label}</Badge>
+        <span className="font-medium">
+          {row.original.number}
+        </span>
+      </div>
+    }
   },
   {
     accessorKey: "customer",
@@ -50,11 +60,17 @@ export const columns: ColumnDef<InvoiceList>[] = [
     accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      const status = invoiceStatus[
-        row.getValue("status") === "posted" && new Date(row.original.due_date) < new Date()
-          ? "overdue"
-          : row.getValue("status") as keyof typeof invoiceStatus
-      ];
+      let status
+
+      if (row.original.type === 'invoice') {
+        status = invoiceStatus[row.getValue("status") === "posted" && new Date(row.original.due_date) < new Date() ? "overdue" : row.getValue("status") as keyof typeof invoiceStatus];
+      }
+      if (row.original.type === 'credit_note') {
+        status = creditNoteStatus[row.getValue("status") as keyof typeof creditNoteStatus];
+      }
+      if (row.original.type === 'debit_note') {
+        status = debitNoteStatus[row.getValue("status") === "posted" && new Date(row.original.due_date) < new Date() ? "overdue" : row.getValue("status") as keyof typeof debitNoteStatus];
+      }
 
       return (
         <Badge
@@ -64,15 +80,6 @@ export const columns: ColumnDef<InvoiceList>[] = [
           {status?.label}
         </Badge>
       );
-    },
-  },
-  {
-    accessorKey: "date",
-    header: "Fecha de emisión",
-    cell: ({ row }) => {
-      return <div>
-        {format(new Date(row.getValue("date")), "dd MMM yyyy", { locale: es })}
-      </div>
     },
   },
   {

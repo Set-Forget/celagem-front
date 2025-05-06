@@ -1,7 +1,7 @@
 import { Clock } from "lucide-react";
 import { DateInput as AriaDateInput, TimeField as AriaTimeField, DateSegment, I18nProvider, Label } from "react-aria-components";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import { Field } from "../scheduler/schemas/templates";
+import { Field } from "../calendar/schemas/templates";
 import { Time } from "@internationalized/date";
 
 export default function TimeField({ field, formField }: {

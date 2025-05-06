@@ -3,8 +3,12 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useLazyListCareCompaniesQuery } from "@/lib/services/patients"
+import { useFormContext } from "react-hook-form"
+import { z } from "zod"
+import { newPatientSchema } from "../../schema/patients"
 
 export default function CareCompanyForm() {
+  const { control } = useFormContext<z.infer<typeof newPatientSchema>>()
 
   const [getCareCompanies] = useLazyListCareCompaniesQuery()
 
@@ -24,7 +28,8 @@ export default function CareCompanyForm() {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       <FormField
-        name="care_company.id"
+        control={control}
+        name="care_company_plan.care_company_id"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
             <FormLabel>Empresa</FormLabel>
@@ -47,7 +52,8 @@ export default function CareCompanyForm() {
         )}
       />
       <FormField
-        name="care_company.contract_number"
+        control={control}
+        name="care_company_plan.contract_number"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
             <FormLabel className="w-fit">Contrato</FormLabel>
@@ -63,7 +69,8 @@ export default function CareCompanyForm() {
         )}
       />
       <FormField
-        name="care_company.coverage"
+        control={control}
+        name="care_company_plan.coverage"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
             <FormLabel className="w-fit">

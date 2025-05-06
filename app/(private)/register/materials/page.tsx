@@ -9,7 +9,7 @@ import { materialsColumns } from './components/columns';
 import Toolbar from './components/toolbar';
 import { materialsMock } from './mocks/materials';
 
-export default function MaterialsPage() {
+export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -19,7 +19,7 @@ export default function MaterialsPage() {
   // });
 
   return (
-    <>
+    <div>
       <Header title="Materiales">
         <Button
           className="ml-auto"
@@ -40,6 +40,6 @@ export default function MaterialsPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   );
 }

@@ -3,9 +3,7 @@
 import { DataTable } from "@/components/data-table";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
@@ -153,12 +151,12 @@ const data = [
   }
 ];
 
-export default function ReceiptsPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   return (
-    <>
+    <div>
       <Header title="Cobros">
         <Button
           className="ml-auto"
@@ -177,6 +175,6 @@ export default function ReceiptsPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   )
 }

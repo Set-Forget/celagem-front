@@ -6,6 +6,7 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./templates/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   safelist: [
     'bg-gray-100 !shadow-gray-100 text-gray-800 hover:!shadow-gray-100',
@@ -14,6 +15,8 @@ const config: Config = {
     'bg-red-100 !shadow-red-100 text-red-800 hover:!shadow-red-100',
     'bg-indigo-100 text-indigo-800 !shadow-indigo-100 hover:!shadow-indigo-100',
     'bg-blue-100 text-blue-800 !shadow-blue-100 hover:!shadow-blue-100',
+    'bg-stone-100 text-stone-800 !shadow-stone-100 hover:!shadow-stone-100',
+    'bg-slate-100 text-slate-800 !shadow-slate-100 hover:!shadow-slate-100',
   ],
   theme: {
     extend: {
@@ -77,6 +80,7 @@ const config: Config = {
       }
     }
   },
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],
 };
 export default config;

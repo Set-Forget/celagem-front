@@ -1,128 +1,125 @@
 'use client'
 
 import { DataTable } from "@/components/data-table"
+import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import { Separator } from "@/components/ui/separator"
-import { cn } from "@/lib/utils"
-import { ChevronDown } from "lucide-react"
-import Link from "next/link"
+import { useGetPurchaseRequestQuery } from "@/lib/services/purchase-requests"
+import { cn, placeholder } from "@/lib/utils"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
+import { Paperclip } from "lucide-react"
+import { useParams } from "next/navigation"
+import { useState } from "react"
+import { PurchaseRequestDetail } from "../schemas/purchase-requests"
+import { purchaseRequestStatus } from "../utils"
+import Actions from "./actions"
 import { columns } from "./components/columns"
-import { usePathname, useRouter } from "next/navigation"
+import DocumentsTab from "./components/documents-tab"
 
-const data = [
+export type FieldDefinition<T> = {
+  label: string;
+  placeholderLength: number;
+  getValue: (data: T) => string | undefined;
+  className?: string;
+};
+
+const fields: FieldDefinition<PurchaseRequestDetail>[] = [
   {
-    "id": "1ebf68c9-8bb8-4da2-8b84-e33896a4f47b",
-    "item_code": "CODE-3100",
-    "item_name": "Guantes quirúrgicos",
-    "description": "Guantes de látex quirúrgicos, talla M",
-    "quantity": 100
+    label: "Solicitado por",
+    placeholderLength: 14,
+    getValue: (p) => "xxxxx",
   },
+  {
+    label: "Fecha de solicitud",
+    placeholderLength: 10,
+    getValue: (p) => "xxxxx"
+  },
+  {
+    label: "Fecha de requerimiento",
+    placeholderLength: 10,
+    getValue: (p) => format(p.request_date, "PPP", { locale: es })
+  },
+  {
+    label: "Notas",
+    placeholderLength: 30,
+    getValue: (p) => "xxxxx",
+    className: "col-span-2"
+  }
+];
+
+const tabs = [
+  {
+    value: "tab-1",
+    label: "Documentos",
+    icon: <Paperclip className="mr-1.5" size={16} />,
+    content: <DocumentsTab />
+  }
 ]
 
-export default function PurchaseRequestPage() {
-  const pathname = usePathname()
-  const router = useRouter()
+export default function Page() {
+  const { id } = useParams<{ id: string }>()
 
-  const handleGeneratePDF = async () => {
-    const { generatePurchaseRequestPDF } = await import("../templates/purchase-request")
-    generatePurchaseRequestPDF()
-  }
+  const { data: purchaseRequest, isLoading: isPurchaseRequestLoading } = useGetPurchaseRequestQuery(id)
+
+  const [tab, setTab] = useState('tab-1')
+
+  const status = purchaseRequestStatus[purchaseRequest?.state as keyof typeof purchaseRequestStatus];
 
   return (
-    <>
-      <Header title="Compra de guantes quirúrgicos">
+    <div>
+      <Header title={
+        <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isPurchaseRequestLoading ? "blur-[4px]" : "blur-none")}>
+          {isPurchaseRequestLoading ? placeholder(20, true) : purchaseRequest?.name}
+        </h1>
+      }>
         <div className="mr-auto">
           <Badge
-            variant="outline"
-            className={cn(`bg-amber-100 text-amber-800 border-none rounded-sm`)}
+            variant="custom"
+            className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
           >
-            Pendiente
+            {status?.label}
           </Badge>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="sm" variant="ghost">
-              Acciones
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                Cancelar solicitud
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Envíar solicitud
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleGeneratePDF()}
-              >
-                Generar PDF
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="sm">
-              Crear
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={() => router.push(`${pathname}/new`)}
-              >
-                Orden de compra
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Actions state={purchaseRequest?.state} />
       </Header>
-      <div className="flex flex-col gap-4 py-4 flex-1">
-        <div className="px-4 flex flex-col gap-4">
-          <h2 className="text-base font-medium">General</h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Solicitado por</label>
-              <span className="text-sm">Juan Perez</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Solicitado el</label>
-              <span className="text-sm">12 de enero de 2022</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Solicitado para</label>
-              <span className="text-sm">12 de febrero de 2022</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Sede</label>
-              <span className="text-sm">Sede principal</span>
-            </div>
-          </div>
+      <div className="flex flex-col gap-4 p-4">
+        <h2 className="text-base font-medium">General</h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {fields.map((field) => {
+            const displayValue = isPurchaseRequestLoading
+              ? placeholder(field.placeholderLength)
+              : field.getValue(purchaseRequest!) ?? "";
+            return (
+              <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
+                <label className="text-muted-foreground text-sm">
+                  {field.label}
+                </label>
+                <span
+                  className={cn(
+                    "text-sm transition-all duration-300",
+                    isPurchaseRequestLoading ? "blur-[4px]" : "blur-none"
+                  )}
+                >
+                  {displayValue}
+                </span>
+              </div>
+            );
+          })}
         </div>
-        <Separator />
-        <div className="px-4 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-medium">Items</h2>
-          </div>
-          <DataTable
-            data={data}
-            columns={columns}
-            pagination={false}
-          />
-        </div>
+        <DataTable
+          data={purchaseRequest?.items || []}
+          loading={isPurchaseRequestLoading}
+          columns={columns}
+          pagination={false}
+        />
       </div>
-    </>
+      <DataTabs
+        tabs={tabs}
+        activeTab={tab}
+        onTabChange={setTab}
+        triggerClassName="mt-4"
+      />
+    </div>
   )
 }

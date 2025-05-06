@@ -5,20 +5,19 @@ import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { useListPurchaseReceiptsQuery } from "@/lib/services/purchase-receipts";
 import { Plus } from "lucide-react";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 
-export default function PurchaseReceiptsPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   const { data: purchaseReceipts, isLoading } = useListPurchaseReceiptsQuery();
 
   return (
-    <>
-      <Header>
+    <div>
+      <Header title="Recepciones de compra">
         <Button
           className="ml-auto"
           size="sm"
@@ -37,6 +36,6 @@ export default function PurchaseReceiptsPage() {
           loading={isLoading}
         />
       </div>
-    </>
+    </div>
   )
 }

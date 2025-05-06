@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Suspense } from "react";
 
 export default function PrivateLayout({
   children,
@@ -10,7 +11,9 @@ export default function PrivateLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        {children}
+        <Suspense>
+          {children}
+        </Suspense>
       </SidebarInset>
     </SidebarProvider>
   );

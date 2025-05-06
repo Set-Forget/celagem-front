@@ -3,22 +3,21 @@
 import { DataTable } from "@/components/data-table";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
+import { useListBillsQuery } from "@/lib/services/bills";
 import { Plus } from "lucide-react";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
-import { useListBillsQuery } from "@/lib/services/bills";
 
-export default function BillsPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   const { data: bills, isLoading } = useListBillsQuery();
 
   return (
-    <>
-      <Header>
+    <div>
+      <Header title="Facturas de compra">
         <Button
           className="ml-auto"
           size="sm"
@@ -37,6 +36,6 @@ export default function BillsPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   )
 }

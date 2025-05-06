@@ -3,7 +3,7 @@ import { z } from "zod";
 const accountsPayableListSchema = z.object({
   id: z.number(),
   date: z.string(),
-  supplier: z.string(),
+  customer: z.string(),
   accounting_account: z.string(),
   costs_center: z.string(),
   voucher_type: z.string(),
@@ -20,4 +20,10 @@ const accountsPayableListSchema = z.object({
   "120+_days": z.number().nullable(),
 })
 
+const accountsPayableListResponseSchema = z.object({
+  status: z.string(),
+  data: z.array(accountsPayableListSchema),
+});
+
 export type AccountsPayableList = z.infer<typeof accountsPayableListSchema>;
+export type AccountsPayableListResponse = z.infer<typeof accountsPayableListResponseSchema>;

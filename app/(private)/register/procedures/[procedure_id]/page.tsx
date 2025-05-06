@@ -60,7 +60,7 @@ export default function PurchaseRequestPage() {
   );
 
   return (
-    <>
+    <div>
       <Header title={procedure?.cups_code + ' - ' + procedure?.description}>
         <div className="ml-auto flex gap-2">
           <Button
@@ -154,6 +154,6 @@ export default function PurchaseRequestPage() {
           </>
         )}
       </div>
-    </>
+    </div>
   );
 }

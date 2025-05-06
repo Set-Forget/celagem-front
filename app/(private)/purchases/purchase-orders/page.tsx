@@ -5,20 +5,19 @@ import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { useListPurchaseOrdersQuery } from "@/lib/services/purchase-orders";
 import { Plus } from "lucide-react";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 
-export default function PurchaseOrdersPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   const { data: purchaseOrders, isLoading } = useListPurchaseOrdersQuery();
 
   return (
-    <>
-      <Header>
+    <div>
+      <Header title="Órdenes de compra">
         <Button
           className="ml-auto"
           size="sm"
@@ -37,6 +36,6 @@ export default function PurchaseOrdersPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-    </>
+    </div>
   )
 }

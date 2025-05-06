@@ -5,9 +5,14 @@ import {
 } from "@tanstack/react-table"
 
 import { Checkbox } from "@/components/ui/checkbox"
-import { JournalEntry } from "../schemas/journal-entries"
+import { JournalEntryList } from "../schemas/journal-entries"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
+import { Badge } from "@/components/ui/badge"
+import { journalEntryStatus } from "../utils"
+import { cn } from "@/lib/utils"
 
-export const columns: ColumnDef<JournalEntry>[] = [
+export const columns: ColumnDef<JournalEntryList>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -31,34 +36,48 @@ export const columns: ColumnDef<JournalEntry>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "title",
-    header: "Título",
+    accessorKey: "number",
+    header: "Número",
     cell: ({ row }) => (
       <div className="capitalize flex gap-1">
-        <div className="font-medium">{row.getValue("title")}</div>
+        <div className="font-medium">{row.getValue("number")}</div>
       </div>
     ),
   },
   {
-    accessorKey: "account",
-    header: "Cuenta",
-    cell: ({ row }) => <div>{row.getValue("account")}</div>,
+    accessorKey: "status",
+    header: "Estado",
+    cell: ({ row }) => {
+      const status = journalEntryStatus[row.getValue("status") as keyof typeof journalEntryStatus];
+      return (
+        <Badge
+          variant="custom"
+          className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
+        >
+          {status?.label}
+        </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: "journal",
+    header: "Diario contable",
+    cell: ({ row }) => <div>{row.getValue("journal")}</div>,
   },
 
   {
     accessorKey: "date",
     header: "Fecha de creación",
     cell: ({ row }) => {
-      const formattedDate = new Date(row.getValue("date")).toLocaleDateString("es-AR")
-      return <div>{formattedDate}</div>
+      return <div>{format(new Date(row.getValue("date")), "dd MMM yyyy", { locale: es })}</div>
     },
   },
   {
-    accessorKey: "amount",
+    accessorKey: "amount_total",
     header: () => <div>Importe</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-      const currency = "ARS"
+      const amount = parseFloat(row.getValue("amount_total"))
+      const currency = row.original.currency
 
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",

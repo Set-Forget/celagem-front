@@ -5,10 +5,10 @@ import { ChevronDown } from "lucide-react";
 import NestedAccountTable from "./components/nested-account-table";
 import sampleData from "./data/accounts.json";
 
-export default function ChartOfAccountsPage() {
+export default function Page() {
 
   return (
-    <>
+    <div>
       <Header title="Plan de cuentas">
         <DropdownMenu>
           <DropdownMenuTrigger className="ml-auto" asChild>
@@ -22,9 +22,6 @@ export default function ChartOfAccountsPage() {
               <DropdownMenuItem>
                 Nueva cuenta
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                Nuevo asiento
-              </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -32,6 +29,6 @@ export default function ChartOfAccountsPage() {
       <div className="flex flex-col p-4 h-full justify-between">
         <NestedAccountTable data={sampleData} />
       </div>
-    </>
+    </div>
   )
 }

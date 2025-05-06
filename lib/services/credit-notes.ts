@@ -1,21 +1,25 @@
-import { CreditNoteDetail, CreditNoteDetailResponse, CreditNotesListResponse, NewCreditNote, NewCreditNoteResponse } from '@/app/(private)/sales/credit-notes/schemas/credit-notes';
+import { CreditNoteDetail, CreditNoteDetailResponse, NewCreditNote, NewCreditNoteResponse } from '@/app/(private)/sales/credit-notes/schemas/credit-notes';
 import { erpApi } from '@/lib/apis/erp-api';
 
 export const creditNotesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listCreditNotes: builder.query<CreditNotesListResponse, void>({
-      query: () => 'credit_notes',
-      providesTags: ['CreditNote'],
-    }),
     getCreditNote: builder.query<CreditNoteDetail, string>({
       query: (id) => `credit_notes/${id}`,
       transformResponse: (response: CreditNoteDetailResponse) => response.data,
       providesTags: ['CreditNote'],
     }),
-    createCreditNote: builder.mutation<NewCreditNoteResponse, NewCreditNote>({
+    createCreditNote: builder.mutation<NewCreditNoteResponse, Omit<NewCreditNote, 'items'> & { items: { product_id: number, taxes_id: number[] | undefined, quantity: number }[] }>({
       query: (data) => ({
         url: 'credit_notes',
         method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['CreditNote'],
+    }),
+    updateCreditNote: builder.mutation<{ status: string, message: string }, Partial<Omit<CreditNoteDetail, 'status'> & { state: 'draft' | 'posted' | 'cancel' }>>({
+      query: ({ id, ...data }) => ({
+        url: `/credit_notes/${id}`,
+        method: 'PUT',
         body: data,
       }),
       invalidatesTags: ['CreditNote'],
@@ -24,7 +28,7 @@ export const creditNotesApi = erpApi.injectEndpoints({
 });
 
 export const {
-  useListCreditNotesQuery,
   useGetCreditNoteQuery,
   useCreateCreditNoteMutation,
+  useUpdateCreditNoteMutation,
 } = creditNotesApi;

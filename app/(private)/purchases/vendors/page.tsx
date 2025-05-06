@@ -9,15 +9,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 
-export default function SuppliersPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   const { data: suppliers, isLoading: isSuppliersLoading } = useListSuppliersQuery()
 
   return (
-    <>
-      <Header>
+    <div>
+      <Header title="Proveedores">
         <Button
           className="ml-auto"
           size="sm"
@@ -36,6 +36,6 @@ export default function SuppliersPage() {
           loading={isSuppliersLoading}
         />
       </div>
-    </>
+    </div>
   )
 }

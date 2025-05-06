@@ -10,12 +10,12 @@ export const suppliersApi = erpApi.injectEndpoints({
       }),
       providesTags: ['Supplier']
     }),
-    getSupplier: builder.query<SupplierDetail, number>({
+    getSupplier: builder.query<SupplierDetail, string>({
       query: (id) => `/suppliers/${id}`,
       transformResponse: (response: SupplierDetailResponse) => response.data,
       providesTags: ['Supplier']
     }),
-    createSupplier: builder.mutation<NewSupplierResponse, Omit<NewSupplier, 'property_payment_term'> & { property_payment_term: number }>({
+    createSupplier: builder.mutation<NewSupplierResponse, Omit<NewSupplier, 'property_payment_term' | 'accounting_account'> & { property_payment_term: number }>({
       query: (data) => ({
         url: '/suppliers',
         method: 'POST',

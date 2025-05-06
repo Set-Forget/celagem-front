@@ -2,7 +2,7 @@ import { DateField as DateFieldRac, DateInput as DateInputRac } from "@/componen
 import { DateValue } from "@internationalized/date";
 import { I18nProvider, Label } from "react-aria-components";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import { Field } from "../scheduler/schemas/templates";
+import { Field } from "../calendar/schemas/templates";
 
 export default function DatetimeField({ formField, field }: {
   field: Field;

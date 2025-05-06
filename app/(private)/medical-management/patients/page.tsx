@@ -3,21 +3,20 @@
 import { DataTable } from "@/components/data-table"
 import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import Toolbar from "./components/toolbar"
-import { columns } from "./components/columns"
 import { useListPatientsQuery } from "@/lib/services/patients"
+import { Plus } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { columns } from "./components/columns"
+import Toolbar from "./components/toolbar"
 
-export default function PatientsPage() { 
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   const { data: patients, isLoading: isPatientsLoading } = useListPatientsQuery()
 
   return (
-    <>
+    <div>
       <Header title="Pacientes">
         <Button
           className="ml-auto"
@@ -34,9 +33,9 @@ export default function PatientsPage() {
           loading={isPatientsLoading}
           columns={columns}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
-          toolbar={({ table }) => <Toolbar table={table} />}
+          toolbar={() => <Toolbar />}
         />
       </div>
-    </>
+    </div>
   )
 }

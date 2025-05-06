@@ -10,7 +10,7 @@ import Toolbar from './components/toolbar';
 import { materialsInventoryMock } from './mocks/materials-inventory';
 import { TableCell, TableFooter, TableRow } from '@/components/ui/table';
 
-export default function ProductsPage() {
+export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 

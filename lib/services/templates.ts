@@ -1,12 +1,15 @@
-import { NewField, NewFieldResponse, NewSection, NewSectionResponse, NewTemplate, NewTemplateResponse, SectionDetail, SectionDetailResponse, SectionListResponse, TemplateDetail, TemplateDetailResponse, TemplateListResponse } from '@/app/(private)/medical-management/scheduler/schemas/templates';
+import { NewField, NewFieldResponse, NewSection, NewSectionResponse, NewTemplate, NewTemplateResponse, SectionDetail, SectionDetailResponse, SectionListResponse, TemplateDetail, TemplateDetailResponse, TemplateListResponse } from '@/app/(private)/medical-management/calendar/schemas/templates';
 import { hcApi } from '@/lib/apis/hc-api';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const templatesApi = hcApi.injectEndpoints({
   endpoints: (builder) => ({
     //--- Templates ---
-    listTemplates: builder.query<TemplateListResponse, void>({
-      query: () => 'template',
+    listTemplates: builder.query<TemplateListResponse, { name?: string } | void>({
+      query: (data) => ({
+        url: 'template',
+        params: data || {}
+      }),
       providesTags: ['Template']
     }),
     getTemplate: builder.query<TemplateDetail, number>({

@@ -18,7 +18,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { newFieldSchema, newSectionSchema, newTemplateSchema, templateDetailSchema } from "../../scheduler/schemas/templates";
+import { newFieldSchema, newSectionSchema, newTemplateSchema, templateDetailSchema } from "../../calendar/schemas/templates";
 import { templateStatus } from "../utils";
 import EditFieldDialog from "./components/edit-field-dialog";
 import EditSectionDialog from "./components/edit-section-dialog";
@@ -38,7 +38,7 @@ const normalizedSchema = z.object({
 
 export type NormalizedSchema = z.infer<typeof normalizedSchema>
 
-export default function TemplatePage() {
+export default function Page() {
   const params = useParams<{ id: string }>();
 
   const id = Number(params.id)
@@ -186,7 +186,7 @@ export default function TemplatePage() {
   }, [template])
 
   return (
-    <>
+    <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isTemplateLoading ? "blur-[4px]" : "blur-none")}>
           {!template ? placeholder(14, true) : template.name}
@@ -245,7 +245,7 @@ export default function TemplatePage() {
           <div className="grid grid-cols-1 gap-4 p-4">
             <div className="flex items-center gap-2">
               <h2 className="text-base font-medium">Secciones</h2>
-              <DropdownMenu>
+              <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <Button
                     size="icon"
@@ -325,6 +325,6 @@ export default function TemplatePage() {
         <EditSectionDialog />
         <EditTemplateDialog />
       </Form>
-    </>
+    </div>
   )
 }

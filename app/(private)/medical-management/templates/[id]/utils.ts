@@ -1,4 +1,4 @@
-import { NewField, NewSection, NewTemplate } from "../../scheduler/schemas/templates";
+import { NewField, NewSection, NewTemplate } from "../../calendar/schemas/templates";
 import { isEqual } from "lodash";
 import { NormalizedSchema } from "./page";
 

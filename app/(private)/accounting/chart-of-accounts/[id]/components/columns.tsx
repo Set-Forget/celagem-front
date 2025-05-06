@@ -5,7 +5,7 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 
-export const columns: ColumnDef<JournalEntryItem>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "date",
     header: "Fecha",

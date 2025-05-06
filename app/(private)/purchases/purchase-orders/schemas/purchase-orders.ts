@@ -1,51 +1,34 @@
+import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
-const newPurchaseOrderItemSchema = z.object({
-  item_code: z.string({ required_error: "El código del item es requerido" }),
-  item_name: z.string({ required_error: "El nombre del item es requerido" }),
-  description: z.string({ required_error: "La descripción del item es requerida" }),
-  quantity: z.number({ required_error: "La cantidad es requerida" }),
-  id: z.string({ required_error: "El id es requerido" }),
-  price: z.string({ required_error: "El precio es requerido" }),
-  tax: z.string()
+const newPurchaseOrderLineSchema = z.object({
+  product_id: z.number({ required_error: "El producto es requerido" }),
+  product_qty: z.number({ required_error: "La cantidad es requerida" }),
+  taxes_id: z.array(z.number()).optional(),
+
+  unit_price: z.number({ required_error: "El precio unitario es requerido" }), // ! No existe en el backend.
 })
 
 export const newPurchaseOrderSchema = z.object({
-  headquarter: z.object({
-    id: z.string({ required_error: "La sede es requerida" }),
-    name: z.string({ required_error: "La sede es requerida" }),
-  }),
-  supplier_name: z.string({ required_error: "El proveedor es requerido" }),
-  contacts_name: z.array(z.string()).nonempty("Al menos un contacto es requerido"),
-  payment_terms: z.string({ required_error: "Los términos de pago son requeridos" }),
-  currency: z.string({ required_error: "La moneda es requerida" }),
-  title: z.string({ required_error: "El título es requerido" }),
-  items: z.array(newPurchaseOrderItemSchema).nonempty("Al menos un item es requerido"),
-  required_by: z.string({ required_error: "La fecha requerida es requerida" }),
-  purchase_order_date: z.string({ required_error: "La fecha de la orden es requerida" }),
-  notes: z.string().optional(),
-  address: z.string().optional(),
-  terms_and_conditions: z.string().optional(),
+  supplier: z.number({ required_error: "El proveedor es requerido" }),
+  required_date: z.custom<CalendarDate>((data) => {
+    return data instanceof CalendarDate;
+  }, { message: "La fecha de requerimiento es requerida" }),
+  currency: z.number({ required_error: "La moneda es requerida" }),
+  payment_term: z.number({ required_error: "El término de pago es requerido" }),
+  notes: z.string().optional(), // ! Debería ser internal_notes.
+  purchase_request: z.number({ required_error: "La solicitud de compra es requerida" }),
+  items: z.array(newPurchaseOrderLineSchema).min(1, { message: "Al menos un item es requerido" }),
+
+  // ! Falta headquarter_id. (Quizás no haga falta que el usuario lo seleccione)
+  tyc_notes: z.string().optional(), // ! Falta el campo en el backend.
 })
-
-export const purchaseOrdersSchema = z.object({
-  id: z.string(),
-  supplier_name: z.string(),
-  status: z.enum(["cancelled", "pending", "ordered"]),
-  created_at: z.string(),
-  price: z.number(),
-  number: z.number(),
-  percentage_received: z.number(),
-  title: z.string(),
-});
-
-//---
 
 export const purchaseOrderListSchema = z.object({
   id: z.number(),
   number: z.string(),
   supplier: z.string(),
-  status: z.enum(["to-approve", "approved", "pending", "done", "cancel"]),
+  status: z.enum(["draft", "sent", "to approve", "purchase", "done", "cancel"]),
   required_date: z.string(),
   price: z.number(),
   currency: z.string(),
@@ -55,6 +38,7 @@ export const purchaseOrderListSchema = z.object({
 export const purchaseOrderLineSchema = z.object({
   id: z.number(),
   product_id: z.number(),
+  product_code: z.string().optional(),
   product_name: z.string(),
   product_qty: z.number(),
   qty_received: z.number(),
@@ -67,15 +51,29 @@ export const purchaseOrderLineSchema = z.object({
 export const purchaseOrderDetailSchema = z.object({
   id: z.number(),
   number: z.string(),
+  supplier: z.object({
+    id: z.number(),
+    name: z.string(),
+    phone: z.string(),
+    email: z.string(),
+    address: z.string(),
+  }),
+  status: z.enum(["draft", "sent", "to approve", "purchase", "done", "cancel"]),
+  price: z.number(),
   required_date: z.string(),
+  currency: z.string(),
+  notes: z.string(), // ! Debería ser internal_notes.
   purchase_order_date: z.string(),
   required_by: z.string(),
-  related_invoices: z.array(z.object({ id: z.number(), number: z.string() })).optional(),
-  related_receptions: z.array(z.object({ id: z.number(), number: z.string() })).optional(),
-  status: z.enum(["to-approve", "approved", "pending", "done", "cancel"]),
+  purchase_request: z.string(), // ! Debería ser { id: z.number(), number: z.string() }
+  invoices: z.array(z.object({ id: z.number(), number: z.string() })), // ! No sé con que forma vienen, pero que es un array seguro.
+  receptions: z.array(z.object({ id: z.number(), number: z.string() })), // ! No sé con que forma vienen, pero que es un array seguro.
   items: z.array(purchaseOrderLineSchema),
-  currency: z.string(),
-  supplier: z.string(),
+
+  tyc_notes: z.string().optional(), // ! Falta el campo en el backend.
+  // ! Falta headquarter_id. 
+  // ! Falta request_date.
+  // ! Falta payment_term, debe ser {id, name}.
 })
 
 export const purchaseOrderListResponseSchema = z.object({
@@ -88,6 +86,14 @@ export const purchaseOrderDetailResponseSchema = z.object({
   data: purchaseOrderDetailSchema,
 });
 
+export const newPurchaseOrderResponseSchema = z.object({
+  status: z.string(),
+  data: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+});
+
 export type PurchaseOrderItem = z.infer<typeof purchaseOrderLineSchema>;
 
 export type PurchaseOrderList = z.infer<typeof purchaseOrderListSchema>;
@@ -95,3 +101,8 @@ export type PurchaseOrderListResponse = z.infer<typeof purchaseOrderListResponse
 
 export type PurchaseOrderDetail = z.infer<typeof purchaseOrderDetailSchema>;
 export type PurchaseOrderDetailResponse = z.infer<typeof purchaseOrderDetailResponseSchema>;
+
+export type NewPurchaseOrder = z.infer<typeof newPurchaseOrderSchema>;
+
+export type NewPurchaseOrderResponse = z.infer<typeof newPurchaseOrderResponseSchema>;
+export type NewPurchaseOrderItem = z.infer<typeof newPurchaseOrderLineSchema>;

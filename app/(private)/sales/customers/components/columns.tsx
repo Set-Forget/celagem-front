@@ -35,18 +35,8 @@ export const columns: ColumnDef<CustomerList>[] = [
     cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "email",
-    header: "Correo electrónico",
-    cell: ({ row }) => <div>{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "tax_id",
-    header: "Identificación fiscal",
-    cell: ({ row }) => <div>{row.getValue("tax_id")}</div>,
-  },
-  {
     accessorKey: "status",
-    header: "",
+    header: "Estado",
     cell: ({ row }) => {
       const status = customerStatus[row.getValue("status") as keyof typeof customerStatus];
       return (
@@ -58,5 +48,15 @@ export const columns: ColumnDef<CustomerList>[] = [
         </Badge>
       );
     },
+  },
+  {
+    accessorKey: "email",
+    header: "Correo electrónico",
+    cell: ({ row }) => <div>{row.getValue("email")}</div>,
+  },
+  {
+    accessorKey: "tax_id",
+    header: "Identificación fiscal",
+    cell: ({ row }) => <div>{row.getValue("tax_id")}</div>,
   }
 ]

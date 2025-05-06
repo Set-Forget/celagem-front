@@ -11,14 +11,14 @@ import Toolbar from "./components/toolbar";
 import NewTemplateDialog from "./[id]/components/new-template-dialog";
 import { setDialogsState } from "@/lib/store/dialogs-store";
 
-export default function TemplatesPage() {
+export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
   const { data: templates, isLoading: isTemplatesLoading } = useListTemplatesQuery()
 
   return (
-    <>
+    <div>
       <Header title="Plantillas">
         <Button
           className="ml-auto"
@@ -41,6 +41,6 @@ export default function TemplatesPage() {
         />
       </div>
       <NewTemplateDialog />
-    </>
+    </div>
   )
 }

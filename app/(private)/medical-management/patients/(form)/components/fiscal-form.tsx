@@ -2,12 +2,13 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useWatch } from "react-hook-form"
+import { customerTypes, fiscalCategories } from "../../utils"
 
 export default function FiscalForm() {
 
   const isCompany = useWatch({
     name: "fiscal.customer_type",
-  }) === "company"
+  }) === "Company"
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
@@ -29,12 +30,11 @@ export default function FiscalForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="company">
-                    Empresa
-                  </SelectItem>
-                  <SelectItem value="individual">
-                    Particular
-                  </SelectItem>
+                  {customerTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </FormControl>
@@ -93,15 +93,11 @@ export default function FiscalForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="responsable_inscripto">
-                    Responsable inscripto
-                  </SelectItem>
-                  <SelectItem value="monotributista">
-                    Monotributista
-                  </SelectItem>
-                  <SelectItem value="exento">
-                    Exento
-                  </SelectItem>
+                  {fiscalCategories.map((category) => (
+                    <SelectItem key={category.value} value={category.value}>
+                      {category.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </FormControl>

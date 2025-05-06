@@ -29,7 +29,7 @@ const accounts_receipted_to = [
   { id: "af4", name: "CAJA CHICA" },
 ];
 
-export default function NewReceiptPage() {
+export default function Page() {
   const newReceiptForm = useForm<z.infer<typeof newReceiptSchema>>({
     resolver: zodResolver(newReceiptSchema),
     defaultValues: {
@@ -66,7 +66,7 @@ export default function NewReceiptPage() {
   }
 
   return (
-    <>
+    <div>
       <Header title="Registrar cobro" />
       <Separator />
       <div className="flex flex-col h-full justify-between">
@@ -298,6 +298,6 @@ export default function NewReceiptPage() {
           </div>
         </Form>
       </div>
-    </>
+    </div>
   )
 }

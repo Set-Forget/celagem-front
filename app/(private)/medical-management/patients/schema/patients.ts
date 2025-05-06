@@ -1,7 +1,7 @@
+import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
 export const newPatientGeneralSchema = z.object({
-  // * Listo
   first_last_name: z
     .string({ required_error: "El apellido es requerido", })
     .nonempty({ message: "El apellido es requerido" })
@@ -11,12 +11,13 @@ export const newPatientGeneralSchema = z.object({
     .nonempty({ message: "El nombre es requerido" })
     .default(""),
   biological_sex: z
-    .enum(["male", "female", "both"], { required_error: "El sexo biológico es requerido" }),
+    .enum(["Male", "Female", "Both"], { required_error: "El sexo biológico es requerido" }),
   gender_identity: z
-    .enum(["cisgender", "no-binary", "transgender", "fluent", "other"])
+    .enum(["Cisgender", "NoBinary", "Transgender", "Fluent", "Other"])
     .optional(),
-  birthdate: z
-    .string({ required_error: "La fecha de nacimiento es requerida" }),
+  birthdate: z.custom<CalendarDate>((data) => {
+    return data instanceof CalendarDate;
+  }, { message: "La fecha de nacimiento es requerida" }),
   birth_place: z
     .object({
       place_id: z
@@ -27,24 +28,32 @@ export const newPatientGeneralSchema = z.object({
         .nonempty({ message: "El lugar de nacimiento es requerido" }),
     }, { required_error: "El lugar de nacimiento es requerido" }),
   disability_type: z
-    .enum(["visual", "hearing", "physical", "mental", "intellectual", "multiple", "psychosocial", "deafblindness", "other"])
+    .enum(["Visual", "Hearing", "Physical", "Mental", "Intellectual", "Multiple", "Psychosocial", "Deafblindness", "Other"])
     .optional(),
   document_type: z
-    .enum(["adult-without-identification", "citizen-id", "DNI", "unique-population-registration-key", "immigration-card", "minor-without-identification", "passport", "civil-registry", "cuit"], { required_error: "El tipo de documento es requerido" }),
+    .enum([
+      "AdultWithoutIdentification",
+      "CitizenId",
+      "Dni",
+      "UniquePopulationRegistrationKey",
+      "ImmigrationCard",
+      "ResearchParticipant",
+      "MinorWithoutIdentification",
+      "Passport",
+      "UniquePersonalIdentificationNumber",
+      "CivilRegistry",
+      "IdentityCard",
+      "SpecialPermanencePermission",
+      "PersonalProtectionPermission",
+      "UniqueTaxpayerIdentificationKey",
+      "NationalElectoralInstitute",
+      "FederalContributorRegistry",
+      "MigrationForm"
+    ], { required_error: "El tipo de documento es requerido" }),
   document_number: z
     .string({ required_error: "El número de documento es requerido" })
     .nonempty({ message: "El número de documento es requerido" })
     .default(""),
-  phone_number: z
-    .string({ required_error: "El número de teléfono es requerido" })
-    .default(""),
-  email: z
-    .string()
-    .optional()
-    .default(""),
-  class_id: z
-    .string()
-    .min(1, { message: "La clase es requerida" }),
   father_name: z
     .string()
     .optional()
@@ -53,24 +62,8 @@ export const newPatientGeneralSchema = z.object({
     .string({ required_error: "El nombre de la madre es requerido" })
     .nonempty({ message: "El nombre de la madre es requerido" })
     .default(""),
-  referring_entity: z
-    .string({ required_error: "La entidad referente es requerida" })
-    .nonempty({ message: "La entidad referente es requerida" })
-    .default(""),
   marital_status: z
-    .enum(["single", "married", "divorced", "widowed"], { required_error: "El estado civil es requerido" }),
-  company_id: z
-    .string({ required_error: "La sede es requerida" })
-    .nonempty({ message: "La sede es requerida" }),
-  address: z
-    .object({
-      place_id: z.string({ required_error: "El lugar es requerido" }).min(1, { message: "El lugar es requerido" }),
-      formatted_address: z.string({ required_error: "La dirección es requerida" }).min(1, { message: "La dirección es requerida" }),
-    }, { required_error: "La dirección es requerida" }),
-  linkage: z
-    .string({ required_error: "El vínculo es requerido" })
-    .nonempty({ message: "El vínculo es requerido" })
-    .default(""),
+    .enum(["Single", "Married", "Divorced", "Widowed"], { required_error: "El estado civil es requerido" }),
   created_by: z
     .string()
     .optional(),
@@ -78,9 +71,43 @@ export const newPatientGeneralSchema = z.object({
   // @ Ignorado
   //second_last_name: z.string().optional(),
   //socioeconomic_level: z.enum(["1", "2", "3", "4", "particular", "others"]).optional(),
-  //residence_zone: z.enum(["urban", "rural", "others"]).optional(),
-  //insurance_provider: z.string().optional(),
   //research_participant: z.boolean().optional(),
+})
+
+export const newPatientAffiliationSchema = z.object({
+  class_id: z
+    .string({ required_error: "La clase es requerida" })
+    .min(1, { message: "La clase es requerida" }),
+  company_id: z
+    .string({ required_error: "La compañia es requerida" })
+    .nonempty({ message: "La compañia es requerida" }),
+  clinics: z
+    .array(z.string().nonempty({ message: "La clínica es requerida" }), { required_error: "La clínica es requerida" })
+    .nonempty({ message: "Debe seleccionar al menos una clínica" }),
+  insurance_provider: z.string().optional(),
+  referring_entity: z
+    .string({ required_error: "La entidad referente es requerida" })
+    .nonempty({ message: "La entidad referente es requerida" })
+    .default(""),
+  linkage: z
+    .string({ required_error: "El vínculo es requerido" })
+    .nonempty({ message: "El vínculo es requerido" })
+    .default(""),
+})
+
+export const newPatientContactSchema = z.object({
+  phone_number: z
+    .string({ required_error: "El número de teléfono es requerido" })
+    .default(""),
+  email: z
+    .string({ required_error: "El correo electrónico es requerido" })
+    .email({ message: "El correo electrónico es inválido" })
+    .default(""),
+  address: z
+    .object({
+      place_id: z.string({ required_error: "El lugar es requerido" }).min(1, { message: "El lugar es requerido" }),
+      formatted_address: z.string({ required_error: "La dirección es requerida" }).min(1, { message: "La dirección es requerida" }),
+    }, { required_error: "La dirección es requerida" }),
 })
 
 export const newPatientFiscalSchema = z.object({
@@ -119,8 +146,8 @@ export const newPatientCaregiverSchema = z.object({
 })
 
 export const newPatientCareCompanySchema = z.object({
-  care_company: z.object({
-    id: z.string({ required_error: "La empresa de atención es requerida" }).min(1, { message: "La empresa de atención es requerida" }),
+  care_company_plan: z.object({
+    care_company_id: z.string({ required_error: "La empresa de atención es requerida" }).min(1, { message: "La empresa de atención es requerida" }),
     contract_number: z.string().optional(),
     coverage: z.string({ required_error: "La cobertura es requerida" }).min(1, { message: "La cobertura es requerida" }),
   }),
@@ -131,6 +158,8 @@ export const newPatientSchema = newPatientGeneralSchema
   .merge(newPatientCompanionSchema)
   .merge(newPatientCaregiverSchema)
   .merge(newPatientCareCompanySchema)
+  .merge(newPatientAffiliationSchema)
+  .merge(newPatientContactSchema)
 
 export const patientListSchema = z.object({
   id: z.string(),
@@ -140,6 +169,10 @@ export const patientListSchema = z.object({
   document_type: z.string(),
   document_number: z.string(),
   phone_number: z.string(),
+  class: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
 })
 
 export const patientCareCompanyListSchema = z.object({
@@ -154,28 +187,47 @@ export const patientDetailSchema = z.object({
   first_last_name: z.string(),
   second_last_name: z.string(),
   first_name: z.string(),
-  document_type: z.enum(["adult-without-identification", "citizen-id", "DNI", "unique-population-registration-key", "immigration-card", "minor-without-identification", "passport", "civil-registry", "cuit"], { required_error: "El tipo de documento es requerido" }),
+  document_type: z.enum([
+    "AdultWithoutIdentification",
+    "CitizenId",
+    "Dni",
+    "UniquePopulationRegistrationKey",
+    "ImmigrationCard",
+    "ResearchParticipant",
+    "MinorWithoutIdentification",
+    "Passport",
+    "UniquePersonalIdentificationNumber",
+    "CivilRegistry",
+    "IdentityCard",
+    "SpecialPermanencePermission",
+    "PersonalProtectionPermission",
+    "UniqueTaxpayerIdentificationKey",
+    "NationalElectoralInstitute",
+    "FederalContributorRegistry",
+    "MigrationForm"
+  ], { required_error: "El tipo de documento es requerido" }),
   document_number: z.string(),
   phone_number: z.string(),
   email: z.string(),
   research_participant: z.boolean(),
-  biological_sex: z.enum(["male", "female", "both"]),
-  gender_identity: z.enum(["cisgender", "no-binary", "transgender", "fluent", "other"]),
+  biological_sex: z.enum(["Male", "Female", "Both"]),
+  gender_identity: z.enum(["Cisgender", "NoBinary", "Transgender", "Fluent", "Other"]),
   birth_date: z.string(),
   birth_place: z.object({
+    id: z.string(),
     place_id: z.string(),
     formatted_address: z.string(),
     latitude: z.number(),
     longitude: z.number(),
   }),
-  disability_type: z.enum(["visual", "hearing", "physical", "mental", "intellectual", "multiple", "psychosocial", "deafblindness", "other"]),
+  disability_type: z.enum(["Visual", "Hearing", "Physical", "Mental", "Intellectual", "Multiple", "Psychosocial", "Deafblindness", "Other"]),
   socioeconomic_level: z.string().nullable(),
   residence_zone: z.string(),
   father_name: z.string(),
   mother_name: z.string(),
   insurance_provider: z.string(),
   referring_entity: z.string(),
-  marital_status: z.enum(["single", "married", "divorced", "widowed"]),
+  marital_status: z.enum(["Single", "Married", "Divorced", "Widowed"]),
   address: z.object({
     id: z.string(),
     place_id: z.string(),
@@ -187,13 +239,16 @@ export const patientDetailSchema = z.object({
     id: z.string(),
     name: z.string(),
   }),
-  company_id: z.string(),
   fiscal: z.object({
     id: z.string(),
     registered_name: z.string(),
     fiscal_category: z.string(),
     customer_type: z.string(),
     tax_id: z.string(),
+  }),
+  company: z.object({
+    id: z.string(),
+    name: z.string(),
   }),
   created_at: z.string(),
   created_by: z.object({
@@ -207,37 +262,46 @@ export const patientDetailSchema = z.object({
     first_name: z.string(),
     last_name: z.string(),
   }),
-  linkage: z.string().nullable(),
+  linkage: z.string().optional(),
   companion: z.object({
+    id: z.string(),
     name: z.string(),
     address: z.object({
+      id: z.string(),
       place_id: z.string(),
       formatted_address: z.string(),
-      latitude: z.number(),
-      longitude: z.number(),
     }),
     phone_number: z.string(),
     relationship: z.string(),
   }),
   caregiver: z.object({
     name: z.string(),
-    address: z.object({
-      place_id: z.string(),
-      formatted_address: z.string(),
-      latitude: z.number(),
-      longitude: z.number(),
-    }),
-    phone_number: z.string(),
     document_type: z.string(),
     document_number: z.string(),
+    address: z.object({
+      id: z.string(),
+      place_id: z.string(),
+      formatted_address: z.string(),
+    }),
+    phone_number: z.string(),
     relationship: z.string(),
   }),
-  care_company: z.object({
-    id: z.string(),
-    name: z.string(),
+  care_company_plan: z.object({
+    care_company: z.object({
+      id: z.string(),
+      name: z.string(),
+    }),
     contract_number: z.string(),
     coverage: z.string(),
   }),
+  notes: z.array(z.object({
+    id: z.string(),
+    note: z.string(),
+  })),
+  clinics: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+  }))
 })
 
 export const patientListResponseSchema = z.object({

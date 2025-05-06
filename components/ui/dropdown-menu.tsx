@@ -95,7 +95,7 @@ const DropdownMenuItem = React.forwardRef<
     )}
     {...props}
   >
-    {loading && <Loader2 className="animate-spin mr-2" />}
+    {loading && <Loader2 className="animate-spin" />}
     {children}
   </DropdownMenuPrimitive.Item>
 ));

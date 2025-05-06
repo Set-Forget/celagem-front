@@ -1,30 +1,43 @@
 import { z } from "zod";
 
-export const newCustomerSchema = z.object({
-  name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }), // * Listo
-  email: z.string({ required_error: "El correo electrónico es requerido" }).email({ message: "El correo electrónico es inválido" }), // ? Debería ser opcional.
-  website: z.string().optional(), // ! No debería ser requerido en clientes.
-  contact_address_inline: z.string({ required_error: "La dirección de contacto es requerida" }), // ? Debería ser opcional.
-  tax_id: z.string({ required_error: "La identificación fiscal es requerida" }).min(1, { message: "La identificación fiscal es requerida" }), // * Listo
-  commercial_company_name: z.string({ required_error: "El nombre registrado del proveedor es requerido" }).min(1, { message: "El nombre registrado del proveedor es requerido" }), // ? Debería ser opcional.
-  property_payment_term: z.string({ required_error: "La condición de pago es requerida" }), // ? Debería ser opcional.
-  property_account_position: z.union([z.string(), z.literal(false)]), // ? ¿Esto que es?
-
-  // ! Deberíamos incluir nacionalidad.
-  phone: z.string().optional(), // ! No existe en el schema.
-  tax_regime: z.string().optional(), // ! No existe en el schema (U_HBT_RegTrib).
-  tax_category: z.string().optional(), // ! No existe en el schema (U_HBT_RegFis).
-  currency: z.string().optional(), // ! No existe en el schema.
-  accounting_account: z.string().optional(), // ! No existe en el schema.
-  tax_type: z.string({ required_error: "El tipo de documento es requerido" }), // ! No existe en el schema (U_HBT_TipDoc).
-  economic_activity: z.string().optional(), // ! No existe en el schema (U_HBT_ActEco).
-  entity_type: z.string().optional(), // ! No existe en el schema (U_HBT_TipEnt).
-  nationality_type: z.string().optional(), // ! No existe en el schema (U_HBT_Nacional).
-  payment_method: z.string().optional(), // ! No existe en el schema (U_HBT_MetPag).
-  is_resident: z.boolean().default(false), // ! No existe en el schema (U_HBT_Residente).
-  tax_information: z.string().optional(), // ! No existe en el schema (U_HBT_InfoTrib).
-  fiscal_responsibility: z.string().optional(), // ! No existe en el schema (U_HBT_ResFis1).
+export const newCustomerGeneralSchema = z.object({
+  phone: z.string().optional(),
+  name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
+  email: z.string({ required_error: "El correo electrónico es requerido" }).email({ message: "El correo electrónico es inválido" }),
+  contact_address_inline: z.string({ required_error: "La dirección de contacto es requerida" }),
+  website: z.string().optional(),
+  internal_notes: z.array(z.string()),
+  tags: z.array(z.object({
+    id: z.string(),
+    text: z.string(),
+  }))
 })
+
+export const newCustomerFiscalSchema = z.object({
+  commercial_company_name: z.string().optional(),
+  tax_type: z.string({ required_error: "El tipo de documento es requerido" }),
+  tax_id: z.string({ required_error: "La identificación fiscal es requerida" }).min(1, { message: "La identificación fiscal es requerida" }),
+  tax_regime: z.string().optional(),
+  tax_category: z.string().optional(),
+  tax_information: z.string().optional(),
+  fiscal_responsibility: z.string().optional(),
+  economic_activity: z.string().optional(),
+  entity_type: z.string().optional(),
+  nationality_type: z.string().optional(),
+  is_resident: z.boolean().default(true),
+})
+
+export const newCustomerAccountingSchema = z.object({
+  property_payment_term: z.number({ required_error: "El plazo de pago es requerido" }), // ! Debería ser opcional.
+  property_account_position: z.union([z.string(), z.literal(false)]),
+  currency: z.number({ required_error: "La moneda es requerida" }), // ! Debería ser opcional.
+  payment_method: z.string().optional(),
+  accounting_account: z.number().optional(), // ! No existe en el schema.
+})
+
+export const newCustomerSchema = newCustomerGeneralSchema
+  .merge(newCustomerFiscalSchema)
+  .merge(newCustomerAccountingSchema)
 
 export const newCustomerResponseSchema = z.object({
   status: z.string(),
@@ -52,32 +65,51 @@ export const customerDetailSchema = z.object({
   email: z.string(),
   website: z.string(), // ! No debería mostrarse en clientes.
   contact_address_inline: z.string(),
-  purchase_order_count: z.number(), // ? Esto creo que no es muy útil.
+  purchase_order_count: z.number(),
   tax_id: z.string(),
   payment_amount_due: z.number(),
   payment_amount_overdue: z.number(),
   total_invoiced: z.number(),
-  property_payment_term: z.string(), // ? Esto no se bien que es.
-  property_account_position: z.string().nullable(), // ? Esto no se bien que es.
-  commercial_company_name: z.string(), // ? Esto no se bien que es.
+  property_payment_term: z.object({
+    id: z.number(),
+    name: z.string(),
+  }).nullable(),
+  property_account_position: z.string().nullable(),
+  commercial_company_name: z.string(),
   status: z.boolean(),
-
-  // ! Falta currency.
-  // ! Falta el numero de telefono.
-  // ! Falta la parte de trazabilidad (created_by/at, updated_by/at).
-  // ! Falta la parte de notas (array de notas).
-  // ! Falta la parte de tags (array de tags).
+  currency: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  phone: z.string(),
+  internal_notes: z.array(z.string()),
+  tags: z.array(z.object({
+    id: z.string(),
+    text: z.string(),
+  })),
+  tax_regime: z.string(), // @ U_HBT_RegTrib - Código del regimen tributario.
+  tax_type: z.string(), // @ U_HBT_TipDoc - Código del tipo de documento.
+  economic_activity: z.object({
+    id: z.number(),
+    name: z.string(),
+  }), // @ U_HBT_ActEco - Código de la actividad económica.
+  entity_type: z.string(), // @ U_HBT_TipEnt - Código del tipo de entidad.
+  nationality_type: z.string(), // @ U_HBT_Nacional - Código de la nacionalidad.
+  tax_category: z.string(), // @ U_HBT_RegFis - Regimen Fiscal.
+  payment_method: z.object({
+    id: z.number(),
+    name: z.string(),
+  }), // @ U_HBT_MedPag - Medio de Pago.
+  is_resident: z.boolean(), // @ U_HBT_Residente - Residente.
+  tax_information: z.string(), // @ U_HBT_InfoTrib - Información Tributaria.
+  fiscal_responsibility: z.string(), // @ U_HBT_ResFis1 - Responsabilidad Fiscal.
+  traceability: z.object({
+    created_by: z.string(),
+    created_at: z.string(),
+    updated_by: z.string(),
+    updated_at: z.string(),
+  }),
   // ! Falta accounting_account.
-  // ! Falta tax_type o algo por el estilo para representar (U_HBT_RegTrib).
-  // ! Falta economic_activity o algo por el estilo para representar (U_HBT_ActEco).
-  // ! Falta entity_type o algo por el estilo para representar (U_HBT_TipEnt).
-  // ! Falta nationality o algo por el estilo para representar (U_HBT_Nacional).
-  // ! Falta tax_regime o algo por el estilo para representar (U_HBT_RegFis).
-  // ! Falta payment_method o algo por el estilo para representar (U_HBT_MetPag).
-  // ! Falta is_resident o algo por el estilo para representar (U_HBT_Residente).
-  // ! Falta tax_information o algo por el estilo para representar (U_HBT_InfoTrib).
-  // ! Falta fiscal_responsibility o algo por el estilo para representar (U_HBT_ResFis1).
-  // ! Falta withholdings o algo por el estilo para representar (Retencion Sobre ICA, No Aplica Ret. Fuente, Retencion Sobre IVA).
 })
 
 export const customerListResponseSchema = z.object({

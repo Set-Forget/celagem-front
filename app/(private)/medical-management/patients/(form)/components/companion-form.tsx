@@ -3,9 +3,13 @@ import { CountrySelect, FlagComponent, PhoneInput } from "@/components/phone-inp
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useLazyGetAutocompleteQuery } from "@/lib/services/google-places"
+import { useFormContext } from "react-hook-form"
 import * as RPNInput from "react-phone-number-input"
+import { z } from "zod"
+import { newPatientSchema } from "../../schema/patients"
 
 export default function CompanionForm() {
+  const { control } = useFormContext<z.infer<typeof newPatientSchema>>()
 
   const [searchPlace] = useLazyGetAutocompleteQuery();
 
@@ -26,6 +30,7 @@ export default function CompanionForm() {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       <FormField
+        control={control}
         name="companion.name"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -42,6 +47,7 @@ export default function CompanionForm() {
         )}
       />
       <FormField
+        control={control}
         name="companion.address"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -59,6 +65,7 @@ export default function CompanionForm() {
                 value={field.value}
                 getOptionKey={(item) => item.place_id}
                 noResultsMessage="Podrías ingresar 'Calle 123, Bogotá, Colombia'"
+                initialOptions={field.value?.place_id ? [field.value] : undefined}
               />
             </FormControl>
             <FormMessage />
@@ -66,6 +73,7 @@ export default function CompanionForm() {
         )}
       />
       <FormField
+        control={control}
         name="companion.phone_number"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -90,6 +98,7 @@ export default function CompanionForm() {
         )}
       />
       <FormField
+        control={control}
         name="companion.relationship"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">

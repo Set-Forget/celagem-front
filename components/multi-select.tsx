@@ -23,7 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
-const multiSelectVariants = cva("m-1 transition", {
+const multiSelectVariants = cva("transition", {
   variants: {
     variant: {
       default: "border-foreground/10 text-foreground bg-card hover:bg-accent",
@@ -137,7 +137,7 @@ function MultiSelectInner<T, V>(
         >
           <div ref={containerRef} className="flex justify-between items-center w-full">
             {selectedValues.length > 0 && (
-              <div className="flex items-center">
+              <div className="flex items-center gap-1">
                 {selectedValues.slice(0, dynamicMaxCount).map((val) => {
                   const option = options.find(
                     (o) => getOptionValue(o) === val

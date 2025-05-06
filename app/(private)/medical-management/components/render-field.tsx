@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Control, useFormContext } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../components/ui/form";
-import { Field } from "../scheduler/schemas/templates";
+import { Field } from "../calendar/schemas/templates";
 import { templateFields } from "../utils";
 
 export default function RenderField({

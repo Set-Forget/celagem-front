@@ -1,25 +1,14 @@
-'use client'
+"use client"
 
-import React, { useState } from 'react'
-import { ChevronRight, ChevronDown, Search } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { addDays } from 'date-fns'
-import { DateRange } from 'react-day-picker'
+import { Button } from "@/components/ui/button"
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
+import { ChevronDown, ChevronRight } from "lucide-react"
+import React, { useState } from "react"
 
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
 
-import { Calendar } from "@/components/ui/calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation"
+import Toolbar from "./toolbar"
 
 interface AccountItem {
   id: string
@@ -35,12 +24,8 @@ interface NestedAccountTableProps {
 const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data }) => {
   const router = useRouter()
 
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 365),
-  })
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState("")
 
   const toggleRow = (id: string) => {
     setExpandedRows((prev) => {
@@ -54,16 +39,11 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data }) => {
     })
   }
 
-  const countAccounts = (items: AccountItem[]): number => {
-    return items.reduce((acc, item) => {
-      return acc + 1 + (item.children ? countAccounts(item.children) : 0)
-    }, 0)
-  }
-
   const filterData = (items: AccountItem[], searchTerm: string): AccountItem[] => {
     const lowerSearchTerm = searchTerm.toLowerCase()
     return items.reduce<AccountItem[]>((acc, item) => {
-      const matches = item.name.toLowerCase().includes(lowerSearchTerm) || item.id.toLowerCase().includes(lowerSearchTerm)
+      const matches =
+        item.name.toLowerCase().includes(lowerSearchTerm) || item.id.toLowerCase().includes(lowerSearchTerm)
       let children: AccountItem[] | undefined
       if (item.children) {
         children = filterData(item.children, searchTerm)
@@ -71,7 +51,7 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data }) => {
       if (matches || (children && children.length > 0)) {
         acc.push({
           ...item,
-          children
+          children,
         })
       }
       return acc
@@ -89,41 +69,33 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data }) => {
       return (
         <React.Fragment key={item.id}>
           <TableRow className={cn("border-b", isExpanded && "bg-muted")}>
-            <TableCell
-              className={cn("p-2 text-sm")}
-            >
-              {hasChildren && (
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className='h-6 w-6'
-                  onClick={() => toggleRow(item.id)}
-                >
-                  {isExpanded ? (
-                    <ChevronDown className="h-4 w-4" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4" />
-                  )}
-                </Button>
-              )}
+            <TableCell className="p-2 text-sm">
+              <div className="flex items-center gap-2">
+                <div
+                  style={{ width: `${depth * 2}rem` }}
+                  className="flex-shrink-0"
+                />
+                {hasChildren && (
+                  <Button size="icon" variant="ghost" className={cn("h-6 w-6")} onClick={() => toggleRow(item.id)}>
+                    <ChevronRight className={cn("h-4 w-4 transition-transform", isExpanded && "rotate-90")} />
+                  </Button>
+                )}
+                <span className="font-mono">
+                  {currentNumber}
+                </span>
+              </div>
             </TableCell>
             <TableCell className="p-2 text-sm">
-              {currentNumber}
-            </TableCell>
-            <TableCell
-              className="p-2 text-sm"
-              style={{ paddingLeft: `${depth * 1.5}rem` }}
-            >
               <Button
                 size="sm"
                 variant="ghost"
-                className='h-6'
+                className="h-6"
                 onClick={() => router.push(`/accounting/chart-of-accounts/${currentNumber}`)}
               >
                 {item.name}
               </Button>
             </TableCell>
-            <TableCell className="p-2 text-sm text-right">ARS {item.balance.toFixed(2)}</TableCell>
+            <TableCell className="p-2 text-sm text-right font-medium">ARS {item.balance.toFixed(2)}</TableCell>
             <TableCell className="p-2 text-sm"></TableCell>
           </TableRow>
           {isExpanded && hasChildren && renderTableRows(item.children!, depth + 1)}
@@ -132,94 +104,43 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data }) => {
     })
   }
 
-  const accountsCount = countAccounts(filteredData)
-
   return (
-    <div className='flex flex-col gap-4'>
-      <div className="flex gap-4 justify-between items-center">
-        <div className="flex gap-1">
-          <Input
-            placeholder="Buscar cuenta..."
-            className="max-w-xs py-0 h-8 rounded-tr-none rounded-br-none"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <Button
-            variant="outline"
-            size="icon"
-            className="min-w-8 h-8 rounded-tl-none rounded-bl-none"
-          >
-            <Search />
-          </Button>
+    <div className="flex flex-col gap-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
+      <div className="space-y-4 flex flex-col h-full">
+        <Toolbar />
+        <div className="overflow-hidden rounded-sm border border-border bg-background shadow-sm">
+          <Table className="[&_td]:border-border [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
+            <TableHeader className="sticky top-0 z-10 bg-accent/90 backdrop-blur-sm">
+              <TableRow className="border-b">
+                <TableHead className="h-9 text-nowrap">ID</TableHead>
+                <TableHead className="h-9 text-nowrap">Cuenta</TableHead>
+                <TableHead className="h-9 text-nowrap text-right">Balance</TableHead>
+                <TableHead className="h-9 text-nowrap w-6"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>{renderTableRows(filteredData)}</TableBody>
+          </Table>
         </div>
-        <div className={cn("grid gap-2")}>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id="date"
-                variant={"outline"}
-                className={cn(
-                  "justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                {date?.from ? (
-                  date.to ? (
-                    <>
-                      {format(date.from, "LLL dd, y")} -{" "}
-                      {format(date.to, "LLL dd, y")}
-                    </>
-                  ) : (
-                    format(date.from, "LLL dd, y")
-                  )
-                ) : (
-                  <span>Seleccioná un rango</span>
-                )}
-                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                initialFocus
-                mode="range"
-                defaultMonth={date?.from}
-                selected={date}
-                onSelect={setDate}
-                numberOfMonths={2}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-      </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className='w-6'></TableHead>
-            <TableHead>ID</TableHead>
-            <TableHead>Cuenta</TableHead>
-            <TableHead className='text-right'>Balance</TableHead>
-            <TableHead className='w-6'></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>{renderTableRows(filteredData)}</TableBody>
-        <TableFooter className="border-t-0">
-          <TableRow>
-            <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right rounded-bl-sm"></TableCell>
-            <TableCell colSpan={2} className="h-6 text-xs font-medium py-0">
-              <span>Total</span>
-            </TableCell>
-            <TableCell colSpan={1} className="h-6 text-xs font-semibold py-0 text-right">
+        <div className="flex justify-between">
+          <p className="whitespace-nowrap text-sm text-muted-foreground" aria-live="polite">
+            Mostrando{" "}
+            <span className="text-foreground">
+              {6}
+            </span>{" "}
+            de{" "}<span className="text-foreground">{22}</span>
+            {" "}resultados
+          </p>
+          <p className="whitespace-nowrap text-sm text-muted-foreground" aria-live="polite">
+            <span className="text-foreground font-medium">
               ARS 17,000.00
-            </TableCell>
-            <TableCell colSpan={1} className="h-6 text-xs font-medium py-0 text-right rounded-br-sm"></TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-      <div className="text-sm text-muted-foreground">
-        {accountsCount} cuentas en total
+            </span>{" "}
+            en total
+          </p>
+        </div>
       </div>
     </div>
   )
 }
 
 export default NestedAccountTable
+
