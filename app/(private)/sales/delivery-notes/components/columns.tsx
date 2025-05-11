@@ -25,7 +25,7 @@ export const columns: ColumnDef<DeliveryNoteList>[] = [
     header: 'Fecha de entrega',
     cell: ({ row }) => (
       <div>
-        {format(new Date(row.getValue('scheduled_date')), 'PPP', { locale: es })}
+        {format(new Date(row.getValue('scheduled_date')), 'PP', { locale: es })}
       </div>
     ),
   },

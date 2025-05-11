@@ -26,45 +26,53 @@ export const materialListSchema = z.object({
   active: z.boolean(),
 })
 
-// ! Esto hay que cambiarlo por el original.
 export const materialDetailSchema = z.object({
   id: z.number(),
   name: z.string(),
-  description: z.string(),
-  type: z.string(),
-  sale_price: z.number(),
-  cost_price: z.number(),
-  purchase_ok: z.boolean(),
-  sale_ok: z.boolean(),
-  active: z.boolean(),
-  tracking: z.string(),
-  purchase_line_warn: z.string(),
-  sale_line_warn: z.string(),
-  category: z.object({
+  default_code: z.string(),
+  barcode: z.string(),
+  standard_price: z.number(),
+  template: z.object({
     id: z.number(),
     name: z.string(),
   }),
-  unit_of_measure: z.object({
+  location: z.object({
     id: z.number(),
     name: z.string(),
-  }),
+  }).nullable(),
+  cost_unit: z.object({
+    id: z.number(),
+    name: z.string(),
+  }).nullable(),
   purchase_unit: z.object({
     id: z.number(),
     name: z.string(),
-  }),
-  currency: z.object({
+  }).nullable(),
+  brand: z.object({
     id: z.number(),
     name: z.string(),
-  }),
-  variants: z.array(z.object({
+  }).nullable(),
+  exam_type: z.object({
     id: z.number(),
     name: z.string(),
-  })),
-  exam_condition: z.boolean(),
-  cups_code: z.boolean(),
-  exam_type: z.boolean(),
+  }).nullable(),
+  exam_condition: z.object({
+    id: z.number(),
+    name: z.string(),
+  }).nullable(),
+  cups_code: z.string(),
   product_usage_type: z.string(),
-  brand: z.boolean(),
+  convertion_rate_purchase_to_cost_unit: z.number(),
+  purchase_unit_price: z.number(),
+  cost_unit_price: z.number(),
+  fraction: z.string(),
+  attribute_values: z.array(z.object({
+    attribute_id: z.number(),
+    attribute: z.string(),
+    value_id: z.number(),
+    value: z.string(),
+  })),
+  active: z.boolean(),
 })
 
 export const materialDetailResponseSchema = z.object({

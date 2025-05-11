@@ -29,7 +29,7 @@ export default function Page() {
   }, { refetchOnMountOrArgChange: true })
 
   return (
-    <div>
+    <div className="">
       <Header title="Órdenes de compra">
         <Button
           className="ml-auto"

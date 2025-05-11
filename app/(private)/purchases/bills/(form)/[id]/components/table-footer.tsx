@@ -12,6 +12,8 @@ export default function TableFooter() {
   const taxes = bill?.items.reduce((acc, item) => acc + item.price_tax, 0) ?? 0
   const total = subtotal + taxes
 
+  const currency = bill?.currency.name || ""
+
   return (
     <ShadcnTableFooter>
       <TableRow className="!border-solid !border-b bg-background h-6" />
@@ -20,7 +22,7 @@ export default function TableFooter() {
           <span>Subtotal (sin imp.)</span>
         </TableCell>
         <TableCell className="h-6 text-xs py-0">
-          <span>{bill?.currency} {subtotal.toFixed(2)}</span>
+          <span>{currency} {subtotal.toFixed(2)}</span>
         </TableCell>
       </TableRow>
       <TableRow className="bg-background">
@@ -28,7 +30,7 @@ export default function TableFooter() {
           <span>Impuestos</span>
         </TableCell>
         <TableCell className="h-6 text-xs py-0">
-          <span>{bill?.currency} {taxes.toFixed(2)}</span>
+          <span>{currency} {taxes.toFixed(2)}</span>
         </TableCell>
       </TableRow>
       <TableRow className="bg-background">
@@ -36,7 +38,7 @@ export default function TableFooter() {
           <span>Total</span>
         </TableCell>
         <TableCell className="h-6 text-xs font-semibold py-0 bg-muted/50">
-          <span>{bill?.currency} {total.toFixed(2)}</span>
+          <span>{currency} {total.toFixed(2)}</span>
         </TableCell>
       </TableRow>
     </ShadcnTableFooter>

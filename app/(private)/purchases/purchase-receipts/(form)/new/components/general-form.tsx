@@ -1,202 +1,192 @@
-import { Box, CalendarIcon, House } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { format } from "date-fns"
-import { useForm, useFormContext } from "react-hook-form"
-import { z } from "zod"
-import Header from "@/components/header"
-import { Input } from "@/components/ui/input"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Textarea } from "@/components/ui/textarea"
-import { v4 as uuidv4 } from 'uuid'
-//import { chema } from "../schemas/purchase-receipts"
-import DataTabs from "@/components/data-tabs"
-import { useState } from "react"
-import { newPurchaseReceiptSchema } from "../../../schemas/purchase-receipts"
+import { AsyncSelect } from "@/components/async-select"
 import DatePicker from "@/components/date-picker"
-import SearchSelect from "@/components/search-select"
 import FormTable from "@/components/form-table"
-import TableFooter from "./table-footer"
-import { columns } from "./columns"
-import { useSearchParams } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Separator } from "@/components/ui/separator"
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
-
-const source_locations = [
-  { value: "1", label: "Bodega principal" },
-  { value: "2", label: "Bodega secundaria" },
-  { value: "3", label: "Bodega de insumos" },
-  { value: "4", label: "Bodega de productos terminados" },
-]
-
-const reception_locations = [
-  { value: "1", label: "Bodega principal" },
-  { value: "2", label: "Bodega secundaria" },
-  { value: "3", label: "Bodega de insumos" },
-  { value: "4", label: "Bodega de productos terminados" },
-]
+import { useLazyListStocksQuery } from "@/lib/services/stocks"
+import { cn, placeholder } from "@/lib/utils"
+import { Eye } from "lucide-react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useFormContext } from "react-hook-form"
+import { z } from "zod"
+import { newPurchaseReceiptSchema } from "../../../schemas/purchase-receipts"
+import { columns } from "./columns"
+import TableFooter from "./table-footer"
 
 export default function GeneralForm() {
+  const router = useRouter()
   const searchParams = useSearchParams()
 
   const { control, formState } = useFormContext<z.infer<typeof newPurchaseReceiptSchema>>()
 
   const purchaseOrderId = searchParams.get("purchase_order_id")
 
-  const { isLoading: isPurchaseOrderLoading } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
+  const { data: purchaseOrder, isLoading: isPurchaseOrderLoading } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
+
+  const [searchStocks] = useLazyListStocksQuery()
+
+  const handleSearchStock = async (query?: string) => {
+    try {
+      const response = await searchStocks({ name: query }).unwrap()
+      return response.data?.map(stock => ({
+        id: stock.id,
+        name: stock.name
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
+  }
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-      {/*             <FormField
-              control={control}
-              name="purchase_order"
-              render={({ field }) => (
-                <FormItem className="flex flex-col w-full">
-                  <FormLabel className="w-fit">
-                    Número de orden de compra
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="432000003"
-                      {...field}
-                    />
-                  </FormControl>
-                  {formState.errors.purchase_order ? (
-                    <FormMessage />
-                  ) :
-                    <FormDescription>
-                      Esta será la orden de compra a la que se asociará la recepción.
-                    </FormDescription>
-                  }
-                </FormItem>
+    <>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
+        <div className="flex flex-col gap-1">
+          <label className="text-muted-foreground text-sm">Orden de compra</label>
+          <div className="flex gap-2 items-center group w-fit">
+            <span className={cn("text-sm font-medium tracking-tight transition-all duration-300", isPurchaseOrderLoading ? "blur-[4px]" : "blur-none")}>
+              {isPurchaseOrderLoading ? placeholder(20, true) : purchaseOrder?.number}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              className={cn("w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity", isPurchaseOrderLoading && "hidden")}
+              onClick={() => router.push(`/purchases/purchase-orders/${purchaseOrder?.id}`)}
+            >
+              <Eye />
+            </Button>
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-muted-foreground text-sm">Proveedor</label>
+          <div className="flex gap-2 items-center group w-fit">
+            <span className={cn("text-sm font-medium tracking-tight transition-all duration-300", isPurchaseOrderLoading ? "blur-[4px]" : "blur-none")}>
+              {isPurchaseOrderLoading ? placeholder(20, true) : purchaseOrder?.supplier.name}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              className={cn("w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity", isPurchaseOrderLoading && "hidden")}
+              onClick={() => router.push(`/purchases/vendors/${purchaseOrder?.supplier.id}`)}
+            >
+              <Eye />
+            </Button>
+          </div>
+        </div>
+      </div>
+      <Separator className="col-span-full" />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
+        <FormField
+          control={control}
+          name="source_location"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full">
+              <FormLabel className="w-fit">Ubicación de origen</FormLabel>
+              <FormControl>
+                <AsyncSelect<{ id: number, name: string }, number>
+                  label="Ubicación de origen"
+                  triggerClassName="!w-full"
+                  placeholder="Seleccionar ubicación de origen"
+                  fetcher={handleSearchStock}
+                  getDisplayValue={(item) => item.name}
+                  getOptionValue={(item) => item.id}
+                  renderOption={(item) => <div>{item.name}</div>}
+                  onChange={field.onChange}
+                  value={field.value}
+                  getOptionKey={(item) => String(item.id)}
+                  noResultsMessage="No se encontraron resultados"
+                />
+              </FormControl>
+              {formState.errors.source_location ? (
+                <FormMessage />
+              ) :
+                <FormDescription>
+                  Esta será la ubicación de origen del pedido.
+                </FormDescription>
+              }
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="reception_location"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full">
+              <FormLabel className="w-fit">Ubicación de recepción</FormLabel>
+              <FormControl>
+                <AsyncSelect<{ id: number, name: string }, number>
+                  label="Ubicación de recepción"
+                  triggerClassName="!w-full"
+                  placeholder="Seleccionar ubicación de recepción"
+                  fetcher={handleSearchStock}
+                  getDisplayValue={(item) => item.name}
+                  getOptionValue={(item) => item.id}
+                  renderOption={(item) => <div>{item.name}</div>}
+                  onChange={field.onChange}
+                  value={field.value}
+                  getOptionKey={(item) => String(item.id)}
+                  noResultsMessage="No se encontraron resultados"
+                />
+              </FormControl>
+              {formState.errors.reception_location ? (
+                <FormMessage />
+              ) :
+                <FormDescription>
+                  Esta será la ubicación en la que se recibió el pedido.
+                </FormDescription>
+              }
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="reception_date"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full">
+              <FormLabel className="w-fit">Fecha de recepción</FormLabel>
+              <FormControl>
+                <DatePicker
+                  value={field.value || null}
+                  onChange={(date) => field.onChange(date)}
+                />
+              </FormControl>
+              {formState.errors.reception_date ? (
+                <FormMessage />
+              ) :
+                <FormDescription>
+                  Esta será la fecha en la que se recibió el pedido.
+                </FormDescription>
+              }
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="items"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full col-span-2">
+              <FormLabel className="w-fit">Items</FormLabel>
+              <FormControl>
+                <FormTable<z.infer<typeof newPurchaseReceiptSchema>>
+                  columns={columns}
+                  footer={({ append }) => <TableFooter append={append} />}
+                  loading={isPurchaseOrderLoading}
+                  name="items"
+                  className="col-span-2"
+                />
+              </FormControl>
+              {formState.errors.items?.message && (
+                <p className="text-destructive text-[12.8px] mt-1 font-medium">
+                  {formState.errors.items.message}
+                </p>
               )}
-            /> */}
-      <FormField
-        control={control}
-        name="source_location"
-        render={({ field }) => (
-          <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">
-              Ubicación de origen
-            </FormLabel>
-            <FormControl>
-              <SearchSelect
-                value={field.value}
-                onSelect={field.onChange}
-                options={source_locations}
-                placeholder="Ubicación de origen"
-                searchPlaceholder="Buscar..."
-              />
-            </FormControl>
-            {formState.errors.source_location ? (
-              <FormMessage />
-            ) :
-              <FormDescription>
-                Esta será la ubicación de origen del pedido.
-              </FormDescription>
-            }
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name="reception_location"
-        render={({ field }) => (
-          <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">
-              Ubicación de recepción
-            </FormLabel>
-            <FormControl>
-              <SearchSelect
-                value={field.value}
-                onSelect={field.onChange}
-                options={reception_locations}
-                placeholder="Ubicación de recepción"
-                searchPlaceholder="Buscar..."
-              />
-            </FormControl>
-            {formState.errors.reception_location ? (
-              <FormMessage />
-            ) :
-              <FormDescription>
-                Esta será la ubicación en la que se recibió el pedido.
-              </FormDescription>
-            }
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name="reception_date"
-        render={({ field }) => (
-          <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">Fecha de recepción</FormLabel>
-            <FormControl>
-              <DatePicker
-                value={field.value || null}
-                onChange={(date) => field.onChange(date)}
-              />
-            </FormControl>
-            {formState.errors.reception_date ? (
-              <FormMessage />
-            ) :
-              <FormDescription>
-                Esta será la fecha en la que se recibió el pedido.
-              </FormDescription>
-            }
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name="notes"
-        render={({ field }) => (
-          <FormItem className="flex flex-col w-full md:col-span-2">
-            <FormLabel className="w-fit">Notas</FormLabel>
-            <FormControl>
-              <Textarea
-                {...field}
-                placeholder="Notas..."
-                className="resize-none"
-              />
-            </FormControl>
-            <FormDescription>
-              Estas notas serán visibles en la recepción de compra.
-            </FormDescription>
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name="items"
-        render={({ field }) => (
-          <FormItem className="flex flex-col w-full col-span-2">
-            <FormLabel className="w-fit">Items</FormLabel>
-            <FormControl>
-              <FormTable<z.infer<typeof newPurchaseReceiptSchema>>
-                columns={columns}
-                footer={({ append }) => <TableFooter append={append} />}
-                loading={isPurchaseOrderLoading}
-                name="items"
-                className="col-span-2"
-              />
-            </FormControl>
-            {formState.errors.items?.message && (
-              <p className="text-destructive text-[12.8px] mt-1 font-medium">
-                {formState.errors.items.message}
-              </p>
-            )}
-          </FormItem>
-        )}
-      />
-    </div>
+            </FormItem>
+          )}
+        />
+      </div>
+    </>
   )
 }

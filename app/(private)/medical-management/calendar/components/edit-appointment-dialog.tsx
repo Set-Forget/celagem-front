@@ -223,7 +223,7 @@ export default function EditAppointmentDialog() {
                             )}
                           >
                             <p className="truncate w-full">
-                              {field.value ? format(new Date(field.value), "PPP") : <span>Seleccionar fecha</span>}
+                              {field.value ? format(new Date(field.value), "PP") : <span>Seleccionar fecha</span>}
                             </p>
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -343,7 +343,7 @@ export default function EditAppointmentDialog() {
                             variant="outline"
                             className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
                           >
-                            {field.value ? format(new Date(field.value), "PPP") : <span>Seleccionar fecha</span>}
+                            {field.value ? format(new Date(field.value), "PP") : <span>Seleccionar fecha</span>}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
                         </FormControl>

@@ -28,7 +28,7 @@ export default function Component() {
               )}
             >
               <span className={cn("truncate", !date && "text-muted-foreground")}>
-                {date ? format(date, "PPP") : "Pick a date"}
+                {date ? format(date, "PP") : "Pick a date"}
               </span>
               <CalendarIcon
                 size={16}

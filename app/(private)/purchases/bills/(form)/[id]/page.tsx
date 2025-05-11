@@ -8,44 +8,43 @@ import { useGetBillQuery } from "@/lib/services/bills"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { Box, FileText, Paperclip } from "lucide-react"
+import { Box, Paperclip, Sticker } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
 import { BillDetail } from "../../schemas/bills"
 import { billStatus } from "../../utils"
 import Actions from "./actions"
-import AccountingTab from "./components/accounting-tab"
 import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
 import SupplierTab from "./components/supplier-tab"
 import TableFooter from "./components/table-footer"
+import NotesTab from "./components/notes-tab"
 
 const fields: FieldDefinition<BillDetail>[] = [
   {
     label: "Fecha de emisión",
     placeholderLength: 14,
-    getValue: (p) => format(p.date, "PPP", { locale: es }),
+    getValue: (p) => format(p.date, "PP", { locale: es }),
   },
   {
     label: "Fecha de vencimiento",
     placeholderLength: 10,
-    getValue: (p) => format(p.due_date, "PPP", { locale: es }),
+    getValue: (p) => format(p.due_date, "PP", { locale: es }),
+  },
+  {
+    label: "Fecha de contabilización",
+    placeholderLength: 14,
+    getValue: (p) => format(p.accounting_date, "PP", { locale: es }),
   },
   {
     label: "Condición de pago",
     placeholderLength: 10,
-    getValue: (p) => p.payment_term || "No especificado",
+    getValue: (p) => p?.payment_term?.name || "No especificado",
   },
   {
     label: "Método de pago",
     placeholderLength: 10,
-    getValue: (p) => p.payment_method || "No especificado",
-  },
-  {
-    label: "Notas",
-    placeholderLength: 20,
-    getValue: (p) => p.internal_notes || "No hay notas",
-    className: "col-span-2"
+    getValue: (p) => p?.payment_method?.name || "No especificado",
   }
 ];
 
@@ -58,16 +57,16 @@ const tabs = [
   },
   {
     value: "tab-2",
-    label: "Contabilidad",
-    icon: <FileText className="mr-1.5" size={16} />,
-    content: <AccountingTab />
-  },
-  {
-    value: "tab-3",
     label: "Documentos",
     icon: <Paperclip className="mr-1.5" size={16} />,
     content: <DocumentsTab />
-  }
+  },
+  {
+    value: "tab-3",
+    label: "Notes",
+    icon: <Sticker className="mr-1.5" size={16} />,
+    content: <NotesTab />
+  },
 ]
 
 export default function Page() {
@@ -98,10 +97,9 @@ export default function Page() {
             {status?.label}
           </Badge>
         </div>
-        <Actions state={bill?.status} />
+        <Actions state={bill?.status} type={bill?.type} />
       </Header>
       <div className="flex flex-col gap-4 p-4">
-        <h2 className="text-base font-medium">General</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {fields.map((field) => {
             const displayValue = isBillLoading
@@ -125,7 +123,7 @@ export default function Page() {
           })}
         </div>
         <DataTable
-          data={bill?.items.map((item) => ({ ...item, currency: bill?.currency })) ?? []}
+          data={bill?.items.map((item) => ({ ...item, currency: bill?.currency.name })) ?? []}
           loading={isBillLoading}
           columns={columns}
           pagination={false}

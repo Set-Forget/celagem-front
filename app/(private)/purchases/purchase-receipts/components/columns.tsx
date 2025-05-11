@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { PurchaseReceiptList } from "../schemas/purchase-receipts"
 import { es } from "date-fns/locale"
+import { ArrowRight } from "lucide-react"
 
 export const columns: ColumnDef<PurchaseReceiptList>[] = [
   {
@@ -20,17 +21,18 @@ export const columns: ColumnDef<PurchaseReceiptList>[] = [
     accessorKey: "reception_date",
     header: "Fecha de recepción",
     cell: ({ row }) => <div>
-      {format(new Date(row.getValue("reception_date")), "PPP", { locale: es })}
+      {format(new Date(row.getValue("reception_date")), "PP", { locale: es })}
     </div>,
   },
   {
-    accessorKey: "reception_location",
-    header: "Ubicación de recepción",
-    cell: ({ row }) => <div>{row.getValue("reception_location")}</div>,
-  },
-  {
-    accessorKey: "source_location",
-    header: "Ubicación de origen",
-    cell: ({ row }) => <div>{row.getValue("source_location")}</div>,
+    accessorKey: 'reception_location',
+    header: 'Movimiento',
+    cell: ({ row }) => (
+      <div className="text-sm flex items-center gap-1">
+        {row.original.source_location}{' '}
+        <ArrowRight size={14} />{' '}
+        {row.original.reception_location}
+      </div>
+    ),
   }
 ]

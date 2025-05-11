@@ -17,12 +17,12 @@ export default function AppointmentTab() {
     {
       label: "Fecha de inicio",
       placeholderLength: 14,
-      getValue: (p) => p?.start_date ? format(new Date(`${p?.start_date} ${p?.start_time}`), "PPP hh:mmaaa", { locale: es }) : "No especificada",
+      getValue: (p) => p?.start_date ? format(new Date(`${p?.start_date} ${p?.start_time}`), "PP hh:mmaaa", { locale: es }) : "No especificada",
     },
     {
       label: "Fecha de fin",
       placeholderLength: 14,
-      getValue: (p) => p?.start_date ? format(new Date(`${p.end_date} ${p.end_time}`), "PPP hh:mmaaa", { locale: es }) : "No especificada",
+      getValue: (p) => p?.start_date ? format(new Date(`${p.end_date} ${p.end_time}`), "PP hh:mmaaa", { locale: es }) : "No especificada",
     },
     {
       label: "Profesional",

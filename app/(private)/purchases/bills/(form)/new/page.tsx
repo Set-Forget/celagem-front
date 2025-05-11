@@ -10,33 +10,34 @@ import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
 import { cn, getFieldPaths } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { get } from "lodash"
-import { Ellipsis, House, Save } from "lucide-react"
+import { Save, Sticker, Wallet } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FieldErrors, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
-import { newBillGeneralSchema, newBillOthersSchema, newBillSchema } from "../../schemas/bills"
-import GeneralForm from "../components/general-form"
-import OthersForm from "../components/others-form"
+import { newBillFiscalSchema, newBillNotesSchema, newBillSchema } from "../../schemas/bills"
+import FiscalForm from "./components/fiscal-form"
+import GeneralForm from "./components/general-form"
+import NotesForm from "./components/notes-form"
 
 const tabToFieldsMap = {
-  "tab-1": getFieldPaths(newBillGeneralSchema),
-  "tab-2": getFieldPaths(newBillOthersSchema),
+  "tab-1": getFieldPaths(newBillFiscalSchema),
+  "tab-2": getFieldPaths(newBillNotesSchema),
 }
 
 const tabs = [
   {
     value: "tab-1",
-    label: "General",
-    icon: <House className="mr-1.5" size={16} />,
-    content: <GeneralForm />
+    label: "Fiscal",
+    icon: <Wallet className="mr-1.5" size={16} />,
+    content: <FiscalForm />
   },
   {
     value: "tab-2",
-    label: "Otros",
-    icon: <Ellipsis className="mr-1.5" size={16} />,
-    content: <OthersForm />
+    label: "Notas",
+    icon: <Sticker className="mr-1.5" size={16} />,
+    content: <NotesForm />
   }
 ]
 
@@ -44,13 +45,13 @@ export default function Page() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const [tab, setTab] = useState('tab-1')
+  const [tab, setTab] = useState(tabs[0].value)
 
   const [createBill, { isLoading: isCreatingBill }] = useCreateBillMutation()
 
   const purchaseOrderId = searchParams.get("purchase_order_id")
 
-  const { data: purchaseOrder, isLoading: isPurchaseOrderLoading } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
+  const { data: purchaseOrder } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
 
   const newBillForm = useForm<z.infer<typeof newBillSchema>>({
     resolver: zodResolver(newBillSchema),
@@ -59,8 +60,6 @@ export default function Page() {
       date: new Date().toISOString(),
       accounting_date: "",
       number: "",
-      accounting_account: "",
-      cost_center: "",
       internal_notes: "",
       tyc_notes: "",
     }
@@ -70,15 +69,13 @@ export default function Page() {
     try {
       const response = await createBill({
         ...data,
-        currency: 1,
-        payment_term: 2,
-        payment_method: 1,
         accounting_date: data.accounting_date.toString(),
-        items: data.items.map((item) => ({
-          ...item,
-          taxes_id: [2]
-          // ! Acá hay que agregar purchase_line_id mapeando los ids de los items de la orden de compra.
-        }))
+        items: data.items.map(({ cost_center_id, ...rest }) => ({
+          ...rest,
+          cost_centers: cost_center_id ? [{ id: cost_center_id, percentage: 100 }] : [],
+          purchase_line_id: purchaseOrder?.items.find((poItem) => poItem.product_id === rest.product_id)?.id,
+        })),
+        purchase_order_id: purchaseOrderId ? parseInt(purchaseOrderId) : undefined,
       }).unwrap()
 
       if (response.status === "success") {
@@ -108,13 +105,13 @@ export default function Page() {
       newBillForm.reset({
         supplier: purchaseOrder.supplier.id,
         date: new Date().toISOString(),
-        // ! Acá hay que agregar currency_id pero primero necesito que currency me devuelva un id.
-        // ! Acá hay que agregar payment_term_id pero primero necesito que payment_term me devuelva un id.
+        currency: purchaseOrder.currency.id,
+        payment_term: purchaseOrder?.payment_term?.id,
         items: purchaseOrder.items.map((item) => ({
           product_id: item.product_id,
           quantity: item.product_qty,
           taxes_id: item.taxes.map((tax) => tax.id),
-          unit_price: item.price_unit
+          price_unit: item.price_unit
         }))
       })
     }
@@ -135,6 +132,7 @@ export default function Page() {
           </Button>
         </div>
       </Header>
+      <GeneralForm />
       <DataTabs
         tabs={tabs}
         activeTab={tab}

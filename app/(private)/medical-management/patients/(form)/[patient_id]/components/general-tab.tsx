@@ -45,7 +45,7 @@ export default function GeneralTab() {
     {
       label: "Fecha de nacimiento",
       placeholderLength: 13,
-      getValue: (p) => p.birth_date ? format(p.birth_date, "PPP", { locale: es }) : 'No especificado',
+      getValue: (p) => p.birth_date ? format(p.birth_date, "PP", { locale: es }) : 'No especificado',
     },
     {
       label: "Lugar de nacimiento",

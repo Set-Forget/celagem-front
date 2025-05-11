@@ -141,7 +141,7 @@ export default function Page() {
                               )}
                             >
                               {field.value ? (
-                                format(field.value, "PPP")
+                                format(field.value, "PP")
                               ) : (
                                 <span>Seleccioná una fecha</span>
                               )}

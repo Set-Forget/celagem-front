@@ -16,6 +16,7 @@ export const erpApi = createApi({
     'Material',
     'Currency',
     'PaymentTerm',
+    'PaymentMethod',
     'Tax',
     'AccountingAccount',
     'JournalEntry',

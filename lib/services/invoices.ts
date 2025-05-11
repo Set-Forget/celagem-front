@@ -27,7 +27,7 @@ export const invoicesApi = erpApi.injectEndpoints({
       transformResponse: (response: InvoiceDetailResponse) => response.data,
       providesTags: ['Invoice'],
     }),
-    createInvoice: builder.mutation<NewInvoiceResponse, Omit<Overwrite<NewInvoice, { accounting_date: string, payment_method: number, items: { product_id: number, taxes_id: number[] | undefined, quantity: number }[] }>, 'cost_center' | 'accounting_account'>>({
+    createInvoice: builder.mutation<NewInvoiceResponse, Overwrite<NewInvoice, { accounting_date: string, payment_method: number, items: { product_id: number, taxes_id?: number[], quantity: number }[] }>>({
       query: (invoice) => ({
         url: '/sales_invoices',
         method: 'POST',
@@ -50,6 +50,28 @@ export const invoicesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Invoice'],
     }),
+
+    confirmInvoice: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/sales_invoices/${id}/to_approve`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Invoice'],
+    }),
+    approveInvoice: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/sales_invoices/${id}/post`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Invoice'],
+    }),
+    cancelInvoice: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/sales_invoices/${id}/cancel`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Invoice'],
+    }),
   }),
 });
 
@@ -60,4 +82,8 @@ export const {
   useCreateInvoiceMutation,
   useUpdateInvoiceMutation,
   useDeleteInvoiceMutation,
+
+  useConfirmInvoiceMutation,
+  useApproveInvoiceMutation,
+  useCancelInvoiceMutation,
 } = invoicesApi;

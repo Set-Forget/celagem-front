@@ -18,7 +18,7 @@ const fields: FieldDefinition<JournalEntryDetail>[] = [
   {
     label: "Fecha de creación",
     placeholderLength: 14,
-    getValue: (p) => format(p.date, "PPP", { locale: es })
+    getValue: (p) => format(p.date, "PP", { locale: es })
   },
   {
     label: "Diario contable",

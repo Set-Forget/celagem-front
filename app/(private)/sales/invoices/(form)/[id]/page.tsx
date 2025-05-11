@@ -8,28 +8,33 @@ import { useGetInvoiceQuery, useListInvoicesQuery } from "@/lib/services/invoice
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { Box, FileText, Paperclip } from "lucide-react"
+import { Box, Paperclip, Sticker } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
 import { InvoiceDetail } from "../../schemas/invoices"
 import { invoiceStatus } from "../../utils"
 import Actions from "./actions"
-import AccountingTab from "./components/accounting-tab"
 import { columns } from "./components/columns"
 import CustomerTab from "./components/customer-tab"
 import DocumentsTab from "./components/documents-tab"
+import NotesTab from "./components/notes-tab"
 import TableFooter from "./components/table-footer"
 
 const fields: FieldDefinition<InvoiceDetail>[] = [
   {
     label: "Fecha de emisión",
     placeholderLength: 14,
-    getValue: (p) => p.date ? format(p.date, "PPP", { locale: es }) : "No especificado",
+    getValue: (p) => p.date ? format(p.date, "PP", { locale: es }) : "No especificado",
   },
   {
     label: "Fecha de vencimiento",
     placeholderLength: 10,
-    getValue: (p) => p.due_date ? format(p.due_date, "PPP", { locale: es }) : "No especificado",
+    getValue: (p) => p.due_date ? format(p.due_date, "PP", { locale: es }) : "No especificado",
+  },
+  {
+    label: "Fecha de contabilización",
+    placeholderLength: 14,
+    getValue: (p) => p.accounting_date ? format(p.accounting_date, "PP", { locale: es }) : "No especificado",
   },
   {
     label: "Condición de pago",
@@ -41,18 +46,6 @@ const fields: FieldDefinition<InvoiceDetail>[] = [
     placeholderLength: 10,
     getValue: (p) => p.payment_method?.name || "No especificado",
   },
-  {
-    label: "Notas",
-    placeholderLength: 20,
-    getValue: (p) => p.internal_notes || "No hay notas",
-    className: "col-span-2"
-  },
-  {
-    label: "Términos y condiciones",
-    placeholderLength: 20,
-    getValue: (p) => p.tyc_notes || "No hay términos y condiciones",
-    className: "col-span-2"
-  }
 ];
 
 const tabs = [
@@ -64,16 +57,16 @@ const tabs = [
   },
   {
     value: "tab-2",
-    label: "Contabilidad",
-    icon: <FileText className="mr-1.5" size={16} />,
-    content: <AccountingTab />
-  },
-  {
-    value: "tab-3",
     label: "Documentos",
     icon: <Paperclip className="mr-1.5" size={16} />,
     content: <DocumentsTab />
-  }
+  },
+  {
+    value: "tab-3",
+    label: "Notas",
+    icon: <Sticker className="mr-1.5" size={16} />,
+    content: <NotesTab />
+  },
 ]
 
 export default function Page() {

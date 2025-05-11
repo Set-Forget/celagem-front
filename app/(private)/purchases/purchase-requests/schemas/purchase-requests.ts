@@ -1,36 +1,19 @@
 import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
-export const purchaseRequestsItemsSchema = z.object({
-  item_code: z.string(),
-  item_name: z.string(),
-  description: z.string(),
-  quantity: z.number(),
-  id: z.string(),
-});
-
-export const purchaseRequestsSchema = z.object({
-  title: z.string(),
-  status: z.enum(["cancelled", "pending", "ordered"]),
-  requested_by: z.string(),
-  required_by: z.string(),
-  created_at: z.string(),
-  items: z.array(purchaseRequestsItemsSchema).optional(),
-  id: z.number(),
-});
-
-export type PurchaseRequest = z.infer<typeof purchaseRequestsSchema>;
-export type PurchaseRequestItems = z.infer<typeof purchaseRequestsItemsSchema>;
-
-// ---
+export const purchaseRequestState = z.enum(["draft", "approved", "ordered", "cancelled"]);
 
 export const purchaseRequestListSchema = z.object({
   id: z.number(),
   name: z.string(),
-  state: z.enum(["draft", "approved", "ordered", "cancelled"]),
+  state: purchaseRequestState,
   request_date: z.string(),
-
-  // ! Falta requested_by.
+  company: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  created_by: z.string(),
+  created_at: z.string()
 });
 
 export const newPurchaseRequestLineSchema = z.object({
@@ -45,28 +28,44 @@ export const purchaseRequestLineSchema = z.object({
   quantity: z.number(),
 });
 
-export const newPurchaseRequestSchema = z.object({
+export const newPurchaseRequestNotesSchema = z.object({
+  internal_notes: z.string().optional(),
+  tyc_notes: z.string().optional(),
+});
+
+export const newPurchaseRequestGeneralSchema = z.object({
   name: z.string({ required_error: "El título es requerido" }).nonempty("El título es requerido"),
   request_date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de requerimiento es requerida" }),
+  company: z.string({ required_error: "La empresa es requerida" }).nonempty("La empresa es requerida"),
   items: z.array(newPurchaseRequestLineSchema).nonempty("Al menos un item es requerido"),
-
-  notes: z.string().optional(), // ! No existe
-  //headquarter_id: z.string(), // ! No existe
 })
+
+export const newPurchaseRequestSchema = newPurchaseRequestGeneralSchema
+  .merge(newPurchaseRequestNotesSchema)
 
 export const purchaseRequestDetailSchema = z.object({
   id: z.number(),
   name: z.string(),
-  state: z.enum(["draft", "approved", "ordered", "cancelled"]),
   request_date: z.string(),
+  state: purchaseRequestState,
+  internal_notes: z.string(),
+  tyc_notes: z.string(),
+  purchase_order: z.object({
+    id: z.number(),
+    name: z.string(),
+  }).nullable(),
+  company: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  created_by: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  created_at: z.string(),
   items: z.array(purchaseRequestLineSchema),
-
-  // ! Falta notes
-  // ! Falta headquarter
-  // ! Falta created_at
-  // ! Falta requested_by
 })
 
 export const purchaseRequestDetailResponseSchema = z.object({
@@ -98,3 +97,5 @@ export type NewPurchaseRequestResponse = z.infer<typeof newPurchaseRequestRespon
 export type PurchaseRequestDetail = z.infer<typeof purchaseRequestDetailSchema>;
 export type PurchaseRequestItem = z.infer<typeof purchaseRequestLineSchema>;
 export type PurchaseRequestDetailResponse = z.infer<typeof purchaseRequestDetailResponseSchema>;
+
+export type PurchaseRequestState = z.infer<typeof purchaseRequestState>;

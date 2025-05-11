@@ -1,5 +1,6 @@
 import { NewPurchaseOrder, NewPurchaseOrderResponse, PurchaseOrderDetail, PurchaseOrderDetailResponse, PurchaseOrderListResponse } from '@/app/(private)/purchases/purchase-orders/schemas/purchase-orders';
 import { erpApi } from '@/lib/apis/erp-api';
+import { Overwrite } from '../utils';
 
 export const purchaseOrdersApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -22,7 +23,7 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
     getPurchaseOrder: builder.query<PurchaseOrderDetail, string>({
       query: (id) => `/purchase_orders/${id}`,
       transformResponse: (response: PurchaseOrderDetailResponse) => response.data,
-      providesTags: ['PurchaseOrder'],
+      providesTags: (result, error, id) => [{ type: 'PurchaseOrder', id }],
     }),
     updatePurchaseOrder: builder.mutation<{ status: string, message: string }, Omit<Partial<PurchaseOrderDetail>, "status"> & { state: "draft" | "sent" | "to approve" | "purchase" | "done" | "cancel" }>({
       query: ({ id, ...data }) => ({
@@ -32,14 +33,37 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['PurchaseOrder'],
     }),
-    createPurchaseOrder: builder.mutation<NewPurchaseOrderResponse, Omit<NewPurchaseOrder, 'currency' | 'payment_term' | 'required_date'> & { currency: number; payment_term: number; required_date: string }>({
+    createPurchaseOrder: builder.mutation<NewPurchaseOrderResponse, Overwrite<Omit<NewPurchaseOrder, 'currency' | 'payment_term' | 'required_date'> & { currency: number; payment_term: number; required_date: string }, { company: number }>>({
       query: (data) => ({
         url: '/purchase_orders',
         method: 'POST',
         body: data,
       }),
       invalidatesTags: ['PurchaseOrder'],
-    })
+    }),
+    confirmPurchaseOrder: builder.mutation<{ status: string, message: string }, { id: string, purchaseRequestId?: number }>({
+      query: ({ id }) => ({
+        url: `/purchase_orders/${id}/to_approve`,
+        method: 'POST',
+      }),
+      invalidatesTags: (result, error, { purchaseRequestId }) => purchaseRequestId
+        ? [{ type: 'PurchaseOrder' }, { type: 'PurchaseRequest', id: purchaseRequestId }]
+        : [{ type: 'PurchaseOrder' }]
+    }),
+    cancelPurchaseOrder: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/purchase_orders/${id}/cancel`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['PurchaseOrder'],
+    }),
+    approvePurchaseOrder: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/purchase_orders/${id}/approve`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['PurchaseOrder'],
+    }),
   }),
 });
 
@@ -49,6 +73,10 @@ export const {
   useLazyListPurchaseOrdersQuery,
   useCreatePurchaseOrderMutation,
   useUpdatePurchaseOrderMutation,
+
+  useConfirmPurchaseOrderMutation,
+  useCancelPurchaseOrderMutation,
+  useApprovePurchaseOrderMutation,
 } = purchaseOrdersApi;
 
 

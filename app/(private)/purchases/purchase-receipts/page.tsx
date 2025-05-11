@@ -28,16 +28,7 @@ export default function Page() {
 
   return (
     <div>
-      <Header title="Recepciones de compra">
-        <Button
-          className="ml-auto"
-          size="sm"
-          onClick={() => router.push(`${pathname}/new`)}
-        >
-          <Plus className="w-4 h-4" />
-          Crear recepción de compra
-        </Button>
-      </Header>
+      <Header title="Recepciones de compra" />
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
         <DataTable
           data={purchaseReceipts?.data ?? []}

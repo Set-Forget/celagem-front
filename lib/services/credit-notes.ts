@@ -1,4 +1,4 @@
-import { CreditNoteDetail, CreditNoteDetailResponse, NewCreditNote, NewCreditNoteResponse } from '@/app/(private)/sales/credit-notes/schemas/credit-notes';
+import { CreditNoteDetail, CreditNoteDetailResponse, NewCreditNote, NewCreditNoteResponse } from '@/app/(private)/credit-notes/schemas/credit-notes';
 import { erpApi } from '@/lib/apis/erp-api';
 
 export const creditNotesApi = erpApi.injectEndpoints({

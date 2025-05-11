@@ -35,7 +35,7 @@ export default function FormTable<TFormValues extends FieldValues>({
 
   return (
     <div className={cn("flex flex-col gap-2 flex-grow", className)}>
-      <div className="flex flex-col border rounded-sm overflow-hidden shadow-sm">
+      <div className="flex flex-col border rounded-sm overflow-hidden shadow-md shadow-border/50">
         <Table className="border-none">
           <TableHeader className="bg-sidebar">
             <TableRow>

@@ -9,33 +9,42 @@ import { useCreateSupplierMutation } from "@/lib/services/suppliers"
 import { getFieldPaths } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { get } from "lodash"
-import { Ellipsis, House } from "lucide-react"
+import { Calculator, Ellipsis, Mail, Wallet } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { FieldErrors, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
-import { newSupplierGeneralSchema, newSupplierOthersSchema, newSupplierSchema } from "../../schema/suppliers"
-import FiscalAccountingForm from "./components/fiscal-accounting-form"
+import { newSupplierAccountingSchema, newSupplierContactSchema, newSupplierFiscalSchema, newSupplierSchema } from "../../schema/suppliers"
+import AccountingForm from "./components/accounting-form"
+import ContactForm from "./components/contact-form"
+import FiscalForm from "./components/fiscal-form"
 import GeneralForm from "./components/general-form"
 
 const tabToFieldsMap = {
-  "tab-1": getFieldPaths(newSupplierGeneralSchema),
-  "tab-2": getFieldPaths(newSupplierOthersSchema),
+  "tab-1": getFieldPaths(newSupplierContactSchema),
+  "tab-2": getFieldPaths(newSupplierFiscalSchema),
+  "tab-3": getFieldPaths(newSupplierAccountingSchema),
 }
 
 const tabs = [
   {
     value: "tab-1",
-    label: "General",
-    icon: <House className="mr-1.5" size={16} />,
-    content: <GeneralForm />
+    label: "Contacto",
+    icon: <Mail className="mr-1.5" size={16} />,
+    content: <ContactForm />
   },
   {
     value: "tab-2",
-    label: "Fiscal y contabilidad",
-    icon: <Ellipsis className="mr-1.5" size={16} />,
-    content: <FiscalAccountingForm />
+    label: "Fiscal",
+    icon: <Wallet className="mr-1.5" size={16} />,
+    content: <FiscalForm />
+  },
+  {
+    value: "tab-3",
+    label: "Contabilidad",
+    icon: <Calculator className="mr-1.5" size={16} />,
+    content: <AccountingForm />
   }
 ]
 
@@ -61,10 +70,16 @@ export default function Page() {
   })
 
   const onSubmit = async (data: z.infer<typeof newSupplierSchema>) => {
-    const { accounting_account, ...dataToSend } = data;
-
+    const { contact_address_inline, ...rest } = data
     try {
-      const response = await createSupplier(dataToSend).unwrap()
+      const response = await createSupplier({
+        ...rest,
+        country_id: 1,
+        state_id: 1,
+        city: "",
+        zip: "",
+        street: "",
+      }).unwrap()
 
       if (response.status === "success") {
         router.push(`/purchases/vendors/${response.data.id}`)
@@ -101,6 +116,7 @@ export default function Page() {
           Crear proveedor
         </Button>
       </Header>
+      <GeneralForm />
       <DataTabs
         tabs={tabs}
         activeTab={tab}

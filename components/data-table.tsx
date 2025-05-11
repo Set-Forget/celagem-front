@@ -83,7 +83,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className={cn("space-y-4 flex flex-col justify-between", className)}>
       {toolbar && toolbar({ table })}
-      <div className="overflow-hidden rounded-sm border border-border bg-background shadow-sm shadow-border">
+      <div className="overflow-hidden rounded-sm border border-border bg-background shadow-md shadow-border/50">
         <ShadcnTable className="[&_td]:border-border [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
           <TableHeader
             className="sticky top-0 z-10 bg-sidebar backdrop-blur-sm after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-border rounded-t-sm">

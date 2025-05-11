@@ -1,8 +1,7 @@
 import { TableFooter as ShadcnTableFooter, TableCell, TableRow } from "@/components/ui/table";
-import { useGetBillQuery } from "@/lib/services/bills";
+import { useGetInvoiceQuery } from "@/lib/services/invoices";
 import { useParams } from "next/navigation";
 import { columns } from "./columns";
-import { useGetInvoiceQuery } from "@/lib/services/invoices";
 
 export default function TableFooter() {
   const { id } = useParams<{ id: string }>()
@@ -10,8 +9,10 @@ export default function TableFooter() {
   const { data: invoice } = useGetInvoiceQuery(id);
 
   const subtotal = invoice?.items.reduce((acc, item) => acc + item.price_subtotal, 0) ?? 0
-  //const taxes = invoice?.items.reduce((acc, item) => acc + item.price_tax, 0) ?? 0
-  const total = subtotal //+ taxes
+  const taxes = invoice?.items.reduce((acc, item) => acc + item.price_tax, 0) ?? 0
+  const total = subtotal + taxes
+
+  const currency = invoice?.currency.name || ""
 
   return (
     <ShadcnTableFooter>
@@ -21,7 +22,7 @@ export default function TableFooter() {
           <span>Subtotal (sin imp.)</span>
         </TableCell>
         <TableCell className="h-6 text-xs py-0">
-          <span>{invoice?.currency.name} {subtotal.toFixed(2)}</span>
+          <span>{currency} {subtotal.toFixed(2)}</span>
         </TableCell>
       </TableRow>
       <TableRow className="bg-background">
@@ -29,10 +30,7 @@ export default function TableFooter() {
           <span>Impuestos</span>
         </TableCell>
         <TableCell className="h-6 text-xs py-0">
-          <span>
-            xxxxx
-            {/* invoice?.currency} {taxes.toFixed(2)} */}
-          </span>
+          {currency} {taxes.toFixed(2)}
         </TableCell>
       </TableRow>
       <TableRow className="bg-background">
@@ -40,7 +38,7 @@ export default function TableFooter() {
           <span>Total</span>
         </TableCell>
         <TableCell className="h-6 text-xs font-semibold py-0 bg-muted/50">
-          <span>{invoice?.currency.name} {total.toFixed(2)}</span>
+          <span>{currency} {total.toFixed(2)}</span>
         </TableCell>
       </TableRow>
     </ShadcnTableFooter>

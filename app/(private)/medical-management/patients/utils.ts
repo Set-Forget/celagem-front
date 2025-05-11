@@ -62,7 +62,7 @@ export const documentTypes = [
   {
     label: "Permiso de protección personal",
     value: "PersonalProtectionPermission",
-    short: "PPP"
+    short: "PP"
   },
   {
     label: "Clave única de identificación tributaria",

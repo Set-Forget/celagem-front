@@ -210,7 +210,7 @@ export default function NewAppointmentDialog() {
                           >
                             <p className="truncate w-full">
                               {field.value ? (
-                                format(new Date(field.value), "PPP")
+                                format(new Date(field.value), "PP")
                               ) : (
                                 <span>Seleccionar fecha</span>
                               )}
@@ -357,7 +357,7 @@ export default function NewAppointmentDialog() {
                             )}
                           >
                             {field.value ? (
-                              format(new Date(field.value), "PPP")
+                              format(new Date(field.value), "PP")
                             ) : (
                               <span>Seleccionar fecha</span>
                             )}

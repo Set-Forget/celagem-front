@@ -1,11 +1,9 @@
-// itemsColumns.tsx
-
 import { AsyncMultiSelect } from "@/components/async-multi-select";
 import { AsyncSelect } from "@/components/async-select";
 import { FormTableColumn } from "@/components/form-table";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useListCurrenciesQuery } from "@/lib/services/currencies";
-import { useLazyGetMaterialQuery, useLazyListMaterialsQuery } from "@/lib/services/materials";
+import { useLazyListMaterialsQuery } from "@/lib/services/materials";
 import { useLazyListTaxesQuery } from "@/lib/services/taxes";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
@@ -13,12 +11,14 @@ import { Button as AriaButton, Input as AriaInput, Label as AriaLabel, Group, Nu
 import { Control, useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { newInvoiceSchema } from "../../../schemas/invoices";
+import { useLazyListCostCentersQuery } from "@/lib/services/cost-centers";
+import { useLazyListAccountingAccountsQuery } from "@/lib/services/accounting-accounts";
 
 const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof newInvoiceSchema>>; index: number }) => {
   const { setValue } = useFormContext<z.infer<typeof newInvoiceSchema>>()
 
   const [searchMaterials] = useLazyListMaterialsQuery()
-  const [getMaterial] = useLazyGetMaterialQuery()
+
 
   const handleSearchMaterial = async (query?: string) => {
     try {
@@ -29,6 +29,7 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
       return response.data?.map(material => ({
         id: material.id,
         name: material.name,
+        code: material.default_code,
         standard_price: material.standard_price
       }))
     }
@@ -44,7 +45,7 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
     render={({ field }) => (
       <FormItem className="flex flex-col w-full">
         <FormControl>
-          <AsyncSelect<{ id: number, name: string, standard_price: number }, number>
+          <AsyncSelect<{ id: number, name: string, code: string, standard_price: number }, number>
             label="Material"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
@@ -55,17 +56,23 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
             getDisplayValue={(item) => (
               <div className="flex gap-1">
                 <span className="font-medium">
-                  [{item.id}]
+                  {item.code}
                 </span>
+                -{" "}
                 {item.name}
               </div>
             )}
             getOptionValue={(item) => item.id}
-            renderOption={(item) => <>{item.name} ({item.id})</>}
-            onChange={async (value) => {
-              field.onChange(value)
-              const item = await getMaterial(value).unwrap()
-              setValue(`items.${index}.unit_price`, item.sale_price || 0, { shouldValidate: true })
+            renderOption={(item) => <div className="flex gap-1">
+              <span className="font-medium">
+                {item.code}
+              </span>
+              -{" "}
+              {item.name}
+            </div>}
+            onChange={(value, item) => {
+              field.onChange(value);
+              setValue(`items.${index}.price_unit`, item?.standard_price || 0, { shouldValidate: true });
             }}
             value={field.value}
             getOptionKey={(item) => String(item.id)}
@@ -87,7 +94,7 @@ const UnitPriceCell = ({ control, index }: { control: Control<z.infer<typeof new
 
   return <FormField
     control={control}
-    name={`items.${index}.unit_price`}
+    name={`items.${index}.price_unit`}
     render={({ field }) => (
       <FormItem className="flex flex-col">
         <FormControl>
@@ -142,7 +149,7 @@ const SubtotalCell = ({ control, index }: { control: Control<z.infer<typeof newI
 
   const unitPrice = useWatch({
     control,
-    name: `items.${index}.unit_price`,
+    name: `items.${index}.price_unit`,
   });
 
   const quantity = useWatch({
@@ -184,7 +191,7 @@ const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newInvo
     control={control}
     name={`items.${index}.taxes_id`}
     render={({ field }) => (
-      <FormItem className="flex flex-col w-full">
+      <FormItem className="flex flex-col w-[200px]">
         <FormControl>
           <AsyncMultiSelect<{ id: number, name: string }, number>
             className={cn(
@@ -206,6 +213,102 @@ const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newInvo
             noResultsMessage="No se encontraron resultados"
             defaultValue={field.value}
             variant="secondary"
+          />
+        </FormControl>
+      </FormItem>
+    )}
+  />
+}
+
+const CostCenterCell = ({ control, index }: { control: Control<z.infer<typeof newInvoiceSchema>>; index: number }) => {
+  const [searchCostCenters] = useLazyListCostCentersQuery()
+
+  const handleSearchCostCenter = async (query?: string) => {
+    try {
+      const response = await searchCostCenters({
+        name: query,
+      }).unwrap()
+
+      return response.data?.map(costCenter => ({
+        id: costCenter.id,
+        name: costCenter.name,
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
+  }
+
+  return <FormField
+    control={control}
+    name={`items.${index}.cost_center_id`}
+    render={({ field }) => (
+      <FormItem className="flex flex-col w-[200px]">
+        <FormControl>
+          <AsyncSelect<{ id: number, name: string }, number | undefined>
+            label="Centro de costo"
+            triggerClassName={cn(
+              "!w-full rounded-none border-none shadow-none bg-transparent pl-4 min-w-[200px]",
+              control._formState.errors.items?.[index]?.cost_center_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
+            )}
+            placeholder="Buscar centro de costo..."
+            fetcher={handleSearchCostCenter}
+            getDisplayValue={(item) => item.name}
+            getOptionValue={(item) => item.id}
+            renderOption={(item) => <>{item.name}</>}
+            onChange={field.onChange}
+            value={field.value}
+            getOptionKey={(item) => String(item.id)}
+            noResultsMessage="No se encontraron resultados"
+          />
+        </FormControl>
+      </FormItem>
+    )}
+  />
+};
+
+const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<typeof newInvoiceSchema>>; index: number }) => {
+  const [searchAccountingAccount] = useLazyListAccountingAccountsQuery()
+
+  const handleSearchAccountingAccount = async (query?: string) => {
+    try {
+      const response = await searchAccountingAccount({
+        name: query,
+      }).unwrap()
+
+      return response.data?.map(accountingAccount => ({
+        id: accountingAccount.id,
+        name: accountingAccount.name,
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
+  }
+
+  return <FormField
+    control={control}
+    name={`items.${index}.account_id`}
+    render={({ field }) => (
+      <FormItem className="flex flex-col w-[200px]">
+        <FormControl>
+          <AsyncSelect<{ id: number, name: string }, number>
+            label="Cuenta contable"
+            triggerClassName={cn(
+              "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
+              control._formState.errors.items?.[index]?.account_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
+            )}
+            placeholder="Buscar cuenta contable..."
+            fetcher={handleSearchAccountingAccount}
+            getDisplayValue={(item) => item.name}
+            getOptionValue={(item) => item.id}
+            renderOption={(item) => <>{item.name}</>}
+            onChange={field.onChange}
+            value={field.value}
+            getOptionKey={(item) => String(item.id)}
+            noResultsMessage="No se encontraron resultados"
           />
         </FormControl>
       </FormItem>
@@ -269,6 +372,7 @@ export const columns: FormTableColumn<z.infer<typeof newInvoiceSchema>>[] = [
     header: "Precio Unitario",
     width: 150,
     align: "right",
+    headerClassName: "text-nowrap",
     cellClassName: "border-l-0",
     renderCell: (control, index) => (
       <UnitPriceCell control={control} index={index} />
@@ -281,9 +385,21 @@ export const columns: FormTableColumn<z.infer<typeof newInvoiceSchema>>[] = [
     renderCell: (control, index) => <TaxesCell control={control} index={index} />,
   },
   {
+    header: "Centro de costo",
+    width: 200,
+    headerClassName: "text-nowrap",
+    renderCell: (control, index) => <CostCenterCell control={control} index={index} />,
+  },
+  {
+    header: "Cuenta contable",
+    width: 200,
+    renderCell: (control, index) => <AccountingAccountCell control={control} index={index} />,
+  },
+  {
     header: "Subtotal (Sin imp.)",
     width: 200,
     align: "left",
+    headerClassName: "text-nowrap",
     cellClassName: "pl-4",
     renderCell: (control, index) => <SubtotalCell control={control} index={index} />
   },

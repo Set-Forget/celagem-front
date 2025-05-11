@@ -2,33 +2,64 @@ import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { useApproveInvoiceMutation, useCancelInvoiceMutation, useConfirmInvoiceMutation } from "@/lib/services/invoices";
 import { cn } from "@/lib/utils";
-import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCcw } from "lucide-react";
+import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCcw, Stamp } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { updateStateMessageMap } from "./utils";
-import { useUpdateInvoiceMutation } from "@/lib/services/invoices";
+import { InvoiceStatus, InvoiceTypes } from "../../schemas/invoices";
 
-export default function Actions({ state, type }: { state?: 'draft' | 'posted' | 'cancel', type?: 'credit_note' | 'debit_note' | 'invoice' }) {
+export default function Actions({ state, type }: { state?: InvoiceStatus, type?: InvoiceTypes }) {
   const router = useRouter()
 
   const { id } = useParams<{ id: string }>()
 
-  const [updateInvoice, { isLoading: isInvoiceUpdating }] = useUpdateInvoiceMutation();
+  const [confirmInvoice, { isLoading: isInvoiceConfirming }] = useConfirmInvoiceMutation();
+  const [approveInvoice, { isLoading: isInvoiceApproving }] = useApproveInvoiceMutation();
+  const [cancelInvoice, { isLoading: isInvoiceCancelling }] = useCancelInvoiceMutation();
 
-  const handleUpdateInvoice = async (state: 'draft' | 'posted' | 'cancel') => {
+  const handleConfirmInvoice = async () => {
     try {
-      const response = await updateInvoice({
-        id: Number(id),
-        state
+      const response = await confirmInvoice({
+        id: id,
       }).unwrap()
 
       if (response.status === "success") {
-        toast.custom((t) => <CustomSonner t={t} description={updateStateMessageMap[state].success} variant="success" />)
+        toast.custom((t) => <CustomSonner t={t} description="Factura de venta confirmada" variant="success" />)
       }
     } catch (error) {
       console.error(error)
-      toast.custom((t) => <CustomSonner t={t} description={updateStateMessageMap[state].error} variant="error" />)
+      toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la factura de venta" variant="error" />)
+    }
+  }
+
+  const handleApproveInvoice = async () => {
+    try {
+      const response = await approveInvoice({
+        id: id,
+      }).unwrap()
+
+      if (response.status === "success") {
+        toast.custom((t) => <CustomSonner t={t} description="Factura de venta aprobada" variant="success" />)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.custom((t) => <CustomSonner t={t} description="Error al aprobar la factura de venta" variant="error" />)
+    }
+  }
+
+  const handleCancelInvoice = async () => {
+    try {
+      const response = await cancelInvoice({
+        id: id,
+      }).unwrap()
+
+      if (response.status === "success") {
+        toast.custom((t) => <CustomSonner t={t} description="Factura de venta cancelada" variant="success" />)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la factura de venta" variant="error" />)
     }
   }
 
@@ -61,21 +92,61 @@ export default function Actions({ state, type }: { state?: 'draft' | 'posted' | 
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onSelect={() => handleUpdateInvoice("cancel")}
-            loading={isInvoiceUpdating}
+            onSelect={handleCancelInvoice}
+            loading={isInvoiceCancelling}
             className="text-destructive focus:text-destructive"
           >
-            <CircleX className={cn(isInvoiceUpdating && "hidden")} />
+            <CircleX className={cn(isInvoiceCancelling && "hidden")} />
             Cancelar
           </DropdownMenuItem>
         </Dropdown>
         <Button
           size="sm"
-          onClick={() => handleUpdateInvoice("posted")}
-          loading={isInvoiceUpdating}
+          onClick={handleConfirmInvoice}
+          loading={isInvoiceConfirming}
         >
-          <Check className={cn(isInvoiceUpdating && "hidden")} />
+          <Check className={cn(isInvoiceConfirming && "hidden")} />
           Confirmar
+        </Button>
+      </div>
+    )
+  }
+
+  if (state === "to_approve") {
+    return (
+      <div className="flex gap-2">
+        <Dropdown
+          trigger={
+            <Button size="icon" variant="outline" className="h-8 w-8">
+              <Ellipsis />
+            </Button>
+          }
+        >
+          <DropdownMenuItem>
+            <FileTextIcon />
+            Previsualizar
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => console.log("Editar")}>
+            <EditIcon />
+            Editar
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onSelect={handleCancelInvoice}
+            loading={isInvoiceCancelling}
+            className="text-destructive focus:text-destructive"
+          >
+            <CircleX className={cn(isInvoiceCancelling && "hidden")} />
+            Rechazar
+          </DropdownMenuItem>
+        </Dropdown>
+        <Button
+          size="sm"
+          onClick={handleApproveInvoice}
+          loading={isInvoiceApproving}
+        >
+          <Stamp className={cn(isInvoiceApproving && "hidden")} />
+          Aprobar
         </Button>
       </div>
     )
@@ -110,17 +181,17 @@ export default function Actions({ state, type }: { state?: 'draft' | 'posted' | 
             Registro de pago
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/sales/credit-notes/new?invoiceId=${id}`)}
+            onClick={() => router.push(`/credit-notes/new?invoiceId=${id}`)}
           >
             Nota de crédito
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/sales/debit-notes/new?invoiceId=${id}`)}
+            onClick={() => router.push(`/debit-notes/new?invoiceId=${id}`)}
           >
             Nota de débito
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/sales/delivery-notes/new?invoiceId=${id}`)}
+            onClick={() => router.push(`sales/delivery-notes/new?invoiceId=${id}`)}
           >
             Remito
           </DropdownMenuItem>
@@ -151,14 +222,13 @@ export default function Actions({ state, type }: { state?: 'draft' | 'posted' | 
     )
   }
 
+  // ! No se puede re-abrir por el momento.
   if (state === "cancel") {
     return (
       <Button
         size="sm"
-        onClick={() => handleUpdateInvoice("draft")}
-        loading={isInvoiceUpdating}
       >
-        <RotateCcw className={cn(isInvoiceUpdating && "hidden")} />
+        <RotateCcw /* className={cn(isInvoiceUpdating && "hidden")} */ />
         Reabrir
       </Button>
     )

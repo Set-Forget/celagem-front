@@ -33,7 +33,7 @@ export default function TableFooter({ append }: { append: (value: any) => void }
     });
   }
 
-  const unitPrices = items.map(item => Number(item.unit_price)) || []
+  const unitPrices = items.map(item => Number(item.price_unit)) || []
 
   const subtotal = items.reduce((acc, item, index) => {
     const price = unitPrices[index] || 0
@@ -90,7 +90,7 @@ export default function TableFooter({ append }: { append: (value: any) => void }
         <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5"></TableCell>
       </TableRow>
       <TableRow className="bg-background border-b-0 border-t">
-        <TableCell className="h-6 text-xs font-medium py-0 p-0" colSpan={6}>
+        <TableCell className="h-6 text-xs font-medium py-0 p-0" colSpan={columns.length + 1}>
           <Button
             onClick={handleAddItem}
             size="sm"

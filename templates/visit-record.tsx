@@ -73,7 +73,7 @@ const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
                 <div className="flex justify-between text-xs">
                   <span>Fecha de nacimiento:</span>
                   <span className="font-medium">
-                    {patient.birth_date ? format(new Date(patient.birth_date), "PPP", { locale: es }) : 'No especificado'}
+                    {patient.birth_date ? format(new Date(patient.birth_date), "PP", { locale: es }) : 'No especificado'}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
@@ -224,7 +224,7 @@ const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
             <div className="text-right">
               <p className="m-0 font-semibold">Dr. {appointment.doctor.first_name} {appointment.doctor.last_name}</p>
               <p className="m-0">Médico Especialista</p>
-              <p className="m-0">Fecha de firma: {visit.signed_at ? format(new Date(visit.signed_at ?? ""), "PPP", { locale: es }) : 'No firmado'}</p>
+              <p className="m-0">Fecha de firma: {visit.signed_at ? format(new Date(visit.signed_at ?? ""), "PP", { locale: es }) : 'No firmado'}</p>
             </div>
           </div>
         </div>

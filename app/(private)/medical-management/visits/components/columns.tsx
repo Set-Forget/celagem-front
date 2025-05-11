@@ -78,6 +78,6 @@ export const columns: ColumnDef<VisitList>[] = [
   {
     accessorKey: "createdAt",
     header: "Fecha de creación",
-    cell: ({ row }) => <div>{format(row.original.createdAt, "PPP", { locale: es })}</div>
+    cell: ({ row }) => <div>{format(row.original.createdAt, "PP", { locale: es })}</div>
   },
 ]

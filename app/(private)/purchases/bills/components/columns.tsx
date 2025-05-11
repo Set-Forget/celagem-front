@@ -1,16 +1,41 @@
 "use client"
 
 import {
-  ColumnDef
+  ColumnDef,
+  Row
 } from "@tanstack/react-table"
 
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { BillList } from "../schemas/bills"
-import { billStatus } from "../utils"
+import { billStatus, billTypes } from "../utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Progress } from "@/components/ui/progress"
+import { creditNoteStatus } from "@/app/(private)/credit-notes/utils"
+import { debitNoteStatus } from "@/app/(private)/debit-notes/utils"
+
+const PercentagePaidCell = ({ row }: { row: Row<BillList> }) => {
+  const percentagePaid = row.original.percentage_paid
+
+  const creditNote = row.original.type === 'credit_note'
+
+  if (creditNote) return
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Progress className="w-[200px]" value={percentagePaid} />
+        </TooltipTrigger>
+        <TooltipContent>
+          {percentagePaid.toFixed()}%
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+};
 
 export const columns: ColumnDef<BillList>[] = [
   {
@@ -34,26 +59,41 @@ export const columns: ColumnDef<BillList>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+    size: 0
   },
   {
     accessorKey: "number",
     header: "Número",
-    cell: ({ row }) => <div className="font-medium">{row.original.number}</div>
+    cell: ({ row }) => {
+      const type = billTypes[row.original.type as keyof typeof billTypes]
+      return <div className="gap-2 flex items-center">
+        <Badge className="px-1" variant="outline">{type?.label}</Badge>
+        <span className="font-medium">
+          {row.original.number}
+        </span>
+      </div>
+    }
   },
   {
     accessorKey: "supplier",
     header: "Proveedor",
-    cell: ({ row }) => <div>{row.original.supplier}</div>,
+    cell: ({ row }) => <div>{row.getValue("supplier")}</div>,
   },
   {
     accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      const status = billStatus[
-        row.getValue("status") === "posted" && new Date(row.original.due_date) < new Date()
-          ? "overdue"
-          : row.getValue("status") as keyof typeof billStatus
-      ];
+      let status
+
+      if (row.original.type === 'invoice') {
+        status = billStatus[row.getValue("status") === "posted" && new Date(row.original.due_date) < new Date() ? "overdue" : row.getValue("status") as keyof typeof billStatus];
+      }
+      if (row.original.type === 'credit_note') {
+        status = creditNoteStatus[row.getValue("status") as keyof typeof creditNoteStatus];
+      }
+      if (row.original.type === 'debit_note') {
+        status = debitNoteStatus[row.getValue("status") === "posted" && new Date(row.original.due_date) < new Date() ? "overdue" : row.getValue("status") as keyof typeof debitNoteStatus];
+      }
 
       return (
         <Badge
@@ -66,13 +106,9 @@ export const columns: ColumnDef<BillList>[] = [
     },
   },
   {
-    accessorKey: "date",
-    header: "Fecha de emisión",
-    cell: ({ row }) => {
-      return <div>
-        {format(new Date(row.getValue("date")), "dd MMM yyyy", { locale: es })}
-      </div>
-    },
+    accessorKey: "percentage_paid",
+    header: "Porcentaje saldado",
+    cell: ({ row }) => <PercentagePaidCell row={row} />,
   },
   {
     accessorKey: "due_date",
@@ -88,7 +124,7 @@ export const columns: ColumnDef<BillList>[] = [
     header: () => <div className="text-right pr-4">Total</div>,
     cell: ({ row }) => {
       return <div className="text-right font-medium pr-4">
-        {row.original.currency}{" "}
+        {row.original.currency.name}{" "}
         {row.original.amount_total}
       </div>
     },

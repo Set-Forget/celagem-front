@@ -6,17 +6,23 @@ export const purchaseReceiptItemSchema = z.object({
   display_name: z.string(),
   product_uom_qty: z.number(),
   quantity: z.number(),
-  product_uom: z.string(), // ? Unidad de medida
+  product_uom: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
   purchase_order_line: z.string(),
-  // ! Falta lot_id
-  // ! Falta serial
-  // ! Falta due_date
+  lot: z.object({
+    id: z.number(),
+    name: z.string(),
+    expiration_date: z.string().nullable(),
+    tracking_type: z.string(), // ? Ni idea que es esto.
+  }),
 });
 
 export const newPurchaseReceiptItemSchema = z.object({
   product_id: z.number({ required_error: "El producto es requerido" }),
+  name: z.string({ required_error: "El nombre es requerido" }).optional(),
   product_uom: z.number({ required_error: "La unidad de medida es requerida" }),
-  name: z.string({ required_error: "El nombre es requerido" }), // ! Esto no debería ser requerido
   quantity: z.number({ required_error: "La cantidad es requerida" }),
   purchase_line_id: z.number({ required_error: "La línea de compra es requerida" }),
 });
@@ -25,7 +31,8 @@ export const purchaseReceiptListSchema = z.object({
   id: z.number(),
   number: z.string(),
   supplier: z.string(),
-  received_at: z.string(),
+  scheduled_date: z.string(),
+  reception_date: z.string(),
   reception_location: z.string(),
   source_location: z.string(),
 });
@@ -35,11 +42,15 @@ export const newPurchaseReceiptSchema = z.object({
   reception_date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de recepción es requerida" }),
-  reception_location: z.string({ required_error: "La ubicación de recepción es requerida" }),
-  source_location: z.string().optional(),
+  reception_location: z.number({ required_error: "La ubicación de recepción es requerida" }),
+  source_location: z.number({ required_error: "La ubicación de origen es requerida" }),
   move_type: z.enum(["direct"], { required_error: "El tipo de movimiento es requerido" }),
   notes: z.string().optional(),
-  items: z.array(newPurchaseReceiptItemSchema),
+  scheduled_date: z.string().optional(),
+  items: z.array(newPurchaseReceiptItemSchema).min(1, { message: "Al menos un item es requerido" }),
+
+  // ? Esto no debe ser envíado al back, es solo para referencia en el front.
+  purchase_order: z.number(),
 });
 
 export const purchaseReceiptDetailSchema = z.object({
@@ -52,11 +63,11 @@ export const purchaseReceiptDetailSchema = z.object({
     address: z.string(),
     phone: z.string(),
   }),
-  received_at: z.string(),
+  scheduled_date: z.string(),
+  reception_date: z.string(),
   note: z.string(),
   reception_location: z.string(),
   source_location: z.string(),
-  scheduled_date: z.string(),
   purchase_orders: z.array(z.object({
     id: z.number(),
     name: z.string(),

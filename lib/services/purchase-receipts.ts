@@ -21,7 +21,7 @@ export const purchaseReceiptsApi = erpApi.injectEndpoints({
       query: (id) => `/receptions/${id}`,
       transformResponse: (response: PurchaseReceiptDetailResponse) => response.data,
     }),
-    createPurchaseReceipt: builder.mutation<PurchaseReceiptDetailResponse, Overwrite<NewPurchaseReceipt, { reception_location: number; source_location: number; reception_date: string }>>({
+    createPurchaseReceipt: builder.mutation<PurchaseReceiptDetailResponse, Omit<Overwrite<NewPurchaseReceipt, { reception_location: number; source_location: number; reception_date: string }>, "purchase_order">>({
       query: (data) => ({
         url: 'receptions',
         method: 'POST',

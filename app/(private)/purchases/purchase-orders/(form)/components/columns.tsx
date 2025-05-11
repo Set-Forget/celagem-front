@@ -2,8 +2,8 @@ import { AsyncMultiSelect } from "@/components/async-multi-select";
 import { AsyncSelect } from "@/components/async-select";
 import { FormTableColumn } from "@/components/form-table";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
-import { materials } from "@/lib/mocks/materials";
 import { useListCurrenciesQuery } from "@/lib/services/currencies";
+import { useLazyListMaterialsQuery } from "@/lib/services/materials";
 import { useLazyListTaxesQuery } from "@/lib/services/taxes";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
@@ -13,19 +13,34 @@ import { z } from "zod";
 import { newPurchaseOrderSchema } from "../../schemas/purchase-orders";
 
 const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseOrderSchema>>; index: number }) => {
-  const { setValue } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()
+  const [searchMaterials] = useLazyListMaterialsQuery()
 
   const handleSearchMaterial = async (query?: string) => {
-    if (!query) return materials
-    return materials.filter((material) => material.name.toLowerCase().includes(query.toLowerCase())) || []
+    try {
+      const response = await searchMaterials({
+        name: query,
+      }).unwrap()
+
+      return response.data?.map(material => ({
+        id: material.id,
+        name: material.name,
+        standard_price: material.standard_price,
+        code: material.default_code,
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
   }
+
   return <FormField
     control={control}
     name={`items.${index}.product_id`}
     render={({ field }) => (
       <FormItem className="flex flex-col w-full">
         <FormControl>
-          <AsyncSelect<{ id: number, name: string, lst_price: number }, number>
+          <AsyncSelect<{ id: number, name: string, standard_price: number, code: string }, number>
             label="Material"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
@@ -36,18 +51,21 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
             getDisplayValue={(item) => (
               <div className="flex gap-1">
                 <span className="font-medium">
-                  [{item.id}]
+                  {item.code}
                 </span>
+                -{" "}
                 {item.name}
               </div>
             )}
             getOptionValue={(item) => item.id}
-            renderOption={(item) => <>{item.name}</>}
-            onChange={(value) => {
-              field.onChange(value);
-              const material = materials.find((material) => material.id === value);
-              setValue(`items.${index}.unit_price`, material?.lst_price || 0, { shouldValidate: true });
-            }}
+            renderOption={(item) => <div className="flex gap-1">
+              <span className="font-medium">
+                {item.code}
+              </span>
+              -{" "}
+              {item.name}
+            </div>}
+            onChange={field.onChange}
             value={field.value}
             getOptionKey={(item) => String(item.id)}
             noResultsMessage="No se encontraron resultados"
@@ -124,7 +142,7 @@ const UnitPriceCell = ({ control, index }: { control: Control<z.infer<typeof new
 
   return <FormField
     control={control}
-    name={`items.${index}.unit_price`}
+    name={`items.${index}.price_unit`}
     render={({ field }) => (
       <FormItem className="flex flex-col">
         <FormControl>
@@ -179,7 +197,7 @@ const SubtotalCell = ({ control, index }: { control: Control<z.infer<typeof newP
 
   const unitPrice = useWatch({
     control,
-    name: `items.${index}.unit_price`,
+    name: `items.${index}.price_unit`,
   });
 
   const quantity = useWatch({

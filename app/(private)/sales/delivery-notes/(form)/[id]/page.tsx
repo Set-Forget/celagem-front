@@ -35,7 +35,7 @@ const fields: FieldDefinition<DeliveryNoteDetail>[] = [
   {
     label: "Fecha de requerimiento",
     placeholderLength: 12,
-    getValue: (p) => format(new Date(p.scheduled_date), "PPP", { locale: es }),
+    getValue: (p) => format(new Date(p.scheduled_date), "PP", { locale: es }),
   },
   {
     label: "Notas",

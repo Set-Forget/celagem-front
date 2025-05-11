@@ -11,8 +11,8 @@ import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { InvoiceList } from "../schemas/invoices"
 import { invoiceStatus, invoiceTypes } from "../utils"
-import { creditNoteStatus } from "../../credit-notes/utils"
-import { debitNoteStatus } from "../../debit-notes/utils"
+import { creditNoteStatus } from "../../../credit-notes/utils"
+import { debitNoteStatus } from "../../../debit-notes/utils"
 
 export const columns: ColumnDef<InvoiceList>[] = [
   {

@@ -13,8 +13,11 @@ export const userApi = usersApi.injectEndpoints({
         params: data || {}
       }),
     }),
-    listCompanies: builder.query<CompaniesListResponse, void>({
-      query: () => 'companies',
+    listCompanies: builder.query<CompaniesListResponse, { name?: string } | void>({
+      query: (data) => ({
+        url: 'companies',
+        params: data || {}
+      }),
     }),
   }),
 });

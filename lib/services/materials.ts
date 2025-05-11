@@ -10,7 +10,6 @@ export const materialsApi = erpApi.injectEndpoints({
       }),
       providesTags: ['Material'],
     }),
-    // ! El type de retorno hay que cambiarlo, ahora esta así porque el get no esta funcionando en el back.
     getMaterial: builder.query<MaterialDetail, number>({
       query: (id) => `/products/${id}`,
       transformResponse: (response: MaterialDetailResponse) => response.data,

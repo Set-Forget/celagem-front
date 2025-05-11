@@ -4,6 +4,9 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 import { InvoiceItem } from "../../../schemas/invoices"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export const columns: ColumnDef<InvoiceItem & { currency: string }>[] = [
   {
@@ -33,10 +36,62 @@ export const columns: ColumnDef<InvoiceItem & { currency: string }>[] = [
     accessorKey: "taxes",
     header: "Impuestos",
     cell: ({ row }) => {
-      // ! Debe mostrar mas de un impuesto, por ahora solo muestra el primero. 
-      // ! La idea es mapear los que vienen y mostrarlos en badges como se hace en el componente MultiSelect.
-      return <span>{row.original.taxes?.[0]?.name}</span>
-    }
+      const taxes = row.original.taxes;
+      const maxCount = 3;
+
+      if (!taxes || taxes.length === 0) {
+        return
+      }
+
+      const visibleTaxes = taxes.slice(0, maxCount);
+      const hiddenTaxes = taxes.slice(maxCount);
+
+      return (
+        <div className="flex items-center gap-1">
+          {visibleTaxes.map((tax, index) => (
+            <Badge
+              key={tax.id || index}
+              className={cn(
+                "badge group-hover:border group-hover:border-border group-hover:shadow-border bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary"
+              )}
+            >
+              {tax.name}
+            </Badge>
+          ))}
+          {hiddenTaxes.length > 0 && (
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span role="button" tabIndex={0}>
+                    <Badge
+                      className={cn(
+                        "badge group-hover:border group-hover:border-border group-hover:shadow-border bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary"
+                      )}
+                    >
+                      {`+ ${hiddenTaxes.length} más`}
+                    </Badge>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="bg-background shadow-lg border border-border p-1 rounded-sm">
+                  <div className="flex flex-col gap-1">
+                    {hiddenTaxes.map((tax, index) => (
+                      <Badge
+                        key={tax.id || index}
+                        className={cn(
+                          "badge group-hover:border group-hover:border-border group-hover:shadow-border bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary"
+                        )}
+                      >
+                        {tax.name}
+                      </Badge>
+                    ))}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "price_subtotal",

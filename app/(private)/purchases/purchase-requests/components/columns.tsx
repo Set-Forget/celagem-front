@@ -31,17 +31,31 @@ export const columns: ColumnDef<PurchaseRequestList>[] = [
     },
   },
   {
-    accessorKey: "request_date",
-    header: "Fecha de requerimiento",
+    accessorKey: "company",
+    header: "Sede",
     cell: ({ row }) => <div>
-      {format(new Date(row.getValue("request_date")), "PPP", { locale: es })}
+      {row.original.company.name}
     </div>,
   },
   {
-    accessorKey: "requested_by",
+    accessorKey: "request_date",
+    header: "Fecha de requerimiento",
+    cell: ({ row }) => <div>
+      {format(new Date(row.getValue("request_date")), "PP", { locale: es })}
+    </div>,
+  },
+  {
+    accessorKey: "created_at",
+    header: "Fecha de creación",
+    cell: ({ row }) => <div>
+      {format(new Date(row.getValue("created_at")), "PP", { locale: es })}
+    </div>,
+  },
+  {
+    accessorKey: "created_by",
     header: "Solicitado por",
     cell: ({ row }) => <div>
-      {row.getValue("requested_by")}
+      {row.getValue("created_by")}
     </div>,
   },
 ]

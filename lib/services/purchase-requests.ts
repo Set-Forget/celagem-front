@@ -20,7 +20,7 @@ export const purchaseRequestsApi = erpApi.injectEndpoints({
     getPurchaseRequest: builder.query<PurchaseRequestDetail, string>({
       query: (id) => `purchase_requests/${id}`,
       transformResponse: (response: PurchaseRequestDetailResponse) => response.data,
-      providesTags: ['PurchaseRequest'],
+      providesTags: (result, error, id) => [{ type: 'PurchaseRequest', id }],
     }),
     updatePurchaseRequest: builder.mutation<{ status: string, message: string }, Partial<PurchaseRequestDetail>>({
       query: ({ id, ...data }) => ({
@@ -30,11 +30,32 @@ export const purchaseRequestsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['PurchaseRequest'],
     }),
-    createPurchaseRequest: builder.mutation<NewPurchaseRequestResponse, Overwrite<NewPurchaseRequest, { request_date: string }>>({
+    createPurchaseRequest: builder.mutation<NewPurchaseRequestResponse, Overwrite<NewPurchaseRequest, { request_date: string, company: number }>>({
       query: (data) => ({
         url: 'purchase_requests',
         method: 'POST',
         body: data,
+      }),
+      invalidatesTags: ['PurchaseRequest'],
+    }),
+    confirmPurchaseRequest: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `purchase_requests/${id}/approve`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['PurchaseRequest'],
+    }),
+    orderPurchaseRequest: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `purchase_requests/${id}/order`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['PurchaseRequest'],
+    }),
+    cancelPurchaseRequest: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `purchase_requests/${id}/cancel`,
+        method: 'POST',
       }),
       invalidatesTags: ['PurchaseRequest'],
     }),
@@ -47,6 +68,9 @@ export const {
   useCreatePurchaseRequestMutation,
   useGetPurchaseRequestQuery,
   useUpdatePurchaseRequestMutation,
+  useOrderPurchaseRequestMutation,
+  useConfirmPurchaseRequestMutation,
+  useCancelPurchaseRequestMutation,
 } = purchaseRequestsApi;
 
 

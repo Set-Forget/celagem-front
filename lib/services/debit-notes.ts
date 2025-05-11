@@ -1,4 +1,4 @@
-import { DebitNoteDetail, DebitNoteDetailResponse, NewDebitNote, NewDebitNoteResponse } from '@/app/(private)/sales/debit-notes/schemas/debit-notes';
+import { DebitNoteDetail, DebitNoteDetailResponse, NewDebitNote, NewDebitNoteResponse } from '@/app/(private)/debit-notes/schemas/debit-notes';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
 
@@ -9,7 +9,7 @@ export const debitNotesApi = erpApi.injectEndpoints({
       transformResponse: (response: DebitNoteDetailResponse) => response.data,
       providesTags: ['DebitNote'],
     }),
-    createDebitNote: builder.mutation<NewDebitNoteResponse, Overwrite<Omit<NewDebitNote, 'items'> & { items: { product_id: number, taxes_id: number[] | undefined, quantity: number }[] }, { payment_method: number }>>({
+    createDebitNote: builder.mutation<NewDebitNoteResponse, Overwrite<Omit<NewDebitNote, 'items'> & { items: { product_id: number, taxes_id?: number[], quantity: number }[] }, { accounting_date: string }>>({
       query: (data) => ({
         url: 'debit_notes',
         method: 'POST',

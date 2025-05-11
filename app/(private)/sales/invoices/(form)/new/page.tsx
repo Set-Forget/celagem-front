@@ -1,6 +1,6 @@
 "use client"
 
-import { Ellipsis, House, Save } from "lucide-react"
+import { Save, Sticker, Wallet } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn, getFieldPaths } from "@/lib/utils"
@@ -17,27 +17,28 @@ import { useState } from "react"
 import { FieldErrors, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
-import { newInvoiceGeneralSchema, newInvoiceOthersSchema, newInvoiceSchema } from "../../schemas/invoices"
+import { newInvoiceFiscalSchema, newInvoiceNotesSchema, newInvoiceSchema } from "../../schemas/invoices"
+import FiscalForm from "./components/fiscal-form"
+import NotesForm from "./components/notes-form"
 import GeneralForm from "./components/general-form"
-import OthersForm from "./components/others-form"
 
 const tabToFieldsMap = {
-  "tab-1": getFieldPaths(newInvoiceGeneralSchema),
-  "tab-2": getFieldPaths(newInvoiceOthersSchema),
+  "tab-1": getFieldPaths(newInvoiceFiscalSchema),
+  "tab-2": getFieldPaths(newInvoiceNotesSchema),
 }
 
 const tabs = [
   {
     value: "tab-1",
-    label: "General",
-    icon: <House className="mr-1.5" size={16} />,
-    content: <GeneralForm />
+    label: "Fiscal",
+    icon: <Wallet className="mr-1.5" size={16} />,
+    content: <FiscalForm />
   },
   {
     value: "tab-2",
     label: "Otros",
-    icon: <Ellipsis className="mr-1.5" size={16} />,
-    content: <OthersForm />
+    icon: <Sticker className="mr-1.5" size={16} />,
+    content: < NotesForm />
   }
 ]
 
@@ -60,18 +61,13 @@ export default function Page() {
   })
 
   const onSubmit = async (data: z.infer<typeof newInvoiceSchema>) => {
-    const { accounting_account, cost_center, ...rest } = data
     try {
       const response = await createInvoice({
-        ...rest,
-        number: `FA-${Math.floor(Math.random() * 100000)}`,
-        accounting_date: rest.accounting_date.toString(),
-        payment_method: 1,
-        items: data.items.map((item) => ({
-          quantity: item.quantity,
-          product_id: item.product_id,
-          taxes_id: item?.taxes_id,
-          // price_unit: item.price_unit, // ! No se envía el precio unitario porque aún no existe en el backend.
+        ...data,
+        accounting_date: data.accounting_date.toString(),
+        items: data.items.map(({ cost_center_id, ...rest }) => ({
+          ...rest,
+          cost_centers: cost_center_id ? [{ id: cost_center_id, percentage: 100 }] : [],
         })),
       }).unwrap()
 
@@ -112,6 +108,7 @@ export default function Page() {
           </Button>
         </div>
       </Header>
+      <GeneralForm />
       <DataTabs
         tabs={tabs}
         activeTab={tab}

@@ -183,9 +183,9 @@ export function AsyncSelect<T, V>(props: AsyncSelectProps<T, V>) {
             triggerClassName
           )}
         >
-          <p className="truncate">
+          <div className="truncate">
             {selectedOption ? getDisplayValue(selectedOption) : placeholder}
-          </p>
+          </div>
           <ChevronsUpDown className="opacity-50" size={10} />
         </Button>
       </PopoverTrigger>

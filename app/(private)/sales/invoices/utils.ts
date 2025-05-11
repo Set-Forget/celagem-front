@@ -14,9 +14,9 @@ export const invoiceStatus = {
   },
   "posted": {
     label: "Pendiente",
-    bg_color: "bg-amber-100",
-    text_color: "text-amber-800",
-    pure_bg_color: "bg-amber-500",
+    bg_color: "bg-blue-100",
+    text_color: "text-blue-800",
+    pure_bg_color: "bg-blue-500",
   },
   "draft": {
     label: "Borrador",

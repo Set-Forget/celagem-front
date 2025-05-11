@@ -20,7 +20,7 @@ const PercentageReceivedCell = ({ row }: { row: Row<PurchaseOrderList> }) => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Progress value={percentageReceived} />
+          <Progress className="w-[200px]" value={percentageReceived} />
         </TooltipTrigger>
         <TooltipContent>
           {percentageReceived.toFixed()}%
@@ -39,7 +39,7 @@ export const columns: ColumnDef<PurchaseOrderList>[] = [
   {
     accessorKey: "supplier",
     header: "Proveedor",
-    cell: ({ row }) => <div>{row.original.supplier}</div>,
+    cell: ({ row }) => <div>{row.original.supplier.name}</div>,
   },
   {
     accessorKey: "status",
@@ -63,7 +63,7 @@ export const columns: ColumnDef<PurchaseOrderList>[] = [
     accessorKey: "price",
     header: "Total",
     cell: ({ row }) => <div className="font-medium">
-      {row.original.currency}{" "}
+      {row.original.currency.name}{" "}
       {row.original.price}
     </div>,
   },
@@ -71,7 +71,7 @@ export const columns: ColumnDef<PurchaseOrderList>[] = [
     accessorKey: "required_date",
     header: "Fecha de requerimiento",
     cell: ({ row }) => <div>
-      {format(new Date(row.original.required_date), "PPP", { locale: es })}
+      {format(new Date(row.original.required_date), "PP", { locale: es })}
     </div>,
   },
 ]
