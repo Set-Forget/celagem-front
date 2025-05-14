@@ -35,7 +35,7 @@ export const locationsApi = erpApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `locations/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['Location'],

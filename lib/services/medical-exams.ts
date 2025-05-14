@@ -11,15 +11,15 @@ import {
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const medicalExamsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listMedicalExams: builder.query<
-      MedicalExamsListResponse,
-      void
-    >({
+    listMedicalExams: builder.query<MedicalExamsListResponse, void>({
       query: (data) => ({
         url: 'medical-exams',
       }),
     }),
-    createMedicalExam: builder.mutation<MedicalExamResponse, MedicalExamCreateBody>({
+    createMedicalExam: builder.mutation<
+      MedicalExamResponse,
+      MedicalExamCreateBody
+    >({
       query: (body) => ({
         url: 'medical-exams',
         method: 'POST',
@@ -38,12 +38,15 @@ export const medicalExamsApi = erpApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `medical-exams/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['MedicalExam'],
     }),
-    deleteMedicalExam: builder.mutation<MedicalExamDeleteResponse, { id: string }>({
+    deleteMedicalExam: builder.mutation<
+      MedicalExamDeleteResponse,
+      { id: string }
+    >({
       query: ({ id }) => ({
         url: `medical-exams/${id}`,
         method: 'DELETE',

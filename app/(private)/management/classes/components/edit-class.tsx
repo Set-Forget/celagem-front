@@ -1,4 +1,4 @@
-'use client';
+// 'use client'
 
 import { Button } from '@/components/ui/button';
 import {
@@ -35,23 +35,20 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { newRoleSchema } from '../schema/roles';
-import { useCreateRoleMutation } from '@/lib/services/roles';
-import { useRouter } from 'next/navigation';
+import { Classes, newClassSchema } from '../schema/classes';
+import { useUpdateClassMutation } from '@/lib/services/classes';
 import { toast } from 'sonner';
-import CustomSonner from '@/components/custom-sonner';
-import { AsyncSelect } from '@/components/async-select';
 import { useLazyListCompaniesQuery } from '@/lib/services/companies';
+import CustomSonner from '@/components/custom-sonner';
 
-export default function NewRole() {
-  const router = useRouter();
-
+export default function EditClass({ classData }: { classData: Classes }) {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
 
-  const newRoleForm = useForm<z.infer<typeof newRoleSchema>>({
-    resolver: zodResolver(newRoleSchema),
+  const editClassForm = useForm<z.infer<typeof newClassSchema>>({
+    resolver: zodResolver(newClassSchema),
     defaultValues: {
-      name: '',
+      name: classData.name || '',
+      company_id: classData.company_id || '',
     },
   });
 
@@ -59,33 +56,32 @@ export default function NewRole() {
     closeDialogs();
   };
 
-  const [createRole, { isLoading: isCreatingRole }] = useCreateRoleMutation();
+  const [updateClass, { isLoading: isUpdatingClass }] =
+    useUpdateClassMutation();
 
-  const onSubmit = async (data: z.infer<typeof newRoleSchema>) => {
-    console.log('Form data submitted:', data); // Debugging log
+  const onSubmit = async (data: z.infer<typeof newClassSchema>) => {
     try {
-      const response = await createRole({
-        ...data,
+      const response = await updateClass({
+        id: classData.id,
+        body: { ...data },
       }).unwrap();
 
-      console.log('Create role response:', response); // Debugging log
-
       if (response.status === 'success') {
-        router.push(`/management/roles/${response.data.id}`);
         toast.custom((t) => (
           <CustomSonner
             t={t}
-            description="Rol creado exitosamente"
+            description="Clase editada exitosamente"
             variant="success"
           />
         ));
+        closeDialogs();
       }
     } catch (error) {
-      console.error('Error creating company:', error); // Debugging log
+      console.error('Error updating class:', error);
       toast.custom((t) => (
         <CustomSonner
           t={t}
-          description="Ocurrió un error al crear el rol"
+          description="Ocurrió un error al actualizar la clase"
           variant="error"
         />
       ));
@@ -116,70 +112,74 @@ export default function NewRole() {
 
   return (
     <Dialog
-      open={dialogState.open === 'new-role'}
+      open={dialogState.open === 'edit-class'}
       onOpenChange={onOpenChange}
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Nuevo rol</DialogTitle>
-          <DialogDescription>
-            Crea un nuevo rol para asignar a tus usuarios.
-          </DialogDescription>
+          <DialogTitle>Editar clase</DialogTitle>
+          <DialogDescription>Edita los detalles de la clase.</DialogDescription>
         </DialogHeader>
-        <Form {...newRoleForm}>
+        <Form {...editClassForm}>
           <form className="flex flex-col gap-4">
             <FormField
-              control={newRoleForm.control}
+              control={editClassForm.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Administrador"
+                      placeholder="Nombre de la clase"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Este será el nombre del rol.
+                    Este será el nombre de la clase.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={newRoleForm.control}
-              name="company_id"
+            {/* <FormField
+              control={editClassForm.control}
+              name="status"
               render={({ field }) => (
-                <FormItem className="flex flex-col w-full">
-                  <FormControl>
-                    <AsyncSelect<{ label: string; value: string }, string>
-                      label="Sede"
-                      triggerClassName="!w-full"
-                      placeholder="Seleccionar sede"
-                      fetcher={handleGetCompanies}
-                      getDisplayValue={(item) => item.label}
-                      getOptionValue={(item) => item.value}
-                      renderOption={(item) => <div>{item.label}</div>}
-                      onChange={field.onChange}
-                      value={field.value}
-                      noResultsMessage="No se encontraron sedes"
-                    />
-                  </FormControl>
+                <FormItem>
+                  <FormLabel>Estado</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un estado" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="active">Activo</SelectItem>
+                      <SelectItem value="inactive">Inactivo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Este será el estado de la clase. Puedes cambiarlo en
+                    cualquier momento.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
+            <DialogFooter>
+              <Button
+                size="sm"
+                type="submit"
+                onClick={editClassForm.handleSubmit(onSubmit)}
+                disabled={isUpdatingClass}
+              >
+                Guardar cambios
+              </Button>
+            </DialogFooter>
           </form>
-          <DialogFooter>
-            <Button
-              size="sm"
-              type="submit"
-              onClick={newRoleForm.handleSubmit(onSubmit)}
-            >
-              Crear
-            </Button>
-          </DialogFooter>
         </Form>
       </DialogContent>
     </Dialog>

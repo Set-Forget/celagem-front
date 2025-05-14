@@ -39,7 +39,7 @@ export const userApi = usersApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `classes/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['Class'],

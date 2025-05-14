@@ -35,7 +35,7 @@ export const warehousesApi = erpApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `warehouses/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['Warehouse'],

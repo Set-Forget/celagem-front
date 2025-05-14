@@ -11,10 +11,7 @@ import {
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const attributesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listAttributes: builder.query<
-      AttributesListResponse,
-      void
-    >({
+    listAttributes: builder.query<AttributesListResponse, void>({
       query: (data) => ({
         url: 'attributes',
       }),
@@ -38,7 +35,7 @@ export const attributesApi = erpApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `attributes/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['Attribute'],

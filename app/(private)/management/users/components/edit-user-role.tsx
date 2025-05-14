@@ -20,13 +20,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   closeDialogs,
   DialogsState,
   dialogsStateObservable,
@@ -35,23 +28,23 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { newRoleSchema } from '../schema/roles';
-import { useCreateRoleMutation } from '@/lib/services/roles';
+import { useUpdateUserRoleMutation } from '@/lib/services/users';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import CustomSonner from '@/components/custom-sonner';
 import { AsyncSelect } from '@/components/async-select';
-import { useLazyListCompaniesQuery } from '@/lib/services/companies';
+import { Users, userUpdateRoleBodySchema } from '../schema/users';
+import { useLazyListRolesQuery } from '@/lib/services/roles';
 
-export default function NewRole() {
+export default function EditUserRole({ userData }: { userData: Users }) {
   const router = useRouter();
 
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
 
-  const newRoleForm = useForm<z.infer<typeof newRoleSchema>>({
-    resolver: zodResolver(newRoleSchema),
+  const editUserRoleForm = useForm<z.infer<typeof userUpdateRoleBodySchema>>({
+    resolver: zodResolver(userUpdateRoleBodySchema),
     defaultValues: {
-      name: '',
+      role_id: userData.role_id || '',
     },
   });
 
@@ -59,50 +52,53 @@ export default function NewRole() {
     closeDialogs();
   };
 
-  const [createRole, { isLoading: isCreatingRole }] = useCreateRoleMutation();
-
-  const onSubmit = async (data: z.infer<typeof newRoleSchema>) => {
-    console.log('Form data submitted:', data); // Debugging log
+  const [updateUserRole, { isLoading: isUpdatingUserRole }] =
+    useUpdateUserRoleMutation();
+  const onSubmit = async (data: z.infer<typeof userUpdateRoleBodySchema>) => {
+    console.log('Form data submitted for updating user role:', data); // Debugging log
     try {
-      const response = await createRole({
-        ...data,
+      const response = await updateUserRole({
+        id: userData.id,
+        body: {
+          ...data,
+        },
       }).unwrap();
 
-      console.log('Create role response:', response); // Debugging log
+      console.log('Update user role response:', response); // Debugging log
 
       if (response.status === 'success') {
-        router.push(`/management/roles/${response.data.id}`);
+        router.push(`/management/users/${userData.id}`);
         toast.custom((t) => (
           <CustomSonner
             t={t}
-            description="Rol creado exitosamente"
+            description="Rol de usuario actualizado exitosamente"
             variant="success"
           />
         ));
+        closeDialogs();
       }
     } catch (error) {
-      console.error('Error creating company:', error); // Debugging log
+      console.error('Error updating user role:', error); // Debugging log
       toast.custom((t) => (
         <CustomSonner
           t={t}
-          description="Ocurrió un error al crear el rol"
+          description="Ocurrió un error al actualizar el rol del usuario"
           variant="error"
         />
       ));
     }
   };
+  const [getRoles] = useLazyListRolesQuery();
 
-  const [getCompanies, { data: companies }] = useLazyListCompaniesQuery();
-
-  const handleGetCompanies = async () => {
+  const handleGetRoles = async () => {
     try {
-      const companies = await getCompanies().unwrap();
-      return companies.data.map((company) => ({
-        label: company.name,
-        value: company.id,
+      const roles = await getRoles({ company_id: '' }).unwrap();
+      return roles.data.map((role) => ({
+        label: role.name,
+        value: role.id,
       }));
     } catch (error) {
-      console.error('Error al obtener las sedes:', error);
+      console.error('Error al obtener los roles:', error);
       return [];
     }
   };
@@ -113,71 +109,57 @@ export default function NewRole() {
       subscription.unsubscribe();
     };
   }, []);
-
   return (
     <Dialog
-      open={dialogState.open === 'new-role'}
+      open={dialogState.open === 'edit-user-role'}
       onOpenChange={onOpenChange}
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Nuevo rol</DialogTitle>
+          <DialogTitle>Cambiar rol de usuario</DialogTitle>
           <DialogDescription>
-            Crea un nuevo rol para asignar a tus usuarios.
+            Actualiza el rol del usuario {userData.first_name}{' '}
+            {userData.last_name}.
           </DialogDescription>
         </DialogHeader>
-        <Form {...newRoleForm}>
+        <Form {...editUserRoleForm}>
           <form className="flex flex-col gap-4">
             <FormField
-              control={newRoleForm.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Administrador"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Este será el nombre del rol.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={newRoleForm.control}
-              name="company_id"
+              control={editUserRoleForm.control}
+              name="role_id"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full">
+                  <FormLabel>Rol</FormLabel>
                   <FormControl>
                     <AsyncSelect<{ label: string; value: string }, string>
-                      label="Sede"
+                      label="Rol"
                       triggerClassName="!w-full"
-                      placeholder="Seleccionar sede"
-                      fetcher={handleGetCompanies}
+                      placeholder="Seleccionar rol"
+                      fetcher={handleGetRoles}
                       getDisplayValue={(item) => item.label}
                       getOptionValue={(item) => item.value}
                       renderOption={(item) => <div>{item.label}</div>}
                       onChange={field.onChange}
                       value={field.value}
-                      noResultsMessage="No se encontraron sedes"
+                      noResultsMessage="No se encontraron roles"
                     />
                   </FormControl>
+                  <FormDescription>
+                    El rol determina los permisos del usuario.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </form>
+          </form>{' '}
           <DialogFooter>
             <Button
               size="sm"
               type="submit"
-              onClick={newRoleForm.handleSubmit(onSubmit)}
+              onClick={editUserRoleForm.handleSubmit(onSubmit)}
+              disabled={isUpdatingUserRole}
             >
-              Crear
+              Actualizar
             </Button>
           </DialogFooter>
         </Form>

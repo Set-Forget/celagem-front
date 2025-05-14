@@ -7,13 +7,20 @@ import { Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { companiesColumns } from './components/columns';
 import Toolbar from './components/toolbar';
-import { useListCompaniesQuery } from '@/lib/services/companies';
+import { useLazyListCompaniesQuery, useListCompaniesQuery } from '@/lib/services/companies';
+import { setDialogsState } from '@/lib/store/dialogs-store';
+import NewCompany from './components/new-company';
+import { useEffect } from 'react';
 
 export default function CompaniesPage() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data: companies, isLoading } = useListCompaniesQuery();
+  const [handleCompanies, { data: companies, isLoading }] = useLazyListCompaniesQuery();
+
+  useEffect(() => {
+    handleCompanies();
+  }, []);
 
   return (
     <>
@@ -21,7 +28,11 @@ export default function CompaniesPage() {
         <Button
           className="ml-auto"
           size="sm"
-          onClick={() => router.push(`${pathname}/new`)}
+          onClick={() => {
+            setDialogsState({
+              open: 'new-company',
+            });
+          }}
         >
           <Plus className="w-4 h-4" />
           Crear sede
@@ -37,6 +48,7 @@ export default function CompaniesPage() {
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
+      <NewCompany />
     </>
   );
 }

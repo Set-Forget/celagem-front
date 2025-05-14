@@ -1,4 +1,11 @@
-import { NewPatient, NewPatientResponse, PatientCareCompanyListResponse, PatientDetail, PatientDetailResponse, PatientListResponse } from '@/app/(private)/medical-management/patients/schema/patients';
+import {
+  NewPatient,
+  NewPatientResponse,
+  PatientCareCompanyListResponse,
+  PatientDetail,
+  PatientDetailResponse,
+  PatientListResponse,
+} from '@/app/(private)/medical-management/patients/schema/patients';
 import { hcApi } from '@/lib/apis/hc-api';
 import { Overwrite } from '../utils';
 
@@ -8,9 +15,9 @@ export const patientsApi = hcApi.injectEndpoints({
     listPatients: builder.query<PatientListResponse, { name?: string } | void>({
       query: (data) => ({
         url: 'patient',
-        params: data || {}
+        params: data || {},
       }),
-      providesTags: ['Patient']
+      providesTags: ['Patient'],
     }),
     listCareCompanies: builder.query<PatientCareCompanyListResponse, void>({
       query: () => 'care-company',
@@ -18,23 +25,32 @@ export const patientsApi = hcApi.injectEndpoints({
     getPatient: builder.query<PatientDetail, string>({
       query: (id) => `patient/${id}`,
       transformResponse: (response: PatientDetailResponse) => response.data,
-      providesTags: ['Patient']
+      providesTags: ['Patient'],
     }),
-    updatePatient: builder.mutation<NewPatientResponse, { id: string, body: Partial<Overwrite<NewPatient, { birthdate: string }>> }>({
+    updatePatient: builder.mutation<
+      NewPatientResponse,
+      {
+        id: string;
+        body: Partial<Overwrite<NewPatient, { birthdate: string }>>;
+      }
+    >({
       query: ({ id, body }) => ({
         url: `patient/${id}`,
-        method: 'PATCH',
-        body: body
+        method: 'PUT',
+        body: body,
       }),
-      invalidatesTags: ['Patient']
+      invalidatesTags: ['Patient'],
     }),
-    createPatient: builder.mutation<NewPatientResponse, Overwrite<NewPatient, { birthdate: string }>>({
+    createPatient: builder.mutation<
+      NewPatientResponse,
+      Overwrite<NewPatient, { birthdate: string }>
+    >({
       query: (data) => ({
         url: 'patient',
         method: 'POST',
-        body: data
+        body: data,
       }),
-      invalidatesTags: ['Patient']
+      invalidatesTags: ['Patient'],
     }),
   }),
 });
@@ -45,5 +61,5 @@ export const {
   useLazyListCareCompaniesQuery,
   useGetPatientQuery,
   useCreatePatientMutation,
-  useUpdatePatientMutation
+  useUpdatePatientMutation,
 } = patientsApi;

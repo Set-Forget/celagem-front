@@ -20,13 +20,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   closeDialogs,
   DialogsState,
   dialogsStateObservable,
@@ -35,23 +28,24 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { newRoleSchema } from '../schema/roles';
-import { useCreateRoleMutation } from '@/lib/services/roles';
-import { useRouter } from 'next/navigation';
+import { businessUnitCreateBodySchema } from '../schema/business-units';
+import { useCreateBusinessUnitMutation } from '@/lib/services/business-units';
+import { useLazyListCompaniesQuery } from '@/lib/services/companies';
+import { AsyncSelect } from '@/components/async-select';
 import { toast } from 'sonner';
 import CustomSonner from '@/components/custom-sonner';
-import { AsyncSelect } from '@/components/async-select';
-import { useLazyListCompaniesQuery } from '@/lib/services/companies';
 
-export default function NewRole() {
-  const router = useRouter();
-
+export default function NewBusinessUnit() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
 
-  const newRoleForm = useForm<z.infer<typeof newRoleSchema>>({
-    resolver: zodResolver(newRoleSchema),
+  const newBusinessUnitForm = useForm<
+    z.infer<typeof businessUnitCreateBodySchema>
+  >({
+    resolver: zodResolver(businessUnitCreateBodySchema),
     defaultValues: {
       name: '',
+      description: '',
+      company_id: '',
     },
   });
 
@@ -59,40 +53,9 @@ export default function NewRole() {
     closeDialogs();
   };
 
-  const [createRole, { isLoading: isCreatingRole }] = useCreateRoleMutation();
-
-  const onSubmit = async (data: z.infer<typeof newRoleSchema>) => {
-    console.log('Form data submitted:', data); // Debugging log
-    try {
-      const response = await createRole({
-        ...data,
-      }).unwrap();
-
-      console.log('Create role response:', response); // Debugging log
-
-      if (response.status === 'success') {
-        router.push(`/management/roles/${response.data.id}`);
-        toast.custom((t) => (
-          <CustomSonner
-            t={t}
-            description="Rol creado exitosamente"
-            variant="success"
-          />
-        ));
-      }
-    } catch (error) {
-      console.error('Error creating company:', error); // Debugging log
-      toast.custom((t) => (
-        <CustomSonner
-          t={t}
-          description="Ocurrió un error al crear el rol"
-          variant="error"
-        />
-      ));
-    }
-  };
-
-  const [getCompanies, { data: companies }] = useLazyListCompaniesQuery();
+  const [getCompanies] = useLazyListCompaniesQuery();
+  const [createBusinessUnit, { isLoading: isCreatingBusinessUnit }] =
+    useCreateBusinessUnitMutation();
 
   const handleGetCompanies = async () => {
     try {
@@ -106,6 +69,34 @@ export default function NewRole() {
       return [];
     }
   };
+  const onSubmit = async (
+    data: z.infer<typeof businessUnitCreateBodySchema>
+  ) => {
+    try {
+      const response = await createBusinessUnit(data).unwrap();
+
+      if (response.status === 'success') {
+        toast.custom((t) => (
+          <CustomSonner
+            t={t}
+            description="Unidad de negocio creada exitosamente"
+            variant="success"
+          />
+        ));
+        newBusinessUnitForm.reset();
+        closeDialogs();
+      }
+    } catch (error) {
+      console.error('Error creating business unit:', error);
+      toast.custom((t) => (
+        <CustomSonner
+          t={t}
+          description="Ocurrió un error al crear la unidad de negocio"
+          variant="error"
+        />
+      ));
+    }
+  };
 
   useEffect(() => {
     const subscription = dialogsStateObservable.subscribe(setDialogState);
@@ -113,45 +104,64 @@ export default function NewRole() {
       subscription.unsubscribe();
     };
   }, []);
-
   return (
     <Dialog
-      open={dialogState.open === 'new-role'}
+      open={dialogState.open === 'new-business-unit'}
       onOpenChange={onOpenChange}
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Nuevo rol</DialogTitle>
+          <DialogTitle>Crear unidad de negocio</DialogTitle>
           <DialogDescription>
-            Crea un nuevo rol para asignar a tus usuarios.
+            Ingrese los detalles para crear una nueva unidad de negocio.
           </DialogDescription>
         </DialogHeader>
-        <Form {...newRoleForm}>
+        <Form {...newBusinessUnitForm}>
           <form className="flex flex-col gap-4">
             <FormField
-              control={newRoleForm.control}
+              control={newBusinessUnitForm.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Administrador"
+                      placeholder="Nombre de la unidad de negocio"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Este será el nombre del rol.
+                    Este será el nombre de la unidad de negocio.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
-              control={newRoleForm.control}
+              control={newBusinessUnitForm.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Descripción</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Descripción de la unidad de negocio"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Esta será la descripción de la unidad de negocio.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={newBusinessUnitForm.control}
               name="company_id"
               render={({ field }) => (
-                <FormItem className="flex flex-col w-full">
+                <FormItem>
+                  <FormLabel>Sede</FormLabel>
                   <FormControl>
                     <AsyncSelect<{ label: string; value: string }, string>
                       label="Sede"
@@ -166,20 +176,24 @@ export default function NewRole() {
                       noResultsMessage="No se encontraron sedes"
                     />
                   </FormControl>
+                  <FormDescription>
+                    Esta será la sede asociada a la unidad de negocio.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <DialogFooter>
+              <Button
+                size="sm"
+                type="submit"
+                onClick={newBusinessUnitForm.handleSubmit(onSubmit)}
+                disabled={isCreatingBusinessUnit}
+              >
+                Crear
+              </Button>
+            </DialogFooter>
           </form>
-          <DialogFooter>
-            <Button
-              size="sm"
-              type="submit"
-              onClick={newRoleForm.handleSubmit(onSubmit)}
-            >
-              Crear
-            </Button>
-          </DialogFooter>
         </Form>
       </DialogContent>
     </Dialog>

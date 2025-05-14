@@ -15,7 +15,7 @@ export default function RolesPage() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data: roles, isLoading } = useListRolesQuery();
+  const { data: roles, isLoading } = useListRolesQuery({ company_id: '' });
 
   return (
     <>

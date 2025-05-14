@@ -5,8 +5,10 @@ export const newClassGeneralSchema = z.object({
     .string({ required_error: 'El nombre es requerido' })
     .nonempty({ message: 'El nombre es requerido' })
     .default(''),
-  status: z.enum(['active', 'inactive']), 
-  created_by: z.string(),
+  company_id: z
+    .string({ required_error: 'La empresa es requerida' })
+    .nonempty({ message: 'La empresa es requerida' })
+    .default(''),
 });
 
 export const newClassSchema = newClassGeneralSchema;
@@ -14,7 +16,8 @@ export const newClassSchema = newClassGeneralSchema;
 export const classesSchema = z.object({
   id: z.string(),
   name: z.string(),
-  status: z.enum(['active', 'inactive']), 
+  status: z.string(), 
+  company_id: z.string(),
   created_at: z.string(),
   created_by: z.object({
     id: z.string(),
@@ -58,7 +61,7 @@ export const classDeleteResponseSchema = z.object({
 
 export const classCreateBodySchema = z.object({
   name: z.string(),
-  created_by: z.string(),
+  company_id: z.string(),
 });
 
 export const classUpdateBodySchema = z.object({

@@ -7,18 +7,23 @@ import { Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { classesColumns } from './components/columns';
 import Toolbar from './components/toolbar';
-import { useListClassesQuery } from '@/lib/services/classes';
+import {
+  useLazyListClassesQuery,
+  useListClassesQuery,
+} from '@/lib/services/classes';
 import { setDialogsState } from '@/lib/store/dialogs-store';
-import NewClass from './components/new-class-dialog';
+import NewClass from './components/new-class';
+import { useEffect } from 'react';
 
 export default function CompaniesPage() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data, isLoading } = useListClassesQuery({
-    Name: '',
-    CompanyId: '',
-  });
+  const [handleGetClasses, { data, isLoading }] = useLazyListClassesQuery();
+
+  useEffect(() => {
+    handleGetClasses({ Name: '', CompanyId: '' });
+  }, []);
 
   return (
     <>

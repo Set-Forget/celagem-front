@@ -33,7 +33,7 @@ export const companiesApi = usersApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `companies/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['Company'],

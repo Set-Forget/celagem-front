@@ -44,10 +44,17 @@ export default function Page() {
   const router = useRouter();
 
   const [createUser, { isLoading: isCreatingUser }] = useCreateUserMutation();
-  const { data: profile } = useGetProfileQuery();
 
   const newUserForm = useForm<z.infer<typeof newUserSchema>>({
     resolver: zodResolver(newUserSchema),
+    defaultValues: {
+      first_name: '',
+      last_name: '',
+      email: '',
+      role_id: '',
+      company_id: '',
+      business_units: [],
+    },
   });
 
   const [tab, setTab] = useState('tab-1');
@@ -55,8 +62,9 @@ export default function Page() {
   const onSubmit = async (data: Partial<z.infer<typeof newUserSchema>>) => {
     try {
       const response = await createUser(data).unwrap();
+      console.log(" onSubmit ~ response:", response);
 
-      if (response.status === 'SUCCESS') {
+      if (response.status === 'success') {
         router.push(`/management/users/${response.data.id}`);
         toast.custom((t) => (
           <CustomSonner
@@ -89,12 +97,6 @@ export default function Page() {
       }
     }
   };
-
-  useEffect(() => {
-    if (profile) {
-      newUserForm.setValue('created_by', profile.data.id);
-    }
-  }, [profile]);
 
   return (
     <Form {...newUserForm}>

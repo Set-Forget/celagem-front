@@ -14,11 +14,10 @@ export const businessUnitsApi = usersApi.injectEndpoints({
   endpoints: (builder) => ({
     listBusinessUnits: builder.query<
       BusinessUnitsListResponse,
-      { Name: string; CompanyId: string }
+      void
     >({
-      query: (data) => ({
+      query: () => ({
         url: `businessunits`,
-        params: data || {},
       }),
       providesTags: ['BusinessUnit'],
     }),

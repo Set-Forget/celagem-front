@@ -11,10 +11,7 @@ import {
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const productTemplatesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listProductTemplates: builder.query<
-      ProductTemplatesListResponse,
-      void
-    >({
+    listProductTemplates: builder.query<ProductTemplatesListResponse, void>({
       query: (data) => ({
         url: 'product_templates',
       }),
@@ -41,10 +38,10 @@ export const productTemplatesApi = erpApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `product_templates/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
-      invalidatesTags: ['ProductTemplate'], 
+      invalidatesTags: ['ProductTemplate'],
     }),
     deleteProductTemplate: builder.mutation<
       ProductTemplateDeleteResponse,

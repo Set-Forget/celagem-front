@@ -35,7 +35,9 @@ import { useState } from 'react';
 
 import GeneralTab from './components/general-tab';
 import { useGetClassQuery } from '@/lib/services/classes';
-import EditClass from './components/edit-class-dialog';
+import EditClass from '../components/edit-class';
+import { setDialogsState } from '@/lib/store/dialogs-store';
+import DeleteClass from '../components/delete-class';
 
 const notes = [
   {
@@ -95,15 +97,31 @@ export default function Page() {
                 <ChevronDown />
               </Button>
             </DropdownMenuTrigger>
-            {/* <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                <DropdownMenuItem>Ver historial</DropdownMenuItem>
-                <DropdownMenuItem>Crear visita</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDialogsState({
+                      open: 'delete-class',
+                      payload: {
+                        id: classId,
+                      },
+                    });
+                  }}
+                  className="text-destructive cursor-pointer"
+                >
+                  Eliminar clase
+                </DropdownMenuItem>
               </DropdownMenuGroup>
-            </DropdownMenuContent> */}
+            </DropdownMenuContent>
           </DropdownMenu>
           <Button
-            onClick={() => router.push(`/management/classes/edit/${classId}`)}
+            onClick={() => {
+              setDialogsState({
+                open: 'edit-class',
+                payload: classData,
+              });
+            }}
             size="sm"
           >
             <Pencil className="w-4 h-4" />
@@ -219,7 +237,8 @@ export default function Page() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-      <EditClass />
+      {classData && <EditClass classData={classData} />}
+      <DeleteClass classId={classId} />
     </>
   );
 }

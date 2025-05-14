@@ -12,8 +12,14 @@ import {
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const userApi = usersApi.injectEndpoints({
   endpoints: (builder) => ({
-    listRoles: builder.query<RolesListResponse, void>({
-      query: () => 'roles',
+    listRoles: builder.query<RolesListResponse, { company_id: string }>({
+      query: (params) => ({
+        url: `roles`,
+        method: 'GET',
+        params: {
+          company_id: Object.keys(params).includes('company_id') ? params.company_id : '',
+        },
+      }),
       providesTags: ['Role'],
     }),
     createRole: builder.mutation<RoleResponse, RoleCreateBody>({
@@ -35,7 +41,7 @@ export const userApi = usersApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `roles/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['Role'],

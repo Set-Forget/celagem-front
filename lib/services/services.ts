@@ -35,7 +35,7 @@ export const servicesApi = erpApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `classes/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['Service'],

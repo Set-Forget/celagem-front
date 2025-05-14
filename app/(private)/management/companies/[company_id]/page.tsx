@@ -18,7 +18,16 @@ import {
 import DataTabs from '@/components/data-tabs';
 import { Separator } from '@/components/ui/separator';
 import { cn, placeholder } from '@/lib/utils';
-import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { setDialogsState } from '@/lib/store/dialogs-store';
+import EditCompany from '../components/edit-company';
+import DeleteCompany from '../components/delete-company';
 
 const notes = [
   {
@@ -78,17 +87,31 @@ export default function CompanyPage() {
                 <ChevronDown />
               </Button>
             </DropdownMenuTrigger>
-            {/* <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                <DropdownMenuItem>Ver historial</DropdownMenuItem>
-                <DropdownMenuItem>Crear visita</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDialogsState({
+                      open: 'delete-company',
+                      payload: {
+                        id: companyId,
+                      },
+                    });
+                  }}
+                  className="text-destructive cursor-pointer"
+                >
+                  Eliminar sede
+                </DropdownMenuItem>
               </DropdownMenuGroup>
-            </DropdownMenuContent> */}
+            </DropdownMenuContent>
           </DropdownMenu>
           <Button
-            onClick={() =>
-              router.push(`/management/companies/edit/${companyId}`)
-            }
+            onClick={() => {
+              setDialogsState({
+                open: 'edit-company',
+                payload: company,
+              });
+            }}
             size="sm"
           >
             <Pencil className="w-4 h-4" />
@@ -204,6 +227,8 @@ export default function CompanyPage() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
+      {company && <EditCompany companyData={company} />}
+      <DeleteCompany companyId={companyId} />
     </>
   );
 }

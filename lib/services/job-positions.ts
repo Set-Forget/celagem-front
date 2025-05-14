@@ -11,15 +11,15 @@ import {
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const jobPositionsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listJobPositions: builder.query<
-      JobPositionsListResponse,
-      void
-    >({
+    listJobPositions: builder.query<JobPositionsListResponse, void>({
       query: (data) => ({
         url: 'job-positions',
       }),
     }),
-    createJobPosition: builder.mutation<JobPositionResponse, JobPositionCreateBody>({
+    createJobPosition: builder.mutation<
+      JobPositionResponse,
+      JobPositionCreateBody
+    >({
       query: (body) => ({
         url: 'job-positions',
         method: 'POST',
@@ -37,13 +37,16 @@ export const jobPositionsApi = erpApi.injectEndpoints({
       { id: string; body: JobPositionUpdateBody }
     >({
       query: ({ id, body }) => ({
-        url: `job-positions/${id}`, 
-        method: 'PATCH',
+        url: `job-positions/${id}`,
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['JobPosition'],
     }),
-    deleteJobPosition: builder.mutation<JobPositionDeleteResponse, { id: string }>({
+    deleteJobPosition: builder.mutation<
+      JobPositionDeleteResponse,
+      { id: string }
+    >({
       query: ({ id }) => ({
         url: `job-positions/${id}`,
         method: 'DELETE',

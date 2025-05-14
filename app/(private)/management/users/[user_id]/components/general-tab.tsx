@@ -50,6 +50,11 @@ export default function GeneralTab() {
       getValue: (p) => role?.name ?? 'No especificado',
     },
     {
+      label: 'Unidades de Negocio',
+      placeholderLength: 14,
+      getValue: (p) => p.business_units.map((unit) => unit.name).join(', ') || 'No especificado',
+    },
+    {
       label: 'Confirmado',
       placeholderLength: 14,
       getValue: (p) => (p.is_email_confirmed ? 'Sí' : 'No'),

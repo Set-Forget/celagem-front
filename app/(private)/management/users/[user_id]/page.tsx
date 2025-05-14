@@ -22,6 +22,7 @@ import { cn, placeholder } from '@/lib/utils';
 import {
   Building,
   ChevronDown,
+  Edit,
   House,
   Pencil,
   Plus,
@@ -31,10 +32,14 @@ import {
   X,
 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { use, useState } from 'react';
 
 import GeneralTab from './components/general-tab';
 import { useGetUserQuery } from '@/lib/services/users';
+import { setDialogsState } from '@/lib/store/dialogs-store';
+import EditUser from '../components/edit-user';
+import DeleteUser from '../components/delete-user';
+import EditUserRole from '../components/edit-user-role';
 
 const notes = [
   {
@@ -93,19 +98,40 @@ export default function Page() {
                 <ChevronDown />
               </Button>
             </DropdownMenuTrigger>
-            {/* <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  Ver historial
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDialogsState({
+                      open: 'edit-user-role',
+                    });
+                  }}
+                  className="cursor-pointer"
+                >
+                  Editar rol del usuario
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  Crear visita
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDialogsState({
+                      open: 'delete-user',
+                    });
+                  }}
+                  className="text-destructive cursor-pointer"
+                >
+                  Eliminar usuario
                 </DropdownMenuItem>
               </DropdownMenuGroup>
-            </DropdownMenuContent> */}
+            </DropdownMenuContent>
           </DropdownMenu>
           <Button
-            onClick={() => router.push(`/management/users/edit/${userId}`)}
+            onClick={() => {
+              setDialogsState({
+                open: 'edit-user',
+                payload: {
+                  id: userId,
+                },
+              });
+            }}
             size="sm"
           >
             <Pencil className="w-4 h-4" />
@@ -221,6 +247,9 @@ export default function Page() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
+      {user && <EditUser userData={user} />}
+      {user && <DeleteUser userId={user.id} />}
+      {user && <EditUserRole userData={user} />}
     </>
   );
 }

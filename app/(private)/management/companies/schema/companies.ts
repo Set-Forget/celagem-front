@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const newCompanyGeneralSchema = z.object({
   name: z.string({ required_error: "El nombre es requerido" }).nonempty({ message: "El nombre es requerido" }).default(""),
   description: z.string({ required_error: "La descripción es requerida" }).nonempty({ message: "La descripción es requerida" }).default(""),
-  created_by: z.string(),
+  // created_by: z.string(),
 });
 
 export const newCompanySchema = newCompanyGeneralSchema;
@@ -23,6 +23,7 @@ export const companiesSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
+  status: z.string(),
   users: z.array(companyUserSchema),
   created_at: z.string(),
   created_by: z.object({

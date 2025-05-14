@@ -22,6 +22,7 @@ import { cn, placeholder } from '@/lib/utils';
 import {
   Building,
   ChevronDown,
+  Edit,
   House,
   Pencil,
   Plus,
@@ -37,6 +38,11 @@ import GeneralTab from './components/general-tab';
 // import PatientsTab from './components/patients-tab';
 // import UsersTab from './components/users-tab';
 import { useGetBusinessUnitQuery } from '@/lib/services/business-units';
+import { setDialogsState } from '@/lib/store/dialogs-store';
+import EditBusinessUnit from '../components/edit-business-unit';
+import DeleteBusinessUnit from '../components/delete-business-unit';
+import AddUserBusinessUnit from '../components/add-user-business-unit';
+import AddPatientBusinessUnit from '../components/add-patient-business-unit';
 
 const notes = [
   {
@@ -118,17 +124,53 @@ export default function Page() {
                 <ChevronDown />
               </Button>
             </DropdownMenuTrigger>
-            {/* <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                <DropdownMenuItem>Ver historial</DropdownMenuItem>
-                <DropdownMenuItem>Crear visita</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDialogsState({
+                      open: 'add-user-business-unit',
+                    });
+                  }}
+                  className=" cursor-pointer"
+                >
+                  Agregar usuario
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDialogsState({
+                      open: 'add-patient-business-unit',
+                    });
+                  }}
+                  className=" cursor-pointer"
+                >
+                  Agregar paciente
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDialogsState({
+                      open: 'delete-business-unit',
+                      payload: {
+                        id: businessUnitId,
+                      },
+                    });
+                  }}
+                  className="text-destructive cursor-pointer"
+                >
+                  Eliminar unidad de negocio
+                </DropdownMenuItem>
               </DropdownMenuGroup>
-            </DropdownMenuContent> */}
+            </DropdownMenuContent>
           </DropdownMenu>
           <Button
-            onClick={() =>
-              router.push(`/management/business-units/edit/${businessUnitId}`)
-            }
+            onClick={() => {
+              setDialogsState({
+                open: 'edit-business-unit',
+                payload: {
+                  id: businessUnitId,
+                },
+              });
+            }}
             size="sm"
           >
             <Pencil className="w-4 h-4" />
@@ -244,6 +286,11 @@ export default function Page() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
+      {businessUnit && <EditBusinessUnit businessUnitData={businessUnit} />}
+      {businessUnit && <DeleteBusinessUnit businessUnitId={businessUnitId} />}
+      {businessUnit && <AddUserBusinessUnit businessUnitId={businessUnitId} />}
+      {businessUnit && <AddPatientBusinessUnit businessUnitId={businessUnitId} />}
+
     </>
   );
 }

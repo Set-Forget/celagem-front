@@ -15,8 +15,9 @@ import { useState } from 'react';
 import GeneralTab from './components/general-tab';
 import { Separator } from '@/components/ui/separator';
 import { cn, placeholder } from '@/lib/utils';
-import EditRole from './components/edit-role';
+import EditRole from '../components/edit-role';
 import { setDialogsState } from '@/lib/store/dialogs-store';
+import DeleteRole from '../components/delete-role';
 
 const notes = [
   {
@@ -77,12 +78,23 @@ export default function RolePage() {
                 <ChevronDown />
               </Button>
             </DropdownMenuTrigger>
-            {/* <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                <DropdownMenuItem>Ver historial</DropdownMenuItem>
-                <DropdownMenuItem>Crear visita</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDialogsState({
+                      open: 'delete-role',
+                      payload: {
+                        id: roleId,
+                      },
+                    });
+                  }}
+                  className="text-destructive cursor-pointer"
+                >
+                  Eliminar rol
+                </DropdownMenuItem>
               </DropdownMenuGroup>
-            </DropdownMenuContent> */}
+            </DropdownMenuContent>
           </DropdownMenu>
           <Button
             onClick={() =>
@@ -206,7 +218,8 @@ export default function RolePage() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-      <EditRole />
+      {role && <EditRole roleData={role} />}
+      <DeleteRole roleId={roleId} />
     </>
   );
 }

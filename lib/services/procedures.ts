@@ -39,7 +39,7 @@ export const proceduresApi = erpApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `procedures/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['Procedure'],

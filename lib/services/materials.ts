@@ -11,10 +11,7 @@ import {
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const materialsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listMaterials: builder.query<
-      MaterialsListResponse,
-      void
-    >({
+    listMaterials: builder.query<MaterialsListResponse, void>({
       query: (data) => ({
         url: 'materials',
       }),
@@ -33,12 +30,12 @@ export const materialsApi = erpApi.injectEndpoints({
       providesTags: ['Material'],
     }),
     updateMaterial: builder.mutation<
-      MaterialResponse,  
+      MaterialResponse,
       { id: string; body: MaterialUpdateBody }
     >({
       query: ({ id, body }) => ({
         url: `materials/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['Material'],
@@ -54,7 +51,7 @@ export const materialsApi = erpApi.injectEndpoints({
 });
 
 export const {
-  useListMaterialsQuery,  
+  useListMaterialsQuery,
   useLazyListMaterialsQuery,
   useCreateMaterialMutation,
   useGetMaterialQuery,

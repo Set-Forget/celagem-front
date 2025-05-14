@@ -11,15 +11,15 @@ import {
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const internalTransfersApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listInternalTransfers: builder.query<
-      InternalTransfersListResponse,
-      void
-    >({
+    listInternalTransfers: builder.query<InternalTransfersListResponse, void>({
       query: (data) => ({
         url: 'internal_transfers',
       }),
     }),
-    createInternalTransfer: builder.mutation<InternalTransferResponse, InternalTransferCreateBody>({
+    createInternalTransfer: builder.mutation<
+      InternalTransferResponse,
+      InternalTransferCreateBody
+    >({
       query: (body) => ({
         url: 'internal_transfers',
         method: 'POST',
@@ -38,12 +38,15 @@ export const internalTransfersApi = erpApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `internal_transfers/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['InternalTransfer'],
     }),
-    deleteInternalTransfer: builder.mutation<InternalTransferDeleteResponse, { id: string }>({
+    deleteInternalTransfer: builder.mutation<
+      InternalTransferDeleteResponse,
+      { id: string }
+    >({
       query: ({ id }) => ({
         url: `internal_transfers/${id}`,
         method: 'DELETE',

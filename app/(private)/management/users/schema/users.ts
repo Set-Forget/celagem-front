@@ -1,24 +1,50 @@
 import { z } from 'zod';
 
+const passwordRegex = new RegExp(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/);
+
 export const newUserGeneralSchema = z.object({
-  first_name: z.string({ required_error: "El nombre es requerido" }).nonempty({ message: "El nombre es requerido" }).default(""),
-  last_name: z.string({ required_error: "El apellido es requerido" }).nonempty({ message: "El apellido es requerido" }).default(""),
-  email: z.string({ required_error: "El correo electrónico es requerido" }).nonempty({ message: "El correo electrónico es requerido" }).default(""),
-  role_id: z.string({ required_error: "El rol es requerido" }).nonempty({ message: "El rol es requerido" }).default(""),
-  company_id: z.string({ required_error: "La sede es requerida" }).nonempty({ message: "La sede es requerida" }).default(""),
-  created_by: z.string(),
+  first_name: z
+    .string({ required_error: 'El nombre es requerido' })
+    .nonempty({ message: 'El nombre es requerido' })
+    .default(''),
+  last_name: z
+    .string({ required_error: 'El apellido es requerido' })
+    .nonempty({ message: 'El apellido es requerido' })
+    .default(''),
+  password: z
+    .string({ required_error: 'La contraseña es requerida' })
+    .regex(passwordRegex, {
+      message:
+        'La contraseña debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula y un número',
+    })
+    .default(''),
+  email: z
+    .string({ required_error: 'El correo electrónico es requerido' })
+    .nonempty({ message: 'El correo electrónico es requerido' })
+    .default(''),
+  role_id: z.string(),
+  company_id: z.string(),
+  business_units: z.array(z.string()),
 });
 
 export const newUserSchema = newUserGeneralSchema;
+
+const bussinessUnitSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
 
 export const usersSchema = z.object({
   id: z.string(),
   first_name: z.string(),
   last_name: z.string(),
   email: z.string(),
+  password: z.string(),
   role_id: z.string(),
   company_id: z.string(),
+  business_units: z.array(bussinessUnitSchema),
   is_email_confirmed: z.boolean(),
+  status: z.string(),
   created_at: z.string(),
   created_by: z.object({
     id: z.string(),
@@ -65,6 +91,8 @@ export const userCreateBodySchema = z.object({
   last_name: z.string(),
   password: z.string(),
   company_id: z.string(),
+  role_id: z.string(),
+  business_units: z.array(z.string()),
 });
 
 export const userUpdateBodySchema = z.object({

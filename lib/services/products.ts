@@ -16,10 +16,7 @@ export const productVariantesApi = erpApi.injectEndpoints({
         url: 'products',
       }),
     }),
-    createProduct: builder.mutation<
-      ProductResponse,
-      ProductCreateBody
-    >({
+    createProduct: builder.mutation<ProductResponse, ProductCreateBody>({
       query: (body) => ({
         url: 'products',
         method: 'POST',
@@ -38,15 +35,12 @@ export const productVariantesApi = erpApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `products/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
       }),
       invalidatesTags: ['Product'],
     }),
-    deleteProduct: builder.mutation<
-      ProductDeleteResponse,
-      { id: string }
-    >({
+    deleteProduct: builder.mutation<ProductDeleteResponse, { id: string }>({
       query: ({ id }) => ({
         url: `products/${id}`,
         method: 'DELETE',

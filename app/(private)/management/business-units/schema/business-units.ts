@@ -17,14 +17,18 @@ export const newBusinessUnitGeneralSchema = z.object({
   created_by: z.string(),
 });
 
-export const newBusinessUnitSchema = newBusinessUnitGeneralSchema
+export const newBusinessUnitSchema = newBusinessUnitGeneralSchema;
 
 export const newBusinessUnitUserSchema = z.object({
-  user_id: z.string({ required_error: 'El usuario es requerido' }).min(1, { message: 'El usuario es requerido' }),
+  user_id: z
+    .string({ required_error: 'El usuario es requerido' })
+    .min(1, { message: 'El usuario es requerido' }),
 });
 
 export const newBusinessUnitPatientSchema = z.object({
-  patient_id: z.string({ required_error: 'El paciente es requerido' }).min(1, { message: 'El paciente es requerido' }),
+  patient_id: z
+    .string({ required_error: 'El paciente es requerido' })
+    .min(1, { message: 'El paciente es requerido' }),
 });
 
 export const businessUnitPatientSchema = z.object({
@@ -112,11 +116,11 @@ export const businessUnitUpdateBodySchema = z.object({
 });
 
 export const businessUnitAddUserSchema = z.object({
-  user_id: z.string(),
+  user_ids: z.array(z.string()),
 });
 
 export const businessUnitAddPatientSchema = z.object({
-  patient_id: z.string(),
+  patient_ids: z.array(z.string()),
 });
 
 export type BusinessUnit = z.infer<typeof businessUnitSchema>;
