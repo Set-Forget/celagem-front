@@ -39,35 +39,35 @@ export default function GeneralTab() {
     },
   ];
 
-  const userColumnExtended = [
-    ...columnsUsers,
-    {
-      id: 'actions',
-      cell: ({ row }: { row: any }) => (
-        <Trash
-          className="-ms-0.5 me-1.5 cursor-pointer hover:text-red-500"
-          size={20}
-          aria-hidden="true"
-          onClick={() => {
-            console.log('delete user');
-            setDialogsState({
-              open: 'delete-user-business-unit',
-              payload: {
-                id: row.original.id,
-              },
-            });
-          }}
-        />
-      ),
-    },
-  ];
+  // const userColumnExtended = [
+  //   ...columnsUsers,
+  //   {
+  //     id: 'actions',
+  //     cell: ({ row }: { row: any }) => (
+  //       <Trash
+  //         className="-ms-0.5 me-1.5 cursor-pointer hover:text-red-500"
+  //         size={20}
+  //         aria-hidden="true"
+  //         onClick={() => {
+  //           console.log('delete user');
+  //           setDialogsState({
+  //             open: 'delete-user-business-unit',
+  //             payload: {
+  //               id: row.original.id,
+  //             },
+  //           });
+  //         }}
+  //       />
+  //     ),
+  //   },
+  // ];
 
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {fields.map((field) => {
           const displayValue = isBusinessUnitLoading
-            ? placeholder(getRandomInt(20, 10))
+            ? placeholder(field.placeholderLength)
             : field.getValue(businessUnit!) ?? '';
           return (
             <div
@@ -108,7 +108,7 @@ export default function GeneralTab() {
           </div>
           <DataTable
             data={businessUnit?.users || []}
-            columns={userColumnExtended}
+            columns={columnsUsers}
             pagination={true}
             pageSizeProp={5}
           />

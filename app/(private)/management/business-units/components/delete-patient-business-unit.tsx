@@ -53,6 +53,15 @@ export default function DeletePatientBusinessUnit({
           />
         ));
         closeDialogs();
+      } else if (response.status === 'error') {
+        toast.custom((t) => (
+          <CustomSonner
+            t={t}
+            description={response.message}
+            variant="error"
+          />
+        ));
+        closeDialogs();
       }
     } catch (error) {
       console.error('Error removing patient from business unit:', error);
@@ -72,6 +81,7 @@ export default function DeletePatientBusinessUnit({
       subscription.unsubscribe();
     };
   }, []);
+  
   return (
     <Dialog
       open={dialogState.open === 'delete-patient-business-unit'}
