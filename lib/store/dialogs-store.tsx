@@ -30,6 +30,8 @@ export type DialogsState = {
     | 'delete-business-unit'
     | 'add-user-business-unit'
     | 'add-patient-business-unit'
+    | 'delete-user-business-unit'
+    | 'delete-patient-business-unit'
     | false;
   payload?: any;
 };

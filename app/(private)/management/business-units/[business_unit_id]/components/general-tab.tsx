@@ -9,6 +9,8 @@ import { Separator } from '@/components/ui/separator';
 import { DataTable } from '@/components/data-table';
 import { columnsPatients } from './columns-patients';
 import { columnsUsers } from './columns-users';
+import { setDialogsState } from '@/lib/store/dialogs-store';
+import { Trash } from 'lucide-react';
 
 export type FieldDefinition<T> = {
   label: string;
@@ -34,6 +36,29 @@ export default function GeneralTab() {
       label: 'Descripción',
       placeholderLength: 14,
       getValue: (p) => p.description,
+    },
+  ];
+
+  const userColumnExtended = [
+    ...columnsUsers,
+    {
+      id: 'actions',
+      cell: ({ row }: { row: any }) => (
+        <Trash
+          className="-ms-0.5 me-1.5 cursor-pointer hover:text-red-500"
+          size={20}
+          aria-hidden="true"
+          onClick={() => {
+            console.log('delete user');
+            setDialogsState({
+              open: 'delete-user-business-unit',
+              payload: {
+                id: row.original.id,
+              },
+            });
+          }}
+        />
+      ),
     },
   ];
 
@@ -83,12 +108,15 @@ export default function GeneralTab() {
           </div>
           <DataTable
             data={businessUnit?.users || []}
-            columns={columnsUsers}
+            columns={userColumnExtended}
             pagination={true}
             pageSizeProp={5}
           />
         </div>
+    
       </div>
+      
     </div>
+
   );
 }
