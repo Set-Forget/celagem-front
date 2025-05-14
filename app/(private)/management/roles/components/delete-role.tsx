@@ -18,9 +18,9 @@ import { useEffect, useState } from 'react';
 import { useDeleteRoleMutation } from '@/lib/services/roles';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import CustomSonner from '@/components/custom-sonner';
 
 export default function DeleteRole({ roleId }: { roleId: string }) {
-
   const router = useRouter();
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
 
@@ -35,13 +35,25 @@ export default function DeleteRole({ roleId }: { roleId: string }) {
       const response = await deleteRole({ id: roleId }).unwrap();
 
       if (response.status === 'success') {
-        toast.success('Rol eliminado exitosamente');
+        toast.custom((t) => (
+          <CustomSonner
+            t={t}
+            description="Rol eliminado exitosamente"
+            variant="success"
+          />
+        ));
         router.push('/management/roles');
         closeDialogs();
       }
     } catch (error) {
       console.error('Error deleting role:', error);
-      toast.error('Ocurrió un error al eliminar el rol');
+      toast.custom((t) => (
+        <CustomSonner
+          t={t}
+          description="Ocurrió un error al eliminar el rol"
+          variant="error"
+        />
+      ));
     }
   };
 

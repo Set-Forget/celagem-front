@@ -40,8 +40,8 @@ export default function EditRole({
 }) {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
 
-  const editRoleForm = useForm<z.infer<typeof newRoleSchema>>({
-    resolver: zodResolver(newRoleSchema),
+  const editRoleForm = useForm<z.infer<typeof roleUpdateBodySchema>>({
+    resolver: zodResolver(roleUpdateBodySchema),
     defaultValues: {
       name: roleData.name || '',
     },
@@ -54,6 +54,7 @@ export default function EditRole({
   const [updateRole, { isLoading: isUpdatingRole }] = useUpdateRoleMutation();
 
   const onSubmit = async (data: z.infer<typeof roleUpdateBodySchema>) => {
+    console.log('Submitting form with data:', data);
     try {
       const response = await updateRole({
         id: roleData.id,
