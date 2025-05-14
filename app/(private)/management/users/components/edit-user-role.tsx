@@ -89,10 +89,12 @@ export default function EditUserRole({ userData }: { userData: Users }) {
     }
   };
   const [getRoles] = useLazyListRolesQuery();
-
   const handleGetRoles = async () => {
     try {
-      const roles = await getRoles({ company_id: '' }).unwrap();
+      // Use the user's company_id to filter roles
+      const roles = await getRoles({
+        company_id: userData.company_id,
+      }).unwrap();
       return roles.data.map((role) => ({
         label: role.name,
         value: role.id,

@@ -12,7 +12,7 @@ import { Overwrite } from '../utils';
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const patientsApi = hcApi.injectEndpoints({
   endpoints: (builder) => ({
-    listPatients: builder.query<PatientListResponse, { name?: string } | void>({
+    listPatients: builder.query<PatientListResponse, { name?: string, company_id?: string } | void>({
       query: (data) => ({
         url: 'patient',
         params: data || {},

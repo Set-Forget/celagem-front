@@ -29,7 +29,10 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { businessUnitAddUserSchema } from '../schema/business-units';
-import { useAddUserToBusinessUnitMutation } from '@/lib/services/business-units';
+import {
+  useAddUserToBusinessUnitMutation,
+  useGetBusinessUnitQuery,
+} from '@/lib/services/business-units';
 import { useLazyListUsersQuery } from '@/lib/services/users';
 import { AsyncMultiSelect } from '@/components/async-multi-select';
 import { toast } from 'sonner';
@@ -48,18 +51,22 @@ export default function AddUserBusinessUnit({
       user_ids: [],
     },
   });
-
   const onOpenChange = () => {
     closeDialogs();
   };
 
+  const { data: businessUnit } = useGetBusinessUnitQuery(businessUnitId);
   const [getUsers] = useLazyListUsersQuery();
   const [addUserToBusinessUnit, { isLoading: isAddingUser }] =
     useAddUserToBusinessUnitMutation();
-
   const handleGetUsers = async () => {
     try {
-      const response = await getUsers().unwrap();
+      // Use company_id from the business unit to filter users
+      const params = businessUnit?.company_id
+        ? { company_id: businessUnit.company_id }
+        : undefined;
+
+      const response = await getUsers(params).unwrap();
       return response.data.map((user) => ({
         label: `${user.first_name} ${user.last_name} (${user.email})`,
         value: user.id,
@@ -98,13 +105,20 @@ export default function AddUserBusinessUnit({
       ));
     }
   };
-
   useEffect(() => {
     const subscription = dialogsStateObservable.subscribe(setDialogState);
     return () => {
       subscription.unsubscribe();
     };
   }, []);
+
+  // Reset form when dialog opens or business unit changes
+  useEffect(() => {
+    if (dialogState.open === 'add-user-business-unit') {
+      addUserForm.reset();
+    }
+  }, [dialogState.open, businessUnit, addUserForm]);
+
   return (
     <Dialog
       open={dialogState.open === 'add-user-business-unit'}
@@ -124,10 +138,15 @@ export default function AddUserBusinessUnit({
               name="user_ids"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Usuario</FormLabel>
+                  <FormLabel>Usuario</FormLabel>{' '}
                   <FormControl>
                     <AsyncMultiSelect<{ label: string; value: string }, string>
-                      placeholder="Seleccionar usuario"
+                      key={`users-${businessUnit?.company_id || 'empty'}`}
+                      placeholder={
+                        businessUnit?.company_id
+                          ? 'Seleccionar usuario'
+                          : 'Cargando información...'
+                      }
                       fetcher={handleGetUsers}
                       getDisplayValue={(item) => item.label}
                       getOptionValue={(item) => item.value}

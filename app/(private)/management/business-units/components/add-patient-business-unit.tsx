@@ -28,7 +28,10 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { businessUnitAddPatientSchema } from '../schema/business-units';
-import { useAddPatientToBusinessUnitMutation } from '@/lib/services/business-units';
+import {
+  useAddPatientToBusinessUnitMutation,
+  useGetBusinessUnitQuery,
+} from '@/lib/services/business-units';
 import { useLazyListPatientsQuery } from '@/lib/services/patients';
 import { AsyncMultiSelect } from '@/components/async-multi-select';
 import { toast } from 'sonner';
@@ -52,13 +55,18 @@ export default function AddPatientBusinessUnit({
     closeDialogs();
   };
 
+  const { data: businessUnit } = useGetBusinessUnitQuery(businessUnitId);
   const [getPatients] = useLazyListPatientsQuery();
   const [addPatientToBusinessUnit, { isLoading: isAddingPatient }] =
     useAddPatientToBusinessUnitMutation();
-
   const handleGetPatients = async () => {
     try {
-      const response = await getPatients().unwrap();
+      // Use company_id from the business unit to filter patients
+      const params = businessUnit?.company_id
+        ? { company_id: businessUnit.company_id }
+        : undefined;
+
+      const response = await getPatients(params).unwrap();
       return response.data.map((patient) => ({
         label: `${patient.first_name} ${patient.first_last_name}`,
         value: patient.id,
@@ -100,7 +108,6 @@ export default function AddPatientBusinessUnit({
       ));
     }
   };
-
   useEffect(() => {
     const subscription = dialogsStateObservable.subscribe(setDialogState);
     return () => {
@@ -108,12 +115,21 @@ export default function AddPatientBusinessUnit({
     };
   }, []);
 
+  // Reset form when dialog opens or business unit changes
+  useEffect(() => {
+    if (dialogState.open === 'add-patient-business-unit') {
+      addPatientForm.reset();
+    }
+  }, [dialogState.open, businessUnit, addPatientForm]);
+
   return (
     <Dialog
       open={dialogState.open === 'add-patient-business-unit'}
       onOpenChange={onOpenChange}
     >
-      <DialogContent className="sm:max-w-[425px]">        <DialogHeader>
+      <DialogContent className="sm:max-w-[425px]">
+        {' '}
+        <DialogHeader>
           <DialogTitle>Agregar Pacientes a Unidad de Negocio</DialogTitle>
           <DialogDescription>
             Seleccione los pacientes para agregarlos a esta unidad de negocio.
@@ -126,10 +142,15 @@ export default function AddPatientBusinessUnit({
               name="patient_ids"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Pacientes</FormLabel>
+                  <FormLabel>Pacientes</FormLabel>{' '}
                   <FormControl>
                     <AsyncMultiSelect<{ label: string; value: string }, string>
-                      placeholder="Seleccionar pacientes"
+                      key={`patients-${businessUnit?.company_id || 'empty'}`}
+                      placeholder={
+                        businessUnit?.company_id
+                          ? 'Seleccionar pacientes'
+                          : 'Cargando información...'
+                      }
                       fetcher={handleGetPatients}
                       getDisplayValue={(item) => item.label}
                       getOptionValue={(item) => item.value}
@@ -147,7 +168,9 @@ export default function AddPatientBusinessUnit({
                 </FormItem>
               )}
             />
-            <DialogFooter>              <Button
+            <DialogFooter>
+              {' '}
+              <Button
                 size="sm"
                 type="submit"
                 onClick={addPatientForm.handleSubmit(onSubmit)}
