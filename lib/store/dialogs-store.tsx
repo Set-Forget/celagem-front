@@ -34,6 +34,7 @@ export type DialogsState = {
   | 'delete-patient-business-unit'
   | "new-account"
   | "new-journal"
+  | "new-account-type"
   | false;
   payload?: any;
 };

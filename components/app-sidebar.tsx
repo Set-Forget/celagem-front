@@ -77,6 +77,18 @@ const data: { navMain: NavItem[] } = {
         { title: "Cuentas por cobrar", url: "/accounting/accounts-receivable" },
         { title: "Cuentas por pagar", url: "/accounting/accounts-payable" },
         { title: "Cuentas corrientes", url: "/accounting/current-accounts" },
+        {
+          title: "Reportes",
+          url: "/accounting/reports",
+        },
+        {
+          title: "Tipos de cuentas",
+          url: "/accounting/account-types-master",
+        },
+        {
+          title: "Extras",
+          url: "/accounting/extras",
+        },
       ],
     },
     {
