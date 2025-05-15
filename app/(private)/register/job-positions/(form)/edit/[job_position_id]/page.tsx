@@ -118,7 +118,6 @@ export default function Page() {
     if (jobPositionData) {
       form.reset({
         ...jobPositionData,
-        created_by: jobPositionData.created_by?.id,
       });
     }
   }, [jobPositionData]);

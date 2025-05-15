@@ -200,11 +200,11 @@ export default function Page() {
                     isJobPositionLoading ? 'blur-[2px]' : 'blur-none'
                   )}
                 >
-                  {isJobPositionLoading
+                  {/*                   {isJobPositionLoading
                     ? placeholder(13)
                     : jobPositionData?.updated_by?.first_name +
                       ' ' +
-                      jobPositionData?.updated_by?.last_name}
+                      jobPositionData?.updated_by?.last_name} */}
                 </span>
               </label>
               <span

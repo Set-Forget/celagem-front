@@ -88,9 +88,7 @@ export default function Page() {
   const [updateMaterial, { isLoading: isUpdatingMaterial }] =
     useUpdateMaterialMutation();
 
-  const { data: materialData } = useGetMaterialQuery(materialId, {
-    skip: !materialId,
-  });  
+
 
   const form = useForm<z.infer<typeof newMaterialSchema>>({
     resolver: zodResolver(newMaterialSchema),
@@ -138,15 +136,6 @@ export default function Page() {
       }
     }
   };
-
-  useEffect(() => {
-    if (materialData) {
-      form.reset({
-        ...materialData,
-        created_by: materialData.created_by?.id,
-      });
-    }
-  }, [materialData]);  
 
   return (
     <Form {...form}>
