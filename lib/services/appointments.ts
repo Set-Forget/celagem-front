@@ -23,8 +23,7 @@ export const appointmentsApi = hcApi.injectEndpoints({
       { range_start_date: string; range_end_date: string; status?: string }
     >({
       query: ({ range_start_date, range_end_date, status }) =>
-        `appointment?range_start_date=${range_start_date}&range_end_date=${range_end_date}${
-          status ? `&status=${status}` : ''
+        `appointment?range_start_date=${range_start_date}&range_end_date=${range_end_date}${status ? `&status=${status}` : ''
         }`,
       providesTags: ['Appointment'],
     }),
@@ -59,7 +58,7 @@ export const appointmentsApi = hcApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `appointment/${id}`,
-        method: 'PUT',
+        method: 'PATCH',
         body: body,
       }),
       invalidatesTags: ['Appointment'],
