@@ -16,9 +16,6 @@ import {
 } from 'lucide-react';
 import * as React from 'react';
 
-import { NavUser } from '@/components/nav-user';
-} from "lucide-react"
-import * as React from "react"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
