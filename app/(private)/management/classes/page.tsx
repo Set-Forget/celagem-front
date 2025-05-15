@@ -40,7 +40,6 @@ export default function CompaniesPage() {
           Crear clase
         </Button>
       </Header>
-
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
         <DataTable
           data={data?.data || []}

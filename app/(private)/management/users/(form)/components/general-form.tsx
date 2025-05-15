@@ -64,9 +64,7 @@ export default function GeneralForm() {
           setRoles(mappedRoles);
 
           // Fetch business units for the selected company
-          const businessUnitsResponse = await getBusinessUnits({
-            company_id: companyId,
-          }).unwrap();
+          const businessUnitsResponse = await getBusinessUnits().unwrap();
           const mappedBusinessUnits = businessUnitsResponse.data.map(
             (unit) => ({
               label: unit.name,
@@ -131,9 +129,7 @@ export default function GeneralForm() {
 
     // Always fetch fresh data from the API to ensure it's up-to-date
     try {
-      const businessUnitsResponse = await getBusinessUnits({
-        company_id: companyId,
-      }).unwrap();
+      const businessUnitsResponse = await getBusinessUnits().unwrap();
 
       if (!businessUnitsResponse || !businessUnitsResponse.data) {
         console.log('No business units found or invalid response');

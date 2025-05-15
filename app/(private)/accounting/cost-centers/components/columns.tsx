@@ -37,7 +37,7 @@ export const columns: ColumnDef<CostCenterList>[] = [
     header: "Código",
     cell: ({ row }) => (
       <div className="flex gap-1">
-        <div className="font-medium">{row.getValue("code") || "No especificado"}</div>
+        <div className="font-medium">{row.getValue("code")}</div>
       </div>
     ),
   },

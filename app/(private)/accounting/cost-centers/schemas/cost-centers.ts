@@ -38,7 +38,6 @@ export const costCentersDetailSchema = z.object({
 export const newCostCenterSchema = z.object({
   name: z.string().min(1, { message: "El nombre es requerido" }),
   code: z.string().optional(),
-  plan_id: z.number({ required_error: "El plan es requerido" }),
 })
 
 export const newCostCenterResponseSchema = z.object({
