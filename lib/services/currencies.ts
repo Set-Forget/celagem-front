@@ -7,18 +7,17 @@ import {
   CurrencyUpdateBody,
   Currencies,
 } from '@/app/(private)/reporting/extras/currencies/schema/currencies';
+import { CurrencyListResponse } from '../schemas/currencies';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const currenciesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listCurrencies: builder.query<
-      CurrenciesListResponse,
-      { Name: string; CompanyId: string }
-    >({
+    listCurrencies: builder.query<CurrencyListResponse, { name?: string } | void>({
       query: (data) => ({
-        url: 'currencies',
+        url: '/currencies',
         params: data || {},
       }),
+      providesTags: ['Currency'],
     }),
     createCurrency: builder.mutation<CurrencyResponse, CurrencyCreateBody>({
       query: (body) => ({
