@@ -20,7 +20,7 @@ export const suppliersApi = erpApi.injectEndpoints({
       transformResponse: (response: SupplierDetailResponse) => response.data,
       providesTags: ['Supplier']
     }),
-    createSupplier: builder.mutation<NewSupplierResponse, Omit<NewSupplier, 'property_payment_term' | 'accounting_account' | 'contact_address_inline'> & { property_payment_term: number }>({
+    createSupplier: builder.mutation<NewSupplierResponse, Omit<NewSupplier, 'property_payment_term' | 'contact_address_inline'> & { property_payment_term: number }>({
       query: (data) => ({
         url: '/suppliers',
         method: 'POST',

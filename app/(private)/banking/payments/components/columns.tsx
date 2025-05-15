@@ -36,22 +36,20 @@ export const columns: ColumnDef<PaymentList>[] = [
     cell: ({ row }) => <div>{row.getValue("partner")}</div>,
   },
   {
-    accessorKey: "payment_method",
-    header: "Método de pago",
-    cell: ({ row }) => {
-      return <div>xxxx</div>
-    },
+    accessorKey: 'journal',
+    header: 'Diario',
+    cell: ({ row }) => <div>{row.getValue("journal")}</div>,
   },
   {
-    accessorKey: "payment_date",
-    header: "Fecha de pago",
-    cell: ({ row }) => <div>
-      xxxx
-    </div>,
+    accessorKey: "source_account",
+    header: "Cuenta origen",
+    cell: ({ row }) => <div>{row.getValue("source_account")}</div>,
   },
   {
     accessorKey: "amount",
     header: "Monto",
-    cell: ({ row }) => <div className="font-medium">ARS {row.getValue("amount")}</div>,
+    cell: ({ row }) => <div className="font-medium">
+      {row.original.currency} {row.getValue("amount")}
+    </div>,
   },
 ]

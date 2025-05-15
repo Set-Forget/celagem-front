@@ -1,6 +1,6 @@
 import FilterSelector, { FilterConfig } from "@/components/filter-selector";
 import { Table } from "@tanstack/react-table";
-import { CalendarFold, Search } from "lucide-react";
+import { CalendarFold, CircleDashed, Search } from "lucide-react";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -12,7 +12,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     label: "Rango de fecha",
     key: "date_range",
     options: [
-      { label: "Fecha creación", value: "created_at" },
+      { label: "Fecha de creación", value: "date" },
     ],
     icon: CalendarFold
   },
@@ -20,12 +20,21 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "search",
     label: "Buscar",
     options: [
-      { label: "Cuenta", value: "account" },
-      { label: "Titulo", value: "title" },
+      { label: "Número", value: "number" },
     ],
     key: "search",
     icon: Search
   },
+  status: {
+    type: "single",
+    label: "Estado",
+    options: [
+      { label: "Borrador", value: "draft" },
+      { label: "Publicado", value: "posted" },
+    ],
+    key: "status",
+    icon: CircleDashed
+  }
 };
 
 export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) {

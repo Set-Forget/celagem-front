@@ -5,7 +5,6 @@ import { FormTableColumn } from "@/components/form-table";
 import { Badge } from "@/components/ui/badge";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useLazyListBillsQuery, useListBillsQuery } from "@/lib/services/bills";
-import { useListCurrenciesQuery } from "@/lib/services/currencies";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { Button as AriaButton, Input as AriaInput, Label as AriaLabel, Group, NumberField } from "react-aria-components";
@@ -16,18 +15,23 @@ import { newPaymentSchema } from "../../../schemas/payments";
 export const withholdings = [
   {
     id: 1,
-    name: "10%",
-    amount: 10
+    name: "IVA (21%)",
+    amount: 21,
   },
   {
     id: 2,
-    name: "21%",
-    amount: 21
+    name: "IIBB (3%)",
+    amount: 3,
   },
   {
     id: 3,
-    name: "27%",
-    amount: 27
+    name: "Ganancia (15%)",
+    amount: 15,
+  },
+  {
+    id: 4,
+    name: "IVA (10.5%)",
+    amount: 10.5,
   },
 ]
 
@@ -49,7 +53,7 @@ const BillsCell = ({ control, index }: { control: Control<z.infer<typeof newPaym
         due_date: bill.due_date,
         amount_total: bill.amount_total,
         supplier: bill.supplier,
-        currency: bill.currency,
+        currency: bill.currency.name,
       }))
     }
     catch (error) {
@@ -143,7 +147,7 @@ const CurrentBalanceCell = ({ control, index }: { control: Control<z.infer<typeo
 
   return (
     <div className="px-4 text-nowrap">
-      {bills?.data.find((c) => c.id === bill)?.currency}{" "}
+      {bills?.data.find((c) => c.id === bill)?.currency.name}{" "}
       <span>{bills?.data.find((i) => i.id === bill)?.amount_total}</span>
     </div>
   );
@@ -166,7 +170,7 @@ const WithholdingsCell = ({ control, index }: { control: Control<z.infer<typeof 
     control={control}
     name={`invoices.${index}.withholding_ids`}
     render={({ field }) => (
-      <FormItem className="flex flex-col w-full">
+      <FormItem className="flex flex-col w-[250px]">
         <FormControl>
           <AsyncMultiSelect<{ id: number, name: string }, number>
             className={cn(
@@ -207,17 +211,17 @@ const AmountCell = ({ control, index }: { control: Control<z.infer<typeof newPay
     control={control}
     name={`invoices.${index}.amount`}
     render={({ field }) => (
-      <FormItem className="flex flex-col">
+      <FormItem className="flex flex-col w-[200px]">
         <FormControl>
           <NumberField
             minValue={0}
             onChange={field.onChange}
             value={field.value}
             formatOptions={
-              bills?.data.find((c) => c.id === bill_id)?.currency
+              bills?.data.find((c) => c.id === bill_id)?.currency.name
                 ? {
                   style: "currency",
-                  currency: bills?.data.find((c) => c.id === bill_id)?.currency,
+                  currency: bills?.data.find((c) => c.id === bill_id)?.currency.name,
                   currencyDisplay: "code",
                 }
                 : undefined
@@ -279,7 +283,7 @@ const PendingBalanceCell = ({ control, index }: { control: Control<z.infer<typeo
 
   return (
     <div className="px-4 text-nowrap">
-      {bills?.data.find((c) => c.id === bill_id)?.currency}{" "}
+      {bills?.data.find((c) => c.id === bill_id)?.currency.name}{" "}
       <span>{pendingAmount}</span>
     </div>
   );

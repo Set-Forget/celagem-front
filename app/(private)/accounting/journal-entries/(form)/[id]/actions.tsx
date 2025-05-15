@@ -2,48 +2,47 @@ import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useDeleteJournalEntryMutation, useUpdateJournalEntryMutation } from "@/lib/services/journal-entries";
+import { useCancelJournalEntryMutation, useConfirmJournalEntryMutation, useDeleteJournalEntryMutation, useUpdateJournalEntryMutation } from "@/lib/services/journal-entries";
 import { cn } from "@/lib/utils";
-import { Check, EditIcon, Ellipsis, Trash2, Undo } from "lucide-react";
+import { Ban, Check, EditIcon, Ellipsis, Trash2, Undo } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { updateStateMessageMap } from "./utils";
+import { JournalEntryStatus } from "../../schemas/journal-entries";
 
-export default function Actions({ state }: { state?: 'draft' | 'posted' }) {
+export default function Actions({ state }: { state?: JournalEntryStatus }) {
   const router = useRouter()
 
   const { id } = useParams<{ id: string }>()
 
-  const [updateJournalEntry, { isLoading: isJournalEntryUpdating }] = useUpdateJournalEntryMutation();
-  const [deleteJournalEntry, { isLoading: isJournalEntryDeleting }] = useDeleteJournalEntryMutation();
 
-  const handleUpdateJournalEntry = async (state: 'draft' | 'posted') => {
+  const [confirmJournalEntry, { isLoading: isJournalEntryConfirming }] = useConfirmJournalEntryMutation();
+  const [cancelJournalEntry, { isLoading: isJournalEntryCancelling }] = useCancelJournalEntryMutation();
+
+
+  const handleConfirmJournalEntry = async () => {
     try {
-      const response = await updateJournalEntry({
-        id: Number(id),
-        state
-      }).unwrap()
+      const response = await confirmJournalEntry(id).unwrap()
 
       if (response.status === "success") {
-        toast.custom((t) => <CustomSonner t={t} description={updateStateMessageMap[state].success} variant="success" />)
+        toast.custom((t) => <CustomSonner t={t} description="Asiento confirmado" variant="success" />)
       }
     } catch (error) {
       console.error(error)
-      toast.custom((t) => <CustomSonner t={t} description={updateStateMessageMap[state].error} variant="error" />)
+      toast.custom((t) => <CustomSonner t={t} description="Error al confirmar el asiento" variant="error" />)
     }
   }
 
-  const handleDeleteJournalEntry = async () => {
+  const handleCancelJournalEntry = async () => {
     try {
-      const response = await deleteJournalEntry(Number(id)).unwrap()
+      const response = await cancelJournalEntry(id).unwrap()
 
       if (response.status === "success") {
-        toast.custom((t) => <CustomSonner t={t} description="Asiento eliminado" variant="success" />)
-        router.push("/accounting/journal-entries")
+        toast.custom((t) => <CustomSonner t={t} description="Asiento cancelado" variant="success" />)
       }
     } catch (error) {
       console.error(error)
-      toast.custom((t) => <CustomSonner t={t} description="Error al eliminar el asiento" variant="error" />)
+      toast.custom((t) => <CustomSonner t={t} description="Error al cancelar el asiento" variant="error" />)
     }
   }
 
@@ -67,20 +66,20 @@ export default function Actions({ state }: { state?: 'draft' | 'posted' }) {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onSelect={() => handleDeleteJournalEntry()}
-            loading={isJournalEntryDeleting}
+            onSelect={handleCancelJournalEntry}
+            loading={isJournalEntryCancelling}
             className="text-destructive focus:text-destructive"
           >
-            <Trash2 className={cn(isJournalEntryDeleting && "hidden")} />
-            Eliminar
+            <Ban className={cn(isJournalEntryCancelling && "hidden")} />
+            Cancelar
           </DropdownMenuItem>
         </Dropdown>
         <Button
           size="sm"
-          onClick={() => handleUpdateJournalEntry("posted")}
-          loading={isJournalEntryUpdating}
+          onClick={handleConfirmJournalEntry}
+          loading={isJournalEntryConfirming}
         >
-          <Check className={cn(isJournalEntryUpdating && "hidden")} />
+          <Check className={cn(isJournalEntryConfirming && "hidden")} />
           Confirmar
         </Button>
       </div>
@@ -97,13 +96,12 @@ export default function Actions({ state }: { state?: 'draft' | 'posted' }) {
             </Button>
           }
         >
-          <DropdownMenuSeparator />
           <DropdownMenuItem
             //onSelect={() => handleUpdateJournalEntry("cancel")}
-            loading={isJournalEntryUpdating}
+            loading={isJournalEntryConfirming}
             className="text-destructive focus:text-destructive"
           >
-            <Undo className={cn(isJournalEntryUpdating && "hidden")} />
+            <Undo className={cn(isJournalEntryConfirming && "hidden")} />
             Revertir
           </DropdownMenuItem>
         </Dropdown>

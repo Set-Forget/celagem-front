@@ -1,87 +1,82 @@
 'use client'
 
+import { DataTable } from "@/components/data-table"
 import Header from "@/components/header"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Separator } from "@/components/ui/separator"
-import { cn } from "@/lib/utils"
-import { addDays, format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { useState } from "react"
-import { DateRange } from "react-day-picker"
-import { GeneralLedgerItemsTable } from "./components/general-ledger-items-table"
+import { useGetAccountingAccountQuery, useListAccountingAccountMoveLinesQuery } from "@/lib/services/accounting-accounts"
+import { cn, FieldDefinition, placeholder } from "@/lib/utils"
+import { useParams } from "next/navigation"
+import { accountTypes } from "../data"
+import { AccountDetail } from "../schemas/account"
+import { columns } from "./components/columns"
+import Toolbar from "./components/toolbar"
+import TableFooter from "./components/table-footer"
 
-export default function Page({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 365),
-  })
-  //const customerId = (await params).id
+const fields: FieldDefinition<AccountDetail>[] = [
+  {
+    label: "Código",
+    placeholderLength: 14,
+    getValue: (p) => p?.code || 'No especificado',
+  },
+  {
+    label: "Tipo de cuenta",
+    placeholderLength: 14,
+    getValue: (p) => accountTypes.find((type) => type.value === p.account_type)?.label || 'No especificado',
+  },
+  {
+    label: "Compañía",
+    placeholderLength: 14,
+    getValue: (p) => p?.company?.name || 'No especificado',
+  }
+];
+
+export default function Page() {
+  const { id } = useParams<{ id: string }>()
+
+  const { data: account, isLoading: isAccountsLoading } = useGetAccountingAccountQuery(id)
+  const { data: accountMoves, isLoading: isAccountMovesLoading } = useListAccountingAccountMoveLinesQuery(id)
 
   return (
-    <div>
-      <Header title="EFECTIVO Y EQUIVALENTES AL EFECTIVO">
-        <div className={cn("grid gap-2 ml-auto")}>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id="date"
-                variant={"outline"}
-                className={cn(
-                  "justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                {date?.from ? (
-                  date.to ? (
-                    <>
-                      {format(date.from, "LLL dd, y")} -{" "}
-                      {format(date.to, "LLL dd, y")}
-                    </>
-                  ) : (
-                    format(date.from, "LLL dd, y")
-                  )
-                ) : (
-                  <span>Seleccioná un rango</span>
-                )}
-                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                initialFocus
-                mode="range"
-                defaultMonth={date?.from}
-                selected={date}
-                onSelect={setDate}
-                numberOfMonths={2}
-              />
-            </PopoverContent>
-          </Popover>
+    <div className="flex flex-col h-full">
+      <Header title={
+        <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isAccountsLoading ? "blur-[4px]" : "blur-none")}>
+          {isAccountsLoading ? placeholder(13, true) : account?.name}
+        </h1>
+      } />
+      <div className="flex flex-col p-4 gap-4 flex-1 h-full">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {fields.map((field) => {
+            const displayValue = isAccountsLoading
+              ? placeholder(field.placeholderLength)
+              : field.getValue(account!) ?? "";
+            return (
+              <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
+                <label className="text-muted-foreground text-sm">
+                  {field.label}
+                </label>
+                <span
+                  className={cn(
+                    "text-sm transition-all duration-300",
+                    isAccountsLoading ? "blur-[4px]" : "blur-none"
+                  )}
+                >
+                  {displayValue}
+                </span>
+              </div>
+            );
+          })}
         </div>
-      </Header>
-      <Separator />
-      <div className="flex flex-col gap-4 py-4 flex-1">
-        <div className="px-4 flex flex-col gap-4">
-          <h2 className="text-base font-medium">General</h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Fecha de creación</label>
-              <span className="text-sm">12 de febrero de 2022</span>
-            </div>
-          </div>
-        </div>
-        <Separator />
-        <div className="px-4 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-medium">Items</h2>
-          </div>
-          <GeneralLedgerItemsTable />
+        <div className="flex flex-col gap-2 h-full">
+          <label className="text-muted-foreground text-sm">
+            Movimientos
+          </label>
+          <DataTable
+            data={accountMoves?.data ?? []}
+            loading={isAccountMovesLoading}
+            columns={columns}
+            toolbar={({ table }) => <Toolbar table={table} />}
+            footer={() => <TableFooter />}
+            pagination={false}
+          />
         </div>
       </div>
     </div>

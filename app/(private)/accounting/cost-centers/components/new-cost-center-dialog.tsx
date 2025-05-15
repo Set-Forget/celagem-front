@@ -224,7 +224,7 @@ export default function NewCostCenterDialog() {
       open={dialogState.open === "new-cost-center"}
       onOpenChange={onOpenChange}
     >
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Nuevo centro de costos</DialogTitle>
           <DialogDescription>
@@ -237,11 +237,11 @@ export default function NewCostCenterDialog() {
               control={newCostCenterForm.control}
               name="name"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col w-full">
                   <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="MAIN Argentina"
+                      placeholder="Centro de costos principal"
                       {...field}
                     />
                   </FormControl>
@@ -253,11 +253,12 @@ export default function NewCostCenterDialog() {
               control={newCostCenterForm.control}
               name="code"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col w-full">
                   <FormLabel>Código</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="MAIN-ARG"
+                      placeholder="CC-001"
+                      type="text"
                       {...field}
                     />
                   </FormControl>

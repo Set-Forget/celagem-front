@@ -148,7 +148,12 @@ const DateRangeFilter = ({
       <div className="flex flex-col gap-2">
         <Label>Campo</Label>
         <Select value={field} onValueChange={(value) => setField(value)}>
-          <SelectTrigger className="h-7 text-xs">
+          <SelectTrigger
+            className="h-7 text-xs"
+            onPointerDown={(e) => {
+              e.stopPropagation()
+            }}
+          >
             <SelectValue placeholder="Seleccionar campo" />
           </SelectTrigger>
           <SelectContent>
@@ -164,7 +169,7 @@ const DateRangeFilter = ({
       </div>
       <div className="flex flex-col gap-2 mt-4">
         <Label>Rango de fecha</Label>
-        <Popover>
+        <Popover modal>
           <PopoverTrigger asChild>
             <Button
               id="date"
@@ -281,7 +286,7 @@ const DateFilter = ({
       </div>
       <div className="flex flex-col gap-2 mt-4">
         <Label>Fecha</Label>
-        <Popover>
+        <Popover modal>
           <PopoverTrigger asChild>
             <Button
               id="date"
@@ -364,7 +369,12 @@ const SearchFilter = ({
             setQuery("")
           }}
         >
-          <SelectTrigger className="h-7 text-xs">
+          <SelectTrigger
+            onPointerDown={(e) => {
+              e.stopPropagation()
+            }}
+            className="h-7 text-xs"
+          >
             <SelectValue placeholder="Seleccionar campo" />
           </SelectTrigger>
           <SelectContent>
@@ -410,6 +420,23 @@ const SearchFilter = ({
   * @param selectedValue Valor seleccionado.
   * @param onChange Función que se ejecuta cuando se selecciona una opción.
   * @param setOpen Función que cierra el popover.
+  * 
+  * Ejemplo de uso:
+  * 
+  * ```tsx
+  * {
+  *   single: {
+  *     label: "Tipo de cuenta",  
+  *    options: [
+  *      { label: "Activo", value: "active" },
+  *     { label: "Pasivo", value: "passive" },
+  *    { label: "Patrimonio", value: "patrimony" },
+  * ]
+  *    key: "account_type",
+  *   type: "single",
+  *   }
+  * }
+  * 
 */
 
 const SingleFilter = ({
@@ -618,7 +645,6 @@ export default function FilterSelector({
             Filtros
           </Button>
         </PopoverTrigger>
-
         <PopoverContent align="start" className="p-0 w-fit">
           {openedFilter ? (
             (() => {

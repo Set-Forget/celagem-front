@@ -5,15 +5,25 @@ import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { useListJournalEntriesQuery } from "@/lib/services/journal-entries";
 import { Plus } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 
 export default function Page() {
+  const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
 
-  const { data: journalEntries, isLoading } = useListJournalEntriesQuery();
+  const status = JSON.parse(searchParams.get('status') || 'null')
+  const date_range = JSON.parse(searchParams.get('date_range') || '{}') as { field: string, from: string, to: string }
+  const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
+
+  const { data: journalEntries, isLoading: isJournalEntriesLoading } = useListJournalEntriesQuery({
+    number: search ? search.query : undefined,
+    date_start: date_range?.field === "date" ? date_range.from : undefined,
+    date_end: date_range?.field === "date" ? date_range.to : undefined,
+    state: status ?? undefined,
+  }, { refetchOnMountOrArgChange: true })
 
   return (
     <div>
@@ -24,7 +34,7 @@ export default function Page() {
           onClick={() => router.push(`${pathname}/new`)}
         >
           <Plus className="w-4 h-4" />
-          Cargar asiento
+          Crear asiento
         </Button>
       </Header>
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
@@ -33,7 +43,7 @@ export default function Page() {
           columns={columns}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
-          loading={isLoading}
+          loading={isJournalEntriesLoading}
         />
       </div>
     </div>

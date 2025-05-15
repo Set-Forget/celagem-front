@@ -1,47 +1,33 @@
 "use client";
 
-import DatePicker from "@/components/date-picker";
-import FormTable from "@/components/form-table";
+import CustomSonner from "@/components/custom-sonner";
 import Header from "@/components/header";
-import SearchSelect from "@/components/search-select";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+  Form
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 import { useCreateDeliveryMutation } from "@/lib/services/deliveries";
+import { useGetInvoiceQuery } from "@/lib/services/invoices";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Save } from "lucide-react";
+import { Save, Sticker } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { newDeliveryNoteSchema } from "../../schemas/delivery-notes";
-import { columns } from "./components/columns";
-import TableFooter from "./components/table-footer";
-import CustomSonner from "@/components/custom-sonner";
-import { useRouter, useSearchParams } from "next/navigation";
-import { toast } from "sonner";
-import { useGetInvoiceQuery } from "@/lib/services/invoices";
-import { useEffect } from "react";
+import NotesForm from "./components/notes-form";
+import DataTabs from "@/components/data-tabs";
+import GeneralForm from "./components/general-form";
 
-const source_locations = [
-  { value: "1", label: "Bodega principal" },
-  { value: "2", label: "Bodega secundaria" },
-  { value: "3", label: "Bodega de insumos" },
-  { value: "4", label: "Bodega de productos terminados" },
-]
-
-const reception_locations = [
-  { value: "1", label: "Bodega principal" },
-  { value: "2", label: "Bodega secundaria" },
-  { value: "3", label: "Bodega de insumos" },
-  { value: "4", label: "Bodega de productos terminados" },
+const tabs = [
+  {
+    value: "tab-1",
+    label: "Notas",
+    icon: <Sticker className="mr-1.5" size={16} />,
+    content: <NotesForm />
+  }
 ]
 
 export default function Page() {
@@ -50,8 +36,10 @@ export default function Page() {
 
   const invoiceId = searchParams.get("invoiceId")
 
+  const [tab, setTab] = useState(tabs[0].value)
+
   const { data: invoice } = useGetInvoiceQuery(invoiceId!, { skip: !invoiceId })
-  const [createPurchaseReceipt, { isLoading: isCreatingDeliveryNote }] = useCreateDeliveryMutation()
+  const [createPurchaseDelivery, { isLoading: isCreatingDeliveryNote }] = useCreateDeliveryMutation()
 
   const newDeliveryNote = useForm<z.infer<typeof newDeliveryNoteSchema>>({
     resolver: zodResolver(newDeliveryNoteSchema),
@@ -62,11 +50,10 @@ export default function Page() {
 
   const onSubmit = async (data: z.infer<typeof newDeliveryNoteSchema>) => {
     try {
-      const response = await createPurchaseReceipt({
+      const response = await createPurchaseDelivery({
         ...data,
-        reception_date: data.reception_date.toString(),
-        reception_location: 1, // ! A modo de prueba se está enviando un valor fijo
-        source_location: 1, // ! A modo de prueba se está enviando un valor fijo
+        delivery_date: data.delivery_date.toString(),
+        //scheduled_date: new Date().toString(),
       }).unwrap()
 
       if (response.status === "success") {
@@ -86,7 +73,6 @@ export default function Page() {
         move_type: "direct",
         items: invoice.items.map((item) => ({
           product_id: item.product_id,
-          name: item.product_name, // ! Esto no debería existir
           quantity: item.quantity,
           product_uom: 1,
         }))
@@ -109,125 +95,17 @@ export default function Page() {
           </Button>
         </div>
       </Header>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-        <FormField
-          control={newDeliveryNote.control}
-          name="source_location"
-          render={({ field }) => (
-            <FormItem className="flex flex-col w-full">
-              <FormLabel className="w-fit">
-                Ubicación de origen
-              </FormLabel>
-              <FormControl>
-                <SearchSelect
-                  value={field.value}
-                  onSelect={field.onChange}
-                  options={source_locations}
-                  placeholder="Ubicación de origen"
-                  searchPlaceholder="Buscar..."
-                />
-              </FormControl>
-              {newDeliveryNote.formState.errors.source_location ? (
-                <FormMessage />
-              ) :
-                <FormDescription>
-                  Esta será la ubicación de origen del pedido.
-                </FormDescription>
-              }
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={newDeliveryNote.control}
-          name="reception_location"
-          render={({ field }) => (
-            <FormItem className="flex flex-col w-full">
-              <FormLabel className="w-fit">
-                Ubicación de recepción
-              </FormLabel>
-              <FormControl>
-                <SearchSelect
-                  value={field.value}
-                  onSelect={field.onChange}
-                  options={reception_locations}
-                  placeholder="Ubicación de recepción"
-                  searchPlaceholder="Buscar..."
-                />
-              </FormControl>
-              {newDeliveryNote.formState.errors.reception_location ? (
-                <FormMessage />
-              ) :
-                <FormDescription>
-                  Esta será la ubicación en la que se recibió el pedido.
-                </FormDescription>
-              }
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={newDeliveryNote.control}
-          name="reception_date"
-          render={({ field }) => (
-            <FormItem className="flex flex-col w-full">
-              <FormLabel className="w-fit">Fecha de entrega</FormLabel>
-              <FormControl>
-                <DatePicker
-                  value={field.value || null}
-                  onChange={(date) => field.onChange(date)}
-                />
-              </FormControl>
-              {newDeliveryNote.formState.errors.reception_date ? (
-                <FormMessage />
-              ) :
-                <FormDescription>
-                  Esta será la fecha en la que se entregó el pedido.
-                </FormDescription>
-              }
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={newDeliveryNote.control}
-          name="notes"
-          render={({ field }) => (
-            <FormItem className="flex flex-col w-full md:col-span-2">
-              <FormLabel className="w-fit">Notas</FormLabel>
-              <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder="Notas..."
-                  className="resize-none"
-                />
-              </FormControl>
-              <FormDescription>
-                Estas notas serán visibles en el remito.
-              </FormDescription>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={newDeliveryNote.control}
-          name="items"
-          render={({ field }) => (
-            <FormItem className="flex flex-col w-full col-span-2">
-              <FormLabel className="w-fit">Items</FormLabel>
-              <FormControl>
-                <FormTable<z.infer<typeof newDeliveryNoteSchema>>
-                  columns={columns}
-                  footer={({ append }) => <TableFooter append={append} />}
-                  name="items"
-                  className="col-span-2"
-                />
-              </FormControl>
-              {newDeliveryNote.formState.errors.items?.message && (
-                <p className="text-destructive text-[12.8px] mt-1 font-medium">
-                  {newDeliveryNote.formState.errors.items.message}
-                </p>
-              )}
-            </FormItem>
-          )}
-        />
-      </div>
+      <GeneralForm />
+      <DataTabs
+        tabs={tabs}
+        activeTab={tab}
+        onTabChange={setTab}
+        triggerClassName="mt-4"
+        // ? data-[state=inactive]:hidden se usa para ocultar el contenido de las tabs que no estén activas, esto es necesario porque forceMount hace que el contenido de todas las tabs se monte al mismo tiempo.
+        contentClassName="data-[state=inactive]:hidden"
+        // ? forceMount se usa para que el contenido de las tabs no se desmonte al cambiar de tab, esto es necesario para que los errores de validación no se pierdan al cambiar de tab.
+        forceMount
+      />
     </Form>
   );
 }

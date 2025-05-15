@@ -1,17 +1,39 @@
 import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
+const journalEntryStatus = z.enum(["draft", "posted", "cancelled"]);
+
 export const journalEntryListSchema = z.object({
   id: z.number(),
   number: z.string(),
-  status: z.string(), // ? No se que estados tiene, pero no deberían ser necesarios.
+  status: journalEntryStatus,
   date: z.string(),
   amount_total: z.number(),
-  currency: z.string(),
+  currency: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  journal: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
   ref: z.string().optional(),
   internal_notes: z.string().optional(),
-  // ! Falta journal.
 });
+
+export const newJournalEntryItemSchema = z.object({
+  account_id: z.number({ required_error: "La cuenta es requerida" }),
+  debit: z.number({ required_error: "El debe es requerido" }).nonnegative({ message: "El debe es requerido" }),
+  credit: z.number({ required_error: "El haber es requerido" }).nonnegative({ message: "El haber es requerido" }),
+  name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
+  taxes_id: z.array(z.number()).optional()
+}).refine(
+  (data) => data.debit > 0 || data.credit > 0,
+  {
+    message: "Debe ingresar un importe en Debe o en Haber (al menos uno mayor que 0)",
+    path: ["debit"],
+  }
+);
 
 export const newJournalEntrySchema = z.object({
   number: z.string().optional(), // @ Debería generarse automáticamente.
@@ -22,15 +44,7 @@ export const newJournalEntrySchema = z.object({
   journal: z.number({ required_error: "El diario contable es requerido" }),
   ref: z.string().optional(),
   internal_notes: z.string().optional(), // ! No existe en la API, pero lo agregué para poder usarlo en el formulario.
-  items: z.array(
-    z.object({
-      account_id: z.number({ required_error: "La cuenta es requerida" }),
-      debit: z.number({ required_error: "El debe es requerido" }).min(0, { message: "El debe es requerido" }),
-      credit: z.number({ required_error: "El haber es requerido" }).min(0, { message: "El haber es requerido" }),
-      name: z.string(),
-      taxes_id: z.array(z.number()).optional()
-    })
-  ).min(1, { message: "Al menos un item es requerido" })
+  items: z.array(newJournalEntryItemSchema).min(1, { message: "Al menos un item es requerido" })
 })
 
 export const newJournalEntryResponseSchema = z.object({
@@ -65,15 +79,17 @@ export const journalEntryLineSchema = z.object({
 export const journalEntryDetailSchema = z.object({
   id: z.number(),
   number: z.string(),
-  status: z.enum(["draft", "posted"]),
+  status: journalEntryStatus,
   date: z.string(),
-  currency: z.string(),
-  amount_total: z.number(),
-  ref: z.string().optional(),
+  currency: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
   journal: z.object({
     id: z.number(),
     name: z.string(),
   }),
+  ref: z.string().optional(),
   internal_notes: z.string().optional(),
   items: z.array(journalEntryLineSchema),
 });
@@ -93,3 +109,5 @@ export type JournalEntryItem = z.infer<typeof journalEntryLineSchema>;
 
 export type NewJournalEntry = z.infer<typeof newJournalEntrySchema>;
 export type NewJournalEntryResponse = z.infer<typeof newJournalEntryResponseSchema>;
+
+export type JournalEntryStatus = z.infer<typeof journalEntryStatus>;

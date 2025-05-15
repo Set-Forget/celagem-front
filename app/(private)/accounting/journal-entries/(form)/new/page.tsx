@@ -19,17 +19,13 @@ import { useRouter } from "next/navigation"
 import { useCreateJournalEntryMutation } from "@/lib/services/journal-entries"
 import { toast } from "sonner"
 import { parseDate } from "@internationalized/date"
-
-const journals = [
-  { id: 1, name: "Diario General" },
-  { id: 2, name: "Diario de Ventas" },
-  { id: 3, name: "Diario de Compras" },
-]
+import { useLazyListJournalsQuery } from "@/lib/services/journals"
 
 export default function Page() {
   const router = useRouter()
 
   const [searchCurrencies] = useLazyListCurrenciesQuery()
+  const [searchJournals] = useLazyListJournalsQuery()
 
   const [createJournalEntry, { isLoading: isCreatingJournalEntry }] = useCreateJournalEntryMutation()
 
@@ -48,8 +44,7 @@ export default function Page() {
         id: currency.id,
         name: currency.name
       }))
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error)
       return []
     }
@@ -57,9 +52,12 @@ export default function Page() {
 
   const handleSearchJournal = async (query?: string) => {
     try {
-      return journals.filter(journal => journal.name.toLowerCase().includes(query?.toLowerCase() ?? ""))
-    }
-    catch (error) {
+      const response = await searchJournals({ name: query }).unwrap()
+      return response.data?.map(journal => ({
+        id: journal.id,
+        name: journal.name
+      }))
+    } catch (error) {
       console.error(error)
       return []
     }

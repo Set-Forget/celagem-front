@@ -15,7 +15,7 @@ export const deliveriesApi = erpApi.injectEndpoints({
       }),
       providesTags: ['DeliveryNote'],
     }),
-    createDelivery: builder.mutation<NewDeliveryNoteResponse, Overwrite<NewDeliveryNote, { reception_date: string, reception_location: number, source_location: number }>>({
+    createDelivery: builder.mutation<NewDeliveryNoteResponse, Overwrite<NewDeliveryNote, { delivery_date: string }>>({
       query: (data) => ({
         url: 'deliveries',
         method: 'POST',

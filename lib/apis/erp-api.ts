@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const erpApi = createApi({
   reducerPath: 'erpApi',
   baseQuery: fetchBaseQuery({ baseUrl: '/erp/api/' }),
+  endpoints: () => ({}),
   tagTypes: [
     'Supplier',
     'PurchaseOrder',
@@ -24,7 +25,7 @@ export const erpApi = createApi({
     'AccountsReceivable',
     'CostCenter',
     'Payment',
-    'Receipt'
+    'Receipt',
+    'Journal',
   ],
-  endpoints: () => ({}),
 });

@@ -52,7 +52,7 @@ export const columns: ColumnDef<InvoiceItem & { currency: string }>[] = [
             <Badge
               key={tax.id || index}
               className={cn(
-                "badge group-hover:border group-hover:border-border group-hover:shadow-border bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary"
+                "badge group-hover:bg-background group-hover:shadow-background bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary"
               )}
             >
               {tax.name}
@@ -65,7 +65,7 @@ export const columns: ColumnDef<InvoiceItem & { currency: string }>[] = [
                   <span role="button" tabIndex={0}>
                     <Badge
                       className={cn(
-                        "badge group-hover:border group-hover:border-border group-hover:shadow-border bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary"
+                        "badge group-hover:bg-background group-hover:shadow-background bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary"
                       )}
                     >
                       {`+ ${hiddenTaxes.length} más`}
@@ -78,7 +78,7 @@ export const columns: ColumnDef<InvoiceItem & { currency: string }>[] = [
                       <Badge
                         key={tax.id || index}
                         className={cn(
-                          "badge group-hover:border group-hover:border-border group-hover:shadow-border bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary"
+                          "badge group-hover:bg-background group-hover:shadow-background bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary"
                         )}
                       >
                         {tax.name}
@@ -92,6 +92,16 @@ export const columns: ColumnDef<InvoiceItem & { currency: string }>[] = [
         </div>
       );
     },
+  },
+  {
+    accessorKey: "account",
+    header: "Cuenta contable",
+    cell: ({ row }) => row.original.account.name ?? "No asignada",
+  },
+  {
+    accessorKey: "cost_centers",
+    header: "Centro de costo",
+    cell: ({ row }) => row.original.cost_centers[0]?.name,
   },
   {
     accessorKey: "price_subtotal",

@@ -3,7 +3,7 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { JournalEntryItem } from "../../schemas/journal-entries"
+import { JournalEntryItem } from "../../../schemas/journal-entries"
 
 export const columns: ColumnDef<JournalEntryItem>[] = [
   {
@@ -14,24 +14,24 @@ export const columns: ColumnDef<JournalEntryItem>[] = [
     },
   },
   {
+    accessorKey: "name",
+    header: "Ref. / Descripción",
+    cell: ({ row }) => {
+      return <div className="font-medium">{row.getValue("name")}</div>
+    },
+  },
+  {
     accessorKey: "debit",
     header: "Debe",
     cell: ({ row }) => {
-      return <div className="font-medium">ARS {row.getValue("debit")}</div>
+      return <div>ARS {row.getValue("debit")}</div>
     },
   },
   {
     accessorKey: "credit",
     header: "Haber",
     cell: ({ row }) => {
-      return <div className="font-medium">ARS {row.getValue("credit")}</div>
+      return <div>ARS {row.getValue("credit")}</div>
     },
-  },
-  {
-    accessorKey: "tax_amount",
-    header: "Total impuestos",
-    cell: ({ row }) => {
-      return <div>ARS {row.getValue("tax_amount")}</div>
-    }
   },
 ]

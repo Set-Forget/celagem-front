@@ -8,8 +8,8 @@ import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { useParams } from "next/navigation"
-import { JournalEntryDetail } from "../schemas/journal-entries"
-import { journalEntryStatus } from "../utils"
+import { JournalEntryDetail } from "../../schemas/journal-entries"
+import { journalEntryStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
 import TableFooter from "./components/table-footer"
@@ -58,7 +58,6 @@ export default function Page() {
         <Actions state={journalEntry?.status} />
       </Header>
       <div className="flex flex-col gap-4 p-4">
-        <h2 className="text-base font-medium">General</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {fields.map((field) => {
             const displayValue = isJournalEntryLoading

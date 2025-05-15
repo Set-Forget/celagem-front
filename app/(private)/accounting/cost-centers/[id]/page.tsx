@@ -3,7 +3,7 @@
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { useGetCostCenterQuery, useUpdateCostCenterMutation } from "@/lib/services/cost-centers"
-import { cn, placeholder } from "@/lib/utils"
+import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { useParams } from "next/navigation"
 import { CostCenterDetail } from "../schemas/cost-centers"
 import { costCenters } from "../utils"
@@ -13,13 +13,6 @@ import { Button } from "@/components/ui/button"
 import { ChevronDown, EditIcon, Ellipsis } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import StatusDot from "@/components/status-dot"
-
-export type FieldDefinition<T> = {
-  label: string;
-  placeholderLength: number;
-  getValue: (data: T) => string | undefined;
-  className?: string;
-};
 
 const fields: FieldDefinition<CostCenterDetail>[] = [
   {

@@ -21,11 +21,11 @@ export const columns: ColumnDef<DeliveryNoteList>[] = [
     cell: ({ row }) => <div>{row.getValue('customer')}</div>,
   },
   {
-    accessorKey: 'scheduled_date',
+    accessorKey: 'delivery_date',
     header: 'Fecha de entrega',
     cell: ({ row }) => (
       <div>
-        {format(new Date(row.getValue('scheduled_date')), 'PP', { locale: es })}
+        {format(new Date(row.getValue('delivery_date')), 'PP', { locale: es })}
       </div>
     ),
   },

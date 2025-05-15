@@ -30,7 +30,8 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
       return response.data?.map(material => ({
         id: material.id,
         name: material.name,
-        standard_price: material.standard_price
+        standard_price: material.standard_price,
+        code: material.default_code,
       }))
     }
     catch (error) {
@@ -45,7 +46,7 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
     render={({ field }) => (
       <FormItem className="flex flex-col w-full">
         <FormControl>
-          <AsyncSelect<{ id: number, name: string, standard_price: number }, number>
+          <AsyncSelect<{ id: number, name: string, standard_price: number, code: string }, number>
             label="Material"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
@@ -56,13 +57,20 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
             getDisplayValue={(item) => (
               <div className="flex gap-1">
                 <span className="font-medium">
-                  [{item.id}]
+                  {item.code}
                 </span>
+                -{" "}
                 {item.name}
               </div>
             )}
             getOptionValue={(item) => item.id}
-            renderOption={(item) => <>{item.name} ({item.id})</>}
+            renderOption={(item) => <div className="flex gap-1 text-nowrap">
+              <span className="font-medium">
+                {item.code}
+              </span>
+              -{" "}
+              {item.name}
+            </div>}
             onChange={(value, item) => {
               field.onChange(value);
               setValue(`items.${index}.price_unit`, item?.standard_price || 0, { shouldValidate: true });

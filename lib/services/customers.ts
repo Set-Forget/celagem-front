@@ -21,7 +21,7 @@ export const customersApi = erpApi.injectEndpoints({
       transformResponse: (response: CustomerDetailResponse) => response.data,
       providesTags: ['Customer']
     }),
-    createCustomer: builder.mutation<NewCustomerResponse, Overwrite<NewCustomer, { property_payment_term?: number, payment_method: number, economic_activity: number }>>({
+    createCustomer: builder.mutation<NewCustomerResponse, Omit<Overwrite<NewCustomer, { property_payment_term?: number, payment_method: number, economic_activity: number }>, 'contact_address_inline'>>({
       query: (data) => ({
         url: '/customers',
         method: 'POST',

@@ -1,4 +1,4 @@
-import { InvoiceDetail, InvoiceDetailResponse, InvoiceListResponse, NewInvoice, NewInvoiceResponse } from '@/app/(private)/sales/invoices/schemas/invoices';
+import { InvoiceDetail, InvoiceDetailResponse, InvoiceListResponse, InvoiceStatus, InvoiceTypes, NewInvoice, NewInvoiceResponse } from '@/app/(private)/sales/invoices/schemas/invoices';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
 
@@ -8,8 +8,8 @@ export const invoicesApi = erpApi.injectEndpoints({
       <InvoiceListResponse,
         {
           number?: string,
-          status?: "draft" | "posted" | "cancel",
-          type?: "invoice" | "credit_note" | "debit_note",
+          status?: InvoiceStatus,
+          type?: InvoiceTypes,
           date_start?: string,
           date_end?: string,
           due_date_start?: string,

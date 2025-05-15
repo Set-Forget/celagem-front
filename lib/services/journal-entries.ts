@@ -1,13 +1,22 @@
-import { JournalEntryDetail, JournalEntryDetailResponse, JournalEntryListResponse, NewJournalEntry, NewJournalEntryResponse } from '@/app/(private)/accounting/journal-entries/schemas/journal-entries';
+import { JournalEntryDetail, JournalEntryDetailResponse, JournalEntryListResponse, JournalEntryStatus, NewJournalEntry, NewJournalEntryResponse } from '@/app/(private)/accounting/journal-entries/schemas/journal-entries';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
 
 export const journalEntriesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listJournalEntries: builder.query<JournalEntryListResponse, { name?: string } | void>({
-      query: () => 'account_entries',
-      providesTags: ['JournalEntry'],
-    }),
+    listJournalEntries: builder.query<JournalEntryListResponse,
+      {
+        number?: string
+        state?: JournalEntryStatus,
+        date_start?: string,
+        date_end?: string,
+      } | void>({
+        query: (data) => ({
+          url: 'account_entries',
+          params: data ?? {},
+        }),
+        providesTags: ['JournalEntry'],
+      }),
     getJournalEntry: builder.query<JournalEntryDetail, string>({
       query: (id) => `account_entries/${id}`,
       transformResponse: (response: JournalEntryDetailResponse) => response.data,
@@ -36,6 +45,21 @@ export const journalEntriesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['JournalEntry'],
     }),
+
+    confirmJournalEntry: builder.mutation<{ status: string, message: string }, string>({
+      query: (id) => ({
+        url: `account_entries/${id}/post`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['JournalEntry'],
+    }),
+    cancelJournalEntry: builder.mutation<{ status: string, message: string }, string>({
+      query: (id) => ({
+        url: `account_entries/${id}/cancel`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['JournalEntry'],
+    }),
   }),
 });
 
@@ -45,6 +69,8 @@ export const {
   useCreateJournalEntryMutation,
   useUpdateJournalEntryMutation,
   useDeleteJournalEntryMutation,
+  useConfirmJournalEntryMutation,
+  useCancelJournalEntryMutation,
 } = journalEntriesApi;
 
 

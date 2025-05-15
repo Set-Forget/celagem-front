@@ -1,28 +1,43 @@
-// itemsColumns.tsx
-
 import { AsyncSelect } from "@/components/async-select";
 import { FormTableColumn } from "@/components/form-table";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
+import { useLazyListMaterialsQuery } from "@/lib/services/materials";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { Button as AriaButton, Input as AriaInput, Label as AriaLabel, Group, NumberField } from "react-aria-components";
 import { Control } from "react-hook-form";
 import { z } from "zod";
-import { materials } from "@/lib/mocks/materials";
 import { newDeliveryNoteSchema } from "../../../schemas/delivery-notes";
 
 const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof newDeliveryNoteSchema>>; index: number }) => {
+  const [searchMaterials] = useLazyListMaterialsQuery()
+
   const handleSearchMaterial = async (query?: string) => {
-    if (!query) return materials
-    return materials.filter((material) => material.name.toLowerCase().includes(query.toLowerCase())) || []
+    try {
+      const response = await searchMaterials({
+        name: query,
+      }).unwrap()
+
+      return response.data?.map(material => ({
+        id: material.id,
+        name: material.name,
+        code: material.default_code,
+        standard_price: material.standard_price
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
   }
+
   return <FormField
     control={control}
     name={`items.${index}.product_id`}
     render={({ field }) => (
       <FormItem className="flex flex-col w-full">
         <FormControl>
-          <AsyncSelect<{ id: number, name: string, lst_price: number }, number>
+          <AsyncSelect<{ id: number, name: string, code: string, standard_price: number }, number>
             label="Material"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
@@ -33,20 +48,24 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
             getDisplayValue={(item) => (
               <div className="flex gap-1">
                 <span className="font-medium">
-                  [{item.id}]
+                  {item.code}
                 </span>
+                -{" "}
                 {item.name}
               </div>
             )}
             getOptionValue={(item) => item.id}
-            renderOption={(item) => <>{item.name}</>}
-            onChange={(value) => {
-              field.onChange(value);
-            }}
+            renderOption={(item) => <div className="flex gap-1">
+              <span className="font-medium">
+                {item.code}
+              </span>
+              -{" "}
+              {item.name}
+            </div>}
+            onChange={field.onChange}
             value={field.value}
             getOptionKey={(item) => String(item.id)}
             noResultsMessage="No se encontraron resultados"
-            modal
           />
         </FormControl>
       </FormItem>
@@ -114,6 +133,7 @@ export const columns: FormTableColumn<z.infer<typeof newDeliveryNoteSchema>>[] =
     width: 100,
     align: "right",
     headerClassName: "px-0 pr-9",
+    cellClassName: "border-l-0",
     renderCell: (control, index) => (
       <FormField
         control={control}

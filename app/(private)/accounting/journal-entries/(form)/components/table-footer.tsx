@@ -55,58 +55,12 @@ export default function TableFooter({ append }: { append: (value: any) => void }
     return acc + (credit * taxesAmount.reduce((acc, tax) => acc + tax, 0) / 100);
   }, 0);
 
-  const taxableBase = items.reduce((acc, item) => {
-    const base = Number(item.debit) + Number(item.credit)
-    const hasTax = item.taxes_id && item.taxes_id.length > 0;
-    return acc + (hasTax ? base : 0);
-  }, 0);
-
-  const totalTaxAmount = debitTaxSubtotal + creditTaxSubtotal;
-
-  const effectiveTaxPercent = taxableBase > 0 ? (totalTaxAmount / taxableBase) * 100 : 0;
-
   const debitTotal = debitSubtotal + debitTaxSubtotal;
   const creditTotal = creditSubtotal + creditTaxSubtotal;
 
   return (
     <ShadcnTableFooter>
       <TableRow className="!border-b bg-background h-6" />
-      <TableRow className="!border-b bg-background">
-        <TableCell colSpan={columns.length - 2} className="h-6 text-xs font-medium py-0 text-end">
-          <span>Subtotal (Sin imp.)</span>
-        </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5">
-          {currencies?.data.find(c => c.id === Number(currency))?.name}{" "}
-          <span>
-            {debitSubtotal.toFixed(2)}
-          </span>
-        </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5">
-          {currencies?.data.find(c => c.id === Number(currency))?.name}{" "}
-          <span>
-            {creditSubtotal.toFixed(2)}
-          </span>
-        </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5"></TableCell>
-      </TableRow>
-      <TableRow className="!border-b bg-background">
-        <TableCell colSpan={columns.length - 2} className="h-6 text-xs font-medium py-0 text-end">
-          <span>Impuestos ({effectiveTaxPercent.toFixed(2)}%)</span>
-        </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5">
-          {currencies?.data.find(c => c.id === Number(currency))?.name}{" "}
-          <span>
-            {debitTaxSubtotal.toFixed(2)}
-          </span>
-        </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5">
-          {currencies?.data.find(c => c.id === Number(currency))?.name}{" "}
-          <span>
-            {creditTaxSubtotal.toFixed(2)}
-          </span>
-        </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5"></TableCell>
-      </TableRow>
       <TableRow>
         <TableCell colSpan={columns.length - 2} className="h-6 text-xs font-semibold py-0 text-end">
           <span>Total</span>

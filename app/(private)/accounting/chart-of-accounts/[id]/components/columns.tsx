@@ -1,53 +1,49 @@
 "use client"
 
-import { JournalEntryItem } from "@/app/(private)/accounting/journal-entries/schemas/journal-entries"
 import {
   ColumnDef
 } from "@tanstack/react-table"
+import { AccountMoveLine } from "../../schemas/account"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
 
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<AccountMoveLine>[] = [
   {
     accessorKey: "date",
     header: "Fecha",
-    cell: ({ row }) => {
-      return <div>{row.getValue("date")}</div>
-    },
+    cell: ({ row }) => row.getValue("date") && format(new Date(row.getValue("date")), "PP", { locale: es }),
   },
   {
-    accessorKey: "account",
-    header: "Cuenta",
-    cell: ({ row }) => (
-      <div>
-        {row.getValue("account")}
-      </div>
-    ),
+    accessorKey: "partner",
+    header: "Entidad",
+    cell: ({ row }) => row.original.partner?.name
+  },
+  {
+    accessorKey: "move_id",
+    header: "Comprobante",
+    cell: ({ row }) => {
+      return <div className="font-medium">{row.original.move_id.name}</div>
+    }
   },
   {
     accessorKey: "debit",
     header: "Debe",
     cell: ({ row }) => {
-      return <div className="font-medium">ARS {row.getValue("debit")}</div>
+      return <div>{row.getValue("debit")}</div>
     },
   },
   {
     accessorKey: "credit",
     header: "Haber",
     cell: ({ row }) => {
-      return <div className="font-medium">ARS {row.getValue("credit")}</div>
+      return <div>{row.getValue("credit")}</div>
     },
   },
   {
     accessorKey: "balance",
     header: "Balance",
     cell: ({ row }) => {
-      return <div className="font-medium">ARS {row.getValue("balance")}</div>
-    },
-  },
-  {
-    accessorKey: "cost_center",
-    header: "Centro de costos",
-    cell: ({ row }) => {
-      return <div>{row.getValue("cost_center")}</div>
+      return <div>{row.getValue("balance")}</div>
     },
   },
 ]

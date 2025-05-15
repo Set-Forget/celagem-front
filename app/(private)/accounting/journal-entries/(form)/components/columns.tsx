@@ -1,16 +1,15 @@
+import { AsyncSelect } from "@/components/async-select";
 import { FormTableColumn } from "@/components/form-table";
+import { FormControl, FormField, FormItem } from "@/components/ui/form";
+import { useLazyListAccountingAccountsQuery } from "@/lib/services/accounting-accounts";
+import { useListCurrenciesQuery } from "@/lib/services/currencies";
+import { cn } from "@/lib/utils";
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { Button as AriaButton, Input as AriaInput, Label as AriaLabel, Group, NumberField } from "react-aria-components";
+import { Control, useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { newJournalEntrySchema } from "../../schemas/journal-entries";
-import { FormControl, FormField, FormItem } from "@/components/ui/form";
-import { AsyncSelect } from "@/components/async-select";
-import { cn } from "@/lib/utils";
-import { Control, useFormContext, useWatch } from "react-hook-form";
-import { useLazyListAccountingAccountsQuery } from "@/lib/services/accounting-accounts";
-import { AsyncMultiSelect } from "@/components/async-multi-select";
-import { useLazyListTaxesQuery } from "@/lib/services/taxes";
-import { Button as AriaButton, Input as AriaInput, Label as AriaLabel, Group, NumberField } from "react-aria-components";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-import { useListCurrenciesQuery } from "@/lib/services/currencies";
+import { Input } from "@/components/ui/input";
 
 const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<typeof newJournalEntrySchema>>; index: number }) => {
   const [searchAccountingAccounts] = useLazyListAccountingAccountsQuery()
@@ -48,62 +47,6 @@ const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<ty
             getOptionValue={(item) => item.id}
             renderOption={(item) => <div>{item.code} - {item.name}</div>}
             onChange={field.onChange}
-            value={field.value}
-            getOptionKey={(item) => String(item.id)}
-            noResultsMessage="No se encontraron resultados"
-          />
-        </FormControl>
-      </FormItem>
-    )}
-  />
-}
-
-const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newJournalEntrySchema>>; index: number }) => {
-  const { setValue } = useFormContext<z.infer<typeof newJournalEntrySchema>>()
-
-  const [searchTaxes] = useLazyListTaxesQuery()
-
-  const handleSearchTax = async (query?: string) => {
-    try {
-      const response = await searchTaxes({
-        name: query,
-        type_tax_use: "purchase"
-      }).unwrap()
-      return response.data?.map(taxes => ({
-        id: taxes.id,
-        name: taxes.name
-      }))
-    }
-    catch (error) {
-      console.error(error)
-      return []
-    }
-  }
-
-  return <FormField
-    control={control}
-    name={`items.${index}.taxes_id`}
-    render={({ field }) => (
-      <FormItem className="flex flex-col w-full">
-        <FormControl>
-          <AsyncMultiSelect<{ id: number, name: string }, number>
-            className={cn(
-              "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
-              control._formState.errors.items?.[index]?.taxes_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
-            )}
-            placeholder="Buscar impuesto..."
-            fetcher={handleSearchTax}
-            getDisplayValue={(item) => (
-              <div className="flex gap-1">
-                {item.name}
-              </div>
-            )}
-            getOptionValue={(item) => item.id}
-            renderOption={(item) => <>{item.name}</>}
-            onValueChange={(value) => {
-              field.onChange(value);
-              setValue(`items.${index}.taxes_id`, value, { shouldValidate: true });
-            }}
             value={field.value}
             getOptionKey={(item) => String(item.id)}
             noResultsMessage="No se encontraron resultados"
@@ -238,6 +181,27 @@ const CreditCell = ({ control, index }: { control: Control<z.infer<typeof newJou
   />
 };
 
+const RefCell = ({ control, index }: { control: Control<z.infer<typeof newJournalEntrySchema>>; index: number }) => {
+  return <FormField
+    control={control}
+    name={`items.${index}.name`}
+    render={({ field }) => (
+      <FormItem className="flex flex-col w-full">
+        <FormControl>
+          <Input
+            type="text"
+            className={cn(
+              "w-full rounded-none border-none shadow-none bg-transparent pl-4",
+              control._formState.errors.items?.[index]?.name && "outline outline-1 outline-offset-[-1px] outline-destructive"
+            )}
+            {...field}
+          />
+        </FormControl>
+      </FormItem>
+    )}
+  />
+}
+
 export const columns: FormTableColumn<z.infer<typeof newJournalEntrySchema>>[] = [
   {
     header: "Cuenta contable",
@@ -249,10 +213,10 @@ export const columns: FormTableColumn<z.infer<typeof newJournalEntrySchema>>[] =
     ) => <AccountingAccountCell control={control} index={index} />,
   },
   {
-    header: "Impuestos",
-    width: 200,
-    cellClassName: "pr-0 border-l-0",
-    renderCell: (control, index) => <TaxesCell control={control} index={index} />,
+    header: "Ref/Descripción",
+    width: 300,
+    cellClassName: "pr-0",
+    renderCell: (control, index) => <RefCell control={control} index={index} />,
   },
   {
     header: "Debe",

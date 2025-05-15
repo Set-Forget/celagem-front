@@ -191,7 +191,7 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
             Nota de débito
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`sales/delivery-notes/new?invoiceId=${id}`)}
+            onClick={() => router.push(`/sales/delivery-notes/new?invoiceId=${id}`)}
           >
             Remito
           </DropdownMenuItem>

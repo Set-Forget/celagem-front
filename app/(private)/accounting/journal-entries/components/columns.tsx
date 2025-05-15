@@ -62,7 +62,7 @@ export const columns: ColumnDef<JournalEntryList>[] = [
   {
     accessorKey: "journal",
     header: "Diario contable",
-    cell: ({ row }) => <div>{row.getValue("journal")}</div>,
+    cell: ({ row }) => row.original.journal.name,
   },
 
   {
@@ -77,7 +77,7 @@ export const columns: ColumnDef<JournalEntryList>[] = [
     header: () => <div>Importe</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount_total"))
-      const currency = row.original.currency
+      const currency = row.original.currency.name
 
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",

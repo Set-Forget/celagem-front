@@ -16,6 +16,8 @@ export default function Page() {
     resolver: zodResolver(newPaymentSchema),
   })
 
+  console.log(newPaymentForm.formState.errors)
+
   const onSubmit = (data: z.infer<typeof newPaymentSchema>) => {
     console.log(data)
   }

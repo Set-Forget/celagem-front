@@ -4,7 +4,6 @@ import { z } from 'zod';
 export const newDeliveryNoteItemSchema = z.object({
   product_id: z.number({ required_error: "El producto es requerido" }),
   product_uom: z.number({ required_error: "La unidad de medida es requerida" }),
-  name: z.string({ required_error: "El nombre es requerido" }), // ! Esto no debería ser requerido
   quantity: z.number({ required_error: "La cantidad es requerida" }),
 });
 
@@ -13,17 +12,18 @@ export const deliveryNoteListSchema = z.object({
   number: z.string(),
   customer: z.string(),
   scheduled_date: z.string(),
+  delivery_date: z.string(),
   delivery_location: z.string(),
   source_location: z.string(),
 })
 
 export const newDeliveryNoteSchema = z.object({
   customer: z.number({ required_error: "El proveedor es requerido" }),
-  reception_date: z.custom<CalendarDate>((data) => {
+  delivery_date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de recepción es requerida" }),
-  reception_location: z.string({ required_error: "La ubicación de recepción es requerida" }),
-  source_location: z.string().optional(),
+  delivery_location: z.number({ required_error: "La ubicación de recepción es requerida" }),
+  source_location: z.number({ required_error: "La ubicación de origen es requerida" }),
   move_type: z.enum(["direct"], { required_error: "El tipo de movimiento es requerido" }),
   notes: z.string().optional(),
   items: z.array(newDeliveryNoteItemSchema),
@@ -63,7 +63,7 @@ export const deliveryNoteDetailSchema = z.object({
   }),
   scheduled_date: z.string(),
   note: z.string(),
-  reception_location: z.string(),
+  delivery_location: z.string(),
   source_location: z.string(),
   items: z.array(deliveryNoteItemSchema),
 });

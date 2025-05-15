@@ -38,7 +38,6 @@ export default function Page() {
           data={costCenters?.data || []}
           loading={isCostCentersLoading}
           columns={columns}
-          onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>

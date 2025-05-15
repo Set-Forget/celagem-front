@@ -1,34 +1,23 @@
+import { AsyncSelect } from "@/components/async-select"
+import DatePicker from "@/components/date-picker"
+import FormTable from "@/components/form-table"
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Textarea } from "@/components/ui/textarea"
+import { useLazyListCurrenciesQuery } from "@/lib/services/currencies"
+import { useLazyListJournalsQuery } from "@/lib/services/journals"
+import { useLazyListPaymentMethodsQuery } from "@/lib/services/payment-methods"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newPaymentSchema } from "../../../schemas/payments"
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import SearchSelect from "@/components/search-select"
-import { payment_methods } from "@/app/(private)/purchases/vendors/(form)/new/data"
-import DatePicker from "@/components/date-picker"
-import { Textarea } from "@/components/ui/textarea"
-import { useLazyListCurrenciesQuery } from "@/lib/services/currencies"
-import { AsyncSelect } from "@/components/async-select"
-import TableFooter from "./table-footer"
 import { columns } from "./columns"
-import FormTable from "@/components/form-table"
-
-const journals = [
-  { value: 1, label: "Banco BBVA - Cuenta Corriente" },
-  { value: 2, label: "Banco Nación - Cuenta Corriente" },
-  { value: 3, label: "Caja Central" },
-  { value: 4, label: "Ventas - Facturas de Clientes" },
-  { value: 5, label: "Compras - Facturas de Proveedores" },
-  { value: 6, label: "Ajustes Contables" },
-  { value: 7, label: "Caja Sucursal 1" },
-  { value: 8, label: "Banco Santander - Cuenta USD" },
-  { value: 9, label: "Mercado Pago" },
-  { value: 10, label: "Banco Galicia - Cuenta Corriente" },
-];
+import TableFooter from "./table-footer"
 
 export default function GeneralForm() {
   const { control, formState } = useFormContext<z.infer<typeof newPaymentSchema>>()
 
   const [searchCurrencies] = useLazyListCurrenciesQuery()
+  const [searchPaymentMethods] = useLazyListPaymentMethodsQuery()
+  const [searchJournals] = useLazyListJournalsQuery()
 
   const handleSearchCurrency = async (query?: string) => {
     try {
@@ -44,21 +33,58 @@ export default function GeneralForm() {
     }
   }
 
+  const handleSearchPaymentMethod = async (query?: string) => {
+    try {
+      const response = await searchPaymentMethods({ name: query }).unwrap()
+      return response.data?.map(method => ({
+        id: method.id,
+        name: method.name
+      }))
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
+  }
+
+  const handleSearchJournal = async (query?: string) => {
+    try {
+      const response = await searchJournals({ name: query }).unwrap()
+      return response.data?.map(journal => ({
+        id: journal.id,
+        name: journal.name
+      }))
+    } catch (error) {
+      console.error(error)
+      return []
+    }
+  }
+
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-      <FormField // ! Debería venir de un endpoint.
+      <FormField
         control={control}
         name="payment_method"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">Metodo de pago</FormLabel>
-            <SearchSelect
-              value={field.value}
-              onSelect={field.onChange}
-              options={payment_methods}
-              placeholder="Seleccionar metodo de pago..."
-              searchPlaceholder="Buscar..."
-            />
+            <FormLabel className="w-fit">
+              Método de pago
+            </FormLabel>
+            <FormControl>
+              <AsyncSelect<{ id: number, name: string }, number>
+                label="Método de pago"
+                triggerClassName="!w-full"
+                placeholder="Seleccionar método de pago..."
+                fetcher={handleSearchPaymentMethod}
+                getDisplayValue={(item) => item.name}
+                getOptionValue={(item) => item.id}
+                renderOption={(item) => <div>{item.name}</div>}
+                onChange={field.onChange}
+                value={field.value}
+                getOptionKey={(item) => String(item.id)}
+                noResultsMessage="No se encontraron resultados"
+              />
+            </FormControl>
             {formState.errors.payment_method ? (
               <FormMessage />
             ) :
@@ -127,16 +153,20 @@ export default function GeneralForm() {
         name="journal"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">
-              Diario contable
-            </FormLabel>
+            <FormLabel className="w-fit">Diario contable</FormLabel>
             <FormControl>
-              <SearchSelect
-                value={field.value}
-                onSelect={field.onChange}
-                options={journals}
+              <AsyncSelect<{ id: number, name: string }, number>
+                label="Diario contable"
+                triggerClassName="!w-full"
                 placeholder="Seleccionar diario contable..."
-                searchPlaceholder="Buscar..."
+                fetcher={handleSearchJournal}
+                getDisplayValue={(item) => item.name}
+                getOptionValue={(item) => item.id}
+                renderOption={(item) => <div>{item.name}</div>}
+                onChange={field.onChange}
+                value={field.value}
+                getOptionKey={(item) => String(item.id)}
+                noResultsMessage="No se encontraron resultados"
               />
             </FormControl>
             {formState.errors.journal ? (

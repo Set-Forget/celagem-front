@@ -7,7 +7,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
       if (type === "number" || type === "tel") {
         const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", "Enter"];
         const isNumber = /^[0-9]$/;
-        
+
         if (!isNumber.test(e.key) && !allowedKeys.includes(e.key)) {
           e.preventDefault();
         }
@@ -18,7 +18,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
       <input
         type={type}
         className={cn(
-          "flex h-9 w-full rounded-sm border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm shadow-black/5 transition-shadow placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-none focus-visible:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50",
+          "truncate flex h-9 w-full rounded-sm border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm shadow-black/5 transition-shadow placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-none focus-visible:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50",
           type === "search" &&
           "[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none [&::-webkit-search-results-button]:appearance-none [&::-webkit-search-results-decoration]:appearance-none",
           type === "file" &&
@@ -31,6 +31,6 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
       />
     );
   },
-);Input.displayName = "Input";
+); Input.displayName = "Input";
 
 export { Input };

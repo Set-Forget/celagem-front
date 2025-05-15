@@ -23,7 +23,7 @@ export default function NotesForm() {
               />
             </FormControl>
             <FormDescription>
-              Estas notas son internas y no se incluirán en la orden de compra.
+              Estas notas son internas y no se incluirán en la nota de débito.
             </FormDescription>
           </FormItem>
         )}
@@ -44,7 +44,7 @@ export default function NotesForm() {
               />
             </FormControl>
             <FormDescription>
-              Estos términos y condiciones se incluirán en la orden de compra.
+              Estos términos y condiciones se incluirán en la nota de débito.
             </FormDescription>
           </FormItem>
         )}

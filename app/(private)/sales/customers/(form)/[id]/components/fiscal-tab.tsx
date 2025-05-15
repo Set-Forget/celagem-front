@@ -1,13 +1,14 @@
 import { useGetCustomerQuery } from "@/lib/services/customers";
 import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
+import { entity_type, fiscal_responsibility, nationality_type, tax_category, tax_information, tax_regime, tax_type } from "../../new/data";
 import { CustomerDetail } from "../../../schema/customers";
 
 const fields: FieldDefinition<CustomerDetail>[] = [
   {
     label: "Tipo de documento",
     placeholderLength: 16,
-    getValue: (p) => p.tax_type || "No especificado",
+    getValue: (p) => tax_type.find((type) => type.value === p.tax_type)?.label || "No especificado",
   },
   {
     label: "Número de identificación fiscal",
@@ -17,22 +18,7 @@ const fields: FieldDefinition<CustomerDetail>[] = [
   {
     label: "Regimen tributario",
     placeholderLength: 16,
-    getValue: (p) => p.tax_regime || "No especificado",
-  },
-  {
-    label: "Regimen fiscal",
-    placeholderLength: 16,
-    getValue: (p) => p.tax_category || "No especificado",
-  },
-  {
-    label: "Información tributaria",
-    placeholderLength: 16,
-    getValue: (p) => p.tax_information || "No especificado",
-  },
-  {
-    label: "Responsabilidad fiscal",
-    placeholderLength: 16,
-    getValue: (p) => p.fiscal_responsibility || "No especificado",
+    getValue: (p) => tax_regime.find((regime) => regime.value === p.tax_regime)?.label || "No especificado",
   },
   {
     label: "Actividad económica",
@@ -42,17 +28,32 @@ const fields: FieldDefinition<CustomerDetail>[] = [
   {
     label: "Tipo de entidad",
     placeholderLength: 16,
-    getValue: (p) => p.entity_type || "No especificado",
+    getValue: (p) => entity_type.find((type) => type.value === p.entity_type)?.label || "No especificado",
   },
   {
     label: "Tipo de nacionalidad",
     placeholderLength: 16,
-    getValue: (p) => p.nationality_type || "No especificado",
+    getValue: (p) => nationality_type.find((type) => type.value === p.nationality_type)?.label || "No especificado",
+  },
+  {
+    label: "Regimen fiscal",
+    placeholderLength: 16,
+    getValue: (p) => tax_category.find((category) => category.value === p.tax_category)?.label || "No especificado",
   },
   {
     label: "¿Es residente?",
     placeholderLength: 16,
     getValue: (p) => p.is_resident ? "Sí" : "No",
+  },
+  {
+    label: "Información tributaria",
+    placeholderLength: 16,
+    getValue: (p) => tax_information.find((info) => info.value === p.tax_information)?.label || "No especificado",
+  },
+  {
+    label: "Responsabilidad fiscal",
+    placeholderLength: 16,
+    getValue: (p) => fiscal_responsibility.find((responsibility) => responsibility.value === p.fiscal_responsibility)?.label || "No especificado",
   }
 ];
 

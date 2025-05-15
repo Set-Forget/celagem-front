@@ -68,6 +68,7 @@ const data: { navMain: NavItem[] } = {
       icon: FileText,
       items: [
         { title: "Plan de cuentas", url: "/accounting/chart-of-accounts" },
+        { title: "Diarios contables", url: "/accounting/journals" },
         { title: "Asientos contables", url: "/accounting/journal-entries" },
         { title: "Centros de costos", url: "/accounting/cost-centers" },
         { title: "Cuentas por cobrar", url: "/accounting/accounts-receivable" },

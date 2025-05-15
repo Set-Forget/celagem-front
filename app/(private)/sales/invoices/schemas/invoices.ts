@@ -50,10 +50,10 @@ export const invoiceLineSchema = z.object({
     id: z.number(),
     name: z.string(),
   }),
-  cost_center: z.object({
+  cost_centers: z.array(z.object({
     id: z.number(),
     name: z.string(),
-  }).nullable(),
+  })),
   taxes: z.array(z.object({ id: z.number(), name: z.string(), amount: z.number() })),
   // ! Ellos muestran también la unidad de medida (tener en cuenta para el futuro).
 })

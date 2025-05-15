@@ -47,8 +47,6 @@ export default function Page() {
     }
   })
 
-  console.log(newPurchaseReceipt.watch())
-
   const onSubmit = async (data: z.infer<typeof newPurchaseReceiptSchema>) => {
     const { purchase_order, ...rest } = data
 
