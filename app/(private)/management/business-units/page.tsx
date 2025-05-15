@@ -16,7 +16,7 @@ export default function BusinessUnitsPage() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data: businessUnits, isLoading } = useListBusinessUnitsQuery({ company_id: '' });
+  const { data: businessUnits, isLoading } = useListBusinessUnitsQuery();
 
   return (
     <>

@@ -4,7 +4,6 @@ import FormTable from "@/components/form-table"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useGetPurchaseRequestQuery, useLazyListPurchaseRequestsQuery } from "@/lib/services/purchase-requests"
 import { useLazyListSuppliersQuery } from "@/lib/services/suppliers"
-import { useLazyListCompaniesQuery } from "@/lib/services/users"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useFormContext } from "react-hook-form"
@@ -18,6 +17,7 @@ import { Separator } from "@/components/ui/separator"
 import DocumentInfo from "@/components/doc-info"
 import { PurchaseRequestDetail } from "../../../purchase-requests/schemas/purchase-requests"
 import { es } from "date-fns/locale"
+import { useLazyListCompaniesQuery } from "@/lib/services/companies"
 
 const fields: FieldDefinition<PurchaseRequestDetail>[] = [
   {
