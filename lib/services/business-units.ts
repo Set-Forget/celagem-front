@@ -8,19 +8,13 @@ import {
   BusinessUnitAddPatient,
   BusinessUnit,
 } from '@/app/(private)/management/business-units/schema/business-units';
+import { ListBusinessUnitResponse } from '@/app/(private)/medical-management/calendar/schemas/business-units';
 import { usersApi } from '@/lib/apis/users-api';
 
 export const businessUnitsApi = usersApi.injectEndpoints({
   endpoints: (builder) => ({
-    listBusinessUnits: builder.query<
-      BusinessUnitsListResponse,
-      { company_id: string }
-    >({
-      query: ({ company_id }) => ({
-        url: `businessunits`,
-        params: { company_id },
-      }),
-      providesTags: ['BusinessUnit'],
+    listBusinessUnits: builder.query<ListBusinessUnitResponse, void>({
+      query: () => 'businessunits',
     }),
     getBusinessUnit: builder.query<
       BusinessUnit,

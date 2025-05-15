@@ -8,7 +8,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useLazyListBusinessUnitsQuery } from "@/lib/services/business-units"
 import { useLazyGetAutocompleteQuery } from "@/lib/services/google-places"
 import { useGetPatientQuery } from "@/lib/services/patients"
-import { useLazyListClassesQuery, useLazyListCompaniesQuery } from "@/lib/services/users"
 import { cn } from "@/lib/utils"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -16,6 +15,8 @@ import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newPatientSchema } from "../../schema/patients"
 import { linkageTypes } from "../../utils"
+import { useLazyListCompaniesQuery } from "@/lib/services/companies"
+import { useLazyListClassesQuery } from "@/lib/services/classes"
 
 export default function AffiliationForm() {
   const params = useParams<{ patient_id: string }>();

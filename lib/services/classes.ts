@@ -7,18 +7,13 @@ import {
   ClassUpdateBody,
   Classes,
 } from '@/app/(private)/management/classes/schema/classes';
+import { ClassListResponse } from '../schemas/users';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const userApi = usersApi.injectEndpoints({
   endpoints: (builder) => ({
-    listClasses: builder.query<
-      ClassesListResponse,
-      { Name: string; CompanyId: string }
-    >({
-      query: (data) => ({
-        url: 'classes',
-        params: data || {},
-      }),
+    listClasses: builder.query<ClassListResponse, void>({
+      query: () => 'classes',
     }),
     createClass: builder.mutation<ClassResponse, ClassCreateBody>({
       query: (body) => ({
