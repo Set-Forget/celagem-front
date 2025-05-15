@@ -6,7 +6,7 @@ import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { useGetBillQuery } from "@/lib/services/bills"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { Box, Paperclip, Sticker } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -24,17 +24,17 @@ const fields: FieldDefinition<BillDetail>[] = [
   {
     label: "Fecha de emisión",
     placeholderLength: 14,
-    getValue: (p) => format(p.date, "PP", { locale: es }),
+    getValue: (p) => format(parseISO(p.date), "PP", { locale: es }),
   },
   {
     label: "Fecha de vencimiento",
     placeholderLength: 10,
-    getValue: (p) => format(p.due_date, "PP", { locale: es }),
+    getValue: (p) => format(parseISO(p.due_date), "PP", { locale: es }),
   },
   {
     label: "Fecha de contabilización",
     placeholderLength: 14,
-    getValue: (p) => format(p.accounting_date, "PP", { locale: es }),
+    getValue: (p) => format(parseISO(p.accounting_date), "PP", { locale: es }),
   },
   {
     label: "Condición de pago",

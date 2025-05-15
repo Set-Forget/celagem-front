@@ -4,14 +4,14 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 import { AccountMoveLine } from "../../schemas/account"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 
 export const columns: ColumnDef<AccountMoveLine>[] = [
   {
     accessorKey: "date",
     header: "Fecha",
-    cell: ({ row }) => row.getValue("date") && format(new Date(row.getValue("date")), "PP", { locale: es }),
+    cell: ({ row }) => row.getValue("date") && format(parseISO(row.getValue("date")), "PP", { locale: es }),
   },
   {
     accessorKey: "partner",

@@ -6,7 +6,7 @@ import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { useGetInvoiceQuery, useListInvoicesQuery } from "@/lib/services/invoices"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { Box, Paperclip, Sticker } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -24,17 +24,17 @@ const fields: FieldDefinition<InvoiceDetail>[] = [
   {
     label: "Fecha de emisión",
     placeholderLength: 14,
-    getValue: (p) => p.date ? format(p.date, "PP", { locale: es }) : "No especificado",
+    getValue: (p) => p.date ? format(parseISO(p.date), "PP", { locale: es }) : "No especificado",
   },
   {
     label: "Fecha de vencimiento",
     placeholderLength: 10,
-    getValue: (p) => p.due_date ? format(p.due_date, "PP", { locale: es }) : "No especificado",
+    getValue: (p) => p.due_date ? format(parseISO(p.due_date), "PP", { locale: es }) : "No especificado",
   },
   {
     label: "Fecha de contabilización",
     placeholderLength: 14,
-    getValue: (p) => p.accounting_date ? format(p.accounting_date, "PP", { locale: es }) : "No especificado",
+    getValue: (p) => p.accounting_date ? format(parseISO(p.accounting_date), "PP", { locale: es }) : "No especificado",
   },
   {
     label: "Condición de pago",

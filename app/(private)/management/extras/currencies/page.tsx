@@ -13,10 +13,7 @@ export default function CurrenciesPage() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data, isLoading } = useListCurrenciesQuery({
-    Name: '',
-    CompanyId: '',
-  });
+  const { data, isLoading } = useListCurrenciesQuery();
 
   return (
     <>

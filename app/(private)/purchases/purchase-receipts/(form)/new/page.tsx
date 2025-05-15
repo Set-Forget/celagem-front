@@ -18,7 +18,7 @@ import { z } from "zod"
 import { newPurchaseReceiptSchema } from "../../schemas/purchase-receipts"
 import GeneralForm from "./components/general-form"
 import NotesForm from "./components/notes-form"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 
 const tabs = [
   {
@@ -71,7 +71,7 @@ export default function Page() {
       newPurchaseReceipt.reset({
         supplier: purchaseOrder.supplier.id,
         purchase_order: purchaseOrder.id,
-        scheduled_date: format(new Date(purchaseOrder.required_date), "yyyy-MM-dd"),
+        scheduled_date: format(parseISO(purchaseOrder.required_date), "yyyy-MM-dd"),
         move_type: "direct",
         items: purchaseOrder.items.map((item) => ({
           product_id: item.product_id,

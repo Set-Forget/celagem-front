@@ -4,7 +4,7 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { AccountsReceivableList } from "../schemas/accounts-receivable"
 import { cn } from "@/lib/utils"
@@ -17,7 +17,7 @@ export const columns: ColumnDef<AccountsReceivableList>[] = [
     cell: ({ row }) => {
       if (!row.original.date) return <div>&nbsp;</div>
       return <div className="truncate">
-        {format(new Date(row.getValue("date")), "dd MMM yyyy", { locale: es })}
+        {format(parseISO(row.getValue("date")), "dd MMM yyyy", { locale: es })}
       </div>
     },
     /*     footer: () => {
@@ -63,7 +63,7 @@ export const columns: ColumnDef<AccountsReceivableList>[] = [
     cell: ({ row }) => {
       if (!row.original.due_date) return <div>&nbsp;</div>
       return <div className="truncate">
-        {format(new Date(row.getValue("date")), "dd MMM yyyy", { locale: es })}
+        {format(parseISO(row.getValue("date")), "dd MMM yyyy", { locale: es })}
       </div>
     },
   },

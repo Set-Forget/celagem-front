@@ -8,7 +8,7 @@ import {
   ColumnDef,
   Row
 } from "@tanstack/react-table"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { purchaseOrderStatus } from "../utils"
 import { PurchaseOrderList } from "../schemas/purchase-orders"
 import { es } from "date-fns/locale"
@@ -71,7 +71,7 @@ export const columns: ColumnDef<PurchaseOrderList>[] = [
     accessorKey: "required_date",
     header: "Fecha de requerimiento",
     cell: ({ row }) => <div>
-      {format(new Date(row.original.required_date), "PP", { locale: es })}
+      {format(parseISO(row.original.required_date), "PP", { locale: es })}
     </div>,
   },
 ]

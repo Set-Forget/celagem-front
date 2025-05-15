@@ -4,11 +4,8 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { format } from "date-fns"
-import { MoreHorizontal } from "lucide-react"
-import Link from "next/link"
+import { format, parseISO } from "date-fns"
+import { es } from "date-fns/locale"
 import { RECEIPT_MODE_ADAPTER } from "../adapters/receipts"
 
 export const columns: ColumnDef<any>[] = [
@@ -28,7 +25,7 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: "receipt_date",
     header: "Fecha de cobro",
     cell: ({ row }) => <div>
-      {format(new Date(row.getValue("receipt_date")), "dd MMM yyyy")}
+      {format(parseISO(row.getValue("receipt_date")), "PP", { locale: es })}
     </div>,
   },
   {

@@ -5,7 +5,7 @@ import DataTabs from '@/components/data-tabs';
 import Header from '@/components/header';
 import { useGetDeliveryQuery } from '@/lib/services/deliveries';
 import { cn, FieldDefinition, placeholder } from '@/lib/utils';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Box, FileText } from 'lucide-react';
 import { useParams } from 'next/navigation';
@@ -23,9 +23,9 @@ const fields: FieldDefinition<DeliveryNoteDetail>[] = [
     getValue: (p) => p.source_location || "No especificado",
   },
   {
-    label: "Ubicación de recepción",
+    label: "Ubicación de entrega",
     placeholderLength: 14,
-    getValue: (p) => p.reception_location || "No especificado",
+    getValue: (p) => p.delivery_location || "No especificado",
   },
   {
     label: "Fecha de recepción",
@@ -35,7 +35,7 @@ const fields: FieldDefinition<DeliveryNoteDetail>[] = [
   {
     label: "Fecha de requerimiento",
     placeholderLength: 12,
-    getValue: (p) => format(new Date(p.scheduled_date), "PP", { locale: es }),
+    getValue: (p) => format(parseISO(p.scheduled_date), "PP", { locale: es }),
   },
   {
     label: "Notas",

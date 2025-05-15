@@ -6,7 +6,7 @@ import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { useGetPurchaseRequestQuery } from "@/lib/services/purchase-requests"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { Paperclip, Sticker } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -27,12 +27,12 @@ const fields: FieldDefinition<PurchaseRequestDetail>[] = [
   {
     label: "Fecha de solicitud",
     placeholderLength: 10,
-    getValue: (p) => p?.created_at ? format(new Date(p.created_at), "PP", { locale: es }) : "No especificado"
+    getValue: (p) => p?.created_at ? format(parseISO(p.created_at), "PP", { locale: es }) : "No especificado"
   },
   {
     label: "Fecha de requerimiento",
     placeholderLength: 10,
-    getValue: (p) => p?.request_date ? format(p.request_date, "PP", { locale: es }) : "No especificado"
+    getValue: (p) => p?.request_date ? format(parseISO(p.request_date), "PP", { locale: es }) : "No especificado"
   }
 ];
 

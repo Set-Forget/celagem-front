@@ -5,7 +5,7 @@ import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { useGetJournalEntryQuery } from "@/lib/services/journal-entries"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { useParams } from "next/navigation"
 import { JournalEntryDetail } from "../../schemas/journal-entries"
@@ -18,7 +18,7 @@ const fields: FieldDefinition<JournalEntryDetail>[] = [
   {
     label: "Fecha de creación",
     placeholderLength: 14,
-    getValue: (p) => format(p.date, "PP", { locale: es })
+    getValue: (p) => format(parseISO(p.date), "PP", { locale: es })
   },
   {
     label: "Diario contable",

@@ -13,10 +13,7 @@ export default function TaxesPage() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data, isLoading } = useListTaxesQuery({
-    Name: '',
-    CompanyId: '',
-  });
+  const { data, isLoading } = useListTaxesQuery();
 
   return (
     <>

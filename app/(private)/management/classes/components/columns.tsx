@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Classes } from '../schema/classes';
 
-export const classesColumns: ColumnDef<Classes>[] = [
+export const classesColumns: ColumnDef<any>[] = [
   {
     id: 'select',
     header: ({ table }) => (

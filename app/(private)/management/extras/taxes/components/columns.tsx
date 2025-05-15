@@ -2,12 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { cn } from '@/lib/utils';
-import { PaymentTerms } from '../schema/payment-terms';
+import { Taxes } from '../schema/taxes';
 
-export const columns: ColumnDef<PaymentTerms>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'name',
     header: 'Nombre',
@@ -16,10 +13,16 @@ export const columns: ColumnDef<PaymentTerms>[] = [
     },
   },
   {
-    accessorKey: 'note',
-    header: 'Nota',
-    cell: ({ row }) => <div className="truncate">{row.original.note}</div>,
+    accessorKey: 'amount',
+    header: 'Porcentaje',
+    cell: ({ row }) => <div className="truncate">{row.original.amount}</div>,
   },
+  {
+    accessorKey: 'tax_group',
+    header: 'Grupo',
+    cell: ({ row }) => <div className="truncate">{row.original.tax_group}</div>,
+  },
+
   {
     accessorKey: 'active',
     header: 'Activo',

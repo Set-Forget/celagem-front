@@ -5,7 +5,7 @@ import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
 import { useGetPurchaseReceiptQuery } from "@/lib/services/purchase-receipts"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { Box, Paperclip, Sticker } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -31,12 +31,12 @@ const fields: FieldDefinition<PurchaseReceiptDetail>[] = [
   {
     label: "Fecha de recepción",
     placeholderLength: 12,
-    getValue: (p) => format(new Date(p.reception_date), "PP", { locale: es }),
+    getValue: (p) => format(parseISO(p.reception_date), "PP", { locale: es }),
   },
   {
     label: "Fecha de requerimiento",
     placeholderLength: 12,
-    getValue: (p) => format(new Date(p.scheduled_date), "PP", { locale: es }),
+    getValue: (p) => format(parseISO(p.scheduled_date), "PP", { locale: es }),
   }
 ];
 

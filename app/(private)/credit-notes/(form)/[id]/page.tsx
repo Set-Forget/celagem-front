@@ -5,7 +5,7 @@ import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
 import { Badge } from "@/components/ui/badge"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { Box, Receipt } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -23,7 +23,7 @@ const fields: FieldDefinition<CreditNoteDetail>[] = [
   {
     label: "Fecha de emisión",
     placeholderLength: 14,
-    getValue: (p) => p.date ? format(p.date, "PP", { locale: es }) : "No especificado",
+    getValue: (p) => p.date ? format(parseISO(p.date), "PP", { locale: es }) : "No especificado",
   },
   {
     label: "Notas",

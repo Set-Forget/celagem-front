@@ -12,7 +12,7 @@ import { newPurchaseOrderSchema } from "../../schemas/purchase-orders"
 import { columns } from "./columns"
 import TableFooter from "./table-footer"
 import { Info } from "lucide-react"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { Separator } from "@/components/ui/separator"
 import DocumentInfo from "@/components/doc-info"
 import { PurchaseRequestDetail } from "../../../purchase-requests/schemas/purchase-requests"
@@ -33,12 +33,12 @@ const fields: FieldDefinition<PurchaseRequestDetail>[] = [
   {
     label: "Fecha de requerimiento",
     placeholderLength: 10,
-    getValue: (p) => p?.request_date ? format(p?.request_date, "PP", { locale: es }) : "No especificada",
+    getValue: (p) => p?.request_date ? format(parseISO(p?.request_date), "PP", { locale: es }) : "No especificada",
   },
   {
     label: "Fecha de creación",
     placeholderLength: 10,
-    getValue: (p) => p?.created_at ? format(p.created_at, "PP", { locale: es }) : "No especificada",
+    getValue: (p) => p?.created_at ? format(parseISO(p.created_at), "PP", { locale: es }) : "No especificada",
   },
 ];
 

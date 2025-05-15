@@ -7,7 +7,7 @@ import { es } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Currencies } from '../schema/currencies';
 
-export const columns: ColumnDef<Currencies>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'name',
     header: 'Nombre',

@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { Taxes } from '../schema/installment-plans';
 
-export const columns: ColumnDef<Taxes>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'name',
     header: 'Nombre',

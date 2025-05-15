@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { PurchaseReceiptList } from "../schemas/purchase-receipts"
 import { es } from "date-fns/locale"
 import { ArrowRight } from "lucide-react"
@@ -21,7 +21,7 @@ export const columns: ColumnDef<PurchaseReceiptList>[] = [
     accessorKey: "reception_date",
     header: "Fecha de recepción",
     cell: ({ row }) => <div>
-      {format(new Date(row.getValue("reception_date")), "PP", { locale: es })}
+      {format(parseISO(row.getValue("reception_date")), "PP", { locale: es })}
     </div>,
   },
   {

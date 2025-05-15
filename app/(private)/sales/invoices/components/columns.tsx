@@ -7,7 +7,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { InvoiceList } from "../schemas/invoices"
 import { invoiceStatus, invoiceTypes } from "../utils"
@@ -87,7 +87,7 @@ export const columns: ColumnDef<InvoiceList>[] = [
     header: "Fecha de vencimiento",
     cell: ({ row }) => {
       return <div>
-        {format(new Date(row.getValue("due_date")), "dd MMM yyyy", { locale: es })}
+        {format(parseISO(row.getValue("due_date")), "dd MMM yyyy", { locale: es })}
       </div>
     }
   },

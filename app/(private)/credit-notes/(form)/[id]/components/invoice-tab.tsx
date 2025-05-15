@@ -1,7 +1,7 @@
 import { useGetCreditNoteQuery } from "@/lib/services/credit-notes";
 import { useGetInvoiceQuery } from "@/lib/services/invoices";
 import { cn, placeholder } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { useParams } from "next/navigation";
 
@@ -24,13 +24,13 @@ export default function InvoiceTab() {
       <div className="flex flex-col gap-1">
         <label className="text-muted-foreground text-sm">Fecha de emisión</label>
         <span className={cn("text-sm transition-all duration-300", isInvoiceLoading || isCreditNoteLoading ? "blur-[4px]" : "blur-none")}>
-          {isInvoiceLoading || isCreditNoteLoading ? placeholder(13) : invoice?.date ? format(invoice?.date ?? "", "dd MMM yyyy", { locale: es }) : "No especificado"}
+          {isInvoiceLoading || isCreditNoteLoading ? placeholder(13) : invoice?.date ? format(parseISO(invoice?.date) ?? "", "dd MMM yyyy", { locale: es }) : "No especificado"}
         </span>
       </div>
       <div className="flex flex-col gap-1">
         <label className="text-muted-foreground text-sm">Fecha de vencimiento</label>
         <span className={cn("text-sm transition-all duration-300", isInvoiceLoading || isCreditNoteLoading ? "blur-[4px]" : "blur-none")}>
-          {isInvoiceLoading || isCreditNoteLoading ? placeholder(13) : invoice?.due_date ? format(invoice?.due_date ?? "", "dd MMM yyyy", { locale: es }) : "No especificado"}
+          {isInvoiceLoading || isCreditNoteLoading ? placeholder(13) : invoice?.due_date ? format(parseISO(invoice?.due_date) ?? "", "dd MMM yyyy", { locale: es }) : "No especificado"}
         </span>
       </div>
       <div className="flex flex-col gap-1">

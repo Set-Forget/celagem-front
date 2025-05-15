@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import DataTabs from "@/components/data-tabs"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { Box, Paperclip, Sticker, Wallet } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -30,12 +30,12 @@ const fields: FieldDefinition<PurchaseOrderDetail>[] = [
   {
     label: "Fecha de requerimiento",
     placeholderLength: 10,
-    getValue: (p) => p?.required_date ? format(p?.required_date, "PP", { locale: es }) : "No especificada",
+    getValue: (p) => p?.required_date ? format(parseISO(p?.required_date), "PP", { locale: es }) : "No especificada",
   },
   {
     label: "Fecha de creación",
     placeholderLength: 10,
-    getValue: (p) => p?.created_at ? format(p.created_at, "PP", { locale: es }) : "No especificada",
+    getValue: (p) => p?.created_at ? format(parseISO(p.created_at), "PP", { locale: es }) : "No especificada",
   },
   {
     label: "Compañía",

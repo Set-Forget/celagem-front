@@ -6,7 +6,7 @@ import {
 
 import { Checkbox } from "@/components/ui/checkbox"
 import { JournalEntryList } from "../schemas/journal-entries"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { Badge } from "@/components/ui/badge"
 import { journalEntryStatus } from "../utils"
@@ -69,7 +69,7 @@ export const columns: ColumnDef<JournalEntryList>[] = [
     accessorKey: "date",
     header: "Fecha de creación",
     cell: ({ row }) => {
-      return <div>{format(new Date(row.getValue("date")), "dd MMM yyyy", { locale: es })}</div>
+      return <div>{format(parseISO(row.getValue("date")), "dd MMM yyyy", { locale: es })}</div>
     },
   },
   {

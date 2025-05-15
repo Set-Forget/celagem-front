@@ -6,7 +6,7 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { purchaseRequestStatus } from "../utils"
 import { PurchaseRequestList } from "../schemas/purchase-requests"
 import { es } from "date-fns/locale"
@@ -41,14 +41,14 @@ export const columns: ColumnDef<PurchaseRequestList>[] = [
     accessorKey: "request_date",
     header: "Fecha de requerimiento",
     cell: ({ row }) => <div>
-      {format(new Date(row.getValue("request_date")), "PP", { locale: es })}
+      {format(parseISO(row.getValue("request_date")), "PP", { locale: es })}
     </div>,
   },
   {
     accessorKey: "created_at",
     header: "Fecha de creación",
     cell: ({ row }) => <div>
-      {format(new Date(row.getValue("created_at")), "PP", { locale: es })}
+      {format(parseISO(row.getValue("created_at")), "PP", { locale: es })}
     </div>,
   },
   {

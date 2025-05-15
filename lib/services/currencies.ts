@@ -6,7 +6,7 @@ import {
   CurrencyResponse,
   CurrencyUpdateBody,
   Currencies,
-} from '@/app/(private)/reporting/extras/currencies/schema/currencies';
+} from '@/app/(private)/management/extras/currencies/schema/currencies';
 import { CurrencyListResponse } from '../schemas/currencies';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs

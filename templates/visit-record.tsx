@@ -6,7 +6,7 @@ import { biologicalSexTypes, disabilityTypes, documentTypes } from '@/app/(priva
 import { resolveFieldDisplayValue } from '@/app/(private)/medical-management/visits/(form)/[visit_id]/components/template-view';
 import { VisitDetail } from '@/app/(private)/medical-management/visits/schemas/visits';
 import { PDF } from '@/components/pdf-component';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Fragment } from 'react';
 
@@ -36,7 +36,7 @@ const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
             <div className="flex justify-between text-xs">
               <span className="inline-block">Fecha y hora:</span>
               <span className="font-medium">
-                {visit.createdAt ? format(new Date(visit.createdAt ?? ""), "PP hh:mmaaa", { locale: es }) : 'No especificado'}
+                {visit.createdAt ? format(parseISO(visit.createdAt ?? ""), "PP hh:mmaaa", { locale: es }) : 'No especificado'}
               </span>
             </div>
             <div className="flex justify-between text-xs">

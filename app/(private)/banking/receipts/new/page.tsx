@@ -14,13 +14,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { CalendarIcon, CheckIcon, ChevronsUpDown } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { newReceiptSchema } from "../schemas/receipts"
 import ItemsTable from "./components/items-table"
 import { Textarea } from "@/components/ui/textarea"
+import { es } from "date-fns/locale"
 
 const accounts_receipted_to = [
   { id: "af1", name: "CAJA GENERAL" },
@@ -141,7 +142,7 @@ export default function Page() {
                               )}
                             >
                               {field.value ? (
-                                format(field.value, "PP")
+                                format(parseISO(field.value), "PP", { locale: es })
                               ) : (
                                 <span>Seleccioná una fecha</span>
                               )}

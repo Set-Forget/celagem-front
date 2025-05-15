@@ -4,7 +4,7 @@ import {
   PaymentTermResponse,
   PaymentTermUpdateBody,
   PaymentTerms
-} from '@/app/(private)/reporting/extras/payment-terms/schema/payment-terms';
+} from '@/app/(private)/management/extras/payment-terms/schema/payment-terms';
 import { erpApi } from '@/lib/apis/erp-api';
 import { PaymentTermListResponse } from '../schemas/payment-terms';
 

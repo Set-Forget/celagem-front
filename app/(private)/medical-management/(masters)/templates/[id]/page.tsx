@@ -13,7 +13,7 @@ import { useCreateFieldMutation, useCreateSectionMutation, useGetTemplateQuery, 
 import { setDialogsState } from "@/lib/store/dialogs-store";
 import { cn, placeholder } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { FormInput, LayoutPanelTop, Loader2, Plus, PlusSquare, Save, SquarePen, Trash2 } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -255,7 +255,7 @@ export default function Page() {
             <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">Fecha de creación</label>
               <span className={cn("text-sm transition-all duration-300", isTemplateLoading ? "blur-[4px]" : "blur-none")}>
-                {!template ? placeholder(13) : format(template?.created_at, "dd MMM yyyy", { locale: es })}
+                {!template ? placeholder(13) : format(parseISO(template?.created_at), "PP", { locale: es })}
               </span>
             </div>
           </div>

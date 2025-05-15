@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import { useGetBillQuery } from "@/lib/services/bills"
 import { useGetInvoiceQuery } from "@/lib/services/invoices"
 import { cn, placeholder } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { CalendarIcon, Eye } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useFormContext } from "react-hook-form"
@@ -16,6 +16,7 @@ import { z } from "zod"
 import { newCreditNoteSchema } from "../../../schemas/credit-notes"
 import { columns } from "./columns"
 import TableFooter from "./table-footer"
+import { es } from "date-fns/locale"
 
 export default function GeneralForm() {
   const router = useRouter()
@@ -121,7 +122,7 @@ export default function GeneralForm() {
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "PP")
+                        format(parseISO(field.value), "PP", { locale: es })
                       ) : (
                         <span>Seleccioná una fecha</span>
                       )}

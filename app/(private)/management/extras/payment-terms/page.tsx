@@ -14,10 +14,7 @@ export default function PaymentTermsPage() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data, isLoading } = useListPaymentTermsQuery({
-    Name: '',
-    CompanyId: '',
-  });
+  const { data, isLoading } = useListPaymentTermsQuery();
 
   return (
     <>

@@ -21,7 +21,7 @@ export default function CompaniesPage() {
   const [handleGetClasses, { data, isLoading }] = useLazyListClassesQuery();
 
   useEffect(() => {
-    handleGetClasses({ Name: '', CompanyId: '' });
+    handleGetClasses();
   }, []);
 
   return (

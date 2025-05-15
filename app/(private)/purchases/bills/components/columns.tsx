@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { BillList } from "../schemas/bills"
 import { billStatus, billTypes } from "../utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Progress } from "@/components/ui/progress"
@@ -115,7 +115,7 @@ export const columns: ColumnDef<BillList>[] = [
     header: "Fecha de vencimiento",
     cell: ({ row }) => {
       return <div>
-        {format(new Date(row.getValue("due_date")), "dd MMM yyyy", { locale: es })}
+        {format(parseISO(row.getValue("due_date")), "PP", { locale: es })}
       </div>
     }
   },
