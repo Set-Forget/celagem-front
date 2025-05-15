@@ -1,4 +1,4 @@
-import { AccountsReceivableListResponse } from '@/app/(private)/accounting/accounts-receivable/schemas/accounts-receivable';
+import { AccountsReceivableListResponse } from '@/app/(private)/reporting/accounts-receivable/schemas/accounts-receivable';
 import { erpApi } from '@/lib/apis/erp-api';
 
 export const accountsReceivableApi = erpApi.injectEndpoints({

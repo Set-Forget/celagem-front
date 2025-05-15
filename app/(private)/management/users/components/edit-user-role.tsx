@@ -1,5 +1,7 @@
 'use client';
 
+import { AsyncSelect } from '@/components/async-select';
+import CustomSonner from '@/components/custom-sonner';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -18,23 +20,20 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { useLazyListRolesQuery } from '@/lib/services/roles';
+import { useUpdateUserRoleMutation } from '@/lib/services/users';
 import {
   closeDialogs,
   DialogsState,
   dialogsStateObservable,
 } from '@/lib/store/dialogs-store';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { useUpdateUserRoleMutation } from '@/lib/services/users';
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import CustomSonner from '@/components/custom-sonner';
-import { AsyncSelect } from '@/components/async-select';
+import { z } from 'zod';
 import { Users, userUpdateRoleBodySchema } from '../schema/users';
-import { useLazyListRolesQuery } from '@/lib/services/roles';
 
 export default function EditUserRole({ userData }: { userData: Users }) {
   const router = useRouter();

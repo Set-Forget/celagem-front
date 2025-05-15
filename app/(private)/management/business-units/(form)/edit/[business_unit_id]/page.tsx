@@ -5,15 +5,9 @@ import DataTabs from '@/components/data-tabs';
 import Header from '@/components/header';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { useGetProfileQuery } from '@/lib/services/auth';
-import {
-  useCreatePatientMutation,
-  useGetPatientQuery,
-  useUpdatePatientMutation,
-} from '@/lib/services/patients';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { get } from 'lodash';
-import { Building, House, Shield, Stethoscope, Users, Wallet } from 'lucide-react';
+import { House, Stethoscope, Users } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FieldErrors, useForm } from 'react-hook-form';
@@ -21,12 +15,12 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 
-import GeneralForm from '../../components/general-form';
-import { getFieldPaths } from '../../utils';
-import UsersForm from '../../components/users-form';
-import PatientsForm from '../../components/patients-form';
 import { useGetBusinessUnitQuery, useUpdateBusinessUnitMutation } from '@/lib/services/business-units';
 import { newBusinessUnitGeneralSchema, newBusinessUnitPatientSchema, newBusinessUnitSchema, newBusinessUnitUserSchema } from '../../../schema/business-units';
+import GeneralForm from '../../components/general-form';
+import PatientsForm from '../../components/patients-form';
+import UsersForm from '../../components/users-form';
+import { getFieldPaths } from '../../utils';
 
 // ! Se puede unificar con el tabs de abajo.
 const tabToFieldsMap = {
@@ -69,7 +63,7 @@ const tabs = [
     ),
     content: <PatientsForm />,
   },
-  
+
 ];
 
 export default function Page() {
@@ -139,11 +133,11 @@ export default function Page() {
         created_by: businessUnit.created_by?.id,
       });
     }
-  }, [businessUnit]);  
+  }, [businessUnit]);
 
   return (
     <Form {...form}>
-      <Header title="Actualizar unidad de negocio">  
+      <Header title="Actualizar unidad de negocio">
         {tab === 'tab-1' && <Button
           type="submit"
           onClick={form.handleSubmit(onSubmit, onError)}

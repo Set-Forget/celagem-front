@@ -40,7 +40,6 @@ export async function generatePDF<K extends keyof TemplateMap>(options: {
   }
 }
 
-
 export async function mergePDFs(base64List: string[]) {
   const mergedPdf = await PDFDocument.create()
 
@@ -56,12 +55,12 @@ export async function mergePDFs(base64List: string[]) {
 
   return {
     view() {
-      const blob = new Blob([mergedBytes], { type: "application/pdf" })
+      const blob = new Blob([new Uint8Array(mergedBytes)], { type: "application/pdf" })
       const url = URL.createObjectURL(blob)
       window.open(url, "_blank")
     },
     save(filename = "merged-visits.pdf") {
-      const blob = new Blob([mergedBytes], { type: "application/pdf" })
+      const blob = new Blob([new Uint8Array(mergedBytes)], { type: "application/pdf" })
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url

@@ -1,22 +1,13 @@
 "use client"
 
 import {
-  Box,
   ChevronRight,
-  FileText,
-  Landmark,
-  LayoutDashboard,
-  type LucideIcon,
-  ShoppingBag,
-  ShoppingCart,
-  Stethoscope,
-  Building,
-  Map,
-  Settings,
+  LayoutDashboard
 } from 'lucide-react';
 import * as React from 'react';
 
-import { NavUser } from "@/components/nav-user"
+import { NavUser } from "@/components/nav-user";
+import { CollapsibleContent, Collapsible as CollapsibleRoot, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -28,176 +19,16 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
-import { Collapsible as CollapsibleRoot, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
-import { usePathname, useRouter } from "next/navigation"
-import Link from "next/link"
-import { useGetProfileQuery } from "@/lib/services/auth"
-
-export interface NavItem {
-  title: string
-  url: string
-  icon?: LucideIcon
-  items?: NavItem[]
-}
-
-const data: { navMain: NavItem[] } = {
-  navMain: [
-    {
-      title: "Ventas",
-      url: "#",
-      icon: ShoppingBag,
-      items: [
-        { title: "Facturas", url: "/sales/invoices" },
-        { title: "Remitos", url: "/sales/delivery-notes" },
-        { title: "Clientes", url: "/sales/customers" },
-      ],
-    },
-    {
-      title: "Compras",
-      url: "#",
-      icon: ShoppingCart,
-      items: [
-        { title: "Solicitudes de pedido", url: "/purchases/purchase-requests" },
-        { title: "Ordenes de compra", url: "/purchases/purchase-orders" },
-        { title: "Recepciones", url: "/purchases/purchase-receipts" },
-        { title: "Facturas", url: "/purchases/bills" },
-        { title: "Proveedores", url: "/purchases/vendors" },
-      ],
-    },
-    {
-      title: "Contabilidad",
-      url: "#",
-      icon: FileText,
-      items: [
-        { title: "Plan de cuentas", url: "/accounting/chart-of-accounts" },
-        { title: "Diarios contables", url: "/accounting/journals" },
-        { title: "Asientos contables", url: "/accounting/journal-entries" },
-        { title: "Centros de costos", url: "/accounting/cost-centers" },
-        { title: "Cuentas por cobrar", url: "/accounting/accounts-receivable" },
-        { title: "Cuentas por pagar", url: "/accounting/accounts-payable" },
-        { title: "Cuentas corrientes", url: "/accounting/current-accounts" },
-        {
-          title: "Reportes",
-          url: "/accounting/reports",
-        },
-        {
-          title: "Tipos de cuentas",
-          url: "/accounting/account-types-master",
-        },
-        {
-          title: "Extras",
-          url: "/accounting/extras",
-        },
-      ],
-    },
-    {
-      title: "Tesorería",
-      url: "#",
-      icon: Landmark,
-      items: [
-        { title: "Pagos", url: "/banking/payments" },
-        { title: "Cobros", url: "/banking/receipts" },
-      ],
-    },
-    {
-      title: 'Administracion',
-      url: '#',
-      icon: Settings,
-      items: [
-        {
-          title: 'Usuarios',
-          url: '/management/users',
-        },
-        {
-          title: 'Roles',
-          url: '/management/roles',
-        },
-        {
-          title: 'Sedes',
-          url: '/management/companies',
-        },
-        {
-          title: 'Unidades de negocios',
-          url: '/management/business-units',
-        },
-        {
-          title: 'Clases',
-          url: '/management/classes',
-        },
-      ],
-    },
-    {
-      title: 'Hojas de ruta',
-      url: '#',
-      icon: Map,
-      items: [
-        { title: "Puestos de trabajo", url: "/register/job-positions" },
-        { title: "Servicios", url: "/register/services" },
-        { title: "Examenes Medicos", url: "/register/medical-exams" },
-        { title: "Materiales", url: "/register/materials" },
-        { title: "Actos Clinicos", url: "/register/procedures" },
-      ],
-    },
-    {
-      title: "Inventario",
-      url: "#",
-      icon: Box,
-      items: [
-        {
-          title: 'Stock',
-          url: '/inventory/stock',
-        },
-        {
-          title: 'Almacenes',
-          url: '/inventory/warehouses',
-        },
-        {
-          title: 'Locaciones',
-          url: '/inventory/locations',
-        },
-        {
-          title: 'Productos',
-          url: '/inventory/products',
-        },
-        // {
-        //   title: 'Atributos',
-        //   url: '/inventory/attributes',
-        // },
-        {
-          title: 'Transferencias internas',
-          url: '/inventory/internal-transfers',
-        },
-        // {
-        //   title: 'Cantidades',
-        //   url: '/inventory/quantities',
-        // },
-      ],
-    },
-    {
-      title: "Gestión médica",
-      url: "#",
-      icon: Stethoscope,
-      items: [
-        { title: "Calendario", url: "/medical-management/calendar" },
-        { title: "Pacientes", url: "/medical-management/patients" },
-        { title: "Visitas", url: "/medical-management/visits" },
-        {
-          title: "Maestros",
-          url: "#",
-          items: [
-            { title: "Plantillas", url: "/medical-management/templates" },
-            { title: "Secciones", url: "/medical-management/sections" },
-          ],
-        },
-      ],
-    },
-  ],
-}
+} from "@/components/ui/sidebar";
+import { useGetProfileQuery } from "@/lib/services/auth";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { NavItem, navItems } from '@/lib/nav-items';
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
   const router = useRouter()
+
   const { data: userProfile } = useGetProfileQuery()
 
   const isActive = (item: NavItem): boolean =>
@@ -214,7 +45,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
         }
       })
     }
-    traverse(data.navMain)
+    traverse(navItems.navMain)
     return keys
   })
 
@@ -273,7 +104,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
                 Tablero
               </SidebarMenuButton>
             </SidebarMenuItem>
-            {data.navMain.map((item) => {
+            {navItems.navMain.map((item) => {
               const active = isActive(item)
               if (item.items) {
                 return (

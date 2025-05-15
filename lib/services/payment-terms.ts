@@ -6,7 +6,7 @@ import {
   PaymentTermResponse,
   PaymentTermUpdateBody,
   PaymentTerms,
-} from '@/app/(private)/accounting/extras/payment-terms/schema/payment-terms';
+} from '@/app/(private)/reporting/extras/payment-terms/schema/payment-terms';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const paymentTermsApi = erpApi.injectEndpoints({

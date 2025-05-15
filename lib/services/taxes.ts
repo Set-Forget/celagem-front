@@ -6,7 +6,7 @@ import {
   TaxResponse,
   TaxUpdateBody,
   Taxes,
-} from '@/app/(private)/accounting/extras/taxes/schema/taxes';
+} from '@/app/(private)/reporting/extras/taxes/schema/taxes';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const taxesApi = erpApi.injectEndpoints({

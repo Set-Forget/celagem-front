@@ -3,21 +3,20 @@
 import Header from '@/components/header';
 import { Button } from '@/components/ui/button';
 
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChevronDown, House, Pencil, Plus, X } from 'lucide-react';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import { useGetRoleQuery } from '@/lib/services/roles';
+import DataTabs from '@/components/data-tabs';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import DataTabs from '@/components/data-tabs';
-import { useState } from 'react';
-import GeneralTab from './components/general-tab';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { cn, placeholder } from '@/lib/utils';
-import EditRole from '../components/edit-role';
+import { useGetRoleQuery } from '@/lib/services/roles';
 import { setDialogsState } from '@/lib/store/dialogs-store';
+import { cn, placeholder } from '@/lib/utils';
+import { ChevronDown, House, Pencil, Plus, X } from 'lucide-react';
+import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import DeleteRole from '../components/delete-role';
+import EditRole from '../components/edit-role';
+import GeneralTab from './components/general-tab';
 
 const notes = [
   {
@@ -202,8 +201,8 @@ export default function RolePage() {
                   {isLoading
                     ? placeholder(13)
                     : role?.updated_by?.first_name +
-                      ' ' +
-                      role?.updated_by?.last_name}
+                    ' ' +
+                    role?.updated_by?.last_name}
                 </span>
               </label>
               <span

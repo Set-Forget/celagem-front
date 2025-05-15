@@ -12,34 +12,17 @@ import { Input } from '@/components/ui/input';
 
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { z } from 'zod';
-import { newUserSchema } from '../../schema/users';
+import { AsyncMultiSelect } from '@/components/async-multi-select';
 import { AsyncSelect } from '@/components/async-select';
+import {
+  useLazyListBusinessUnitsQuery
+} from '@/lib/services/business-units';
 import { useLazyListCompaniesQuery } from '@/lib/services/companies';
 import { useLazyListRolesQuery } from '@/lib/services/roles';
-import {
-  useLazyListBusinessUnitsQuery,
-  useListBusinessUnitsQuery,
-} from '@/lib/services/business-units';
-import { AsyncMultiSelect } from '@/components/async-multi-select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
-import { get } from 'lodash';
 import { useEffect, useState } from 'react';
+import { z } from 'zod';
+import { newUserSchema } from '../../schema/users';
 
 export default function GeneralForm() {
   const { setValue, control, getValues } =
@@ -49,8 +32,8 @@ export default function GeneralForm() {
   const [getRoles] = useLazyListRolesQuery();
   const [getBusinessUnits] = useLazyListBusinessUnitsQuery();
 
-  const [roles, setRoles] = useState([]);
-  const [businessUnits, setBusinessUnits] = useState([]);
+  const [roles, setRoles] = useState<{ label: string; value: string }[]>([]);
+  const [businessUnits, setBusinessUnits] = useState<{ label: string; value: string }[]>([]);
 
   // Watch for company_id changes to refetch roles
   const companyId = useWatch({
@@ -325,7 +308,7 @@ export default function GeneralForm() {
                   className={cn(
                     '!w-full bg-transparent pl-4',
                     control._formState.errors.business_units &&
-                      'outline outline-1 outline-offset-[-1px] outline-destructive'
+                    'outline outline-1 outline-offset-[-1px] outline-destructive'
                   )}
                   searchPlaceholder="Buscar unidades de negocio..."
                   placeholder={

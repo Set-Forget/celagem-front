@@ -17,19 +17,13 @@ import {
 } from '@/components/ui/resizable';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { useGetPatientQuery } from '@/lib/services/patients';
 import { cn, placeholder } from '@/lib/utils';
 import {
-  Building,
   ChevronDown,
-  Edit,
   House,
   Pencil,
   Plus,
-  Shield,
-  Users,
-  Wallet,
-  X,
+  X
 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -39,10 +33,10 @@ import GeneralTab from './components/general-tab';
 // import UsersTab from './components/users-tab';
 import { useGetBusinessUnitQuery } from '@/lib/services/business-units';
 import { setDialogsState } from '@/lib/store/dialogs-store';
-import EditBusinessUnit from '../components/edit-business-unit';
-import DeleteBusinessUnit from '../components/delete-business-unit';
-import AddUserBusinessUnit from '../components/add-user-business-unit';
 import AddPatientBusinessUnit from '../components/add-patient-business-unit';
+import AddUserBusinessUnit from '../components/add-user-business-unit';
+import DeleteBusinessUnit from '../components/delete-business-unit';
+import EditBusinessUnit from '../components/edit-business-unit';
 
 const notes = [
   {
@@ -270,8 +264,8 @@ export default function Page() {
                   {isBusinessUnitLoading
                     ? placeholder(13)
                     : businessUnit?.updated_by?.first_name +
-                      ' ' +
-                      businessUnit?.updated_by?.last_name}
+                    ' ' +
+                    businessUnit?.updated_by?.last_name}
                 </span>
               </label>
               <span

@@ -1,7 +1,4 @@
-import { useGetPatientQuery } from "@/lib/services/patients";
 import { cn, placeholder } from "@/lib/utils";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
 import { useParams } from "next/navigation";
 
 import { useGetCompanyQuery } from "@/lib/services/companies";
@@ -31,7 +28,7 @@ export default function GeneralTab() {
       placeholderLength: 14,
       getValue: (p) => p.description,
     },
-    
+
   ];
 
   return (

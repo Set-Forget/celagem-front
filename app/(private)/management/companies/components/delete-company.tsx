@@ -9,15 +9,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useDeleteCompanyMutation } from '@/lib/services/companies';
 import {
   closeDialogs,
   DialogsState,
   dialogsStateObservable,
 } from '@/lib/store/dialogs-store';
-import { useEffect, useState } from 'react';
-import { Companies } from '../schema/companies';
-import { useDeleteCompanyMutation } from '@/lib/services/companies';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function DeleteCompany({ companyId }: { companyId: string }) {

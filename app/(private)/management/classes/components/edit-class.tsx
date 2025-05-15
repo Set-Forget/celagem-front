@@ -1,5 +1,6 @@
 // 'use client'
 
+import CustomSonner from '@/components/custom-sonner';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -19,13 +20,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { useUpdateClassMutation } from '@/lib/services/classes';
+import { useLazyListCompaniesQuery } from '@/lib/services/companies';
 import {
   closeDialogs,
   DialogsState,
@@ -34,12 +30,9 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { Classes, newClassSchema } from '../schema/classes';
-import { useUpdateClassMutation } from '@/lib/services/classes';
-import { toast } from 'sonner';
-import { useLazyListCompaniesQuery } from '@/lib/services/companies';
-import CustomSonner from '@/components/custom-sonner';
 
 export default function EditClass({ classData }: { classData: Classes }) {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });

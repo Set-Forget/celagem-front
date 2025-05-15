@@ -3,21 +3,7 @@
 import Header from '@/components/header';
 import { Button } from '@/components/ui/button';
 
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useGetCompanyQuery } from '@/lib/services/companies';
-import { ChevronDown, House, Pencil, Plus, X } from 'lucide-react';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import GeneralTab from './components/general-tab';
-import { useState } from 'react';
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@/components/ui/resizable';
 import DataTabs from '@/components/data-tabs';
-import { Separator } from '@/components/ui/separator';
-import { cn, placeholder } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,9 +11,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/ui/resizable';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { useGetCompanyQuery } from '@/lib/services/companies';
 import { setDialogsState } from '@/lib/store/dialogs-store';
-import EditCompany from '../components/edit-company';
+import { cn, placeholder } from '@/lib/utils';
+import { ChevronDown, House, Pencil, Plus, X } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import DeleteCompany from '../components/delete-company';
+import EditCompany from '../components/edit-company';
+import GeneralTab from './components/general-tab';
 
 const notes = [
   {
@@ -211,8 +210,8 @@ export default function CompanyPage() {
                   {isCompanyLoading
                     ? placeholder(13)
                     : company?.updated_by?.first_name +
-                      ' ' +
-                      company?.updated_by?.last_name}
+                    ' ' +
+                    company?.updated_by?.last_name}
                 </span>
               </label>
               <span

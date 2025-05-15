@@ -1,31 +1,21 @@
 import { AsyncSelect } from '@/components/async-select';
-import {
-  CountrySelect,
-  FlagComponent,
-  PhoneInput,
-} from '@/components/phone-input';
+import { DataTable } from '@/components/data-table';
+import { Button } from '@/components/ui/button';
 import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useLazyGetAutocompleteQuery } from '@/lib/services/google-places';
-import * as RPNInput from 'react-phone-number-input';
-import { newBusinessUnitPatientSchema } from '../../schema/business-units';
+import { Separator } from '@/components/ui/separator';
+import { useGetBusinessUnitQuery } from '@/lib/services/business-units';
+import { useLazyListPatientsQuery } from '@/lib/services/patients';
+import { Trash } from 'lucide-react';
+import { useParams } from 'next/navigation';
 import { useFormContext } from 'react-hook-form';
 import { z } from 'zod';
-import { useLazyListPatientsQuery } from '@/lib/services/patients';
-import { PatientDetail } from '@/app/(private)/medical-management/patients/schema/patients';
 import { columnsPatients } from '../../[business_unit_id]/components/columns-patients';
-import { Trash } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
-import { DataTable } from '@/components/data-table';
-import { useGetBusinessUnitQuery } from '@/lib/services/business-units';
-import { useParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { newBusinessUnitPatientSchema } from '../../schema/business-units';
 
 export default function PatientsForm() {
   const params = useParams<{ business_unit_id: string }>();

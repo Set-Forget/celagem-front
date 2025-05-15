@@ -3,17 +3,16 @@
 import { DataTable } from '@/components/data-table';
 import Header from '@/components/header';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
-import { classesColumns } from './components/columns';
-import Toolbar from './components/toolbar';
 import {
-  useLazyListClassesQuery,
-  useListClassesQuery,
+  useLazyListClassesQuery
 } from '@/lib/services/classes';
 import { setDialogsState } from '@/lib/store/dialogs-store';
-import NewClass from './components/new-class';
+import { Plus } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { classesColumns } from './components/columns';
+import NewClass from './components/new-class';
+import Toolbar from './components/toolbar';
 
 export default function CompaniesPage() {
   const pathname = usePathname();

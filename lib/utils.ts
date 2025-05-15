@@ -42,7 +42,3 @@ export function getFieldPaths(schema: z.ZodTypeAny, parentPath = ""): string[] {
 
   return [parentPath];
 }
-
-export function getRandomInt(max: number, floor: number) {
-  return Math.floor(Math.random() * max) + floor;
-}

@@ -1,4 +1,4 @@
-import { AccountsPayableListResponse } from '@/app/(private)/accounting/accounts-payable/schemas/accounts-payable';
+import { AccountsPayableListResponse } from '@/app/(private)/reporting/accounts-payable/schemas/accounts-payable';
 import { erpApi } from '@/lib/apis/erp-api';
 
 export const accountsPayableApi = erpApi.injectEndpoints({

@@ -17,27 +17,22 @@ import {
 } from '@/components/ui/resizable';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { useGetPatientQuery } from '@/lib/services/patients';
 import { cn, placeholder } from '@/lib/utils';
 import {
-  Building,
   ChevronDown,
   House,
   Pencil,
   Plus,
-  Shield,
-  Users,
-  Wallet,
-  X,
+  X
 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import GeneralTab from './components/general-tab';
 import { useGetClassQuery } from '@/lib/services/classes';
-import EditClass from '../components/edit-class';
 import { setDialogsState } from '@/lib/store/dialogs-store';
 import DeleteClass from '../components/delete-class';
+import EditClass from '../components/edit-class';
+import GeneralTab from './components/general-tab';
 
 const notes = [
   {
@@ -221,8 +216,8 @@ export default function Page() {
                   {isClassLoading
                     ? placeholder(13)
                     : classData?.updated_by?.first_name +
-                      ' ' +
-                      classData?.updated_by?.last_name}
+                    ' ' +
+                    classData?.updated_by?.last_name}
                 </span>
               </label>
               <span

@@ -1,16 +1,11 @@
-import { useGetPatientQuery } from '@/lib/services/patients';
-import { cn, getRandomInt, placeholder } from '@/lib/utils';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { DataTable } from '@/components/data-table';
+import { Separator } from '@/components/ui/separator';
+import { useGetBusinessUnitQuery } from '@/lib/services/business-units';
+import { cn, placeholder } from '@/lib/utils';
 import { useParams } from 'next/navigation';
 import { BusinessUnit } from '../../schema/business-units';
-import { useGetBusinessUnitQuery } from '@/lib/services/business-units';
-import { Separator } from '@/components/ui/separator';
-import { DataTable } from '@/components/data-table';
 import { columnsPatients } from './columns-patients';
 import { columnsUsers } from './columns-users';
-import { setDialogsState } from '@/lib/store/dialogs-store';
-import { Trash } from 'lucide-react';
 
 export type FieldDefinition<T> = {
   label: string;
@@ -113,9 +108,9 @@ export default function GeneralTab() {
             pageSizeProp={5}
           />
         </div>
-    
+
       </div>
-      
+
     </div>
 
   );
