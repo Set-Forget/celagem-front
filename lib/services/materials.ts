@@ -1,7 +1,7 @@
+import { MaterialListResponse } from '@/app/(private)/inventory/stock/schema/materials-inventory';
 import { erpApi } from '../apis/erp-api';
 import {
   MaterialCreateBody,
-  MaterialsListResponse,
   MaterialDeleteResponse,
   MaterialResponse,
   MaterialUpdateBody,
@@ -11,10 +11,12 @@ import {
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const materialsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listMaterials: builder.query<MaterialsListResponse, void>({
+    listMaterials: builder.query<MaterialListResponse, { name?: string } | void>({
       query: (data) => ({
-        url: 'materials',
+        url: '/products',
+        params: data || {},
       }),
+      providesTags: ['Material'],
     }),
     createMaterial: builder.mutation<MaterialResponse, MaterialCreateBody>({
       query: (body) => ({

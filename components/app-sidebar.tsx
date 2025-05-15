@@ -160,8 +160,6 @@ const data: { navMain: NavItem[] } = {
         //   title: 'Cantidades',
         //   url: '/inventory/quantities',
         // },
-        { title: "Materiales", url: "/inventory/materials" },
-        { title: "Almacenes", url: "/inventory/warehouses" },
       ],
     },
     {
