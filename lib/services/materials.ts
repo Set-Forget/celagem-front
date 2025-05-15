@@ -1,4 +1,4 @@
-import { MaterialListResponse } from '@/app/(private)/inventory/stock/schema/materials-inventory';
+import { MaterialDetail, MaterialDetailResponse, MaterialListResponse } from '@/app/(private)/inventory/stock/schema/materials-inventory';
 import { erpApi } from '../apis/erp-api';
 import {
   MaterialCreateBody,
@@ -26,9 +26,9 @@ export const materialsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Material'],
     }),
-    getMaterial: builder.query<Materials, string>({
-      query: (id) => `materials/${id}`,
-      transformResponse: (response: MaterialResponse) => response.data,
+    getMaterial: builder.query<MaterialDetail, number>({
+      query: (id) => `/products/${id}`,
+      transformResponse: (response: MaterialDetailResponse) => response.data,
       providesTags: ['Material'],
     }),
     updateMaterial: builder.mutation<
