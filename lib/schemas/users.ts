@@ -6,9 +6,9 @@ export const userListSchema = z.object({
   last_name: z.string(),
   email: z.string(),
   is_email_confirmed: z.boolean(),
-  created_at: z.string(),
-  modified_at: z.string(),
-})
+  created_at: z.date(),
+  modified_at: z.date(),
+});
 
 export const userListResponseSchema = z.object({
   status: z.string(),

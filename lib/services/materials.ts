@@ -1,19 +1,51 @@
-import { MaterialDetail, MaterialDetailResponse, MaterialListResponse } from '@/app/(private)/inventory/materials/schema/materials-inventory';
-import { erpApi } from '@/lib/apis/erp-api';
+import { erpApi } from '../apis/erp-api';
+import {
+  MaterialCreateBody,
+  MaterialsListResponse,
+  MaterialDeleteResponse,
+  MaterialResponse,
+  MaterialUpdateBody,
+  Materials,
+} from '@/app/(private)/register/materials/schema/materials';
 
+// actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const materialsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listMaterials: builder.query<MaterialListResponse, { name?: string } | void>({
+    listMaterials: builder.query<MaterialsListResponse, void>({
       query: (data) => ({
-        url: '/products',
-        params: data || {},
+        url: 'materials',
       }),
+    }),
+    createMaterial: builder.mutation<MaterialResponse, MaterialCreateBody>({
+      query: (body) => ({
+        url: 'materials',
+        method: 'POST',
+        body: body,
+      }),
+      invalidatesTags: ['Material'],
+    }),
+    getMaterial: builder.query<Materials, string>({
+      query: (id) => `materials/${id}`,
+      transformResponse: (response: MaterialResponse) => response.data,
       providesTags: ['Material'],
     }),
-    getMaterial: builder.query<MaterialDetail, number>({
-      query: (id) => `/products/${id}`,
-      transformResponse: (response: MaterialDetailResponse) => response.data,
-      providesTags: ['Material'],
+    updateMaterial: builder.mutation<
+      MaterialResponse,
+      { id: string; body: MaterialUpdateBody }
+    >({
+      query: ({ id, body }) => ({
+        url: `materials/${id}`,
+        method: 'PUT',
+        body: body,
+      }),
+      invalidatesTags: ['Material'],
+    }),
+    deleteMaterial: builder.mutation<MaterialDeleteResponse, { id: string }>({
+      query: ({ id }) => ({
+        url: `materials/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Material'],
     }),
   }),
 });
@@ -21,7 +53,9 @@ export const materialsApi = erpApi.injectEndpoints({
 export const {
   useListMaterialsQuery,
   useLazyListMaterialsQuery,
-  useLazyGetMaterialQuery
+  useLazyGetMaterialQuery,
+  useCreateMaterialMutation,
+  useGetMaterialQuery,
+  useUpdateMaterialMutation,
+  useDeleteMaterialMutation,
 } = materialsApi;
-
-

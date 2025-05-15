@@ -11,6 +11,12 @@ import {
   ShoppingCart,
   Stethoscope,
   Building,
+  Map,
+  Settings,
+} from 'lucide-react';
+import * as React from 'react';
+
+import { NavUser } from '@/components/nav-user';
 } from "lucide-react"
 import * as React from "react"
 import { NavUser } from "@/components/nav-user"
@@ -86,9 +92,36 @@ const data: { navMain: NavItem[] } = {
       ],
     },
     {
-      title: "Hojas de ruta",
-      url: "#",
-      icon: Building,
+      title: 'Administracion',
+      url: '#',
+      icon: Settings,
+      items: [
+        {
+          title: 'Usuarios',
+          url: '/management/users',
+        },
+        {
+          title: 'Roles',
+          url: '/management/roles',
+        },
+        {
+          title: 'Sedes',
+          url: '/management/companies',
+        },
+        {
+          title: 'Unidades de negocios',
+          url: '/management/business-units',
+        },
+        {
+          title: 'Clases',
+          url: '/management/classes',
+        },
+      ],
+    },
+    {
+      title: 'Hojas de ruta',
+      url: '#',
+      icon: Map,
       items: [
         { title: "Puestos de trabajo", url: "/register/job-positions" },
         { title: "Servicios", url: "/register/services" },
@@ -102,6 +135,34 @@ const data: { navMain: NavItem[] } = {
       url: "#",
       icon: Box,
       items: [
+        {
+          title: 'Stock',
+          url: '/inventory/stock',
+        },
+        {
+          title: 'Almacenes',
+          url: '/inventory/warehouses',
+        },
+        {
+          title: 'Locaciones',
+          url: '/inventory/locations',
+        },
+        {
+          title: 'Productos',
+          url: '/inventory/products',
+        },
+        // {
+        //   title: 'Atributos',
+        //   url: '/inventory/attributes',
+        // },
+        {
+          title: 'Transferencias internas',
+          url: '/inventory/internal-transfers',
+        },
+        // {
+        //   title: 'Cantidades',
+        //   url: '/inventory/quantities',
+        // },
         { title: "Materiales", url: "/inventory/materials" },
         { title: "Almacenes", url: "/inventory/warehouses" },
       ],

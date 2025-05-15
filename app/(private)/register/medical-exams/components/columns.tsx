@@ -2,9 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { MedicalExam } from '../schema/medical-exam';
+import { MedicalExams } from '../schema/medical-exams';
 
-export const medicalExamsColumns: ColumnDef<MedicalExam>[] = [
+export const medicalExamsColumns: ColumnDef<MedicalExams>[] = [
   {
     id: 'select',
     header: ({ table }) => (

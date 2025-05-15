@@ -13,6 +13,11 @@ export default function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
+  // const { data, isLoading } = useListMaterialsQuery({
+  //   Name: '',
+  //   CompanyId: '',
+  // });
+
   return (
     <div>
       <Header title="Materiales">
@@ -30,6 +35,7 @@ export default function Page() {
         <DataTable
           data={materialsMock}
           columns={materialsColumns}
+          // loading={isLoading}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
           toolbar={({ table }) => <Toolbar table={table} />}
         />

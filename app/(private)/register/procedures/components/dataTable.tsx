@@ -4,7 +4,7 @@ import { DataTable } from '@/components/data-table';
 import { proceduresColumns } from './columns';
 import { usePathname, useRouter } from 'next/navigation';
 import Toolbar from './toolbar';
-import { proceduresMock } from '../mocks/proceduresMock';
+import { proceduresMock } from '../mocks/procedures-mock';
 import { useEffect } from 'react';
 
 export function ProcedureDataTable() {

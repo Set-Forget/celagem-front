@@ -33,6 +33,7 @@ interface DataTableProps<TData, TValue> {
   onRowClick?: (row: TData) => void
   toolbar?: (props: { table: Table<TData> }) => React.ReactNode
   footer?: () => React.ReactNode
+  pageSizeProp?: number
 }
 
 const pageSize = 20
@@ -48,6 +49,7 @@ export function DataTable<TData, TValue>({
   onRowClick,
   toolbar,
   footer,
+  pageSizeProp
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -58,7 +60,7 @@ export function DataTable<TData, TValue>({
     columns,
     initialState: {
       pagination: {
-        pageSize: pageSize,
+        pageSize: pageSizeProp ?? pageSize,
       },
     },
     state: {
@@ -78,7 +80,7 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
+  });
 
   return (
     <div className={cn("space-y-4 flex flex-col justify-between", className)}>

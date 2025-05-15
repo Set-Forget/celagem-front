@@ -5,17 +5,20 @@ import { hcApi } from '@/lib/apis/hc-api';
 export const templatesApi = hcApi.injectEndpoints({
   endpoints: (builder) => ({
     //--- Templates ---
-    listTemplates: builder.query<TemplateListResponse, { name?: string } | void>({
+    listTemplates: builder.query<
+      TemplateListResponse,
+      { name?: string } | void
+    >({
       query: (data) => ({
         url: 'template',
-        params: data || {}
+        params: data || {},
       }),
-      providesTags: ['Template']
+      providesTags: ['Template'],
     }),
     getTemplate: builder.query<TemplateDetail, number>({
       query: (id) => `template/${id}`,
       transformResponse: (response: TemplateDetailResponse) => response.data,
-      providesTags: ['Template']
+      providesTags: ['Template'],
     }),
     updateTemplate: builder.mutation<NewTemplateResponse, NewTemplate>({
       query: ({ id, ...newTemplate }) => ({
@@ -23,7 +26,7 @@ export const templatesApi = hcApi.injectEndpoints({
         method: 'PATCH',
         body: newTemplate,
       }),
-      invalidatesTags: ['Template']
+      invalidatesTags: ['Template'],
     }),
     createTemplate: builder.mutation<NewTemplateResponse, NewTemplate>({
       query: (newTemplate) => ({
@@ -34,25 +37,31 @@ export const templatesApi = hcApi.injectEndpoints({
           created_by: '0194cd16-08cb-7146-b224-52417ab62d3b'
         }
       }),
-      invalidatesTags: ['Template']
+      invalidatesTags: ['Template'],
     }),
 
     //--- Sections ---
-    createSection: builder.mutation<NewSectionResponse, Omit<NewSection, 'fields'> & { fields?: number[] }>({
+    createSection: builder.mutation<
+      NewSectionResponse,
+      Omit<NewSection, 'fields'> & { fields?: number[] }
+    >({
       query: ({ id, ...newSection }) => ({
         url: 'section',
         method: 'POST',
-        body: newSection
+        body: newSection,
       }),
-      invalidatesTags: ['Section']
+      invalidatesTags: ['Section'],
     }),
-    updateSection: builder.mutation<NewSectionResponse, Omit<NewSection, 'id'> & { id: number }>({
+    updateSection: builder.mutation<
+      NewSectionResponse,
+      Omit<NewSection, 'id'> & { id: number }
+    >({
       query: ({ id, ...newSection }) => ({
         url: `section/${id}`,
-        method: 'PATCH',
-        body: newSection
+        method: 'PUT',
+        body: newSection,
       }),
-      invalidatesTags: ['Section']
+      invalidatesTags: ['Section'],
     }),
     listSections: builder.query<SectionListResponse, { name?: string } | void>({
       query: (data) => ({
@@ -79,19 +88,22 @@ export const templatesApi = hcApi.injectEndpoints({
       query: ({ id, section_id, ...newField }) => ({
         url: 'field',
         method: 'POST',
-        body: newField
+        body: newField,
       }),
-      invalidatesTags: ['Field']
+      invalidatesTags: ['Field'],
     }),
-    updateField: builder.mutation<NewFieldResponse, Omit<NewField, 'id'> & { id: number }>({
+    updateField: builder.mutation<
+      NewFieldResponse,
+      Omit<NewField, 'id'> & { id: number }
+    >({
       query: ({ id, section_id, ...newField }) => ({
         url: `field/${id}`,
-        method: 'PATCH',
-        body: newField
+        method: 'PUT',
+        body: newField,
       }),
-      invalidatesTags: ['Field']
+      invalidatesTags: ['Field'],
     }),
-  })
+  }),
 });
 
 export const {
