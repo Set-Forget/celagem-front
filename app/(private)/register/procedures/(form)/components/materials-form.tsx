@@ -100,7 +100,7 @@ export default function MaterialsForm() {
     qty: number;
   }
 
-  const columnsMaterialsExtended: ColumnDef<Partial<Materials>>[] = [
+  /* const columnsMaterialsExtended: ColumnDef<Partial<Materials>>[] = [
     ...columnsMaterials.filter((column) => column.id !== 'select'),
     {
       accessorKey: 'qty',
@@ -129,12 +129,12 @@ export default function MaterialsForm() {
         />
       ),
     },
-  ];
+  ]; */
 
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-        <FormField
+        {/*         <FormField
           control={materialsForm.control}
           name="id"
           render={({ field }) => (
@@ -156,7 +156,7 @@ export default function MaterialsForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={materialsForm.control}
           name="qty"
@@ -188,7 +188,7 @@ export default function MaterialsForm() {
           <div className="flex items-center justify-between">
             <h2 className="text-base font-medium">Materiales</h2>
           </div>
-          <DataTable
+          {/* <DataTable
             data={
               materials
                 ? materials.data
@@ -215,7 +215,7 @@ export default function MaterialsForm() {
             // isLoading={isProcedureLoading}
             columns={columnsMaterialsExtended}
             pagination={false}
-          />
+          /> */}
         </div>
       </>
     </div>
