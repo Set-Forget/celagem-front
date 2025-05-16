@@ -101,7 +101,7 @@ export const columns: ColumnDef<BillItem & { currency: string }>[] = [
   {
     accessorKey: "cost_centers",
     header: "Centro de costo",
-    cell: ({ row }) => row.original.cost_centers[0]?.name,
+    cell: ({ row }) => row.original.cost_center?.name,
   },
   {
     accessorKey: "price_subtotal",

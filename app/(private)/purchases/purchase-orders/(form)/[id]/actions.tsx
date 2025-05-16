@@ -2,13 +2,16 @@ import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useApprovePurchaseOrderMutation, useCancelPurchaseOrderMutation, useConfirmPurchaseOrderMutation, useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
+import { useApprovePurchaseOrderMutation, useCancelPurchaseOrderMutation, useConfirmPurchaseOrderMutation, useGetPurchaseOrderQuery, useResetPurchaseOrderMutation } from "@/lib/services/purchase-orders";
 import { cn } from "@/lib/utils";
 import { generatePDF } from "@/templates/utils.client";
-import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, Stamp } from "lucide-react";
+import { Check, ChevronDown, CircleAlertIcon, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCcw, Stamp } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PurchaseOrderState } from "../../schemas/purchase-orders";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export default function Actions({ state }: { state?: PurchaseOrderState }) {
   const router = useRouter()
@@ -20,12 +23,13 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
   const [confirmPurchaseOrder, { isLoading: isPurchaseOrderConfirming }] = useConfirmPurchaseOrderMutation();
   const [cancelPurchaseOrder, { isLoading: isPurchaseOrderCancelling }] = useCancelPurchaseOrderMutation()
   const [approvePurchaseOrder, { isLoading: isPurchaseOrderApproving }] = useApprovePurchaseOrderMutation()
+  const [resetPurchaseOrder, { isLoading: isPurchaseOrderReseting }] = useResetPurchaseOrderMutation()
 
   const handleConfirmPurchaseOrder = async () => {
     try {
       const response = await confirmPurchaseOrder({
         id: id,
-        purchaseRequestId: purchaseOrder?.purchase_request.id,
+        purchaseRequestId: purchaseOrder?.purchase_request?.id || undefined,
       }).unwrap()
 
       if (response.status === "success") {
@@ -37,14 +41,15 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
     }
   }
 
-  const handleCancelPurchaseOrder = async () => {
+  const handleCancelPurchaseOrder = async ({ rejectionReason }: { rejectionReason?: string } = { rejectionReason: undefined }) => {
     try {
       const response = await cancelPurchaseOrder({
         id: id,
+        rejection_reason: rejectionReason || "",
       }).unwrap()
 
       if (response.status === "success") {
-        toast.custom((t) => <CustomSonner t={t} description="Orden de compra cancelada" variant="success" />)
+        toast.custom((t) => <CustomSonner t={t} description={`Orden de compra ${rejectionReason ? "rechazada" : "cancelada"}`} variant="success" />)
       }
     }
     catch (error) {
@@ -65,6 +70,21 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
     } catch (error) {
       console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al aprobar la orden de compra" variant="error" />)
+    }
+  }
+
+  const handleResetPurchaseOrder = async () => {
+    try {
+      const response = await resetPurchaseOrder({
+        id: id,
+      }).unwrap()
+
+      if (response.status === "success") {
+        toast.custom((t) => <CustomSonner t={t} description="Orden de compra restablecida a borrador" variant="success" />)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.custom((t) => <CustomSonner t={t} description="Error al restablecer la orden de compra" variant="error" />)
     }
   }
 
@@ -104,7 +124,7 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onSelect={handleCancelPurchaseOrder}
+            onSelect={() => handleCancelPurchaseOrder()}
             loading={isPurchaseOrderCancelling}
             className="text-destructive focus:text-destructive"
           >
@@ -128,6 +148,7 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
     return (
       <div className="flex gap-2">
         <Dropdown
+          modal={false}
           trigger={
             <Button size="icon" variant="outline" className="h-8 w-8">
               <Ellipsis />
@@ -143,14 +164,63 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
             Editar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onSelect={handleCancelPurchaseOrder}
-            loading={isPurchaseOrderCancelling}
-            className="text-destructive focus:text-destructive"
-          >
-            <CircleX className={cn(isPurchaseOrderCancelling && "hidden")} />
-            Cancelar
-          </DropdownMenuItem>
+          <Dialog modal>
+            <DialogTrigger asChild>
+              <DropdownMenuItem
+                onSelect={e => e.preventDefault()}
+                className="text-destructive focus:text-destructive"
+              >
+                <CircleX className={cn(isPurchaseOrderCancelling && "hidden")} />
+                Rechazar
+              </DropdownMenuItem>
+            </DialogTrigger>
+            <DialogContent>
+              <div className="flex flex-col gap-2">
+                <DialogHeader>
+                  <DialogTitle>
+                    Rechazar orden de compra
+                  </DialogTitle>
+                  <DialogDescription>
+                    Una vez que se rechazada la orden de compra, podrá ser reabierta y editada.
+                  </DialogDescription>
+                </DialogHeader>
+              </div>
+              <form className="space-y-5" onSubmit={(e) => {
+                e.preventDefault();
+
+                const data = new FormData(e.currentTarget);
+                const rejectionReason = data.get("rejection_reason") as string;
+                if (!rejectionReason) return toast.custom((t) => <CustomSonner t={t} description="Por favor, ingrese un motivo de rechazo" variant="error" />)
+
+                handleCancelPurchaseOrder({ rejectionReason })
+              }}>
+                <div className="*:not-first:mt-2">
+                  <Label>
+                    Motivo de rechazo
+                  </Label>
+                  <Input
+                    name="rejection_reason"
+                    type="text"
+                    placeholder="Motivo de rechazo..."
+                  />
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="outline" className="flex-1">
+                      Cerrar
+                    </Button>
+                  </DialogClose>
+                  <Button
+                    loading={isPurchaseOrderCancelling}
+                    type="submit"
+                  >
+                    <CircleX className={cn(isPurchaseOrderCancelling && "hidden")} />
+                    Rechazar
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
         </Dropdown>
         <Button
           size="sm"
@@ -202,18 +272,17 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
     )
   }
 
-  /*   if (state === "cancel") {
-      return (
-        <Button
-          size="sm"
-          onClick={() => handleUpdatePurchaseOrder("draft")}
-          loading={isPurchaseOrderUpdating}
-        >
-          <RotateCcw className={cn(isPurchaseOrderUpdating && "hidden")} />
-          Reabrir
-        </Button>
-      )
-    } */
+  if (state === "cancel") {
+    return (
+      <Button
+        size="sm"
+        onClick={handleResetPurchaseOrder}
+        loading={isPurchaseOrderReseting}
+      >
+        <RotateCcw className={cn(isPurchaseOrderReseting && "hidden")} />
+        Reabrir
+      </Button>
+    )
+  }
 
-  // ! Falta manejar el estado done.
 }

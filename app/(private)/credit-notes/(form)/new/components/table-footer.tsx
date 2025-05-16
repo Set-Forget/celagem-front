@@ -1,15 +1,12 @@
+import { TableFooter as ShadcnTableFooter, TableCell, TableRow } from "@/components/ui/table"
+import { useListCurrenciesQuery } from "@/lib/services/currencies"
+import { useGetInvoiceQuery } from "@/lib/services/invoices"
+import { useListTaxesQuery } from "@/lib/services/taxes"
+import { useSearchParams } from "next/navigation"
 import { useFormContext, useWatch } from "react-hook-form"
 import { z } from "zod"
-import { TableCell, TableFooter as ShadcnTableFooter, TableRow } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import { v4 as uuidv4 } from 'uuid'
-import { columns } from "./columns"
-import { useGetInvoiceQuery } from "@/lib/services/invoices"
-import { useSearchParams } from "next/navigation"
-import { useListTaxesQuery } from "@/lib/services/taxes"
-import { useListCurrenciesQuery } from "@/lib/services/currencies"
 import { newCreditNoteSchema } from "../../../schemas/credit-notes"
+import { columns } from "./columns"
 
 export default function TableFooter({ append }: { append: (value: any) => void }) {
   const params = useSearchParams()
@@ -34,14 +31,6 @@ export default function TableFooter({ append }: { append: (value: any) => void }
     control,
     name: `items`,
   }) || []
-
-  const handleAddItem = () => {
-    append({
-      id: uuidv4(),
-      quantity: 1,
-      taxes_id: [],
-    });
-  }
 
   const unitPrices = items.map(item => Number(item.price_unit)) || []
 
@@ -135,20 +124,6 @@ export default function TableFooter({ append }: { append: (value: any) => void }
           </span>
         </TableCell>
         <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5"></TableCell>
-      </TableRow>
-      <TableRow className="bg-background border-b-0 border-t">
-        <TableCell className="h-6 text-xs font-medium py-0 p-0" colSpan={6}>
-          <Button
-            onClick={handleAddItem}
-            size="sm"
-            variant="ghost"
-            type="button"
-            className="h-7 rounded-none w-full"
-          >
-            <Plus />
-            Agregar item
-          </Button>
-        </TableCell>
       </TableRow>
     </ShadcnTableFooter>
   )

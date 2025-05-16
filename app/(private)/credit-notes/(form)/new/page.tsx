@@ -18,6 +18,7 @@ import { newCreditNoteSchema } from "../../schemas/credit-notes"
 import GeneralForm from "./components/general-form"
 import NotesForm from "./components/notes-form"
 import DataTabs from "@/components/data-tabs"
+import { useListTaxesQuery } from "@/lib/services/taxes"
 
 const tabs = [
   {
@@ -37,6 +38,7 @@ export default function Page() {
 
   const [tab, setTab] = useState(tabs[0].value)
 
+  const { data: taxes } = useListTaxesQuery()
   const { data: document } = useGetInvoiceQuery(invoiceId ?? billId ?? "", {
     skip: !invoiceId && !billId,
   });
@@ -48,6 +50,30 @@ export default function Page() {
   })
 
   const onSubmit = async (data: z.infer<typeof newCreditNoteSchema>) => {
+    const unitPrices = data.items.map(item => Number(item.price_unit)) || []
+
+    const subtotal = data.items.reduce((acc, item, index) => {
+      const price = unitPrices[index] || 0
+      return acc + (price * item.quantity)
+    }, 0) || 0
+
+    const subtotalTaxes = data.items.reduce((acc, item, index) => {
+      const price = unitPrices[index] || 0
+      const taxesAmount = item.taxes_id?.map(taxId => taxes?.data.find(tax => tax.id === taxId)?.amount || 0) || []
+      return acc + (price * item.quantity * taxesAmount.reduce((acc, tax) => acc + tax, 0) / 100)
+    }, 0) || 0
+
+    const creditNoteAmount = subtotal + subtotalTaxes
+
+    const invoiceAmount = document?.items.reduce((acc, item) => {
+      return acc + (item.quantity * item.price_unit * (1 + (item.taxes.reduce((acc, tx) => {
+        const tax = taxes?.data.find(t => t.id === tx.id)
+        return acc + (tax ? tax.amount : 0)
+      }, 0) / 100)))
+    }, 0) || 0
+
+    if (creditNoteAmount > invoiceAmount) return toast.custom((t) => <CustomSonner t={t} description="El monto de la nota de crédito no puede ser mayor al monto de la factura" variant="error" />)
+
     try {
       const response = await createCreditNote({
         ...data,

@@ -38,7 +38,7 @@ export default function Page() {
           Crear factura
         </Button>
       </Header>
-      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
+      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)] [&_*[data-table='true']]:w-[calc(100svw-306px)]">
         <DataTable
           data={invoices?.data || []}
           columns={columns}

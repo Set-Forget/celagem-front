@@ -43,7 +43,6 @@ const fields: FieldDefinition<PurchaseRequestDetail>[] = [
 ];
 
 export default function GeneralForm() {
-  const router = useRouter()
   const params = useSearchParams()
 
   const { control, formState } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()
@@ -53,9 +52,7 @@ export default function GeneralForm() {
   const { data: purchaseRequest, isLoading: isPurchaseRequestLoading } = useGetPurchaseRequestQuery(purchaseRequestId!, { skip: !purchaseRequestId })
 
   const [searchSuppliers] = useLazyListSuppliersQuery()
-  const [searchPurchaseRequest] = useLazyListPurchaseRequestsQuery()
   const [searchCompanies] = useLazyListCompaniesQuery()
-
 
   const handleSearchCompany = async (query?: string) => {
     try {
@@ -77,20 +74,6 @@ export default function GeneralForm() {
       return response.data?.map(supplier => ({
         id: supplier.id,
         name: supplier.name
-      }))
-    }
-    catch (error) {
-      console.error(error)
-      return []
-    }
-  }
-
-  const handleSearchPurchaseRequest = async (query?: string) => {
-    try {
-      const response = await searchPurchaseRequest({ name: query }).unwrap()
-      return response.data?.map(purchase_request => ({
-        id: purchase_request.id,
-        name: purchase_request.name
       }))
     }
     catch (error) {
@@ -160,37 +143,6 @@ export default function GeneralForm() {
               ) :
                 <FormDescription>
                   Esta será la fecha en la que se requiere la entrega de los productos.
-                </FormDescription>
-              }
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={control}
-          name="purchase_request"
-          render={({ field }) => (
-            <FormItem className="flex flex-col w-full">
-              <FormLabel className="w-fit">Solicitud de pedido</FormLabel>
-              <FormControl>
-                <AsyncSelect<{ id: number, name: string }, number | undefined>
-                  label="Solicitud de pedido"
-                  triggerClassName="!w-full"
-                  placeholder="Seleccionar solicitud de pedido..."
-                  fetcher={handleSearchPurchaseRequest}
-                  getDisplayValue={(item) => item.name}
-                  getOptionValue={(item) => item.id}
-                  renderOption={(item) => <div>{item.name}</div>}
-                  onChange={field.onChange}
-                  value={field.value}
-                  getOptionKey={(item) => String(item.id)}
-                  noResultsMessage="No se encontraron resultados"
-                />
-              </FormControl>
-              {formState.errors.purchase_request ? (
-                <FormMessage />
-              ) :
-                <FormDescription>
-                  Esta será la solicitud de pedido a la que se le emitirá la orden de compra.
                 </FormDescription>
               }
             </FormItem>

@@ -242,7 +242,7 @@ const CostCenterCell = ({ control, index }: { control: Control<z.infer<typeof ne
 
   return <FormField
     control={control}
-    name={`items.${index}.cost_center_id`}
+    name={`items.${index}.cost_center`}
     render={({ field }) => (
       <FormItem className="flex flex-col w-[200px]">
         <FormControl>
@@ -250,7 +250,7 @@ const CostCenterCell = ({ control, index }: { control: Control<z.infer<typeof ne
             label="Centro de costo"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4 min-w-[200px]",
-              control._formState.errors.items?.[index]?.cost_center_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
+              control._formState.errors.items?.[index]?.cost_center && "outline outline-1 outline-offset-[-1px] outline-destructive"
             )}
             placeholder="Buscar centro de costo..."
             fetcher={handleSearchCostCenter}

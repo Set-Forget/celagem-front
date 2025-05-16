@@ -41,6 +41,7 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['PurchaseOrder'],
     }),
+
     confirmPurchaseOrder: builder.mutation<{ status: string, message: string }, { id: string, purchaseRequestId?: number }>({
       query: ({ id }) => ({
         url: `/purchase_orders/${id}/to_approve`,
@@ -50,9 +51,10 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
         ? [{ type: 'PurchaseOrder' }, { type: 'PurchaseRequest', id: purchaseRequestId }]
         : [{ type: 'PurchaseOrder' }]
     }),
-    cancelPurchaseOrder: builder.mutation<{ status: string, message: string }, { id: string }>({
-      query: ({ id }) => ({
+    cancelPurchaseOrder: builder.mutation<{ status: string, message: string }, { id: string, rejection_reason: string }>({
+      query: ({ id, rejection_reason }) => ({
         url: `/purchase_orders/${id}/cancel`,
+        body: { rejection_reason },
         method: 'POST',
       }),
       invalidatesTags: ['PurchaseOrder'],
@@ -63,6 +65,13 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
         method: 'POST',
       }),
       invalidatesTags: ['PurchaseOrder'],
+    }),
+    resetPurchaseOrder: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/purchase_orders/${id}/reset_to_draft`,
+        method: 'POST',
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'PurchaseOrder', id }],
     }),
   }),
 });
@@ -77,6 +86,7 @@ export const {
   useConfirmPurchaseOrderMutation,
   useCancelPurchaseOrderMutation,
   useApprovePurchaseOrderMutation,
+  useResetPurchaseOrderMutation,
 } = purchaseOrdersApi;
 
 

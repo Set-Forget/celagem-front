@@ -95,8 +95,7 @@ export default function Page() {
   };
 
   useEffect(() => {
-    // ! Esto debe eliminarse cuando purchaseRequest traiga price_unit en los items.
-    const fetchPricesAndResetForm = async () => {
+    const getPuchaseRequestPrices = async () => {
       if (!purchaseRequest) return;
 
       const itemsWithPrices = await Promise.all(
@@ -124,8 +123,7 @@ export default function Page() {
         items: itemsWithPrices,
       });
     };
-
-    fetchPricesAndResetForm();
+    getPuchaseRequestPrices();
   }, [purchaseRequest]);
 
   return (

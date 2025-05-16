@@ -78,7 +78,10 @@ export default function Page() {
 
   const { data: purchaseOrder, isLoading: isPurchaseOrderLoading } = useGetPurchaseOrderQuery(id);
 
-  const status = purchaseOrderStatus[purchaseOrder?.status as keyof typeof purchaseOrderStatus]
+  const status = purchaseOrderStatus[
+    purchaseOrder?.rejection_reason ? "rejected"
+      : purchaseOrder?.status as keyof typeof purchaseOrderStatus
+  ]
 
   return (
     <div>

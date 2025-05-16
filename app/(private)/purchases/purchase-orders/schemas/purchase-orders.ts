@@ -15,7 +15,7 @@ export const newPurchaseOrderGeneralSchema = z.object({
   required_date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de requerimiento es requerida" }),
-  purchase_request: z.number({ required_error: "La solicitud de compra es requerida" }).optional(),
+  purchase_request: z.number().optional(),
   company: z.string({ required_error: "La empresa es requerida" }),
   items: z.array(newPurchaseOrderLineSchema).min(1, { message: "Al menos un item es requerido" }),
 })
@@ -64,6 +64,7 @@ export const purchaseOrderLineSchema = z.object({
   product_name: z.string(),
   product_qty: z.number(),
   qty_received: z.number(),
+  qty_invoiced: z.number(),
   price_unit: z.number(),
   price_subtotal: z.number(),
   price_tax: z.number(),
@@ -95,6 +96,7 @@ export const purchaseOrderDetailSchema = z.object({
     id: z.number(),
     name: z.string(),
   }),
+  rejection_reason: z.string().optional(),
   tyc_notes: z.string().optional(),
   internal_notes: z.string(),
   required_by: z.string(),

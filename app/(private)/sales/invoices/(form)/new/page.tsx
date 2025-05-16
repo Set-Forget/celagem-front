@@ -64,11 +64,7 @@ export default function Page() {
     try {
       const response = await createInvoice({
         ...data,
-        accounting_date: data.accounting_date.toString(),
-        items: data.items.map(({ cost_center_id, ...rest }) => ({
-          ...rest,
-          cost_centers: cost_center_id ? [{ id: cost_center_id, percentage: 100 }] : [],
-        })),
+        accounting_date: data.accounting_date.toString()
       }).unwrap()
 
       if (response.status === "success") {

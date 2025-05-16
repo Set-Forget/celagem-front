@@ -4,15 +4,17 @@ export default function Dropdown({
   children,
   trigger,
   contentClassName,
-  align = "end"
+  align = "end",
+  modal,
 }: {
   contentClassName?: string;
   trigger: React.ReactNode;
   children: React.ReactNode;
-  align?: "center" | "end" | "start"
+  align?: "center" | "end" | "start",
+  modal?: boolean;
 }) {
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={modal}>
       <DropdownMenuTrigger asChild>
         {trigger}
       </DropdownMenuTrigger>

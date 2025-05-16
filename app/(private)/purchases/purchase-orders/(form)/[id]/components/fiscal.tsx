@@ -10,11 +10,6 @@ const fields: FieldDefinition<PurchaseOrderDetail>[] = [
     getValue: (p) => p?.payment_term?.name || "No especificado",
   },
   {
-    label: "Método de pago",
-    placeholderLength: 30,
-    getValue: (p) => "xxxx",
-  },
-  {
     label: "Moneda",
     placeholderLength: 30,
     getValue: (p) => p?.currency?.name || "No especificado",

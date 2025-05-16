@@ -25,4 +25,9 @@ export const purchaseOrderStatus = {
     bg_color: "bg-stone-100",
     text_color: "text-stone-800",
   },
+  rejected: {
+    label: "Rechazada",
+    bg_color: "bg-red-100",
+    text_color: "text-red-800",
+  },
 };

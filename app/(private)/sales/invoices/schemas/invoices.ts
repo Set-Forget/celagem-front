@@ -8,7 +8,7 @@ export const newInvoiceLineSchema = z.object({
   product_id: z.number({ required_error: "El producto es requerido" }),
   quantity: z.number(),
   account_id: z.number({ required_error: "La cuenta contable es requerida" }),
-  cost_center_id: z.number({ required_error: "El centro de costo es requerido" }).optional(),
+  cost_center: z.number().optional(),
   taxes_id: z.array(z.number()).optional(),
   price_unit: z.number({ required_error: "El precio unitario es requerido" }),
 });
@@ -50,10 +50,10 @@ export const invoiceLineSchema = z.object({
     id: z.number(),
     name: z.string(),
   }),
-  cost_centers: z.array(z.object({
+  cost_center: z.object({
     id: z.number(),
     name: z.string(),
-  })),
+  }).nullable(),
   taxes: z.array(z.object({ id: z.number(), name: z.string(), amount: z.number() })),
   // ! Ellos muestran también la unidad de medida (tener en cuenta para el futuro).
 })
@@ -64,10 +64,17 @@ export const invoiceListSchema = z.object({
   customer: z.string(),
   status: invoiceStatus,
   date: z.string(),
-  due_date: z.string(),
   amount_total: z.number(),
+  amount_residual: z.number(),
+  due_date: z.string(),
+  percentage_paid: z.number(),
+  currency: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  created_by: z.string(),
+  created_at: z.string(),
   type: invoiceTypes,
-  currency: z.string(),
 })
 
 export const invoiceDetailSchema = z.object({
@@ -84,6 +91,8 @@ export const invoiceDetailSchema = z.object({
   date: z.string(),
   due_date: z.string(),
   accounting_date: z.string(),
+  amount_total: z.number(),
+  amount_residual: z.number(),
   currency: z.object({
     id: z.number(),
     name: z.string(),
@@ -109,6 +118,8 @@ export const invoiceDetailSchema = z.object({
     id: z.number(),
     name: z.string(),
   })),
+  created_by: z.string(),
+  created_at: z.string(),
   type: invoiceTypes,
   items: z.array(invoiceLineSchema),
 })

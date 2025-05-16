@@ -33,6 +33,13 @@ export const columns: ColumnDef<PurchaseOrderItem & { currency: string }>[] = [
     },
   },
   {
+    accessorKey: "qty_invoiced",
+    header: "Cantidad facturada",
+    cell: ({ row }) => {
+      return <span>{row.getValue("qty_invoiced")}</span>
+    },
+  },
+  {
     accessorKey: "price_unit",
     header: "Precio unitario",
     cell: ({ row }) => {

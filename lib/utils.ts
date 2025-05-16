@@ -9,6 +9,7 @@ export type FieldDefinition<T> = {
   placeholderLength: number;
   getValue: (data: T) => string | undefined;
   className?: string;
+  hidden?: (data: T) => boolean;
 };
 
 export function cn(...inputs: ClassValue[]) {

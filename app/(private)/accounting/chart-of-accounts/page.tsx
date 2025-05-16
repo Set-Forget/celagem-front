@@ -19,6 +19,7 @@ export default function Page() {
   const { data: accounts, isLoading: isAccountsLoading } = useListAccountingAccountsQuery({
     name: search.field === "name" ? search?.query : undefined,
     account_type: accountType || undefined,
+    parent: String(0)
   }, { refetchOnMountOrArgChange: true })
 
   return (

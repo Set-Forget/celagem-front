@@ -70,12 +70,12 @@ export default function Page() {
       const response = await createBill({
         ...data,
         accounting_date: data.accounting_date.toString(),
-        items: data.items.map(({ cost_center_id, ...rest }) => ({
-          ...rest,
-          cost_centers: cost_center_id ? [{ id: cost_center_id, percentage: 100 }] : [],
-          purchase_line_id: purchaseOrder?.items.find((poItem) => poItem.product_id === rest.product_id)?.id,
+        items: data.items.map((items) => ({
+          ...items,
+          purchase_line_id: purchaseOrder?.items.find((poItem) => poItem.product_id === items.product_id)?.id,
         })),
         purchase_order_id: purchaseOrderId ? parseInt(purchaseOrderId) : undefined,
+        company: 1,
       }).unwrap()
 
       if (response.status === "success") {

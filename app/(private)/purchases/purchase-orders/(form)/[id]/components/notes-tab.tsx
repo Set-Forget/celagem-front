@@ -13,6 +13,12 @@ const fields: FieldDefinition<PurchaseOrderDetail>[] = [
     label: "Términos y condiciones",
     placeholderLength: 30,
     getValue: (p) => p.tyc_notes || "No especificado",
+  },
+  {
+    label: "Nota de rechazo",
+    placeholderLength: 30,
+    getValue: (p) => p.rejection_reason || "No especificado",
+    hidden: (p) => !p.rejection_reason,
   }
 ];
 
@@ -24,6 +30,7 @@ export default function NotesTab() {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       {fields.map((field) => {
+        if (field.hidden) return null;
         const displayValue = isPurchaseOrderLoading
           ? placeholder(field.placeholderLength)
           : field.getValue(purchaseOrder!) ?? "";
