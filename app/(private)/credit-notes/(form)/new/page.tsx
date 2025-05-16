@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useCreateCreditNoteMutation } from "@/lib/services/credit-notes"
 import { useGetInvoiceQuery } from "@/lib/services/invoices"
-import { cn } from "@/lib/utils"
+import { cn, round } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save, Sticker } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -72,7 +72,7 @@ export default function Page() {
       }, 0) / 100)))
     }, 0) || 0
 
-    if (creditNoteAmount > invoiceAmount) return toast.custom((t) => <CustomSonner t={t} description="El monto de la nota de crédito no puede ser mayor al monto de la factura" variant="error" />)
+    if (round(creditNoteAmount) > round(invoiceAmount)) return toast.custom((t) => <CustomSonner t={t} description="El monto de la nota de crédito no puede ser mayor al monto de la factura" variant="error" />)
 
     try {
       const response = await createCreditNote({

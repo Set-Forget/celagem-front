@@ -16,6 +16,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function round(n: number, decimals = 2) {
+  const factor = 10 ** decimals;
+  return Math.round((n + Number.EPSILON) * factor) / factor;
+};
+
 export function placeholder(length: number, mayus: boolean = false): string {
   const characters = "abcdefghijklmnopqrstuvwxyz";
   return mayus ? characters.slice(0, length).toUpperCase() : characters.slice(0, length)
