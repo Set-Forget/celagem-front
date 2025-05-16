@@ -22,6 +22,7 @@ export const newDeliveryNoteSchema = z.object({
   delivery_date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de recepción es requerida" }),
+  scheduled_date: z.string().optional(),
   delivery_location: z.number({ required_error: "La ubicación de recepción es requerida" }),
   source_location: z.number({ required_error: "La ubicación de origen es requerida" }),
   move_type: z.enum(["direct"], { required_error: "El tipo de movimiento es requerido" }),

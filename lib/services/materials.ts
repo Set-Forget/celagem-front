@@ -26,7 +26,7 @@ export const materialsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Material'],
     }),
-    getMaterial: builder.query<MaterialDetail, string>({
+    getMaterial: builder.query<MaterialDetail, string | number>({
       query: (id) => `/products/${id}`,
       transformResponse: (response: MaterialDetailResponse) => response.data,
       providesTags: ['Material'],

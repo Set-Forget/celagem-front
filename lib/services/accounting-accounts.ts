@@ -3,7 +3,7 @@ import { erpApi } from '@/lib/apis/erp-api';
 
 export const accountingAccountsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listAccountingAccounts: builder.query<AccountListResponse, { name?: string, account_type?: AccountTypes, parent?: string } | void>({
+    listAccountingAccounts: builder.query<AccountListResponse, { name?: string, account_type?: string, parent?: string } | void>({
       query: (data) => ({
         url: '/accounts',
         params: data || {},

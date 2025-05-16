@@ -20,6 +20,7 @@ import { newDeliveryNoteSchema } from "../../schemas/delivery-notes";
 import NotesForm from "./components/notes-form";
 import DataTabs from "@/components/data-tabs";
 import GeneralForm from "./components/general-form";
+import { format } from "date-fns";
 
 const tabs = [
   {
@@ -53,7 +54,7 @@ export default function Page() {
       const response = await createPurchaseDelivery({
         ...data,
         delivery_date: data.delivery_date.toString(),
-        //scheduled_date: new Date().toString(),
+        scheduled_date: format(new Date(), "yyyy-MM-dd"),
       }).unwrap()
 
       if (response.status === "success") {

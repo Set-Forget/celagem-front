@@ -15,6 +15,7 @@ import { Button as AriaButton, Input as AriaInput, Label as AriaLabel, Group, Nu
 import { Control, useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { newDebitNoteSchema } from "../../../schemas/debit-notes";
+import { useSearchParams } from "next/navigation";
 
 const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof newDebitNoteSchema>>; index: number }) => {
   const { setValue } = useFormContext<z.infer<typeof newDebitNoteSchema>>()
@@ -169,13 +170,17 @@ const SubtotalCell = ({ control, index }: { control: Control<z.infer<typeof newD
 }
 
 const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newDebitNoteSchema>>; index: number }) => {
+  const params = useSearchParams()
+
+  const invoiceId = params.get("invoiceId");
+
   const [searchTaxes] = useLazyListTaxesQuery()
 
   const handleSearchTax = async (query?: string) => {
     try {
       const response = await searchTaxes({
         name: query,
-        type_tax_use: "purchase"
+        type_tax_use: invoiceId ? "sale" : "purchase",
       }).unwrap()
       return response.data?.map(taxes => ({
         id: taxes.id,
@@ -280,12 +285,17 @@ const CostCenterCell = ({ control, index }: { control: Control<z.infer<typeof ne
 };
 
 const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<typeof newDebitNoteSchema>>; index: number }) => {
+  const params = useSearchParams()
+
+  const invoiceId = params.get("invoiceId");
+
   const [searchAccountingAccount] = useLazyListAccountingAccountsQuery()
 
   const handleSearchAccountingAccount = async (query?: string) => {
     try {
       const response = await searchAccountingAccount({
         name: query,
+        account_type: invoiceId ? "income, income_other, asset_current, asset_fixed" : "expense, expense_direct_cost, expense_depreciation, asset_current, asset_non_current, asset_fixed, asset_prepayments",
       }).unwrap()
 
       return response.data?.map(accountingAccount => ({

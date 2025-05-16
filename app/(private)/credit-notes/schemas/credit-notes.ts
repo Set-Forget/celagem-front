@@ -96,3 +96,6 @@ export type CreditNoteItem = z.infer<typeof creditNoteLineSchema>;
 
 export type NewCreditNote = z.infer<typeof newCreditNoteSchema>;
 export type NewCreditNoteResponse = z.infer<typeof newCreditNoteResponseSchema>;
+
+export type CreditNoteStatus = z.infer<typeof creditNoteStatus>;
+export type CreditNoteMoveType = z.infer<typeof creditNoteMoveType>;

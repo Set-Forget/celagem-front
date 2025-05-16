@@ -275,6 +275,7 @@ const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<ty
     try {
       const response = await searchAccountingAccount({
         name: query,
+        account_type: "income, income_other, asset_current, asset_fixed",
       }).unwrap()
 
       return response.data?.map(accountingAccount => ({

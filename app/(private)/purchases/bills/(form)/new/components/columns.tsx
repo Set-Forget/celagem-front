@@ -325,6 +325,7 @@ const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<ty
     try {
       const response = await searchAccountingAccount({
         name: query,
+        account_type: "expense, expense_direct_cost, expense_depreciation, asset_current, asset_non_current, asset_fixed, asset_prepayments",
       }).unwrap()
 
       return response.data?.map(accountingAccount => ({
