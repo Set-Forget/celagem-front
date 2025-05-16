@@ -25,6 +25,21 @@ export const debitNotesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['DebitNote'],
     }),
+
+    confirmDebitNote: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/debit_notes/${id}/post`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['DebitNote'],
+    }),
+    cancelDebitNote: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/debit_notes/${id}/cancel`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['DebitNote'],
+    }),
   }),
 });
 
@@ -32,4 +47,6 @@ export const {
   useGetDebitNoteQuery,
   useCreateDebitNoteMutation,
   useUpdateDebitNoteMutation,
+  useConfirmDebitNoteMutation,
+  useCancelDebitNoteMutation,
 } = debitNotesApi;

@@ -3,7 +3,7 @@ import { cn, placeholder } from '@/lib/utils';
 import { useParams } from 'next/navigation';
 
 import { useGetClassQuery } from '@/lib/services/classes';
-import { Classes } from '../../schema/classes';
+import { Classes } from '@/app/(private)/management/classes/schema/classes';
 
 export type FieldDefinition<T> = {
   label: string;

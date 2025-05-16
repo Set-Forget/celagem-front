@@ -2,33 +2,46 @@ import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useUpdateDebitNoteMutation } from "@/lib/services/debit-notes";
+import { useCancelDebitNoteMutation, useConfirmDebitNoteMutation } from "@/lib/services/debit-notes";
 import { cn } from "@/lib/utils";
-import { Check, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCcw } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { Check, CircleX, EditIcon, Ellipsis, FileTextIcon } from "lucide-react";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { updateStateMessageMap } from "./utils";
+import { DebitNoteStatus } from "../../schemas/debit-notes";
 
-export default function Actions({ state }: { state?: 'draft' | 'posted' | 'cancel' }) {
-  const router = useRouter()
-
+export default function Actions({ state }: { state?: DebitNoteStatus }) {
   const { id } = useParams<{ id: string }>()
 
-  const [updateDebitNote, { isLoading: isDebitNoteUpdating }] = useUpdateDebitNoteMutation();
+  const [confirmDebitNote, { isLoading: isDebitNoteConfirming }] = useConfirmDebitNoteMutation();
+  const [cancelDebitNote, { isLoading: isDebitNoteCancelling }] = useCancelDebitNoteMutation();
 
-  const handleUpdateDebitNote = async (state: 'draft' | 'posted' | 'cancel') => {
+  const handleConfirmDebitNote = async () => {
     try {
-      const response = await updateDebitNote({
-        id: Number(id),
-        state
+      const response = await confirmDebitNote({
+        id: id,
       }).unwrap()
 
       if (response.status === "success") {
-        toast.custom((t) => <CustomSonner t={t} description={updateStateMessageMap[state].success} variant="success" />)
+        toast.custom((t) => <CustomSonner t={t} description="Nota de débito confirmada" variant="success" />)
       }
     } catch (error) {
       console.error(error)
-      toast.custom((t) => <CustomSonner t={t} description={updateStateMessageMap[state].error} variant="error" />)
+      toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la nota de débito" variant="error" />)
+    }
+  }
+
+  const handleCancelDebitNote = async () => {
+    try {
+      const response = await cancelDebitNote({
+        id: id,
+      }).unwrap()
+
+      if (response.status === "success") {
+        toast.custom((t) => <CustomSonner t={t} description="Factura de compra cancelada" variant="success" />)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la factura de compra" variant="error" />)
     }
   }
 
@@ -61,20 +74,20 @@ export default function Actions({ state }: { state?: 'draft' | 'posted' | 'cance
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onSelect={() => handleUpdateDebitNote("cancel")}
-            loading={isDebitNoteUpdating}
+            onSelect={handleCancelDebitNote}
+            loading={isDebitNoteCancelling}
             className="text-destructive focus:text-destructive"
           >
-            <CircleX className={cn(isDebitNoteUpdating && "hidden")} />
+            <CircleX className={cn(isDebitNoteCancelling && "hidden")} />
             Cancelar
           </DropdownMenuItem>
         </Dropdown>
         <Button
           size="sm"
-          onClick={() => handleUpdateDebitNote("posted")}
-          loading={isDebitNoteUpdating}
+          onClick={() => handleConfirmDebitNote()}
+          loading={isDebitNoteConfirming}
         >
-          <Check className={cn(isDebitNoteUpdating && "hidden")} />
+          <Check className={cn(isDebitNoteConfirming && "hidden")} />
           Confirmar
         </Button>
       </div>
@@ -103,7 +116,7 @@ export default function Actions({ state }: { state?: 'draft' | 'posted' | 'cance
     )
   }
 
-  if (state === "cancel") {
+  /* if (state === "cancel") {
     return (
       <Button
         size="sm"
@@ -114,7 +127,7 @@ export default function Actions({ state }: { state?: 'draft' | 'posted' | 'cance
         Reabrir
       </Button>
     )
-  }
+  } */
 
   // ! Falta manejar el estado done.
 }

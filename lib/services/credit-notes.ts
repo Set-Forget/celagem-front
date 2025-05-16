@@ -24,6 +24,21 @@ export const creditNotesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['CreditNote'],
     }),
+
+    confirmCreditNote: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/credit_notes/${id}/post`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['CreditNote'],
+    }),
+    cancelCreditNote: builder.mutation<{ status: string, message: string }, { id: string }>({
+      query: ({ id }) => ({
+        url: `/credit_notes/${id}/cancel`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['CreditNote'],
+    }),
   }),
 });
 
@@ -31,4 +46,6 @@ export const {
   useGetCreditNoteQuery,
   useCreateCreditNoteMutation,
   useUpdateCreditNoteMutation,
+  useConfirmCreditNoteMutation,
+  useCancelCreditNoteMutation,
 } = creditNotesApi;

@@ -118,3 +118,6 @@ export type DebitNoteItem = z.infer<typeof debitNoteLineSchema>;
 
 export type NewDebitNote = z.infer<typeof newDebitNoteSchema>;
 export type NewDebitNoteResponse = z.infer<typeof newDebitNoteResponseSchema>;
+
+export type DebitNoteStatus = z.infer<typeof debitNoteStatus>;
+export type DebitNoteMoveType = z.infer<typeof debitNoteMoveType>;
