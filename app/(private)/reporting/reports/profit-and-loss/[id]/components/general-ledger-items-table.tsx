@@ -26,9 +26,8 @@ import {
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 import { columns } from "./columns"
-import { JournalEntryItem } from "@/app/(private)/accounting/journal-entries/schemas/journal-entries"
 
-const data: JournalEntryItem[] = [
+const data: any[] = [
   {
     "date": "2024-02-14",
     "account": "EFECTIVO Y EQUIVALENTES AL EFECTIVO",
