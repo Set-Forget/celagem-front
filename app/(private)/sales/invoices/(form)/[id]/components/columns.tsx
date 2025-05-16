@@ -99,7 +99,7 @@ export const columns: ColumnDef<InvoiceItem & { currency: string }>[] = [
     cell: ({ row }) => row.original.account.name ?? "No asignada",
   },
   {
-    accessorKey: "cost_centers",
+    accessorKey: "cost_center",
     header: "Centro de costo",
     cell: ({ row }) => row.original.cost_center?.name,
   },

@@ -9,7 +9,7 @@ export const newDebitNoteLineSchema = z.object({
   quantity: z.number(),
   taxes_id: z.array(z.number()).optional(),
   account_id: z.number({ required_error: "La cuenta contable es requerida" }),
-  cost_center_id: z.number().optional(),
+  cost_center: z.number().optional(),
   price_unit: z.number(),
 });
 

@@ -69,14 +69,10 @@ export default function Page() {
       const response = await createDebitNote({
         ...data,
         accounting_date: data.accounting_date.toString(),
-        items: data.items.map(({ cost_center_id, ...rest }) => ({
-          ...rest,
-          cost_centers: cost_center_id ? [{ id: cost_center_id, percentage: 100 }] : [],
-        })),
       }).unwrap()
 
       if (response.status === "success") {
-        router.push(`/sales/debit-notes/${response.data.id}`)
+        router.push(`/debit-notes/${response.data.id}`)
         toast.custom((t) => <CustomSonner t={t} description="Nota de débito creada con éxito" variant="success" />)
       }
     } catch (error) {
