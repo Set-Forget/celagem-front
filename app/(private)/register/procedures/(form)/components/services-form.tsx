@@ -1,45 +1,26 @@
 import { AsyncSelect } from '@/components/async-select';
-import {
-  CountrySelect,
-  FlagComponent,
-  PhoneInput,
-} from '@/components/phone-input';
+import { DataTable } from '@/components/data-table';
+import { Button } from '@/components/ui/button';
 import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useLazyGetAutocompleteQuery } from '@/lib/services/google-places';
-import * as RPNInput from 'react-phone-number-input';
-import { useForm, useFormContext } from 'react-hook-form';
-import { z } from 'zod';
-import { useLazyListPatientsQuery } from '@/lib/services/patients';
-import { PatientDetail } from '@/app/(private)/medical-management/patients/schema/patients';
-import { Trash } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { DataTable } from '@/components/data-table';
-import { useGetBusinessUnitQuery } from '@/lib/services/business-units';
-import { useParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import {
-  jobPositionConsumedSchema,
-  newProcedureJobPositionsSchema,
-  newProcedureSchema,
-  serviceConsumedSchema,
-} from '../../schema/procedures';
-import { useLazyListJobPositionsQuery } from '@/lib/services/job-positions';
-import { columnsJobPositions } from '../../[procedure_id]/components/columns-job-positions';
-import {
-  JobPositions,
-  jobPositionSchema,
-} from '../../../job-positions/schema/job-positions';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useGetProcedureQuery } from '@/lib/services/procedures';
 import { useLazyListServicesQuery } from '@/lib/services/services';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Trash } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useForm, useFormContext } from 'react-hook-form';
+import { z } from 'zod';
 import { columnsServices } from '../../[procedure_id]/components/columns-services';
+import {
+  newProcedureSchema,
+  serviceConsumedSchema
+} from '../../schema/procedures';
 
 export default function ServicesForm() {
   const params = useParams<{ procedure_id: string }>();
@@ -130,7 +111,7 @@ export default function ServicesForm() {
           render={({ field }) => (
             <FormItem className="flex flex-col w-full">
               <FormControl>
-                <AsyncSelect<{ label: string; value: string }, string>
+                <AsyncSelect<any, string>
                   label="Servicio"
                   triggerClassName="!w-full"
                   placeholder="Seleccionar servicio"
@@ -179,28 +160,7 @@ export default function ServicesForm() {
           <div className="flex items-center justify-between">
             <h2 className="text-base font-medium">Puestos de trabajo</h2>
           </div>
-          <DataTable
-            data={
-              services
-                ? services.data
-                    .filter((service) =>
-                      watch('services')
-                        .map((service) => service.id)
-                        .includes(service.id)
-                    )
-                    .map((service) => ({
-                      ...service,
-                      qty:
-                        watch('services').find(
-                          (service) => service.id === service.id
-                        )?.qty || 0,
-                    }))
-                : []
-            }
-            isLoading={isProcedureLoading}
-            columns={columnsServicesExtended}
-            pagination={false}
-          />
+
         </div>
       </>
     </div>

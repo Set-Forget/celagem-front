@@ -128,7 +128,7 @@ export default function MedicalExamsForm() {
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-        <FormField
+        {/*         <FormField
           control={medicalExamsForm.control}
           name="id"
           render={({ field }) => (
@@ -150,7 +150,7 @@ export default function MedicalExamsForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={medicalExamsForm.control}
           name="qty"
@@ -183,7 +183,7 @@ export default function MedicalExamsForm() {
           <div className="flex items-center justify-between">
             <h2 className="text-base font-medium">Exámenes médicos</h2>
           </div>
-          <DataTable
+          {/* <DataTable
             data={medicalExams
               ? medicalExams.data
               .filter((medicalExam) =>
@@ -202,7 +202,7 @@ export default function MedicalExamsForm() {
             isLoading={isProcedureLoading}
             columns={columnsMedicalExamsExtended}
             pagination={false}
-          />
+          /> */}
         </div>
       </>
     </div>

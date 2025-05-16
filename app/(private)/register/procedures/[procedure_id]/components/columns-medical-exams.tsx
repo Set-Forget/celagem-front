@@ -1,9 +1,8 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { MedicalExam } from '@/app/(private)/register/medical-exams/schema/medical-exams';
 
-export const columnsMedicalExams: ColumnDef<MedicalExam>[] = [
+export const columnsMedicalExams: ColumnDef<any>[] = [
   {
     accessorKey: 'code',
     header: 'Código',
