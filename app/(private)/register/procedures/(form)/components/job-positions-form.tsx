@@ -124,7 +124,7 @@ export default function JobPositionsForm() {
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-        <FormField
+        {/*   <FormField
           control={jobPositionForm.control}
           name="id"
           render={({ field }) => (
@@ -146,7 +146,7 @@ export default function JobPositionsForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={jobPositionForm.control}
           name="qty"
@@ -179,7 +179,7 @@ export default function JobPositionsForm() {
           <div className="flex items-center justify-between">
             <h2 className="text-base font-medium">Puestos de trabajo</h2>
           </div>
-          <DataTable
+          {/*           <DataTable
             data={jobPositions ? jobPositions.data
               .filter((jobPosition) =>
                 watch('job_positions')
@@ -195,7 +195,7 @@ export default function JobPositionsForm() {
             isLoading={isProcedureLoading}
             columns={columnsJobPositionsExtended}
             pagination={false}
-          />
+          /> */}
         </div>
       </>
     </div>

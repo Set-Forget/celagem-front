@@ -2,9 +2,8 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ProcedureReceipt } from '../schema/procedure';
 
-export const proceduresColumns: ColumnDef<ProcedureReceipt>[] = [
+export const proceduresColumns: ColumnDef<any>[] = [
   {
     id: 'select',
     header: ({ table }) => (
