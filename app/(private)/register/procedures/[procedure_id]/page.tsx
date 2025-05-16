@@ -28,7 +28,7 @@ export default function PurchaseRequestPage() {
   );
 
   const procedureJobPositionsIds = procedure?.job_description
-    ? procedure?.job_description.map(({ id }) => id)
+    ? procedure?.job_description.map(({ id }: { id: number }) => id)
     : [];
 
   const procedureJobPositions: JobPositions[] = jobPositionsMock.filter(
@@ -36,7 +36,7 @@ export default function PurchaseRequestPage() {
   );
 
   const procedureServicesIds = procedure?.services
-    ? procedure?.services.map(({ id }) => id)
+    ? procedure?.services.map(({ id }: { id: number }) => id)
     : [];
 
   const procedureServices = servicesMock.filter((service) =>
@@ -44,7 +44,7 @@ export default function PurchaseRequestPage() {
   );
 
   const procedureMedicalExamsIds = procedure?.medical_exams
-    ? procedure?.medical_exams.map(({ id }) => id)
+    ? procedure?.medical_exams.map(({ id }: { id: number }) => id)
     : [];
 
   const procedureMedicalExams = medicalExamsMock.filter((medicalExam) =>
@@ -52,7 +52,7 @@ export default function PurchaseRequestPage() {
   );
 
   const procedureMaterialsIds = procedure?.materials
-    ? procedure?.materials.map(({ id }) => id)
+    ? procedure?.materials.map(({ id }: { id: number }) => id)
     : [];
 
   const procedureMaterials = materialsMock.filter((material) =>
@@ -117,11 +117,11 @@ export default function PurchaseRequestPage() {
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-medium">Servicios</h2>
               </div>
-              <DataTable
+              {/*              <DataTable
                 data={procedureServices}
                 columns={columnsServices}
                 pagination={false}
-              />
+              /> */}
             </div>
           </>
         )}
