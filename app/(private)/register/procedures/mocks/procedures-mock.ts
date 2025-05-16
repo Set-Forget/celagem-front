@@ -1,6 +1,5 @@
-import { ProcedureReceipt } from '../schema/procedure';
 
-export const proceduresMock: ProcedureReceipt[] = [
+export const proceduresMock: any[] = [
   {
     id: 1,
     schema: 'APORTANTE DE SEMEN',
@@ -94,7 +93,7 @@ export const proceduresMock: ProcedureReceipt[] = [
       { id: 216, qty: 1 },
       { id: 202, qty: 1 },
       { id: 92, qty: 1 },
-      { id: 18, qty: 1 }, 
+      { id: 18, qty: 1 },
     ],
   },
   {
