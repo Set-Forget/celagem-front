@@ -37,7 +37,7 @@ export default function CostTab() {
       {fields.map((field) => {
         const displayValue = isMaterialLoading
           ? placeholder(field.placeholderLength)
-          : field.getValue(materialData!) ?? '';
+          : field.getValue(materialData! as any) ?? '';
         return (
           <div
             className="flex flex-col gap-1"

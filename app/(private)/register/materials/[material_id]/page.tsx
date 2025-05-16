@@ -191,7 +191,7 @@ export default function Page() {
                 {isMaterialLoading ? placeholder(13) : 'Hace 3 días'}
               </span>
             </div>
-            <div className="flex flex-col gap-1">
+            {/*  <div className="flex flex-col gap-1">
               <label className="text-muted-foreground text-sm">
                 Editado por{' '}
                 <span
@@ -215,7 +215,7 @@ export default function Page() {
               >
                 Hace 2 días
               </span>
-            </div>
+            </div> */}
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
