@@ -45,7 +45,11 @@ export default function Page() {
           data={bills?.data || []}
           loading={isLoading}
           columns={columns}
-          onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
+          onRowClick={(row) => {
+            if (row.type === "debit_note") return router.push(`${pathname.replace(/^\/purchases\/bills/, "")}/debit-notes/${row.id}`)
+            if (row.type === "credit_note") return router.push(`${pathname.replace(/^\/purchases\/bills/, "")}/credit-notes/${row.id}`)
+            return router.push(`${pathname}/${row.id}`)
+          }}
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>

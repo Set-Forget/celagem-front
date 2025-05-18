@@ -43,8 +43,8 @@ export default function Page() {
           data={invoices?.data || []}
           columns={columns}
           onRowClick={(row) => {
-            if (row.type === "debit_note") return router.push(`${pathname.replace("invoices", "debit-notes")}/${row.id}`)
-            if (row.type === "credit_note") return router.push(`${pathname.replace("invoices", "credit-notes")}/${row.id}`)
+            if (row.type === "debit_note") return router.push(`${pathname.replace(/^\/sales\/invoices/, "")}/debit-notes/${row.id}`)
+            if (row.type === "credit_note") return router.push(`${pathname.replace(/^\/sales\/invoices/, "")}/credit-notes/${row.id}`)
             return router.push(`${pathname}/${row.id}`)
           }}
           toolbar={({ table }) => <Toolbar table={table} />}
