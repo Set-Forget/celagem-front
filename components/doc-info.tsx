@@ -62,8 +62,13 @@ export default function DocumentInfo<T>({
               {fields.map((field) => {
                 const displayValue = isLoading ? placeholder(field?.placeholderLength ?? 10) : (field.render(data!) ?? "")
                 return (
-                  <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-                    <label className="text-muted-foreground text-xs">{field.label}</label>
+                  <div
+                    className={cn("flex flex-col gap-1", field.className)}
+                    key={typeof field.label === "function" ? field.label.name || "function-label" : field.label}
+                  >
+                    <label className="text-muted-foreground text-xs">
+                      {typeof field.label === "function" ? field.label(data!) : field.label}
+                    </label>
                     <motion.span
                       className={cn("text-sm", isLoading ? "blur-[4px]" : "blur-none")}
                       initial={false}
