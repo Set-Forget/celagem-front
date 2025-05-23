@@ -1,5 +1,6 @@
+import RenderFields from "@/components/render-fields";
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
-import { cn, FieldDefinition, placeholder } from "@/lib/utils";
+import { FieldDefinition } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { PurchaseOrderDetail } from "../../../schemas/purchase-orders";
 
@@ -7,18 +8,18 @@ const fields: FieldDefinition<PurchaseOrderDetail>[] = [
   {
     label: "Notas",
     placeholderLength: 30,
-    getValue: (p) => p.internal_notes || "No especificado",
+    render: (p) => p.internal_notes || "No especificado",
   },
   {
     label: "Términos y condiciones",
     placeholderLength: 30,
-    getValue: (p) => p.tyc_notes || "No especificado",
+    render: (p) => p.tyc_notes || "No especificado",
   },
   {
     label: "Nota de rechazo",
     placeholderLength: 30,
-    getValue: (p) => p.rejection_reason || "No especificado",
-    hidden: (p) => !p.rejection_reason,
+    show: (p) => !!p.rejection_reason,
+    render: (p) => p.rejection_reason || "No especificado",
   }
 ];
 
@@ -28,28 +29,11 @@ export default function NotesTab() {
   const { data: purchaseOrder, isLoading: isPurchaseOrderLoading } = useGetPurchaseOrderQuery(id)
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-      {fields.map((field) => {
-        if (field.hidden) return null;
-        const displayValue = isPurchaseOrderLoading
-          ? placeholder(field.placeholderLength)
-          : field.getValue(purchaseOrder!) ?? "";
-        return (
-          <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-            <label className="text-muted-foreground text-sm">
-              {field.label}
-            </label>
-            <span
-              className={cn(
-                "text-sm transition-all duration-300",
-                isPurchaseOrderLoading ? "blur-[4px]" : "blur-none"
-              )}
-            >
-              {displayValue}
-            </span>
-          </div>
-        );
-      })}
-    </div>
+    <RenderFields
+      fields={fields}
+      loading={isPurchaseOrderLoading}
+      data={purchaseOrder}
+      className="p-4"
+    />
   )
 }

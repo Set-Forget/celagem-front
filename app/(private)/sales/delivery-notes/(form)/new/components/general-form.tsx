@@ -28,6 +28,7 @@ export default function GeneralForm() {
         id: stock.id,
         name: stock.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)

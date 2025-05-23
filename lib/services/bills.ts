@@ -1,9 +1,10 @@
-import { BillDetail, BillDetailResponse, BillListResponse, BillStatus, NewBill, NewBillResponse } from '@/app/(private)/purchases/bills/schemas/bills';
+import { BillDetailResponse, BillListResponse, BillStatus, NewBill, NewBillResponse } from '@/app/(private)/purchases/bills/schemas/bills';
 import { erpApi } from '@/lib/apis/erp-api';
+import { AdaptedBillDetail, AdaptedBillList, getBillAdapter, listBillsAdapter } from '../adapters/bills';
 
 export const billsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listBills: builder.query<BillListResponse,
+    listBills: builder.query<AdaptedBillList[],
       {
         number?: string,
         supplier?: string,
@@ -17,14 +18,15 @@ export const billsApi = erpApi.injectEndpoints({
           url: '/purchase_invoices',
           params: data || {},
         }),
+        transformResponse: (response: BillListResponse) => response.data.map(listBillsAdapter),
         providesTags: ['Bill'],
       }),
-    getBill: builder.query<BillDetail, string>({
+    getBill: builder.query<AdaptedBillDetail, string | number>({
       query: (id) => `/purchase_invoices/${id}`,
-      transformResponse: (response: BillDetailResponse) => response.data,
+      transformResponse: (response: BillDetailResponse) => getBillAdapter(response.data),
       providesTags: ['Bill'],
     }),
-    createBill: builder.mutation<NewBillResponse, Omit<NewBill, 'cost_center' | 'notes' | 'accounting_account' | 'currency' | 'payment_term' | 'payment_method' | "accounting_date"> & { currency: number; payment_term: number, payment_method: number, accounting_date: string, purchase_order_id?: number }>({
+    createBill: builder.mutation<NewBillResponse, Omit<NewBill, 'cost_center' | 'notes' | 'accounting_account' | 'currency' | 'payment_term' | 'payment_method' | "accounting_date" | "date"> & { currency: number; payment_term: number, payment_method: number, accounting_date: string, date: string, purchase_order_id?: number }>({
       query: ({ purchase_order_id, ...bill }) => ({
         url: '/purchase_invoices',
         method: 'POST',
@@ -34,11 +36,11 @@ export const billsApi = erpApi.injectEndpoints({
         ? [{ type: 'Bill' }, { type: 'PurchaseOrder', id: purchase_order_id }]
         : [{ type: 'Bill' }]
     }),
-    updateBill: builder.mutation<{ status: string, message: string }, Omit<Partial<BillDetail>, 'status'> & { state: BillStatus }>({
-      query: (bill) => ({
-        url: `/purchase_invoices/${bill.id}`,
+    updateBill: builder.mutation<{ status: string, message: string }, { body: Omit<Partial<NewBill>, "accounting_date" | "date"> & { accounting_date: string, date: string }, id: string | number }>({
+      query: ({ body, id }) => ({
+        url: `/purchase_invoices/${id}`,
         method: 'PUT',
-        body: bill,
+        body: { ...body },
       }),
       invalidatesTags: ['Bill'],
     }),

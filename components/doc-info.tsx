@@ -60,7 +60,7 @@ export default function DocumentInfo<T>({
           >
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
               {fields.map((field) => {
-                const displayValue = isLoading ? placeholder(field.placeholderLength) : (field.getValue(data!) ?? "")
+                const displayValue = isLoading ? placeholder(field?.placeholderLength ?? 10) : (field.render(data!) ?? "")
                 return (
                   <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
                     <label className="text-muted-foreground text-xs">{field.label}</label>

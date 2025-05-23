@@ -12,6 +12,11 @@ export const journalEntryStatus = {
     text_color: "text-green-800",
     pure_bg_color: "bg-green-500",
   },
+  to_approve: {
+    label: "A aprobar",
+    bg_color: "bg-amber-100",
+    text_color: "text-amber-800",
+  },
   cancel: {
     label: "Cancelado",
     bg_color: "bg-stone-100",

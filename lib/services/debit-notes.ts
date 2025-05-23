@@ -1,4 +1,4 @@
-import { DebitNoteDetail, DebitNoteDetailResponse, NewDebitNote, NewDebitNoteResponse } from '@/app/(private)/debit-notes/schemas/debit-notes';
+import { DebitNoteDetail, DebitNoteDetailResponse, NewDebitNote, NewDebitNoteResponse } from '@/app/(private)/[scope]/debit-notes/schemas/debit-notes';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
 
@@ -9,7 +9,7 @@ export const debitNotesApi = erpApi.injectEndpoints({
       transformResponse: (response: DebitNoteDetailResponse) => response.data,
       providesTags: ['DebitNote'],
     }),
-    createDebitNote: builder.mutation<NewDebitNoteResponse, Overwrite<Omit<NewDebitNote, 'items'> & { items: { product_id: number, taxes_id?: number[], quantity: number }[] }, { accounting_date: string }>>({
+    createDebitNote: builder.mutation<NewDebitNoteResponse, Overwrite<Omit<NewDebitNote, 'items'> & { items: { product_id: number, taxes_id?: number[], quantity: number }[] }, { accounting_date: string, date: string }>>({
       query: (data) => ({
         url: 'debit_notes',
         method: 'POST',
@@ -17,11 +17,11 @@ export const debitNotesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['DebitNote'],
     }),
-    updateDebitNote: builder.mutation<{ status: string, message: string }, Partial<Omit<DebitNoteDetail, 'status'> & { state: 'draft' | 'posted' | 'cancel' }>>({
-      query: ({ id, ...data }) => ({
+    updateDebitNote: builder.mutation<{ status: string, message: string }, { body: Overwrite<Omit<NewDebitNote, 'items'> & { items: { product_id: number, taxes_id?: number[], quantity: number }[] }, { accounting_date: string, date: string }>, id: number | string }>({
+      query: ({ body, id }) => ({
         url: `/debit_notes/${id}`,
         method: 'PUT',
-        body: data,
+        body: { ...body },
       }),
       invalidatesTags: ['DebitNote'],
     }),

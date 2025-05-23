@@ -8,8 +8,14 @@ import { PurchaseRequestItem } from "../../../schemas/purchase-requests"
 export const columns: ColumnDef<PurchaseRequestItem>[] = [
   {
     accessorKey: "product_name",
-    header: "Material",
-    cell: ({ row }) => row.getValue("product_name")
+    header: "Producto / Servicio",
+    cell: ({ row }) => <div className="flex gap-1">
+      <span className="font-medium">
+        {row.original.id}
+      </span>
+      -{" "}
+      {row.original.product_name}
+    </div>
   },
   {
     accessorKey: "quantity",

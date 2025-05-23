@@ -20,6 +20,7 @@ import { newBillFiscalSchema, newBillNotesSchema, newBillSchema } from "../../sc
 import FiscalForm from "./components/fiscal-form"
 import GeneralForm from "./components/general-form"
 import NotesForm from "./components/notes-form"
+import { useLazyGetSupplierQuery } from "@/lib/services/suppliers"
 
 const tabToFieldsMap = {
   "tab-1": getFieldPaths(newBillFiscalSchema),
@@ -53,11 +54,13 @@ export default function Page() {
 
   const { data: purchaseOrder } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
 
+  const [getSupplier] = useLazyGetSupplierQuery()
+
   const newBillForm = useForm<z.infer<typeof newBillSchema>>({
     resolver: zodResolver(newBillSchema),
     defaultValues: {
       items: [],
-      date: new Date().toISOString(),
+      date: "",
       accounting_date: "",
       number: "",
       internal_notes: "",
@@ -70,6 +73,7 @@ export default function Page() {
       const response = await createBill({
         ...data,
         accounting_date: data.accounting_date.toString(),
+        date: data.date.toString(),
         items: data.items.map((items) => ({
           ...items,
           purchase_line_id: purchaseOrder?.items.find((poItem) => poItem.product_id === items.product_id)?.id,
@@ -101,12 +105,15 @@ export default function Page() {
   };
 
   useEffect(() => {
-    if (purchaseOrder) {
+    if (!purchaseOrder) return
+    (async () => {
+      const supplier = await getSupplier(purchaseOrder.supplier.id).unwrap()
+      console.log(supplier)
       newBillForm.reset({
         supplier: purchaseOrder.supplier.id,
-        date: new Date().toISOString(),
         currency: purchaseOrder.currency.id,
         payment_term: purchaseOrder?.payment_term?.id,
+        payment_method: supplier?.payment_method?.id,
         items: purchaseOrder.items.map((item) => ({
           product_id: item.product_id,
           quantity: item.product_qty,
@@ -114,7 +121,7 @@ export default function Page() {
           price_unit: item.price_unit
         }))
       })
-    }
+    })()
   }, [purchaseOrder])
 
   return (

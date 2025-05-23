@@ -1,19 +1,23 @@
 import { AsyncSelect } from "@/components/async-select"
+import DatePicker from "@/components/date-picker"
 import FormTable from "@/components/form-table"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useLazyListSuppliersQuery } from "@/lib/services/suppliers"
+import { useLazyGetSupplierQuery, useLazyListSuppliersQuery } from "@/lib/services/suppliers"
+import { createApply } from "@/lib/utils"
+import { getLocalTimeZone, today } from "@internationalized/date"
+import { useMemo } from "react"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newBillSchema } from "../../../schemas/bills"
 import { columns } from "./columns"
 import TableFooter from "./table-footer"
-import DatePicker from "@/components/date-picker"
 
 export default function GeneralForm() {
-  const { control, formState } = useFormContext<z.infer<typeof newBillSchema>>()
+  const { control, formState, setValue, resetField } = useFormContext<z.infer<typeof newBillSchema>>()
 
   const [searchSuppliers] = useLazyListSuppliersQuery()
+  const [getSupplier] = useLazyGetSupplierQuery()
 
   const handleSearchSupplier = async (query?: string) => {
     try {
@@ -22,12 +26,18 @@ export default function GeneralForm() {
         id: supplier.id,
         name: supplier.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
       return []
     }
   }
+
+  const apply = useMemo(
+    () => createApply<z.infer<typeof newBillSchema>>(setValue, resetField),
+    [setValue, resetField]
+  );
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
@@ -67,7 +77,14 @@ export default function GeneralForm() {
               getDisplayValue={(item) => item.name}
               getOptionValue={(item) => item.id}
               renderOption={(item) => <div>{item.name}</div>}
-              onChange={field.onChange}
+              onChange={async (id) => {
+                field.onChange(id)
+                const supplier = await getSupplier(id).unwrap()
+
+                apply("payment_method", supplier?.payment_method?.id || undefined)
+                apply("currency", supplier?.currency.id)
+                apply("payment_term", supplier?.property_payment_term?.id)
+              }}
               value={field.value}
               getOptionKey={(item) => String(item.id)}
               noResultsMessage="No se encontraron resultados"
@@ -84,6 +101,29 @@ export default function GeneralForm() {
       />
       <FormField
         control={control}
+        name="date"
+        render={({ field }) => (
+          <FormItem className="flex flex-col w-full">
+            <FormLabel className="w-fit">Fecha de factura</FormLabel>
+            <FormControl>
+              <DatePicker
+                value={field.value || null}
+                onChange={(date) => field.onChange(date)}
+                isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) > 0}
+              />
+            </FormControl>
+            {formState.errors.date ? (
+              <FormMessage />
+            ) :
+              <FormDescription>
+                Esta será la fecha en la que se emitió la factura.
+              </FormDescription>
+            }
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
         name="accounting_date"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -92,6 +132,7 @@ export default function GeneralForm() {
               <DatePicker
                 value={field.value || null}
                 onChange={(date) => field.onChange(date)}
+                isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) > 0}
               />
             </FormControl>
             {formState.errors.accounting_date ? (

@@ -1,5 +1,6 @@
+import RenderFields from "@/components/render-fields";
 import { useGetPatientQuery } from "@/lib/services/patients";
-import { cn, FieldDefinition, placeholder } from "@/lib/utils";
+import { FieldDefinition } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { PatientDetail } from "../../../schema/patients";
 
@@ -13,42 +14,25 @@ export default function CareCompanyTab() {
     {
       label: "Empresa",
       placeholderLength: 14,
-      getValue: (p) => p.care_company_plan.care_company.name || "No especificado",
+      render: (p) => p.care_company_plan.care_company.name || "No especificado",
     },
     {
       label: "Contrato",
       placeholderLength: 14,
-      getValue: (p) => p.care_company_plan.contract_number || "No especificado",
+      render: (p) => p.care_company_plan.contract_number || "No especificado",
     },
     {
       label: "Plan de cobertura",
       placeholderLength: 14,
-      getValue: (p) => p.care_company_plan.coverage || "No especificado",
+      render: (p) => p.care_company_plan.coverage || "No especificado",
     }
   ]
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      {fields.map((field) => {
-        const displayValue = isPatientLoading
-          ? placeholder(field.placeholderLength)
-          : field.getValue(patient!) ?? "";
-        return (
-          <div className="flex flex-col gap-1" key={field.label}>
-            <label className="text-muted-foreground text-sm">
-              {field.label}
-            </label>
-            <span
-              className={cn(
-                "text-sm transition-all duration-300",
-                isPatientLoading ? "blur-[4px]" : "blur-none"
-              )}
-            >
-              {displayValue}
-            </span>
-          </div>
-        );
-      })}
-    </div>
+    <RenderFields
+      fields={fields}
+      loading={isPatientLoading}
+      data={patient}
+    />
   );
 }

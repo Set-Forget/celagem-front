@@ -39,5 +39,6 @@ export const erpApi = createApi({
     'Product',
     'Warehouse',
     'Location',
+    'Charge'
   ],
 });

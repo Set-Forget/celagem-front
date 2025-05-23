@@ -1,15 +1,13 @@
 'use client'
 
 import CustomSonner from "@/components/custom-sonner";
-import SearchSelect from "@/components/search-select";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useCreateCostCenterMutation } from "@/lib/services/cost-centers";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -17,8 +15,6 @@ import { z } from "zod";
 import { newCostCenterSchema } from "../schemas/cost-centers";
 
 export default function NewCostCenterDialog() {
-  const router = useRouter()
-
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
   const [createCostCenter, { isLoading: isCreatingCostCenter }] = useCreateCostCenterMutation()

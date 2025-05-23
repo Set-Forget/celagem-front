@@ -1,7 +1,10 @@
 'use client'
 
+import RenderFields from "@/components/render-fields";
+import { Button } from "@/components/ui/button";
 import { useGetDeliveryQuery } from "@/lib/services/deliveries";
-import { cn, FieldDefinition, placeholder } from "@/lib/utils";
+import { FieldDefinition } from "@/lib/utils";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { DeliveryNoteDetail } from "../../../schemas/delivery-notes";
 
@@ -9,22 +12,33 @@ const fields: FieldDefinition<DeliveryNoteDetail>[] = [
   {
     label: "Cliente",
     placeholderLength: 14,
-    getValue: (p) => p.customer.name,
+    render: (p) => p.customer.name,
   },
   {
     label: "Teléfono",
     placeholderLength: 9,
-    getValue: (p) => p.customer.phone,
+    render: (p) => p.customer.phone,
   },
   {
     label: "Correo electrónico",
     placeholderLength: 9,
-    getValue: (p) => p.customer.email,
+    render: (p) => <Button
+      variant="link"
+      className="p-0 h-auto text-foreground font-normal"
+      asChild
+    >
+      <Link
+        href={`mailto:${p.customer.email}`}
+        target="_blank"
+      >
+        {p.customer.email}
+      </Link>
+    </Button>,
   },
   {
     label: "Dirección",
     placeholderLength: 20,
-    getValue: (p) => p.customer.address,
+    render: (p) => p.customer.address,
   }
 ];
 
@@ -34,27 +48,11 @@ export default function CustomerTab() {
   const { data: deliveryNote, isLoading: isDeliveryNoteLoading } = useGetDeliveryQuery(id);
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-      {fields.map((field) => {
-        const displayValue = isDeliveryNoteLoading
-          ? placeholder(field.placeholderLength)
-          : field.getValue(deliveryNote!) ?? "";
-        return (
-          <div className="flex flex-col gap-1" key={field.label}>
-            <label className="text-muted-foreground text-sm">
-              {field.label}
-            </label>
-            <span
-              className={cn(
-                "text-sm transition-all duration-300",
-                isDeliveryNoteLoading ? "blur-[4px]" : "blur-none"
-              )}
-            >
-              {displayValue}
-            </span>
-          </div>
-        );
-      })}
-    </div>
+    <RenderFields
+      fields={fields}
+      loading={isDeliveryNoteLoading}
+      data={deliveryNote}
+      className="p-4"
+    />
   )
 }

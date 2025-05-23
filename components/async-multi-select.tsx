@@ -95,7 +95,7 @@ function AsyncMultiSelectInner<T, V>(
     onValueChange,
     defaultValue = [],
     placeholder = "Select options",
-    searchPlaceholder = "Search...",
+    searchPlaceholder = "Buscar...",
     maxCount: userDefinedMaxCount,
     modalPopover = false,
     className,
@@ -384,7 +384,9 @@ function AsyncMultiSelectInner<T, V>(
             {!loading && !error && options.length === 0 && (
               <CommandEmpty>{noResultsMessage}</CommandEmpty>
             )}
-
+            <CommandEmpty>
+              No hay opciones disponibles
+            </CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
                 const keyFn = getOptionKey

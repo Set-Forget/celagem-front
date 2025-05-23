@@ -6,7 +6,7 @@ import { useLazyGetAppointmentQuery } from "@/lib/services/appointments";
 import { useLazyGetPatientQuery } from "@/lib/services/patients";
 import { useLazyGetVisitQuery } from "@/lib/services/visits";
 import { cn } from "@/lib/utils";
-import { generatePDF, mergePDFs } from "@/templates/utils.client";
+import { generatePDF, mergePDFs } from "@/lib/templates/utils.client";
 import { Table } from "@tanstack/react-table";
 import { CalendarFold, CircleDashed, File, FileDown, FileStack, Search } from "lucide-react";
 import { useState } from "react";

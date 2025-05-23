@@ -1,11 +1,61 @@
+import RenderFields from "@/components/render-fields";
 import { Button } from "@/components/ui/button";
+import { routes } from "@/lib/routes";
 import { useGetInvoiceQuery } from "@/lib/services/invoices";
-import { cn, placeholder } from "@/lib/utils";
-import { Eye, FileX2 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { FieldDefinition } from "@/lib/utils";
+import { FileX2 } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { InvoiceDetail } from "../../../schemas/invoices";
+
+const fields: FieldDefinition<InvoiceDetail>[] = [
+  {
+    label: "Notas de crédito",
+    placeholderLength: 14,
+    show: (p) => !!p?.credit_notes.length,
+    render: (p) => p?.credit_notes?.map((creditNote) => (
+      <div className="grid grid-cols-1 justify-items-start" key={creditNote.id}>
+        <Button
+          key={creditNote.id}
+          variant="link"
+          className="p-0 h-auto text-foreground"
+          asChild
+        >
+          <Link
+            href={routes.salesCreditNote.detail(creditNote.id)}
+            target="_blank"
+          >
+            {creditNote.number}
+          </Link>
+        </Button>
+      </div>
+    ))
+  },
+  {
+    label: "Notas de débito",
+    placeholderLength: 14,
+    show: (p) => !!p?.debit_notes?.length,
+    render: (p) => p?.debit_notes?.map((debitNote) => (
+      <div className="grid grid-cols-1 justify-items-start" key={debitNote.id}>
+        <Button
+          key={debitNote.id}
+          variant="link"
+          className="p-0 h-auto text-foreground"
+          asChild
+        >
+          <Link
+            href={routes.salesDebitNote.detail(debitNote.id)}
+            target="_blank"
+          >
+            {debitNote.number}
+          </Link>
+        </Button>
+      </div>
+    ))
+  }
+];
 
 export default function DocumentsTab() {
-  const router = useRouter()
   const { id } = useParams<{ id: string }>()
 
   const { data: invoice, isLoading: isInvoiceLoading } = useGetInvoiceQuery(id);
@@ -14,8 +64,6 @@ export default function DocumentsTab() {
   const debitNotes = invoice?.debit_notes || []
 
   // ! Falta remitos.
-
-  console.log(creditNotes, debitNotes)
 
   return (
     <div className="flex flex-col p-4">
@@ -29,74 +77,11 @@ export default function DocumentsTab() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {/*           {purchaseOrders.length > 0 && (
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Órdenes de compra
-              </label>
-              {purchaseOrders.map((purchaseOrder) => (
-                <div className="flex gap-2 items-center group w-fit" key={purchaseOrder.id}>
-                  <span className={cn("text-sm font-medium tracking-tight transition-all duration-300", isInvoiceLoading ? "blur-[4px]" : "blur-none")}>
-                    {isInvoiceLoading ? placeholder(20, true) : purchaseOrder.name}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className={cn("w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity", isInvoiceLoading && "hidden")}
-                    onClick={() => router.push(`/purchases/purchase-orders/${purchaseOrder.id}`)}
-                  >
-                    <Eye />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )} */}
-          {creditNotes.length > 0 && (
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Notas de crédito
-              </label>
-              {creditNotes.map((creditNote) => (
-                <div className="flex gap-2 items-center group w-fit" key={creditNote.id}>
-                  <span className={cn("text-sm font-medium tracking-tight transition-all duration-300", isInvoiceLoading ? "blur-[4px]" : "blur-none")}>
-                    {isInvoiceLoading ? placeholder(20, true) : creditNote.number}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className={cn("w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity", isInvoiceLoading && "hidden")}
-                    onClick={() => router.push(`/credit-notes/${creditNote.id}`)}
-                  >
-                    <Eye />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-          {debitNotes.length > 0 && (
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Notas de débito
-              </label>
-              {debitNotes.map((debitNote) => (
-                <div className="flex gap-2 items-center group w-fit" key={debitNote.id}>
-                  <span className={cn("text-sm font-medium tracking-tight transition-all duration-300", isInvoiceLoading ? "blur-[4px]" : "blur-none")}>
-                    {isInvoiceLoading ? placeholder(20, true) : debitNote.name}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className={cn("w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity", isInvoiceLoading && "hidden")}
-                    onClick={() => router.push(`/purchases/debit-notes/${debitNote.id}`)}
-                  >
-                    <Eye />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <RenderFields
+          fields={fields}
+          data={invoice}
+          loading={isInvoiceLoading}
+        />
       )}
     </div>
   )

@@ -19,6 +19,7 @@ export default function FiscalForm() {
         id: currency.id,
         name: currency.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -33,6 +34,7 @@ export default function FiscalForm() {
         id: term.id,
         name: term.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)

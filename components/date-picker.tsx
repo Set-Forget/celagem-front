@@ -4,9 +4,17 @@ import { Calendar } from "@/components/ui/calendar-rac"
 import { DateInput } from "@/components/ui/datefield-rac"
 import { CalendarDate } from "@internationalized/date"
 import { CalendarIcon } from "lucide-react"
-import { Button, DatePicker as AriaDatePicker, Dialog, Group, Label, Popover, I18nProvider } from "react-aria-components"
+import { DatePicker as AriaDatePicker, Button, DateValue, Dialog, Group, I18nProvider, Label, Popover } from "react-aria-components"
 
-export default function DatePicker({ value, onChange }: { value: CalendarDate | null, onChange: (value: CalendarDate | null) => void }) {
+export default function DatePicker({
+  value,
+  onChange,
+  isDateUnavailable
+}: {
+  value: CalendarDate | null,
+  onChange: (value: CalendarDate | null) => void,
+  isDateUnavailable?: (date: DateValue) => boolean
+}) {
   return (
     <I18nProvider locale="es-419">
       <AriaDatePicker
@@ -28,7 +36,9 @@ export default function DatePicker({ value, onChange }: { value: CalendarDate | 
           offset={4}
         >
           <Dialog className="max-h-[inherit] overflow-auto p-2">
-            <Calendar />
+            <Calendar
+              isDateUnavailable={isDateUnavailable}
+            />
           </Dialog>
         </Popover>
       </AriaDatePicker>

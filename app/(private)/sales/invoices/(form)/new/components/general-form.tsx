@@ -2,7 +2,10 @@ import { AsyncSelect } from "@/components/async-select"
 import DatePicker from "@/components/date-picker"
 import FormTable from "@/components/form-table"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { useLazyListCustomersQuery } from "@/lib/services/customers"
+import { useLazyGetCustomerQuery, useLazyListCustomersQuery } from "@/lib/services/customers"
+import { createApply } from "@/lib/utils"
+import { getLocalTimeZone, today } from "@internationalized/date"
+import { useMemo } from "react"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newInvoiceSchema } from "../../../schemas/invoices"
@@ -10,9 +13,10 @@ import { columns } from "./columns"
 import TableFooter from "./table-footer"
 
 export default function GeneralForm() {
-  const { control, formState } = useFormContext<z.infer<typeof newInvoiceSchema>>()
+  const { control, formState, setValue, resetField } = useFormContext<z.infer<typeof newInvoiceSchema>>()
 
   const [searchCustomers] = useLazyListCustomersQuery()
+  const [getCustomer] = useLazyGetCustomerQuery()
 
   const handleSearchCustomer = async (query?: string) => {
     try {
@@ -21,12 +25,18 @@ export default function GeneralForm() {
         id: customer.id,
         name: customer.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
       return []
     }
   }
+
+  const apply = useMemo(
+    () => createApply<z.infer<typeof newInvoiceSchema>>(setValue, resetField),
+    [setValue, resetField]
+  );
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
@@ -44,7 +54,14 @@ export default function GeneralForm() {
               getDisplayValue={(item) => item.name}
               getOptionValue={(item) => item.id}
               renderOption={(item) => <div>{item.name}</div>}
-              onChange={field.onChange}
+              onChange={async (id) => {
+                field.onChange(id)
+                const customer = await getCustomer(id).unwrap()
+
+                apply("currency", customer?.currency?.id)
+                apply("payment_method", customer?.payment_method?.id)
+                apply("payment_term", customer?.property_payment_term?.id)
+              }}
               value={field.value}
               getOptionKey={(item) => String(item.id)}
               noResultsMessage="No se encontraron resultados"
@@ -69,6 +86,7 @@ export default function GeneralForm() {
               <DatePicker
                 value={field.value || null}
                 onChange={(date) => field.onChange(date)}
+                isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) > 0}
               />
             </FormControl>
             {formState.errors.accounting_date ? (

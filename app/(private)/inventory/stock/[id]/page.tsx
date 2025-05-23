@@ -17,7 +17,7 @@ export default async function Page({
       <Header
         title={
           materialInventoryEntry?.code + ' - ' + materialInventoryEntry?.name ||
-          'Material'
+          'Producto / Servicio'
         }
       >
         {/* <DropdownMenu>

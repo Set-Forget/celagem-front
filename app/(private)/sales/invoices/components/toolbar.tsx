@@ -1,6 +1,10 @@
 import FilterSelector, { FilterConfig } from "@/components/filter-selector";
+import { Button } from "@/components/ui/button";
+import { AdaptedInvoiceList } from "@/lib/adapters/invoices";
+import { routes } from "@/lib/routes";
 import { Table } from "@tanstack/react-table";
-import { CalendarFold, CircleDashed, Search } from "lucide-react";
+import { BanknoteArrowDown, CalendarFold, CircleDashed, Search, Tag } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -10,12 +14,25 @@ const filtersConfig: Record<string, FilterConfig> = {
   status: {
     type: "multiple",
     options: [
-      { label: "Pendiente", value: "pending" },
+      { label: "Borrador", value: "draft" },
+      { label: "Pendiente", value: "posted" },
+      { label: "Cancelada", value: "cancel" },
       { label: "Vencida", value: "overdue" },
-      { label: "Paga", value: "paid" },
+      { label: "Completada", value: "done" },
     ], label: "Estado",
     key: "status",
     icon: CircleDashed
+  },
+  type: {
+    type: "multiple",
+    options: [
+      { label: "Factura", value: "invoice" },
+      { label: "Nota de crédito", value: "credit_note" },
+      { label: "Nota de débito", value: "debit_note" },
+    ],
+    label: "Tipo",
+    key: "type",
+    icon: Tag
   },
   date_range: {
     type: "date_range",
@@ -39,40 +56,27 @@ const filtersConfig: Record<string, FilterConfig> = {
   },
 };
 
-export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+export default function Toolbar<TData>({ table }: { table: Table<AdaptedInvoiceList> }) {
+  const router = useRouter()
+
+  const selectedRows = table.getSelectedRowModel().rows
   return (
     <div className="flex items-center justify-between">
-      <div className="flex gap-4">
-        {/*         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="ml-auto">
-              Columnas
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {typeof column.columnDef.header === "string" && column.columnDef.header}
-                    {typeof column.columnDef.header === "function" && column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu> */}
-        <FilterSelector filtersConfig={filtersConfig} />
-      </div>
+
+      <FilterSelector filtersConfig={filtersConfig} />
+      <Button
+        variant="secondary"
+        className="h-7"
+        size="sm"
+        disabled={selectedRows.length === 0 || selectedRows.some(row => row.original.type === 'credit_note') || selectedRows.some(row => row.original.status !== 'posted') || selectedRows.some(row => row.original.amount_residual <= 0)}
+        onClick={() => {
+          const invoiceIds = selectedRows.map((row) => row.original.id).join(",")
+          router.push(routes.receipts.new(invoiceIds))
+        }}
+      >
+        <BanknoteArrowDown />
+        {selectedRows.length > 1 ? "Registrar cobros" : "Registrar cobro"}
+      </Button>
     </div>
   )
 }

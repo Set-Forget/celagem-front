@@ -113,7 +113,7 @@ export default function NewMaterialInventoryEntryPage() {
               render={({ field }) => (
                 <div className="flex flex-row gap-4 items-center justify-center p-4">
                   <FormItem className="flex flex-col w-full">
-                    <FormLabel className="w-fit">Material</FormLabel>
+                    <FormLabel className="w-fit">Producto / Servicio</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>

@@ -3,6 +3,7 @@ import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { PatientDetail } from "../../../schema/patients";
 import { documentTypes } from "../../../utils";
+import RenderFields from "@/components/render-fields";
 
 export default function CaregiverTab() {
   const params = useParams<{ patient_id: string }>();
@@ -14,62 +15,42 @@ export default function CaregiverTab() {
     {
       label: "Nombre",
       placeholderLength: 14,
-      getValue: (p) => p.caregiver?.name,
+      render: (p) => p.caregiver?.name,
     },
     {
       label: "Tipo de documento",
       placeholderLength: 14,
-      getValue: (p) =>
+      render: (p) =>
         documentTypes.find((d) => d.value === p.document_type)?.label || "No aplica",
     },
     {
       label: "Número de documento",
       placeholderLength: 14,
-      getValue: (p) => p.caregiver?.document_number || "No especificado",
+      render: (p) => p.caregiver?.document_number || "No especificado",
     },
     {
       label: "Número de teléfono",
       placeholderLength: 14,
-      getValue: (p) => p.caregiver?.phone_number || "No especificado",
+      render: (p) => p.caregiver?.phone_number || "No especificado",
     },
     {
       label: "Parentesco",
       placeholderLength: 14,
-      getValue: (p) => p.caregiver?.relationship || "No especificado",
+      render: (p) => p.caregiver?.relationship || "No especificado",
     },
     {
       label: "Dirección",
       placeholderLength: 30,
-      getValue: (p) => p.caregiver?.address.formatted_address || "No especificado",
+      render: (p) => p.caregiver?.address.formatted_address || "No especificado",
       className: "col-span-2",
     }
   ]
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      {fields.map((field) => {
-        const displayValue = isPatientLoading
-          ? placeholder(field.placeholderLength)
-          : field.getValue(patient!) ?? "";
-        return (
-          <div
-            className={cn("flex flex-col gap-1", field.className)}
-            key={field.label}
-          >
-            <label className="text-muted-foreground text-sm">
-              {field.label}
-            </label>
-            <span
-              className={cn(
-                "text-sm transition-all duration-300",
-                isPatientLoading ? "blur-[4px]" : "blur-none"
-              )}
-            >
-              {displayValue}
-            </span>
-          </div>
-        );
-      })}
-    </div>
+    <RenderFields
+      fields={fields}
+      loading={isPatientLoading}
+      data={patient}
+    />
   );
 }

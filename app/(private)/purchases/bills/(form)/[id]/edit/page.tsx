@@ -1,0 +1,153 @@
+"use client"
+
+import CustomSonner from "@/components/custom-sonner"
+import DataTabs from "@/components/data-tabs"
+import Header from "@/components/header"
+import { Button } from "@/components/ui/button"
+import { Form } from "@/components/ui/form"
+import { useCreateBillMutation, useGetBillQuery, useUpdateBillMutation } from "@/lib/services/bills"
+import { cn, getFieldPaths } from "@/lib/utils"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { get } from "lodash"
+import { Save, Sticker, Wallet } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { FieldErrors, useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
+import { newBillFiscalSchema, newBillNotesSchema, newBillSchema } from "../../../schemas/bills"
+import FiscalForm from "../../new/components/fiscal-form"
+import GeneralForm from "../../new/components/general-form"
+import NotesForm from "../../new/components/notes-form"
+import { parseDate } from "@internationalized/date"
+
+const tabToFieldsMap = {
+  "tab-1": getFieldPaths(newBillFiscalSchema),
+  "tab-2": getFieldPaths(newBillNotesSchema),
+}
+
+const tabs = [
+  {
+    value: "tab-1",
+    label: "Fiscal",
+    icon: <Wallet className="mr-1.5" size={16} />,
+    content: <FiscalForm />
+  },
+  {
+    value: "tab-2",
+    label: "Notas",
+    icon: <Sticker className="mr-1.5" size={16} />,
+    content: <NotesForm />
+  }
+]
+
+export default function Page() {
+  const { id } = useParams<{ id: string }>()
+
+  const router = useRouter()
+
+  const [tab, setTab] = useState(tabs[0].value)
+
+  const { data: bill, isLoading: isLoadingBill } = useGetBillQuery(id!, { skip: !id })
+
+  const [updateBill, { isLoading: isUpdatingBill }] = useUpdateBillMutation()
+
+  const newBillForm = useForm<z.infer<typeof newBillSchema>>({
+    resolver: zodResolver(newBillSchema),
+    defaultValues: {
+      items: [],
+      date: "",
+      accounting_date: "",
+      number: "",
+      internal_notes: "",
+      tyc_notes: "",
+    }
+  })
+
+  const onSubmit = async (data: z.infer<typeof newBillSchema>) => {
+    try {
+      const response = await updateBill({
+        body: {
+          ...data,
+          accounting_date: data.accounting_date.toString(),
+          date: data.date.toString(),
+          company: 1,
+        },
+        id: id!
+      }).unwrap()
+
+      if (response.status === "success") {
+        router.push(`/purchases/bills/${id}`)
+        toast.custom((t) => <CustomSonner t={t} description="Factura de compra actualizada exitosamente" />)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar la factura de compra" variant="error" />)
+    }
+  }
+
+  const onError = (errors: FieldErrors<z.infer<typeof newBillSchema>>) => {
+    for (const [tabKey, fields] of Object.entries(tabToFieldsMap)) {
+      const hasError = fields.some((fieldPath) => {
+        return get(errors, fieldPath) != null;
+      });
+      if (hasError) {
+        setTab(tabKey);
+        break;
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (bill) {
+      newBillForm.reset({
+        supplier: bill?.supplier?.id,
+        number: bill?.number || "",
+        date: bill?.date && parseDate(bill.date),
+        accounting_date: bill?.accounting_date && parseDate(bill.accounting_date),
+        currency: bill?.currency?.id,
+        payment_term: bill?.payment_term?.id,
+        payment_method: bill?.payment_method?.id,
+        internal_notes: bill?.internal_notes || "",
+        tyc_notes: bill?.tyc_notes || "",
+        items: bill?.items?.map((item) => ({
+          product_id: item?.product_id,
+          quantity: item?.quantity,
+          price_unit: item?.price_unit,
+          account_id: item?.account.id,
+          cost_center: item?.cost_center.id,
+          taxes_id: item?.taxes.map((tax) => tax.id),
+        })) || [],
+      })
+    }
+  }, [bill])
+
+  return (
+    <Form {...newBillForm}>
+      <Header title="Editar factura de compra">
+        <div className="flex gap-2 ml-auto">
+          <Button
+            type="submit"
+            onClick={newBillForm.handleSubmit(onSubmit, onError)}
+            size="sm"
+            loading={isUpdatingBill}
+          >
+            <Save className={cn(isUpdatingBill && "hidden")} />
+            Guardar
+          </Button>
+        </div>
+      </Header>
+      <GeneralForm />
+      <DataTabs
+        tabs={tabs}
+        activeTab={tab}
+        onTabChange={setTab}
+        triggerClassName="mt-4"
+        // ? data-[state=inactive]:hidden se usa para ocultar el contenido de las tabs que no estén activas, esto es necesario porque forceMount hace que el contenido de todas las tabs se monte al mismo tiempo.
+        contentClassName="data-[state=inactive]:hidden"
+        // ? forceMount se usa para que el contenido de las tabs no se desmonte al cambiar de tab, esto es necesario para que los errores de validación no se pierdan al cambiar de tab.
+        forceMount
+      />
+    </Form>
+  )
+}

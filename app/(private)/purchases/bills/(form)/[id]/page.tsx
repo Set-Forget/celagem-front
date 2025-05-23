@@ -12,39 +12,40 @@ import { Box, Paperclip, Sticker } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
 import { BillDetail } from "../../schemas/bills"
-import { billStatus } from "../../utils"
+import { billStatus, getBillStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
 import SupplierTab from "./components/supplier-tab"
 import TableFooter from "./components/table-footer"
 import NotesTab from "./components/notes-tab"
+import RenderFields from "@/components/render-fields"
 
 const fields: FieldDefinition<BillDetail>[] = [
   {
     label: "Fecha de emisión",
     placeholderLength: 14,
-    getValue: (p) => format(parseISO(p.date), "PP", { locale: es }),
+    render: (p) => format(parseISO(p.date), "PP", { locale: es }),
   },
   {
     label: "Fecha de vencimiento",
     placeholderLength: 10,
-    getValue: (p) => format(parseISO(p.due_date), "PP", { locale: es }),
+    render: (p) => format(parseISO(p.due_date), "PP", { locale: es }),
   },
   {
     label: "Fecha de contabilización",
     placeholderLength: 14,
-    getValue: (p) => format(parseISO(p.accounting_date), "PP", { locale: es }),
+    render: (p) => format(parseISO(p.accounting_date), "PP", { locale: es }),
   },
   {
     label: "Condición de pago",
     placeholderLength: 10,
-    getValue: (p) => p?.payment_term?.name || "No especificado",
+    render: (p) => p?.payment_term?.name || "No especificado",
   },
   {
     label: "Método de pago",
     placeholderLength: 10,
-    getValue: (p) => p?.payment_method?.name || "No especificado",
+    render: (p) => p?.payment_method?.name || "No especificado",
   }
 ];
 
@@ -76,11 +77,7 @@ export default function Page() {
 
   const { data: bill, isLoading: isBillLoading } = useGetBillQuery(id);
 
-  const status = billStatus[
-    bill?.status === "posted" && new Date(bill?.due_date) < new Date()
-      ? "overdue"
-      : bill?.status as keyof typeof billStatus
-  ];
+  const status = billStatus[bill?.status as keyof typeof billStatus];
 
   return (
     <div>
@@ -97,31 +94,14 @@ export default function Page() {
             {status?.label}
           </Badge>
         </div>
-        <Actions state={bill?.status} type={bill?.type} />
+        <Actions />
       </Header>
       <div className="flex flex-col gap-4 p-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {fields.map((field) => {
-            const displayValue = isBillLoading
-              ? placeholder(field.placeholderLength)
-              : field.getValue(bill!) ?? "";
-            return (
-              <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-                <label className="text-muted-foreground text-sm">
-                  {field.label}
-                </label>
-                <span
-                  className={cn(
-                    "text-sm transition-all duration-300",
-                    isBillLoading ? "blur-[4px]" : "blur-none"
-                  )}
-                >
-                  {displayValue}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+        <RenderFields
+          fields={fields}
+          loading={isBillLoading}
+          data={bill}
+        />
         <DataTable
           data={bill?.items.map((item) => ({ ...item, currency: bill?.currency.name })) ?? []}
           loading={isBillLoading}

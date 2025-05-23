@@ -20,7 +20,7 @@ export interface NavItem {
 
 const salesItems = [
   {
-    title: "Facturas",
+    title: "Comprobantes",
     url: "/sales/invoices"
   },
   {
@@ -47,7 +47,7 @@ const purchasesItems = [
     url: "/purchases/purchase-receipts"
   },
   {
-    title: "Facturas",
+    title: "Comprobantes",
     url: "/purchases/bills"
   },
   {
@@ -61,10 +61,10 @@ const accountingItems = [
     title: "Plan de cuentas",
     url: "/accounting/chart-of-accounts"
   },
-  {
-    title: "Diarios contables",
-    url: "/accounting/journals"
-  },
+  /*   {
+      title: "Diarios contables",
+      url: "/accounting/journals"
+    }, */
   {
     title: "Asientos contables",
     url: "/accounting/journal-entries"

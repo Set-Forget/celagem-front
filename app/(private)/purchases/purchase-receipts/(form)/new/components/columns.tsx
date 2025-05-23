@@ -26,6 +26,7 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
         name: material.name,
         standard_price: material.standard_price
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -40,12 +41,12 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
       <FormItem className="flex flex-col w-full">
         <FormControl>
           <AsyncSelect<{ id: number, name: string, standard_price: number }, number>
-            label="Material"
+            label="Producto o servicio"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
               control._formState.errors.items?.[index]?.product_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
             )}
-            placeholder="Buscar material..."
+            placeholder="Buscar producto o servicio..."
             fetcher={handleSearchMaterial}
             getDisplayValue={(item) => (
               <div className="flex gap-1">
@@ -111,7 +112,7 @@ const MeasurementCell = ({ control, index }: { control: Control<z.infer<typeof n
 
 export const columns: FormTableColumn<z.infer<typeof newPurchaseReceiptSchema>>[] = [
   {
-    header: "Material",
+    header: "Producto / Servicio",
     width: 300,
     cellClassName: "pr-0",
     renderCell: (

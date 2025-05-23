@@ -31,6 +31,7 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
         standard_price: material.standard_price,
         code: material.default_code,
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -45,12 +46,12 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
       <FormItem className="flex flex-col w-full">
         <FormControl>
           <AsyncSelect<{ id: number, name: string, code: string, standard_price: number }, number>
-            label="Material"
+            label="Producto o servicio"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
               control._formState.errors.items?.[index]?.product_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
             )}
-            placeholder="Buscar material..."
+            placeholder="Buscar producto o servicio..."
             fetcher={handleSearchMaterial}
             getDisplayValue={(item) => (
               <div className="flex gap-1">
@@ -181,6 +182,7 @@ const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newBill
         id: taxes.id,
         name: taxes.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -215,15 +217,6 @@ const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newBill
             getOptionKey={(item) => String(item.id)}
             noResultsMessage="No se encontraron resultados"
             defaultValue={field.value}
-          // ! Esto por ahora esta bien, pero debería incluirse initialOptions como prop, 
-          // ! mas que nada para cuando se edite una factura o se cree una nueva a partir de una orden de compra.
-          // ? No se si el nombre correcto sea initialOptions, pero la idea es que se pueda pasar un array de impuestos.
-          // ? Quizás value debería ser un array de objetos { id: number, name: string } en lugar de un array de números.
-          // ? Esto quizás evitaria el initialOptions y se podría pasar directamente el array de impuestos.
-          /*             initialOptions={purchaseOrder?.items?.[index]?.taxes?.map(tax => ({
-                        id: tax.id,
-                        name: tax.name
-                      }))} */
           />
         </FormControl>
       </FormItem>
@@ -283,6 +276,7 @@ const CostCenterCell = ({ control, index }: { control: Control<z.infer<typeof ne
         id: costCenter.id,
         name: costCenter.name,
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -324,14 +318,16 @@ const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<ty
   const handleSearchAccountingAccount = async (query?: string) => {
     try {
       const response = await searchAccountingAccount({
-        name: query,
         account_type: "expense, expense_direct_cost, expense_depreciation, asset_current, asset_non_current, asset_fixed, asset_prepayments",
-      }).unwrap()
+      }, true).unwrap()
 
       return response.data?.map(accountingAccount => ({
         id: accountingAccount.id,
         name: accountingAccount.name,
+        code: accountingAccount.code,
       }))
+        .filter(accountingAccount => accountingAccount.name.toLowerCase().includes(query?.toLowerCase() || "") || accountingAccount.code.toLowerCase().includes(query?.toLowerCase() || ""))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -345,17 +341,33 @@ const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<ty
     render={({ field }) => (
       <FormItem className="flex flex-col w-[200px]">
         <FormControl>
-          <AsyncSelect<{ id: number, name: string }, number>
+          <AsyncSelect<{ id: number, code: string, name: string }, number>
             label="Cuenta contable"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
               control._formState.errors.items?.[index]?.account_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
             )}
+            className="w-[400px]"
+            align="end"
             placeholder="Buscar cuenta contable..."
             fetcher={handleSearchAccountingAccount}
-            getDisplayValue={(item) => item.name}
+            getDisplayValue={(item) => (
+              <div className="flex gap-1">
+                <span className="font-medium">
+                  {item.code}
+                </span>
+                -{" "}
+                {item.name}
+              </div>
+            )}
             getOptionValue={(item) => item.id}
-            renderOption={(item) => <>{item.name}</>}
+            renderOption={(item) => <div className="truncate">
+              <span className="font-medium">
+                {item.code}
+              </span>
+              {" - "}
+              {item.name}
+            </div>}
             onChange={field.onChange}
             value={field.value}
             getOptionKey={(item) => String(item.id)}
@@ -369,7 +381,7 @@ const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<ty
 
 export const columns: FormTableColumn<z.infer<typeof newBillSchema>>[] = [
   {
-    header: "Material",
+    header: "Producto / Servicio",
     width: 300,
     cellClassName: "pr-0",
     renderCell: (control, index) => <MaterialsCell control={control} index={index} />,

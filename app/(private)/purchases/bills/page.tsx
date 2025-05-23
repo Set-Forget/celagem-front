@@ -15,12 +15,13 @@ export default function Page() {
   const router = useRouter()
 
   const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
-  const status = searchParams.get('status')
+  const status = JSON.parse(searchParams.get('status') || '[]').join(',') || []
+  const type = JSON.parse(searchParams.get('type') || '[]').join(',') || []
   const date_range = JSON.parse(searchParams.get('date_range') || '{}') as { field: string, from: string, to: string }
 
-  const { data: bills, isLoading } = useListBillsQuery({
+  const { data: bills, isLoading: isBillsLoading } = useListBillsQuery({
     number: search.field === "number" ? search?.query : undefined,
-    status: status ? JSON.parse(status).join(',') : undefined,
+    //status: status ? JSON.parse(status).join(',') : undefined,
     supplier: search.field === "supplier" ? search?.query : undefined,
     date_start: date_range?.field === "date" ? date_range.from : undefined,
     date_end: date_range?.field === "date" ? date_range.to : undefined,
@@ -30,7 +31,7 @@ export default function Page() {
 
   return (
     <div>
-      <Header title="Facturas de compra">
+      <Header title="Comprobantes de compra">
         <Button
           className="ml-auto"
           size="sm"
@@ -40,14 +41,17 @@ export default function Page() {
           Cargar factura
         </Button>
       </Header>
-      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
+      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)] [&_*[data-table='true']]:w-[calc(100svw-306px)]">
         <DataTable
-          data={bills?.data || []}
-          loading={isLoading}
+          data={bills
+            ?.toSorted((a, b) => Date.parse(b.date) - Date.parse(a.date) || String(b.number).localeCompare(String(a.number), undefined, { numeric: true }))
+            .filter(bill => type.length === 0 || type.includes(bill.type))
+            .filter(bill => status.length === 0 || status.includes(bill.status)) ?? []}
+          loading={isBillsLoading}
           columns={columns}
           onRowClick={(row) => {
-            if (row.type === "debit_note") return router.push(`${pathname.replace(/^\/purchases\/bills/, "")}/debit-notes/${row.id}`)
-            if (row.type === "credit_note") return router.push(`${pathname.replace(/^\/purchases\/bills/, "")}/credit-notes/${row.id}`)
+            if (row.type === "debit_note") return router.push(`debit-notes/${row.id}`)
+            if (row.type === "credit_note") return router.push(`credit-notes/${row.id}`)
             return router.push(`${pathname}/${row.id}`)
           }}
           toolbar={({ table }) => <Toolbar table={table} />}

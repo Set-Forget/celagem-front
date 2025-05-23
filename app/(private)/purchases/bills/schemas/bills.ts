@@ -1,7 +1,7 @@
 import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
-export const billStatus = z.enum(['draft', 'posted', 'to_approve', 'cancel']);
+export const billStatus = z.enum(['draft', 'posted', 'to_approve', 'cancel', 'done', 'overdue']);
 export const billTypes = z.enum(['invoice', 'credit_note', 'debit_note']);
 
 export const newBillLineSchema = z.object({
@@ -17,7 +17,9 @@ export const newBillLineSchema = z.object({
 export const newBillGeneralSchema = z.object({
   supplier: z.number({ required_error: "El proveedor es requerido" }),
   number: z.string({ required_error: "El número de factura es requerido" }).min(1, { message: "El número de factura es requerido" }),
-  date: z.string({ required_error: "La fecha de factura es requerida" }),
+  date: z.custom<CalendarDate>((data) => {
+    return data instanceof CalendarDate;
+  }, { message: "La fecha de factura es requerida" }),
   company: z.number({ required_error: "La empresa es requerida" }).optional(),
   accounting_date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
@@ -60,7 +62,7 @@ export const billLineSchema = z.object({
   purchase_order_line: z.object({
     id: z.number(),
     name: z.string(),
-  }),
+  }).nullable(),
   account: z.object({
     id: z.number(),
     name: z.string(),
@@ -68,7 +70,7 @@ export const billLineSchema = z.object({
   cost_center: z.object({
     id: z.number(),
     name: z.string(),
-  }),
+  }).nullable(),
   taxes: z.array(z.object({
     id: z.number(),
     name: z.string(),
@@ -118,9 +120,12 @@ export const billDetailSchema = z.object({
     phone: z.string(),
   }),
   status: billStatus,
+  approval_state: z.enum(['draft', 'to_approve', 'approved']),
   date: z.string(),
   due_date: z.string(),
   accounting_date: z.string(),
+  created_at: z.string(),
+  created_by: z.string(),
   currency: z.object({
     id: z.number(),
     name: z.string(),
@@ -150,7 +155,10 @@ export const billDetailSchema = z.object({
   })),
   debit_notes: z.array(z.object({
     id: z.number(),
-    name: z.string(),
+    number: z.string(),
+    date: z.string(),
+    amount_total: z.number(),
+    status: billStatus,
   })),
   company: z.object({
     id: z.number(),
@@ -159,7 +167,7 @@ export const billDetailSchema = z.object({
   payments: z.array(z.object({
     id: z.number(),
     name: z.string(),
-  })), // ! No tengo idea si es así el schema.
+  })),
   type: billTypes,
   items: z.array(billLineSchema),
 })

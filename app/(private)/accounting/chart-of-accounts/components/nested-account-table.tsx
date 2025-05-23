@@ -4,18 +4,35 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 import { ChevronDown, ChevronRight, Loader2 } from "lucide-react"
-import React, { useState } from "react"
-
+import React, { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import Toolbar from "./toolbar"
 import { AccountList } from "../schemas/account"
 import { useLazyGetAccountingAccountQuery } from "@/lib/services/accounting-accounts"
-
+import { accountTypes } from "../data"
 
 interface NestedAccountTableProps {
   data?: AccountList[]
   loading?: boolean
 }
+
+const getVisibleRowCount = (
+  items: AccountList[] | undefined,
+  expanded: Set<number>,
+  childrenCache: Record<number, AccountList[]>
+): number => {
+  if (!items) return 0;
+
+  return items.reduce((acc, item) => {
+    let subtotal = 1;
+
+    if (expanded.has(item.id)) {
+      subtotal += getVisibleRowCount(childrenCache[item.id], expanded, childrenCache);
+    }
+
+    return acc + subtotal;
+  }, 0);
+};
 
 const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data, loading }) => {
   const router = useRouter()
@@ -114,8 +131,11 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data, loading }
                 {item.name.toUpperCase()}
               </Button>
             </TableCell>
+            <TableCell className="p-2 text-sm">
+              {accountTypes.find((type) => type.value === item.account_type)?.label || "No especificado"}
+            </TableCell>
             <TableCell className="p-2 text-sm text-right font-medium">
-              {/* {item.balance !== undefined ? `ARS ${item.balance.toFixed(2)}` : ""} */}
+              {item.balance !== undefined ? `ARS ${item.balance.toFixed(2)}` : ""}
             </TableCell>
             <TableCell className="p-2 text-sm"></TableCell>
           </TableRow>
@@ -124,6 +144,11 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data, loading }
       )
     })
   }
+
+  const visibleRowCount = useMemo(
+    () => getVisibleRowCount(data, expandedRows, loadedChildren),
+    [data, expandedRows, loadedChildren]
+  );
 
   return (
     <div className="flex flex-col gap-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
@@ -136,6 +161,7 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data, loading }
               <TableRow className="border-b">
                 <TableHead className="h-9 text-nowrap">ID</TableHead>
                 <TableHead className="h-9 text-nowrap">Cuenta</TableHead>
+                <TableHead className="h-9 text-nowrap">Tipo</TableHead>
                 <TableHead className="h-9 text-nowrap text-right">Balance</TableHead>
                 <TableHead className="h-9 text-nowrap w-6"></TableHead>
               </TableRow>
@@ -158,11 +184,8 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data, loading }
         </div>
         <div className="flex justify-between">
           <p className="whitespace-nowrap text-sm text-muted-foreground" aria-live="polite">
-            Mostrando <span className="text-foreground">{data?.length || 0}</span>{" "}
+            Mostrando <span className="text-foreground">{visibleRowCount}</span> de{" "}
             resultados
-          </p>
-          <p className="whitespace-nowrap text-sm text-muted-foreground" aria-live="polite">
-            <span className="text-foreground font-medium">ARS 17,000.00</span> en total
           </p>
         </div>
       </div>

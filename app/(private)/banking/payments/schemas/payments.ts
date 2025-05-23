@@ -1,3 +1,4 @@
+import { billDetailSchema } from "@/app/(private)/purchases/bills/schemas/bills";
 import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
@@ -49,7 +50,7 @@ export const paymentDetailSchema = z.object({
   invoices: z.array(z.object({
     id: z.number(),
     name: z.string(),
-    amount: z.number(),
+    amount_total: z.number(),
     payment_state: z.string(),
   })),
   credit_notes: z.array(z.object({
@@ -81,24 +82,27 @@ export const paymentDetailSchema = z.object({
 })
 
 export const newPaymentSchema = z.object({
-  amount: z.number({ required_error: "El monto es requerido" }),
+  amount: z.number().optional(),
   date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de pago es requerida" }),
-  currency: z.number({ required_error: "La moneda es requerida" }),
-  journal: z.number({ required_error: "El diario contable es requerido" }),
-  partner: z.number({ required_error: "El proveedor es requerido" }),
+  currency: z.number({ required_error: "La moneda es requerida" }), journal: z.number().optional(),
+  partner: z.number().optional(),
   payment_method: z.number({ required_error: "El método de pago es requerido" }),
-  payment_reference: z.string({ required_error: "La referencia de pago es requerida" }),
-  name: z.string({ required_error: "El nombre es requerido" }),
-  invoice_ids: z.array(z.number()).optional(),
+  payment_reference: z.string().optional(),
+  invoices: z.array(z.number()).optional(),
 
   // ! Esto no existe
-  invoices: z.array(z.object({
-    invoice_id: z.number({ required_error: "La factura es requerida" }),
-    amount: z.number({ required_error: "El monto es requerido" }).min(1, { message: "El monto es requerido" }),
-    withholding_ids: z.array(z.number()).optional(),
-  })).optional(),
+  bills: z.array(billDetailSchema).optional(),
+})
+
+export const newPaymentResponseSchema = z.object({
+  status: z.string(),
+  message: z.string(),
+  data: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
 })
 
 export const paymentListResponseSchema = z.object({
@@ -116,3 +120,6 @@ export type PaymentListResponse = z.infer<typeof paymentListResponseSchema>;
 
 export type PaymentDetail = z.infer<typeof paymentDetailSchema>;
 export type PaymentDetailResponse = z.infer<typeof paymentDetailResponseSchema>;
+
+export type NewPayment = z.infer<typeof newPaymentSchema>;
+export type NewPaymentResponse = z.infer<typeof newPaymentResponseSchema>;

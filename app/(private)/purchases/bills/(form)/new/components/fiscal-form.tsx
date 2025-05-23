@@ -21,6 +21,7 @@ export default function FiscalForm() {
         id: currency.id,
         name: currency.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -35,6 +36,7 @@ export default function FiscalForm() {
         id: term.id,
         name: term.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -44,11 +46,15 @@ export default function FiscalForm() {
 
   const handleSearchPaymentMethod = async (query?: string) => {
     try {
-      const response = await searchPaymentMethods({ name: query }).unwrap()
+      const response = await searchPaymentMethods({
+        name: query,
+        payment_type: "outbound"
+      }).unwrap()
       return response.data?.map(method => ({
         id: method.id,
         name: method.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)

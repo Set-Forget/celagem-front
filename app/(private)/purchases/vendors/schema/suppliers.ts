@@ -36,7 +36,7 @@ export const newSupplierFiscalSchema = z.object({
 export const newSupplierAccountingSchema = z.object({
   currency: z.number(),
   property_payment_term: z.number({ required_error: "La condición de pago es requerida" }),
-  property_account_position: z.union([z.string(), z.literal(false)]), // ? ¿Esto que es?
+  property_account_position: z.union([z.string(), z.literal(false)]).optional(), // ? ¿Esto que es?
   payment_method: z.number({ required_error: "El método de pago es requerido" }),
   account: z.number({ required_error: "La cuenta contable es requerida" }),
 })
@@ -123,8 +123,8 @@ export const supplierDetailSchema = z.object({
   street: z.string(),
   city: z.string(),
   zip: z.string(),
-  state_id: z.string(),
-  country_id: z.string(),
+  state_id: z.number(),
+  country_id: z.number(),
 
   purchase_order_count: z.number(), // ? Esto creo que no es muy útil.
   // ! Falta withholdings o algo por el estilo para representar (Retencion Sobre ICA, No Aplica Ret. Fuente, Retencion Sobre IVA).

@@ -1,5 +1,6 @@
+import RenderFields from "@/components/render-fields";
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
-import { cn, FieldDefinition, placeholder } from "@/lib/utils";
+import { FieldDefinition } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { PurchaseOrderDetail } from "../../../schemas/purchase-orders";
 
@@ -7,12 +8,12 @@ const fields: FieldDefinition<PurchaseOrderDetail>[] = [
   {
     label: "Condición de pago",
     placeholderLength: 30,
-    getValue: (p) => p?.payment_term?.name || "No especificado",
+    render: (p) => p?.payment_term?.name || "No especificado",
   },
   {
     label: "Moneda",
     placeholderLength: 30,
-    getValue: (p) => p?.currency?.name || "No especificado",
+    render: (p) => p?.currency?.name || "No especificado",
   }
 ];
 
@@ -22,27 +23,11 @@ export default function FiscalTab() {
   const { data: purchaseOrder, isLoading: isPurchaseOrderLoading } = useGetPurchaseOrderQuery(id)
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-      {fields.map((field) => {
-        const displayValue = isPurchaseOrderLoading
-          ? placeholder(field.placeholderLength)
-          : field.getValue(purchaseOrder!) ?? "";
-        return (
-          <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-            <label className="text-muted-foreground text-sm">
-              {field.label}
-            </label>
-            <span
-              className={cn(
-                "text-sm transition-all duration-300",
-                isPurchaseOrderLoading ? "blur-[4px]" : "blur-none"
-              )}
-            >
-              {displayValue}
-            </span>
-          </div>
-        );
-      })}
-    </div>
+    <RenderFields
+      fields={fields}
+      loading={isPurchaseOrderLoading}
+      data={purchaseOrder}
+      className="p-4"
+    />
   )
 }

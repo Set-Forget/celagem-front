@@ -9,6 +9,7 @@ import { newPurchaseRequestSchema } from "../../../schemas/purchase-requests";
 import { columns } from "./columns";
 import TableFooter from "./table-footer";
 import { useLazyListCompaniesQuery } from "@/lib/services/companies";
+import { getLocalTimeZone, today } from "@internationalized/date";
 
 export default function GeneralForm() {
   const { control, formState } = useFormContext<z.infer<typeof newPurchaseRequestSchema>>()
@@ -22,6 +23,7 @@ export default function GeneralForm() {
         id: company.id,
         name: company.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -33,28 +35,6 @@ export default function GeneralForm() {
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       <FormField
         control={control}
-        name="name"
-        render={({ field }) => (
-          <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">Titulo</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Compra de materiales..."
-                {...field}
-              />
-            </FormControl>
-            {formState.errors.name ? (
-              <FormMessage />
-            ) :
-              <FormDescription>
-                Este será el título de la solicitud de compra.
-              </FormDescription>
-            }
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
         name="request_date"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -63,6 +43,7 @@ export default function GeneralForm() {
               <DatePicker
                 value={field.value || null}
                 onChange={(date) => field.onChange(date)}
+                isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) < 0}
               />
             </FormControl>
             {formState.errors.request_date ? (
@@ -80,9 +61,9 @@ export default function GeneralForm() {
         name="company"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">Compañia</FormLabel>
+            <FormLabel className="w-fit">Compañía</FormLabel>
             <AsyncSelect<{ id: string, name: string }, string>
-              label="Compañia"
+              label="Compañía"
               triggerClassName="!w-full"
               placeholder="Seleccionar compañia..."
               fetcher={handleSearchCompany}

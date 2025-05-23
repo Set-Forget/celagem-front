@@ -17,6 +17,7 @@ export interface FormTableColumn<TFormValues extends FieldValues> {
 export interface FormTableProps<TFormValues extends FieldValues> {
   className?: string;
   loading?: boolean;
+  deletableRows?: boolean;
   columns: FormTableColumn<TFormValues>[];
   name: ArrayPath<TFormValues>;
   footer?: (props: { append: (value: any) => void }) => React.ReactNode;
@@ -26,6 +27,7 @@ export default function FormTable<TFormValues extends FieldValues>({
   columns,
   className,
   name,
+  deletableRows = true,
   loading,
   footer,
 }: FormTableProps<TFormValues>) {
@@ -78,7 +80,7 @@ export default function FormTable<TFormValues extends FieldValues>({
               </TableRow>
             )}
             {fields.map((item, index) => (
-              <TableRow key={item.id} className="group">
+              <TableRow key={item.id} className="group h-9">
                 {columns.map((col, idx) => (
                   <TableCell
                     key={idx}
@@ -93,23 +95,25 @@ export default function FormTable<TFormValues extends FieldValues>({
                     {col.renderCell(control, index, name)}
                   </TableCell>
                 ))}
-                <TableCell className="py-0 pr-5 text-right">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 transition-opacity opacity-0 group-hover:opacity-100"
-                    onClick={() => {
-                      removeItem(index);
-                    }}
-                  >
-                    <Trash2 className="!h-3.5 !w-3.5 text-destructive" />
-                  </Button>
-                </TableCell>
+                {deletableRows && (
+                  <TableCell className="py-0 pr-5 text-right">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 transition-opacity opacity-0 group-hover:opacity-100"
+                      onClick={() => {
+                        removeItem(index);
+                      }}
+                    >
+                      <Trash2 className="!h-3.5 !w-3.5 text-destructive" />
+                    </Button>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
-          {footer && footer({ append })}
+          {!loading && footer && footer({ append })}
         </Table>
       </div>
     </div>

@@ -49,7 +49,10 @@ export const deliveryNoteItemSchema = z.object({
   display_name: z.string(),
   product_uom_qty: z.number(),
   quantity: z.number(),
-  product_uom: z.string(),
+  product_uom: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
 })
 
 export const deliveryNoteDetailSchema = z.object({
@@ -63,6 +66,7 @@ export const deliveryNoteDetailSchema = z.object({
     phone: z.string(),
   }),
   scheduled_date: z.string(),
+  delivery_date: z.string(),
   note: z.string(),
   delivery_location: z.string(),
   source_location: z.string(),

@@ -8,13 +8,16 @@ import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCc
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PurchaseRequestState } from "../../schemas/purchase-requests";
+import { generatePDF } from "@/lib/templates/utils.client";
 
 export default function Actions({ state }: { state?: PurchaseRequestState }) {
   const router = useRouter()
 
   const { id } = useParams<{ id: string }>()
 
-  const { data: purchaseRequest } = useGetPurchaseRequestQuery(id)
+  const { data: purchaseRequest } = useGetPurchaseRequestQuery(id, {
+    skip: !id,
+  })
 
   const [confirmPurchaseRequest, { isLoading: isPurchaseRequestConfirming }] = useConfirmPurchaseRequestMutation();
   const [cancelPurchaseRequest, { isLoading: isPurchaseRequestCancelling }] = useCancelPurchaseRequestMutation()
@@ -50,11 +53,19 @@ export default function Actions({ state }: { state?: PurchaseRequestState }) {
     }
   }
 
-
   const handleGeneratePDF = async () => {
-    const { generatePurchaseRequestPDF } = await import("../../templates/purchase-request")
-    generatePurchaseRequestPDF()
-  }
+    if (!purchaseRequest) throw new Error("No se ha encontrado la solicitud de pedido")
+    try {
+      const pdf = await generatePDF({
+        templateName: 'purchaseRequest',
+        data: purchaseRequest,
+      });
+      pdf.view();
+    } catch (error) {
+      toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
+      console.error('Error al generar el PDF:', error);
+    }
+  };
 
   if (!state) {
     return null
@@ -74,7 +85,7 @@ export default function Actions({ state }: { state?: PurchaseRequestState }) {
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => console.log("Editar")}>
+          <DropdownMenuItem onSelect={() => router.push(`/purchases/purchase-requests/${id}/edit`)}>
             <EditIcon />
             Editar
           </DropdownMenuItem>
@@ -142,17 +153,36 @@ export default function Actions({ state }: { state?: PurchaseRequestState }) {
     )
   }
 
-  if (state === "cancelled") {
+  if (state === "ordered") {
     return (
-      <Button
-        size="sm"
-      //onClick={() => handleUpdatePurchaseRequest("draft")}
-      //loading={isPurchaseRequestUpdating}
-      >
-        <RotateCcw className={cn(/* isPurchaseRequestUpdating && "hidden" */)} />
-        Reabrir
-      </Button>
+      <div className="flex gap-2">
+        <Dropdown
+          trigger={
+            <Button size="icon" variant="outline" className="h-8 w-8">
+              <Ellipsis />
+            </Button>
+          }
+        >
+          <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
+            <FileTextIcon />
+            Previsualizar
+          </DropdownMenuItem>
+        </Dropdown>
+      </div>
     )
   }
+
+  // if (state === "cancelled") {
+  //   return (
+  //     <Button
+  //       size="sm"
+  //     //onClick={() => handleUpdatePurchaseRequest("draft")}
+  //     //loading={isPurchaseRequestUpdating}
+  //     >
+  //       <RotateCcw className={cn(/* isPurchaseRequestUpdating && "hidden" */)} />
+  //       Reabrir
+  //     </Button>
+  //   )
+  // }
 
 }

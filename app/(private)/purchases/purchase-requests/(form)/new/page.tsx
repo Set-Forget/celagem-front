@@ -32,7 +32,7 @@ const tabs = [
   },
 ];
 
-export default function NewPurchaseRequestPage() {
+export default function Page() {
   const router = useRouter()
 
   const [tab, setTab] = useState(tabs[0].value)
@@ -42,7 +42,6 @@ export default function NewPurchaseRequestPage() {
   const newPurchaseRequest = useForm<z.infer<typeof newPurchaseRequestSchema>>({
     resolver: zodResolver(newPurchaseRequestSchema),
     defaultValues: {
-      name: "",
       request_date: "",
       items: [],
       internal_notes: "",

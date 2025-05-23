@@ -1,4 +1,4 @@
-import { NewPurchaseOrder, NewPurchaseOrderResponse, PurchaseOrderDetail, PurchaseOrderDetailResponse, PurchaseOrderListResponse } from '@/app/(private)/purchases/purchase-orders/schemas/purchase-orders';
+import { NewPurchaseOrder, NewPurchaseOrderResponse, PurchaseOrderDetail, PurchaseOrderDetailResponse, PurchaseOrderListResponse, PurchaseOrderState } from '@/app/(private)/purchases/purchase-orders/schemas/purchase-orders';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
 
@@ -7,7 +7,7 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
     listPurchaseOrders: builder.query<PurchaseOrderListResponse,
       {
         number?: string,
-        status?: "draft" | "sent" | "to approve" | "purchase" | "done" | "cancel",
+        status?: PurchaseOrderState,
         supplier?: string,
         created_at_start?: string,
         created_at_end?: string,
@@ -25,11 +25,11 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
       transformResponse: (response: PurchaseOrderDetailResponse) => response.data,
       providesTags: (result, error, id) => [{ type: 'PurchaseOrder', id }],
     }),
-    updatePurchaseOrder: builder.mutation<{ status: string, message: string }, Omit<Partial<PurchaseOrderDetail>, "status"> & { state: "draft" | "sent" | "to approve" | "purchase" | "done" | "cancel" }>({
-      query: ({ id, ...data }) => ({
+    updatePurchaseOrder: builder.mutation<{ status: string, message: string }, { body: Partial<Overwrite<Omit<NewPurchaseOrder, 'currency' | 'payment_term' | 'required_date'> & { currency: number; payment_term: number; required_date: string }, { company: number }>>, id: string | number }>({
+      query: ({ id, body }) => ({
         url: `purchase_orders/${id}`,
         method: 'PUT',
-        body: data,
+        body: { ...body },
       }),
       invalidatesTags: ['PurchaseOrder'],
     }),

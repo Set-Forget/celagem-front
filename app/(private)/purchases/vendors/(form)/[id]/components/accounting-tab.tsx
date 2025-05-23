@@ -2,27 +2,28 @@ import { useGetSupplierQuery } from "@/lib/services/suppliers";
 import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { SupplierDetail } from "../../../schema/suppliers";
+import RenderFields from "@/components/render-fields";
 
 const fields: FieldDefinition<SupplierDetail>[] = [
   {
     label: "Moneda",
     placeholderLength: 16,
-    getValue: (p) => p.currency?.name || "No especificado",
+    render: (p) => p.currency?.name || "No especificado",
   },
   {
     label: "Condición de pago",
     placeholderLength: 16,
-    getValue: (p) => p.property_payment_term?.name || "No especificado",
+    render: (p) => p.property_payment_term?.name || "No especificado",
   },
   {
     label: "Método de pago",
     placeholderLength: 16,
-    getValue: (p) => p.payment_method?.name || "No especificado",
+    render: (p) => p.payment_method?.name || "No especificado",
   },
   {
     label: "Cuenta contable",
     placeholderLength: 16,
-    getValue: (p) => p.account?.name || "No especificado",
+    render: (p) => p.account?.name || "No especificado",
   }
 ];
 
@@ -32,27 +33,11 @@ export default function AccountingTab() {
   const { data: supplier, isLoading: isSupplierLoading } = useGetSupplierQuery(id)
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-      {fields.map((field) => {
-        const displayValue = isSupplierLoading
-          ? placeholder(field.placeholderLength)
-          : field.getValue(supplier!) ?? "";
-        return (
-          <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-            <label className="text-muted-foreground text-sm">
-              {field.label}
-            </label>
-            <span
-              className={cn(
-                "text-sm transition-all duration-300",
-                isSupplierLoading ? "blur-[4px]" : "blur-none"
-              )}
-            >
-              {displayValue}
-            </span>
-          </div>
-        );
-      })}
-    </div>
+    <RenderFields
+      fields={fields}
+      data={supplier}
+      loading={isSupplierLoading}
+      className="p-4"
+    />
   )
 }

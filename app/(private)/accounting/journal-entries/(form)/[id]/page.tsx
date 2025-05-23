@@ -13,22 +13,23 @@ import { journalEntryStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
 import TableFooter from "./components/table-footer"
+import RenderFields from "@/components/render-fields"
 
 const fields: FieldDefinition<JournalEntryDetail>[] = [
   {
     label: "Fecha de creación",
     placeholderLength: 14,
-    getValue: (p) => format(parseISO(p.date), "PP", { locale: es })
+    render: (p) => format(parseISO(p.date), "PP", { locale: es })
   },
   {
     label: "Diario contable",
     placeholderLength: 10,
-    getValue: (p) => p.journal.name
+    render: (p) => p.journal.name
   },
   {
     label: "Notas",
     placeholderLength: 30,
-    getValue: (p) => p.internal_notes || "No hay notas",
+    render: (p) => p.internal_notes || "No hay notas",
     className: "col-span-2"
   }
 ];
@@ -58,28 +59,11 @@ export default function Page() {
         <Actions state={journalEntry?.status} />
       </Header>
       <div className="flex flex-col gap-4 p-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {fields.map((field) => {
-            const displayValue = isJournalEntryLoading
-              ? placeholder(field.placeholderLength)
-              : field.getValue(journalEntry!) ?? "";
-            return (
-              <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-                <label className="text-muted-foreground text-sm">
-                  {field.label}
-                </label>
-                <span
-                  className={cn(
-                    "text-sm transition-all duration-300",
-                    isJournalEntryLoading ? "blur-[4px]" : "blur-none"
-                  )}
-                >
-                  {displayValue}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+        <RenderFields
+          fields={fields}
+          data={journalEntry}
+          loading={isJournalEntryLoading}
+        />
         <DataTable
           data={journalEntry?.items || []}
           footer={() => <TableFooter />}

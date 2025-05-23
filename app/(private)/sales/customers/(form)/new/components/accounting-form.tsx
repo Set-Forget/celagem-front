@@ -23,6 +23,7 @@ export default function AccountingForm() {
         id: currency.id,
         name: currency.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -37,6 +38,7 @@ export default function AccountingForm() {
         id: term.id,
         name: term.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -52,6 +54,7 @@ export default function AccountingForm() {
         name: account.name,
         code: account.code
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -61,11 +64,15 @@ export default function AccountingForm() {
 
   const handleSearchPaymentMethod = async (query?: string) => {
     try {
-      const response = await searchPaymentMethods({ name: query }).unwrap()
+      const response = await searchPaymentMethods({
+        name: query,
+        payment_type: "inbound"
+      }).unwrap()
       return response.data?.map(method => ({
         id: method.id,
         name: method.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)

@@ -7,37 +7,16 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Progress } from "@/components/ui/progress"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { AdaptedBillList } from "@/lib/adapters/bills"
 import { cn } from "@/lib/utils"
-import { BillList } from "../schemas/bills"
-import { billStatus, billTypes } from "../utils"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Progress } from "@/components/ui/progress"
-import { creditNoteStatus } from "@/app/(private)/credit-notes/utils"
-import { debitNoteStatus } from "@/app/(private)/debit-notes/utils"
+import { billStatus, billTypes } from "../utils"
+import { creditNoteStatus } from "@/app/(private)/[scope]/credit-notes/utils"
 
-const PercentagePaidCell = ({ row }: { row: Row<BillList> }) => {
-  const percentagePaid = row.original.percentage_paid
-
-  const creditNote = row.original.type === 'credit_note'
-
-  if (creditNote) return
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Progress className="w-[200px]" value={percentagePaid} />
-        </TooltipTrigger>
-        <TooltipContent>
-          {percentagePaid.toFixed()}%
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  )
-};
-
-export const columns: ColumnDef<BillList>[] = [
+export const columns: ColumnDef<AdaptedBillList>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -83,18 +62,9 @@ export const columns: ColumnDef<BillList>[] = [
     accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      let status
-
-      if (row.original.type === 'invoice') {
-        status = billStatus[row.getValue("status") === "posted" && new Date(row.original.due_date) < new Date() ? "overdue" : row.getValue("status") as keyof typeof billStatus];
-      }
-      if (row.original.type === 'credit_note') {
-        status = creditNoteStatus[row.getValue("status") as keyof typeof creditNoteStatus];
-      }
-      if (row.original.type === 'debit_note') {
-        status = debitNoteStatus[row.getValue("status") === "posted" && new Date(row.original.due_date) < new Date() ? "overdue" : row.getValue("status") as keyof typeof debitNoteStatus];
-      }
-
+      const status = row.original.type === "credit_note" ?
+        creditNoteStatus[row.original.status as keyof typeof creditNoteStatus] :
+        billStatus[row.original.status]
       return (
         <Badge
           variant="custom"
@@ -106,14 +76,10 @@ export const columns: ColumnDef<BillList>[] = [
     },
   },
   {
-    accessorKey: "percentage_paid",
-    header: "Porcentaje saldado",
-    cell: ({ row }) => <PercentagePaidCell row={row} />,
-  },
-  {
     accessorKey: "due_date",
     header: "Fecha de vencimiento",
     cell: ({ row }) => {
+      if (row.original.type === 'credit_note') return
       return <div className="text-nowrap">
         {format(parseISO(row.getValue("due_date")), "PP", { locale: es })}
       </div>
@@ -133,10 +99,11 @@ export const columns: ColumnDef<BillList>[] = [
     accessorKey: "amount_residual",
     header: () => <div className="text-right pr-4">Saldo</div>,
     cell: ({ row }) => {
+      if (row.original.type === 'credit_note') return
       return <div className="text-right font-medium pr-4 text-nowrap">
         {row.original.currency.name}{" "}
         {row.original.amount_residual}
       </div>
     },
-  }
+  },
 ]

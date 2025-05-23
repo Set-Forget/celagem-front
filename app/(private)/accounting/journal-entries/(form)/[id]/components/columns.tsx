@@ -1,16 +1,54 @@
 "use client"
 
 import {
-  ColumnDef
+  ColumnDef,
+  Row
 } from "@tanstack/react-table"
 import { JournalEntryItem } from "../../../schemas/journal-entries"
+import { useGetJournalEntryQuery } from "@/lib/services/journal-entries"
+import { useParams } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { routes } from "@/lib/routes"
+
+const DebitCell = ({ row }: { row: Row<JournalEntryItem> }) => {
+  const { id } = useParams<{ id: string }>()
+  const { data: journalEntry } = useGetJournalEntryQuery(id)
+
+  return (
+    <div>
+      {journalEntry?.currency.name}{" "}
+      {row.getValue("debit")}
+    </div>
+  )
+}
+
+const CreditCell = ({ row }: { row: Row<JournalEntryItem> }) => {
+  const { id } = useParams<{ id: string }>()
+  const { data: journalEntry } = useGetJournalEntryQuery(id)
+
+  return (
+    <div>
+      {journalEntry?.currency.name}{" "}
+      {row.getValue("credit")}
+    </div>
+  )
+}
 
 export const columns: ColumnDef<JournalEntryItem>[] = [
   {
     accessorKey: "account_name",
     header: "Cuenta contable",
     cell: ({ row }) => {
-      return <div>{row.getValue("account_name")}</div>
+      return <Button
+        variant="link"
+        className="p-0 h-auto text-foreground"
+        asChild
+      >
+        <Link href={routes.chartOfAccounts.detail(row.original.account_id)} target="_blank">
+          {row.getValue("account_name")}
+        </Link>
+      </Button>
     },
   },
   {
@@ -23,15 +61,11 @@ export const columns: ColumnDef<JournalEntryItem>[] = [
   {
     accessorKey: "debit",
     header: "Debe",
-    cell: ({ row }) => {
-      return <div>ARS {row.getValue("debit")}</div>
-    },
+    cell: ({ row }) => <DebitCell row={row} />,
   },
   {
     accessorKey: "credit",
     header: "Haber",
-    cell: ({ row }) => {
-      return <div>ARS {row.getValue("credit")}</div>
-    },
+    cell: ({ row }) => <CreditCell row={row} />,
   },
 ]

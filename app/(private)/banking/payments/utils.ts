@@ -13,7 +13,7 @@ export const paymentStatus = {
     pure_bg_color: "bg-stone-500",
   },
   paid: {
-    label: "Pagada",
+    label: "Completada",
     bg_color: "bg-green-100",
     text_color: "text-green-800",
     pure_bg_color: "bg-green-500",

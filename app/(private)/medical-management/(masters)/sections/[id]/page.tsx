@@ -26,22 +26,23 @@ import Dropdown from "@/components/dropdown";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import CustomSonner from "@/components/custom-sonner";
 import { toast } from "sonner";
+import RenderFields from "@/components/render-fields";
 
 const descriptionFields: FieldDefinition<SectionDetail>[] = [
   {
     label: "Descripción",
     placeholderLength: 14,
-    getValue: (p) => p.description || "No especificado",
+    render: (p) => p.description || "No especificado",
   },
   {
     label: "Tipo",
     placeholderLength: 10,
-    getValue: (p) => sectionTypes.find((t) => t.value === p.type)?.label || "No especificado",
+    render: (p) => sectionTypes.find((t) => t.value === p.type)?.label || "No especificado",
   },
   {
     label: "Fecha de creación",
     placeholderLength: 10,
-    getValue: (p) => /* p.created_at || */ "No especificado",
+    render: (p) => /* p.created_at || */ "No especificado",
   }
 ];
 
@@ -240,28 +241,12 @@ export default function Page() {
           </Button>
         </div>
       </Header>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-        {descriptionFields.map((field) => {
-          const displayValue = isSectionLoading
-            ? placeholder(field.placeholderLength)
-            : field.getValue(section!) ?? "";
-          return (
-            <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-              <label className="text-muted-foreground text-sm">
-                {field.label}
-              </label>
-              <span
-                className={cn(
-                  "text-sm transition-all duration-300",
-                  isSectionLoading ? "blur-[4px]" : "blur-none"
-                )}
-              >
-                {displayValue}
-              </span>
-            </div>
-          );
-        })}
-      </div>
+      <RenderFields
+        fields={descriptionFields}
+        loading={isSectionLoading}
+        data={section}
+        className="p-4"
+      />
       <Separator />
       <Form {...form}>
         <TooltipProvider delayDuration={0}>

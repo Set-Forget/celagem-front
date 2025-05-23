@@ -16,27 +16,28 @@ import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
 import SupplierTab from "./components/supplier-tab"
 import NotesTab from "./components/notes-tab"
+import RenderFields from "@/components/render-fields"
 
 const fields: FieldDefinition<PurchaseReceiptDetail>[] = [
   {
     label: "Ubicación de origen",
     placeholderLength: 14,
-    getValue: (p) => p.source_location || "No especificado",
+    render: (p) => p.source_location || "No especificado",
   },
   {
     label: "Ubicación de recepción",
     placeholderLength: 14,
-    getValue: (p) => p.reception_location || "No especificado",
+    render: (p) => p.reception_location || "No especificado",
   },
   {
     label: "Fecha de recepción",
     placeholderLength: 12,
-    getValue: (p) => format(parseISO(p.reception_date), "PP", { locale: es }),
+    render: (p) => format(parseISO(p.reception_date), "PP", { locale: es }),
   },
   {
     label: "Fecha de requerimiento",
     placeholderLength: 12,
-    getValue: (p) => format(parseISO(p.scheduled_date), "PP", { locale: es }),
+    render: (p) => format(parseISO(p.scheduled_date), "PP", { locale: es }),
   }
 ];
 
@@ -80,28 +81,11 @@ export default function Page() {
         </div>
       </Header>
       <div className="flex flex-col gap-4 p-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {fields.map((field) => {
-            const displayValue = isPurchaseReceiptLoading
-              ? placeholder(field.placeholderLength)
-              : field.getValue(purchaseReceipt!) ?? "";
-            return (
-              <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-                <label className="text-muted-foreground text-sm">
-                  {field.label}
-                </label>
-                <span
-                  className={cn(
-                    "text-sm transition-all duration-300",
-                    isPurchaseReceiptLoading ? "blur-[4px]" : "blur-none"
-                  )}
-                >
-                  {displayValue}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+        <RenderFields
+          fields={fields}
+          data={purchaseReceipt}
+          loading={isPurchaseReceiptLoading}
+        />
         <DataTable
           data={purchaseReceipt?.items ?? []}
           loading={isPurchaseReceiptLoading}

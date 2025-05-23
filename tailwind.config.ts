@@ -6,7 +6,7 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./templates/**/*.{js,ts,jsx,tsx,mdx}",
+    "./lib/templates/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   safelist: [
     'bg-gray-100 !shadow-gray-100 text-gray-800 hover:!shadow-gray-100',

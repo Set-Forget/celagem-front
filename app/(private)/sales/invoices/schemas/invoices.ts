@@ -1,7 +1,7 @@
 import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
-export const invoiceStatus = z.enum(['draft', 'posted', 'cancel', 'to_approve']);
+export const invoiceStatus = z.enum(['draft', 'posted', 'cancel', 'to_approve', 'done', 'overdue']);
 export const invoiceTypes = z.enum(['invoice', 'credit_note', 'debit_note']);
 
 export const newInvoiceLineSchema = z.object({
@@ -116,7 +116,10 @@ export const invoiceDetailSchema = z.object({
   })),
   debit_notes: z.array(z.object({
     id: z.number(),
-    name: z.string(),
+    number: z.string(),
+    date: z.string(),
+    amount_total: z.number(),
+    status: invoiceStatus,
   })),
   created_by: z.string(),
   created_at: z.string(),

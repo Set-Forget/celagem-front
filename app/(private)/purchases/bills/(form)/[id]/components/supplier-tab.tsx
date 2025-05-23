@@ -2,27 +2,50 @@ import { useGetBillQuery } from "@/lib/services/bills";
 import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { BillDetail } from "../../../schemas/bills";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import RenderFields from "@/components/render-fields";
+import { routes } from "@/lib/routes";
 
 const fields: FieldDefinition<BillDetail>[] = [
   {
     label: "Proveedor",
     placeholderLength: 14,
-    getValue: (p) => p.supplier.name || "No especificado",
+    render: (p) => <Button
+      variant="link"
+      className="p-0 h-auto text-foreground font-normal"
+      asChild
+    >
+      <Link href={routes.suppliers.detail(p.supplier.id)} target="_blank">
+        {p.supplier.name}
+      </Link>
+    </Button>,
   },
   {
     label: "Número de teléfono",
     placeholderLength: 13,
-    getValue: (p) => p.supplier.phone || "No especificado",
+    render: (p) => p.supplier.phone || "No especificado",
   },
   {
     label: "Correo electrónico",
-    placeholderLength: 10,
-    getValue: (p) => p.supplier.email || "No especificado",
+    placeholderLength: 9,
+    render: (p) => <Button
+      variant="link"
+      className="p-0 h-auto text-foreground font-normal"
+      asChild
+    >
+      <Link
+        href={`mailto:${p.supplier.email}`}
+        target="_blank"
+      >
+        {p.supplier.email}
+      </Link>
+    </Button>
   },
   {
     label: "Dirección",
     placeholderLength: 20,
-    getValue: (p) => p.supplier.address || "No especificado",
+    render: (p) => p.supplier.address || "No especificado",
   }
 ];
 
@@ -32,27 +55,11 @@ export default function SupplierTab() {
   const { data: bill, isLoading: isBillLoading } = useGetBillQuery(id);
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-      {fields.map((field) => {
-        const displayValue = isBillLoading
-          ? placeholder(field.placeholderLength)
-          : field.getValue(bill!) ?? "";
-        return (
-          <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-            <label className="text-muted-foreground text-sm">
-              {field.label}
-            </label>
-            <span
-              className={cn(
-                "text-sm transition-all duration-300",
-                isBillLoading ? "blur-[4px]" : "blur-none"
-              )}
-            >
-              {displayValue}
-            </span>
-          </div>
-        );
-      })}
-    </div>
+    <RenderFields
+      fields={fields}
+      loading={isBillLoading}
+      data={bill}
+      className="p-4"
+    />
   )
 }

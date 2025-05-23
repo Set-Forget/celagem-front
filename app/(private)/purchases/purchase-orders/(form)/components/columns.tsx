@@ -13,6 +13,8 @@ import { z } from "zod";
 import { newPurchaseOrderSchema } from "../../schemas/purchase-orders";
 
 const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseOrderSchema>>; index: number }) => {
+  const { setValue } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()
+
   const [searchMaterials] = useLazyListMaterialsQuery()
 
   const handleSearchMaterial = async (query?: string) => {
@@ -27,6 +29,7 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
         standard_price: material.standard_price,
         code: material.default_code,
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -41,12 +44,12 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
       <FormItem className="flex flex-col w-full">
         <FormControl>
           <AsyncSelect<{ id: number, name: string, standard_price: number, code: string }, number>
-            label="Material"
+            label="Producto o servicio"
             triggerClassName={cn(
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
               control._formState.errors.items?.[index]?.product_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
             )}
-            placeholder="Buscar material..."
+            placeholder="Buscar producto o servicio..."
             fetcher={handleSearchMaterial}
             getDisplayValue={(item) => (
               <div className="flex gap-1">
@@ -65,7 +68,10 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
               -{" "}
               {item.name}
             </div>}
-            onChange={field.onChange}
+            onChange={(value, item) => {
+              field.onChange(value);
+              setValue(`items.${index}.price_unit`, item?.standard_price || 0, { shouldValidate: true });
+            }}
             value={field.value}
             getOptionKey={(item) => String(item.id)}
             noResultsMessage="No se encontraron resultados"
@@ -91,6 +97,7 @@ const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newPurc
         id: taxes.id,
         name: taxes.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -125,6 +132,7 @@ const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newPurc
             value={field.value}
             getOptionKey={(item) => String(item.id)}
             noResultsMessage="No se encontraron resultados"
+            defaultValue={field.value}
           />
         </FormControl>
       </FormItem>
@@ -257,7 +265,7 @@ const QuantityCell = ({ control, index }: { control: Control<z.infer<typeof newP
 
 export const columns: FormTableColumn<z.infer<typeof newPurchaseOrderSchema>>[] = [
   {
-    header: "Material",
+    header: "Producto / Servicio",
     width: 300,
     cellClassName: "pr-0",
     renderCell: (

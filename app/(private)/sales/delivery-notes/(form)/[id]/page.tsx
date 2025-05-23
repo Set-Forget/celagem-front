@@ -15,32 +15,33 @@ import Actions from './actions';
 import { columns } from './components/columns';
 import CustomerTab from './components/customer-tab';
 import InvoiceTab from './components/invoice-tab';
+import RenderFields from '@/components/render-fields';
 
 const fields: FieldDefinition<DeliveryNoteDetail>[] = [
   {
     label: "Ubicación de origen",
     placeholderLength: 14,
-    getValue: (p) => p.source_location || "No especificado",
+    render: (p) => p.source_location || "No especificado",
   },
   {
     label: "Ubicación de entrega",
     placeholderLength: 14,
-    getValue: (p) => p.delivery_location || "No especificado",
+    render: (p) => p.delivery_location || "No especificado",
   },
   {
     label: "Fecha de recepción",
     placeholderLength: 12,
-    getValue: (p) => "xxxxx",
+    render: (p) => p.delivery_date ? format(parseISO(p.delivery_date), "PP", { locale: es }) : "No especificada",
   },
   {
     label: "Fecha de requerimiento",
     placeholderLength: 12,
-    getValue: (p) => format(parseISO(p.scheduled_date), "PP", { locale: es }),
+    render: (p) => p.scheduled_date ? format(parseISO(p.scheduled_date), "PP", { locale: es }) : "No especificada",
   },
   {
     label: "Notas",
     placeholderLength: 30,
-    getValue: (p) => p.note || "No hay notas para mostrar",
+    render: (p) => p.note || "No hay notas para mostrar",
   }
 ];
 
@@ -74,28 +75,11 @@ export default function Page() {
         </div>
       </Header>
       <div className="flex flex-col gap-4 p-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {fields.map((field) => {
-            const displayValue = isDeliveryNoteLoading
-              ? placeholder(field.placeholderLength)
-              : field.getValue(deliveryNote!) ?? "";
-            return (
-              <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-                <label className="text-muted-foreground text-sm">
-                  {field.label}
-                </label>
-                <span
-                  className={cn(
-                    "text-sm transition-all duration-300",
-                    isDeliveryNoteLoading ? "blur-[4px]" : "blur-none"
-                  )}
-                >
-                  {displayValue}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+        <RenderFields
+          fields={fields}
+          data={deliveryNote}
+          loading={isDeliveryNoteLoading}
+        />
         <DataTable
           data={deliveryNote?.items ?? []}
           loading={isDeliveryNoteLoading}

@@ -17,22 +17,28 @@ import Actions from "./actions"
 import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
 import NotesTab from "./components/notes-tab"
+import RenderFields from "@/components/render-fields"
 
 const fields: FieldDefinition<PurchaseRequestDetail>[] = [
   {
     label: "Solicitado por",
     placeholderLength: 14,
-    getValue: (p) => p?.created_by?.name || "No especificado",
+    render: (p) => p?.created_by?.name || "No especificado",
   },
   {
     label: "Fecha de solicitud",
     placeholderLength: 10,
-    getValue: (p) => p?.created_at ? format(parseISO(p.created_at), "PP", { locale: es }) : "No especificado"
+    render: (p) => p?.created_at ? format(parseISO(p.created_at), "PP", { locale: es }) : "No especificado"
   },
   {
     label: "Fecha de requerimiento",
     placeholderLength: 10,
-    getValue: (p) => p?.request_date ? format(parseISO(p.request_date), "PP", { locale: es }) : "No especificado"
+    render: (p) => p?.request_date ? format(parseISO(p.request_date), "PP", { locale: es }) : "No especificado"
+  },
+  {
+    label: "Compañía",
+    placeholderLength: 10,
+    render: (p) => p?.company?.name || "No especificado",
   }
 ];
 
@@ -56,7 +62,7 @@ export default function Page() {
 
   const { data: purchaseRequest, isLoading: isPurchaseRequestLoading } = useGetPurchaseRequestQuery(id)
 
-  const [tab, setTab] = useState('tab-1')
+  const [tab, setTab] = useState(tabs[0].value)
 
   const status = purchaseRequestStatus[purchaseRequest?.state as keyof typeof purchaseRequestStatus];
 
@@ -78,28 +84,11 @@ export default function Page() {
         <Actions state={purchaseRequest?.state} />
       </Header>
       <div className="flex flex-col gap-4 p-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {fields.map((field) => {
-            const displayValue = isPurchaseRequestLoading
-              ? placeholder(field.placeholderLength)
-              : field.getValue(purchaseRequest!) ?? "";
-            return (
-              <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-                <label className="text-muted-foreground text-sm">
-                  {field.label}
-                </label>
-                <span
-                  className={cn(
-                    "text-sm transition-all duration-300",
-                    isPurchaseRequestLoading ? "blur-[4px]" : "blur-none"
-                  )}
-                >
-                  {displayValue}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+        <RenderFields
+          fields={fields}
+          loading={isPurchaseRequestLoading}
+          data={purchaseRequest}
+        />
         <DataTable
           data={purchaseRequest?.items || []}
           loading={isPurchaseRequestLoading}

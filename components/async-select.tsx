@@ -57,6 +57,7 @@ export interface AsyncSelectProps<T, V = string> {
   notFound?: React.ReactNode;
   /** Skeleton/loading custom */
   loadingSkeleton?: React.ReactNode;
+  align?: "start" | "center" | "end";
 }
 
 export function AsyncSelect<T, V>(props: AsyncSelectProps<T, V>) {
@@ -79,6 +80,7 @@ export function AsyncSelect<T, V>(props: AsyncSelectProps<T, V>) {
     initialOptions,
     notFound,
     loadingSkeleton,
+    align = "start",
   } = props;
 
   const [open, setOpen] = useState(false);
@@ -189,7 +191,7 @@ export function AsyncSelect<T, V>(props: AsyncSelectProps<T, V>) {
           <ChevronsUpDown className="opacity-50" size={10} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className={cn("min-w-[--radix-popover-trigger-width] p-0", className)}>
+      <PopoverContent align={align} className={cn("min-w-[--radix-popover-trigger-width] p-0", className)}>
         <Command>
           <div className="relative border-b w-full">
             {loading && options.length > 0 ? (

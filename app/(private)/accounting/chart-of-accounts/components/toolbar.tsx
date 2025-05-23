@@ -8,7 +8,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     label: "Buscar",
     options: [
       { label: "Nombre", value: "name" },
-      { label: "Tipo de cuenta", value: "account_type" },
+      { label: "Código", value: "code" },
     ],
     key: "search",
     icon: Search

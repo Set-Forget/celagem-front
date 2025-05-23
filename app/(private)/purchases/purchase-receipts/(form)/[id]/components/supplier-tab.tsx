@@ -1,28 +1,51 @@
+import RenderFields from "@/components/render-fields";
+import { Button } from "@/components/ui/button";
 import { useGetPurchaseReceiptQuery } from "@/lib/services/purchase-receipts";
-import { cn, FieldDefinition, placeholder } from "@/lib/utils";
+import { FieldDefinition } from "@/lib/utils";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { PurchaseReceiptDetail } from "../../../schemas/purchase-receipts";
+import { routes } from "@/lib/routes";
 
 const fields: FieldDefinition<PurchaseReceiptDetail>[] = [
   {
     label: "Proveedor",
     placeholderLength: 14,
-    getValue: (p) => p.supplier.name,
+    render: (p) => <Button
+      variant="link"
+      className="p-0 h-auto text-foreground font-normal"
+      asChild
+    >
+      <Link href={routes.suppliers.detail(p.supplier.id)} target="_blank">
+        {p.supplier.name}
+      </Link>
+    </Button>,
   },
   {
     label: "Teléfono",
     placeholderLength: 9,
-    getValue: (p) => p.supplier.phone,
+    render: (p) => p.supplier.phone,
   },
   {
     label: "Correo electrónico",
     placeholderLength: 9,
-    getValue: (p) => p.supplier.email,
+    render: (p) => <Button
+      variant="link"
+      className="p-0 h-auto text-foreground font-normal"
+      asChild
+    >
+      <Link
+        href={`mailto:${p.supplier.email}`}
+        target="_blank"
+      >
+        {p.supplier.email}
+      </Link>
+    </Button>
   },
   {
     label: "Dirección",
     placeholderLength: 20,
-    getValue: (p) => p.supplier.address,
+    render: (p) => p.supplier.address,
   }
 ];
 
@@ -32,27 +55,11 @@ export default function SupplierTab() {
   const { data: purchaseReceipt, isLoading: isPurchaseReceiptLoading } = useGetPurchaseReceiptQuery(id);
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-      {fields.map((field) => {
-        const displayValue = isPurchaseReceiptLoading
-          ? placeholder(field.placeholderLength)
-          : field.getValue(purchaseReceipt!) ?? "";
-        return (
-          <div className="flex flex-col gap-1" key={field.label}>
-            <label className="text-muted-foreground text-sm">
-              {field.label}
-            </label>
-            <span
-              className={cn(
-                "text-sm transition-all duration-300",
-                isPurchaseReceiptLoading ? "blur-[4px]" : "blur-none"
-              )}
-            >
-              {displayValue}
-            </span>
-          </div>
-        );
-      })}
-    </div>
+    <RenderFields
+      fields={fields}
+      loading={isPurchaseReceiptLoading}
+      data={purchaseReceipt}
+      className="p-4"
+    />
   )
 }

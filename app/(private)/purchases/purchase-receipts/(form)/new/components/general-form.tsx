@@ -14,6 +14,7 @@ import { z } from "zod"
 import { newPurchaseReceiptSchema } from "../../../schemas/purchase-receipts"
 import { columns } from "./columns"
 import TableFooter from "./table-footer"
+import { getLocalTimeZone, today } from "@internationalized/date"
 
 export default function GeneralForm() {
   const router = useRouter()
@@ -34,6 +35,7 @@ export default function GeneralForm() {
         id: stock.id,
         name: stock.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -151,6 +153,7 @@ export default function GeneralForm() {
                 <DatePicker
                   value={field.value || null}
                   onChange={(date) => field.onChange(date)}
+                  isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) > 0}
                 />
               </FormControl>
               {formState.errors.reception_date ? (

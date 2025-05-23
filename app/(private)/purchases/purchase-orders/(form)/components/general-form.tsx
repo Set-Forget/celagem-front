@@ -3,8 +3,8 @@ import DatePicker from "@/components/date-picker"
 import FormTable from "@/components/form-table"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useGetPurchaseRequestQuery, useLazyListPurchaseRequestsQuery } from "@/lib/services/purchase-requests"
-import { useLazyListSuppliersQuery } from "@/lib/services/suppliers"
-import { cn, FieldDefinition, placeholder } from "@/lib/utils"
+import { useLazyGetSupplierQuery, useLazyListSuppliersQuery } from "@/lib/services/suppliers"
+import { cn, createApply, FieldDefinition, placeholder } from "@/lib/utils"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
@@ -18,40 +18,43 @@ import DocumentInfo from "@/components/doc-info"
 import { PurchaseRequestDetail } from "../../../purchase-requests/schemas/purchase-requests"
 import { es } from "date-fns/locale"
 import { useLazyListCompaniesQuery } from "@/lib/services/companies"
+import { getLocalTimeZone, today } from "@internationalized/date"
+import { useMemo } from "react"
 
 const fields: FieldDefinition<PurchaseRequestDetail>[] = [
   {
     label: "Título",
     placeholderLength: 14,
-    getValue: (p) => p?.name || "No especificado",
+    render: (p) => p?.name || "No especificado",
   },
   {
     label: "Compañía",
     placeholderLength: 10,
-    getValue: (p) => p?.company?.name || "No especificada",
+    render: (p) => p?.company?.name || "No especificada",
   },
   {
     label: "Fecha de requerimiento",
     placeholderLength: 10,
-    getValue: (p) => p?.request_date ? format(parseISO(p?.request_date), "PP", { locale: es }) : "No especificada",
+    render: (p) => p?.request_date ? format(parseISO(p?.request_date), "PP", { locale: es }) : "No especificada",
   },
   {
     label: "Fecha de creación",
     placeholderLength: 10,
-    getValue: (p) => p?.created_at ? format(parseISO(p.created_at), "PP", { locale: es }) : "No especificada",
+    render: (p) => p?.created_at ? format(parseISO(p.created_at), "PP", { locale: es }) : "No especificada",
   },
 ];
 
 export default function GeneralForm() {
   const params = useSearchParams()
 
-  const { control, formState } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()
+  const { control, formState, setValue, resetField } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()
 
   const purchaseRequestId = params.get("purchase_request_id");
 
   const { data: purchaseRequest, isLoading: isPurchaseRequestLoading } = useGetPurchaseRequestQuery(purchaseRequestId!, { skip: !purchaseRequestId })
 
   const [searchSuppliers] = useLazyListSuppliersQuery()
+  const [getSupplier] = useLazyGetSupplierQuery()
   const [searchCompanies] = useLazyListCompaniesQuery()
 
   const handleSearchCompany = async (query?: string) => {
@@ -61,6 +64,7 @@ export default function GeneralForm() {
         id: company.id,
         name: company.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -73,14 +77,20 @@ export default function GeneralForm() {
       const response = await searchSuppliers({ name: query }).unwrap()
       return response.data?.map(supplier => ({
         id: supplier.id,
-        name: supplier.name
+        name: supplier.name,
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
       return []
     }
   }
+
+  const apply = useMemo(
+    () => createApply<z.infer<typeof newPurchaseOrderSchema>>(setValue, resetField),
+    [setValue, resetField]
+  );
 
   return (
     <>
@@ -110,7 +120,13 @@ export default function GeneralForm() {
                   getDisplayValue={(item) => item.name}
                   getOptionValue={(item) => item.id}
                   renderOption={(item) => <div>{item.name}</div>}
-                  onChange={field.onChange}
+                  onChange={async (id) => {
+                    field.onChange(id)
+                    const supplier = await getSupplier(id).unwrap()
+
+                    apply("payment_term", supplier?.property_payment_term?.id);
+                    apply("currency", supplier?.currency?.id);
+                  }}
                   value={field.value}
                   getOptionKey={(item) => String(item.id)}
                   noResultsMessage="No se encontraron resultados"
@@ -136,6 +152,7 @@ export default function GeneralForm() {
                 <DatePicker
                   value={field.value || null}
                   onChange={(date) => field.onChange(date)}
+                  isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) < 0}
                 />
               </FormControl>
               {formState.errors.required_date ? (

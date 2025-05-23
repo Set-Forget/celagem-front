@@ -12,7 +12,6 @@ const filtersConfig: Record<string, FilterConfig> = {
     label: "Rango de fecha",
     options: [
       { label: "Fecha de recepción", value: "reception_date" },
-      { label: "Fecha de creación", value: "created_at" },
       { label: "Fecha de requerimiento", value: "scheduled_date" },
     ],
     key: "date_range",

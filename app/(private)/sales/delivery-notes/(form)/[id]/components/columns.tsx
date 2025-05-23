@@ -8,7 +8,7 @@ import { DeliveryNoteItem } from "../../../schemas/delivery-notes"
 export const columns: ColumnDef<DeliveryNoteItem>[] = [
 	{
 		accessorKey: "display_name",
-		header: "Material",
+		header: "Producto / Servicio",
 		size: 300,
 		cell: ({ row }) => (
 			<div className="font-medium">
@@ -20,7 +20,7 @@ export const columns: ColumnDef<DeliveryNoteItem>[] = [
 		accessorKey: "product_uom",
 		header: "Unidad de medida",
 		cell: ({ row }) => {
-			return <div>{row.getValue("product_uom")}</div>
+			return <div>{row.original.product_uom.name}</div>
 		},
 	},
 	{

@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useGetSupplierQuery } from "@/lib/services/suppliers"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
-import { Calculator, Edit, FileSearch, Mail, Wallet } from "lucide-react"
-import { useParams } from "next/navigation"
+import { Calculator, Edit, FileSearch, Mail, Router, Wallet } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 import { SupplierDetail } from "../../schema/suppliers"
 import { supplierStatus } from "../../utils"
@@ -16,12 +16,13 @@ import AccountingTab from "./components/accounting-tab"
 import ContactTab from "./components/contact-tab"
 import FiscalTab from "./components/fiscal-tab"
 import TraceabilityTab from "./components/traceability-tab"
+import RenderFields from "@/components/render-fields"
 
 const fields: FieldDefinition<SupplierDetail>[] = [
   {
     label: "Razón social",
     placeholderLength: 16,
-    getValue: (p) => p.commercial_company_name || "No especificado",
+    render: (p) => p.commercial_company_name || "No especificado",
   }
 ];
 
@@ -53,6 +54,8 @@ const tabs = [
 ]
 
 export default function Page() {
+  const router = useRouter()
+
   const { id } = useParams<{ id: string }>()
 
   const [tab, setTab] = useState(tabs[0].value)
@@ -76,32 +79,21 @@ export default function Page() {
             {status?.label}
           </Badge>
         </div>
-        <Button className="ml-auto" size="sm">
+        <Button
+          className="ml-auto"
+          size="sm"
+          onClick={() => router.push(`/purchases/vendors/${id}/edit`)}
+        >
           <Edit />
-          Editar proveedor
+          Editar
         </Button>
       </Header>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-        {fields.map((field) => {
-          const displayValue = isSupplierLoading
-            ? placeholder(field.placeholderLength)
-            : field.getValue(supplier!) ?? "";
-          return (
-            <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-              <label className="text-muted-foreground text-sm">
-                {field.label}
-              </label>
-              <span
-                className={cn(
-                  "text-sm transition-all duration-300",
-                  isSupplierLoading ? "blur-[4px]" : "blur-none"
-                )}
-              >
-                {displayValue}
-              </span>
-            </div>
-          );
-        })}
+        <RenderFields
+          fields={fields}
+          data={supplier}
+          loading={isSupplierLoading}
+        />
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-sm">Saldo pendiente</label>
           <div className="flex gap-1.5 items-center">

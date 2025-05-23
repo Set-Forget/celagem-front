@@ -2,25 +2,27 @@ import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useApproveInvoiceMutation, useCancelInvoiceMutation, useConfirmInvoiceMutation } from "@/lib/services/invoices";
+import { useApproveInvoiceMutation, useCancelInvoiceMutation, useGetInvoiceQuery } from "@/lib/services/invoices";
 import { cn } from "@/lib/utils";
-import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCcw, Stamp } from "lucide-react";
+import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, Stamp } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { InvoiceStatus, InvoiceTypes } from "../../schemas/invoices";
+import { generatePDF } from "@/lib/templates/utils.client";
 
 export default function Actions({ state, type }: { state?: InvoiceStatus, type?: InvoiceTypes }) {
   const router = useRouter()
 
   const { id } = useParams<{ id: string }>()
 
-  const [confirmInvoice, { isLoading: isInvoiceConfirming }] = useConfirmInvoiceMutation();
+  const { data: invoice } = useGetInvoiceQuery(id, { skip: !id });
+
   const [approveInvoice, { isLoading: isInvoiceApproving }] = useApproveInvoiceMutation();
   const [cancelInvoice, { isLoading: isInvoiceCancelling }] = useCancelInvoiceMutation();
 
-  const handleConfirmInvoice = async () => {
+  const handleApproveInvoice = async () => {
     try {
-      const response = await confirmInvoice({
+      const response = await approveInvoice({
         id: id,
       }).unwrap()
 
@@ -30,21 +32,6 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
     } catch (error) {
       console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la factura de venta" variant="error" />)
-    }
-  }
-
-  const handleApproveInvoice = async () => {
-    try {
-      const response = await approveInvoice({
-        id: id,
-      }).unwrap()
-
-      if (response.status === "success") {
-        toast.custom((t) => <CustomSonner t={t} description="Factura de venta aprobada" variant="success" />)
-      }
-    } catch (error) {
-      console.error(error)
-      toast.custom((t) => <CustomSonner t={t} description="Error al aprobar la factura de venta" variant="error" />)
     }
   }
 
@@ -64,9 +51,18 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
   }
 
   const handleGeneratePDF = async () => {
-    const { generateInvoicePDF } = await import("../../templates/invoice")
-    generateInvoicePDF()
-  }
+    if (!invoice) throw Error("No se ha encontrado la factura de venta")
+    try {
+      const pdf = await generatePDF({
+        templateName: 'invoice',
+        data: invoice,
+      });
+      pdf.view();
+    } catch (error) {
+      toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
+      console.error('Error al generar el PDF:', error);
+    }
+  };
 
   if (!state || !type) {
     return null
@@ -82,11 +78,11 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
             </Button>
           }
         >
-          <DropdownMenuItem>
+          <DropdownMenuItem onSelect={handleGeneratePDF}>
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => console.log("Editar")}>
+          <DropdownMenuItem onSelect={() => router.push(`/sales/invoices/${id}/edit`)}>
             <EditIcon />
             Editar
           </DropdownMenuItem>
@@ -102,10 +98,10 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
         </Dropdown>
         <Button
           size="sm"
-          onClick={handleConfirmInvoice}
-          loading={isInvoiceConfirming}
+          onClick={handleApproveInvoice}
+          loading={isInvoiceApproving}
         >
-          <Check className={cn(isInvoiceConfirming && "hidden")} />
+          <Check className={cn(isInvoiceApproving && "hidden")} />
           Confirmar
         </Button>
       </div>
@@ -122,11 +118,11 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
             </Button>
           }
         >
-          <DropdownMenuItem>
+          <DropdownMenuItem onSelect={handleGeneratePDF}>
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => console.log("Editar")}>
+          <DropdownMenuItem onSelect={() => router.push(`/sales/invoices/${id}/edit`)}>
             <EditIcon />
             Editar
           </DropdownMenuItem>
@@ -181,12 +177,12 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
             Registro de pago
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/credit-notes/new?invoiceId=${id}`)}
+            onClick={() => router.push(`/sales/credit-notes/new?invoiceId=${id}`)}
           >
             Nota de crédito
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/debit-notes/new?invoiceId=${id}`)}
+            onClick={() => router.push(`/sales/debit-notes/new?invoiceId=${id}`)}
           >
             Nota de débito
           </DropdownMenuItem>
@@ -200,7 +196,7 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
     )
   }
 
-  if (state === "posted" && type === "credit_note" || type === "debit_note") {
+  if ((state === "posted" && type === "credit_note" || type === "debit_note") || state === "done") {
     return (
       <div className="flex gap-2">
         <Dropdown
@@ -222,17 +218,15 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
     )
   }
 
-  // ! No se puede re-abrir por el momento.
-  if (state === "cancel") {
-    return (
-      <Button
-        size="sm"
-      >
-        <RotateCcw /* className={cn(isInvoiceUpdating && "hidden")} */ />
-        Reabrir
-      </Button>
-    )
-  }
-
-  // ! Falta manejar el estado done.
+  // // ! No se puede re-abrir por el momento.
+  // if (state === "cancel") {
+  //   return (
+  //     <Button
+  //       size="sm"
+  //     >
+  //       <RotateCcw /* className={cn(isInvoiceUpdating && "hidden")} */ />
+  //       Reabrir
+  //     </Button>
+  //   )
+  // }
 }

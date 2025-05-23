@@ -28,8 +28,10 @@ export default function TableFooter({ append }: { append: (value: any) => void }
   const handleAddItem = () => {
     append({
       id: uuidv4(),
+      product_id: null,
       product_qty: 1,
       taxes_id: [],
+      price_unit: null,
     });
   }
 

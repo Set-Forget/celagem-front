@@ -23,6 +23,7 @@ export default function AccountingForm() {
         id: currency.id,
         name: currency.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -37,6 +38,7 @@ export default function AccountingForm() {
         id: term.id,
         name: term.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -52,6 +54,7 @@ export default function AccountingForm() {
         name: account.name,
         code: account.code
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -66,6 +69,7 @@ export default function AccountingForm() {
         id: method.id,
         name: method.name
       }))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)

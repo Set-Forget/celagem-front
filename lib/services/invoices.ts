@@ -1,30 +1,31 @@
 import { InvoiceDetail, InvoiceDetailResponse, InvoiceListResponse, InvoiceStatus, InvoiceTypes, NewInvoice, NewInvoiceResponse } from '@/app/(private)/sales/invoices/schemas/invoices';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
+import { AdaptedInvoiceList, getInvoiceAdapter, listInvoicesAdapter } from '../adapters/invoices';
 
 export const invoicesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
     listInvoices: builder.query
-      <InvoiceListResponse,
-        {
-          number?: string,
-          status?: InvoiceStatus,
-          type?: InvoiceTypes,
-          date_start?: string,
-          date_end?: string,
-          due_date_start?: string,
-          due_date_end?: string,
-        } | void
+      <AdaptedInvoiceList[], {
+        number?: string,
+        status?: InvoiceStatus,
+        type?: InvoiceTypes,
+        date_start?: string,
+        date_end?: string,
+        due_date_start?: string,
+        due_date_end?: string,
+      } | void
       >({
         query: (data) => ({
           url: '/sales_invoices',
           params: data || {},
         }),
+        transformResponse: (response: InvoiceListResponse) => response.data.map(listInvoicesAdapter),
         providesTags: ['Invoice'],
       }),
-    getInvoice: builder.query<InvoiceDetail, string>({
+    getInvoice: builder.query<InvoiceDetail, string | number>({
       query: (id) => `sales_invoices/${id}`,
-      transformResponse: (response: InvoiceDetailResponse) => response.data,
+      transformResponse: (response: InvoiceDetailResponse) => getInvoiceAdapter(response.data),
       providesTags: ['Invoice'],
     }),
     createInvoice: builder.mutation<NewInvoiceResponse, Overwrite<NewInvoice, { accounting_date: string, payment_method: number, items: { product_id: number, taxes_id?: number[], quantity: number }[] }>>({
@@ -35,11 +36,11 @@ export const invoicesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Invoice'],
     }),
-    updateInvoice: builder.mutation<{ status: string, message: string }, Partial<Omit<InvoiceDetail, 'status'> & { state: 'draft' | 'posted' | 'cancel' }>>({
-      query: ({ id, ...invoice }) => ({
+    updateInvoice: builder.mutation<{ status: string, message: string }, { body: Partial<Overwrite<NewInvoice, { accounting_date: string, payment_method: number, items: { product_id: number, taxes_id?: number[], quantity: number }[] }>>, id: string | number }>({
+      query: ({ body, id }) => ({
         url: `/sales_invoices/${id}`,
         method: 'PUT',
-        body: invoice,
+        body: { ...body },
       }),
       invalidatesTags: ['Invoice'],
     }),
@@ -79,6 +80,7 @@ export const {
   useListInvoicesQuery,
   useLazyListInvoicesQuery,
   useGetInvoiceQuery,
+  useLazyGetInvoiceQuery,
   useCreateInvoiceMutation,
   useUpdateInvoiceMutation,
   useDeleteInvoiceMutation,

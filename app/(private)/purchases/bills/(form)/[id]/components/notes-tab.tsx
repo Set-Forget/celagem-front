@@ -1,19 +1,20 @@
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
 import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
-
 import { BillDetail } from "../../../schemas/bills";
 import { useGetBillQuery } from "@/lib/services/bills";
+import RenderFields from "@/components/render-fields";
+
 const fields: FieldDefinition<BillDetail>[] = [
   {
     label: "Notas",
     placeholderLength: 30,
-    getValue: (p) => p.internal_notes || "No especificado",
+    render: (p) => p.internal_notes || "No especificado",
   },
   {
     label: "Términos y condiciones",
     placeholderLength: 30,
-    getValue: (p) => p.tyc_notes || "No especificado",
+    render: (p) => p.tyc_notes || "No especificado",
   }
 ];
 
@@ -23,27 +24,11 @@ export default function NotesTab() {
   const { data: bill, isLoading: isBillLoading } = useGetBillQuery(id)
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-      {fields.map((field) => {
-        const displayValue = isBillLoading
-          ? placeholder(field.placeholderLength)
-          : field.getValue(bill!) ?? "";
-        return (
-          <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-            <label className="text-muted-foreground text-sm">
-              {field.label}
-            </label>
-            <span
-              className={cn(
-                "text-sm transition-all duration-300",
-                isBillLoading ? "blur-[4px]" : "blur-none"
-              )}
-            >
-              {displayValue}
-            </span>
-          </div>
-        );
-      })}
-    </div>
+    <RenderFields
+      fields={fields}
+      loading={isBillLoading}
+      data={bill}
+      className="p-4"
+    />
   )
 }

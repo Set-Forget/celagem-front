@@ -18,7 +18,7 @@ import CustomSonner from "@/components/custom-sonner"
 import { useRouter } from "next/navigation"
 import { useCreateJournalEntryMutation } from "@/lib/services/journal-entries"
 import { toast } from "sonner"
-import { parseDate } from "@internationalized/date"
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date"
 import { useLazyListJournalsQuery } from "@/lib/services/journals"
 
 export default function Page() {
@@ -44,6 +44,7 @@ export default function Page() {
         id: currency.id,
         name: currency.name
       }))
+        .slice(0, 10)
     } catch (error) {
       console.error(error)
       return []
@@ -57,6 +58,7 @@ export default function Page() {
         id: journal.id,
         name: journal.name
       }))
+        .slice(0, 10)
     } catch (error) {
       console.error(error)
       return []
@@ -116,6 +118,7 @@ export default function Page() {
                 <DatePicker
                   value={field.value || null}
                   onChange={(date) => field.onChange(date)}
+                  isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) > 0}
                 />
               </FormControl>
               {newJournalEntryForm.formState.errors.date ? (

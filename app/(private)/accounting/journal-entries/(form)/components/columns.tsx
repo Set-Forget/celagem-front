@@ -16,12 +16,14 @@ const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<ty
 
   const handleSearchAccountingAccount = async (query?: string) => {
     try {
-      const response = await searchAccountingAccounts({ name: query }).unwrap()
-      return response.data?.map(account => ({
-        id: account.id,
-        name: account.name,
-        code: account.code
+      const response = await searchAccountingAccounts({}, true).unwrap()
+      return response.data?.map(accountingAccount => ({
+        id: accountingAccount.id,
+        name: accountingAccount.name,
+        code: accountingAccount.code,
       }))
+        .filter(accountingAccount => accountingAccount.name.toLowerCase().includes(query?.toLowerCase() || "") || accountingAccount.code.toLowerCase().includes(query?.toLowerCase() || ""))
+        .slice(0, 10)
     }
     catch (error) {
       console.error(error)
@@ -41,11 +43,27 @@ const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<ty
               "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
               control._formState.errors.items?.[index]?.account_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
             )}
+            className="w-[400px]"
+            align="end"
             placeholder="Buscar cuenta contable..."
             fetcher={handleSearchAccountingAccount}
-            getDisplayValue={(item) => `${item.code} - ${item.name}`}
+            getDisplayValue={(item) => (
+              <div className="flex gap-1">
+                <span className="font-medium">
+                  {item.code}
+                </span>
+                -{" "}
+                {item.name}
+              </div>
+            )}
             getOptionValue={(item) => item.id}
-            renderOption={(item) => <div>{item.code} - {item.name}</div>}
+            renderOption={(item) => <div className="truncate">
+              <span className="font-medium">
+                {item.code}
+              </span>
+              {" - "}
+              {item.name}
+            </div>}
             onChange={field.onChange}
             value={field.value}
             getOptionKey={(item) => String(item.id)}

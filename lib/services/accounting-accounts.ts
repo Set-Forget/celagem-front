@@ -1,4 +1,4 @@
-import { AccountDetail, AccountDetailResponse, AccountListResponse, AccountMoveLineResponse, AccountTypes, NewAccount, NewAccountResponse } from '@/app/(private)/accounting/chart-of-accounts/schemas/account';
+import { AccountDetail, AccountDetailResponse, AccountListResponse, AccountMoveLineResponse, NewAccount, NewAccountResponse } from '@/app/(private)/accounting/chart-of-accounts/schemas/account';
 import { erpApi } from '@/lib/apis/erp-api';
 
 export const accountingAccountsApi = erpApi.injectEndpoints({
@@ -19,6 +19,14 @@ export const accountingAccountsApi = erpApi.injectEndpoints({
       transformResponse: (response: AccountDetailResponse) => response.data,
       providesTags: ['AccountingAccount'],
     }),
+    updateAccountingAccount: builder.mutation<{ status: string, message: string }, { id: string, body: Partial<NewAccount> }>({
+      query: ({ id, body }) => ({
+        url: `accounts/${id}`,
+        method: 'PUT',
+        body: { ...body },
+      }),
+      invalidatesTags: ['AccountingAccount'],
+    }),
     createAccountingAccount: builder.mutation<NewAccountResponse, NewAccount>({
       query: (data) => ({
         url: 'accounts',
@@ -37,4 +45,5 @@ export const {
   useGetAccountingAccountQuery,
   useLazyGetAccountingAccountQuery,
   useCreateAccountingAccountMutation,
+  useUpdateAccountingAccountMutation,
 } = accountingAccountsApi;

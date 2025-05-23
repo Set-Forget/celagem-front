@@ -1,19 +1,82 @@
+import RenderFields from "@/components/render-fields";
 import { Button } from "@/components/ui/button";
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
-import { cn, placeholder } from "@/lib/utils";
-import { Eye, FileX2 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { FieldDefinition } from "@/lib/utils";
+import { FileX2 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { PurchaseOrderDetail } from "../../../schemas/purchase-orders";
+import Link from "next/link";
+import { routes } from "@/lib/routes";
+
+const fields: FieldDefinition<PurchaseOrderDetail>[] = [
+  {
+    label: "Solicitud de pedido",
+    placeholderLength: 14,
+    show: (p) => !!p?.purchase_request,
+    render: (p) =>
+      <Button
+        variant="link"
+        className="p-0 h-auto text-foreground"
+        asChild
+      >
+        <Link
+          href={routes.purchaseRequest.detail(p.purchase_request?.id)}
+          target="_blank"
+        >
+          {p.purchase_request?.name}
+        </Link>
+      </Button>
+  },
+  {
+    label: "Facturas de compra",
+    placeholderLength: 14,
+    show: (p) => !!p?.invoices.length,
+    render: (p) => p?.invoices?.map((invoice) => (
+      <div className="grid grid-cols-1 justify-items-start" key={invoice.id}>
+        <Button
+          key={invoice.id}
+          variant="link"
+          className="p-0 h-auto text-foreground"
+          asChild
+        >
+          <Link
+            href={routes.bill.detail(invoice.id)}
+            target="_blank"
+          >
+            {invoice.name}
+          </Link>
+        </Button>
+      </div>
+    ))
+  },
+  {
+    label: "Recepciones de compra",
+    placeholderLength: 14,
+    show: (p) => !!p?.receptions?.length,
+    render: (p) => p?.receptions?.map((reception) => (
+      <div className="grid grid-cols-1 justify-items-start" key={reception.id}>
+        <Button
+          key={reception.id}
+          variant="link"
+          className="p-0 h-auto text-foreground"
+          asChild
+        >
+          <Link
+            href={routes.reception.detail(reception.id)}
+            target="_blank"
+          >
+            {reception.name}
+          </Link>
+        </Button>
+      </div>
+    ))
+  }
+];
 
 export default function DocumentsTab() {
-  const router = useRouter()
   const { id } = useParams<{ id: string }>()
 
   const { data: purchaseOrder, isLoading: isPurchaseOrderLoading } = useGetPurchaseOrderQuery(id)
-
-  const { name: purchaseRequestName, id: purchaseRequestId } = purchaseOrder?.purchase_request || {}
-
-  const invoices = purchaseOrder?.invoices || []
-  const receptions = purchaseOrder?.receptions || []
 
   return (
     <div className="flex flex-col p-4">
@@ -27,70 +90,11 @@ export default function DocumentsTab() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {purchaseOrder?.purchase_request && (
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Solicitudes de pedido</label>
-              <div className="flex gap-2 items-center group w-fit">
-                <span className={cn("text-sm font-medium tracking-tight transition-all duration-300", isPurchaseOrderLoading ? "blur-[4px]" : "blur-none")}>
-                  {isPurchaseOrderLoading ? placeholder(20, true) : purchaseRequestName}
-                </span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className={cn("w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity", isPurchaseOrderLoading && "hidden")}
-                  onClick={() => router.push(`/purchases/purchase-requests/${purchaseRequestId}`)}
-                >
-                  <Eye />
-                </Button>
-              </div>
-            </div>
-          )}
-          {invoices.length > 0 && (
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Facturas
-              </label>
-              {invoices.map((invoice) => (
-                <div className="flex gap-2 items-center group w-fit" key={invoice.id}>
-                  <span className={cn("text-sm font-medium tracking-tight transition-all duration-300", isPurchaseOrderLoading ? "blur-[4px]" : "blur-none")}>
-                    {isPurchaseOrderLoading ? placeholder(20, true) : invoice.name}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className={cn("w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity", isPurchaseOrderLoading && "hidden")}
-                    onClick={() => router.push(`/purchases/bills/${invoice.id}`)}
-                  >
-                    <Eye />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-          {receptions.length > 0 && (
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">
-                Recepciones
-              </label>
-              {receptions.map((reception) => (
-                <div className="flex gap-2 items-center group w-fit" key={reception.id}>
-                  <span className={cn("text-sm font-medium tracking-tight transition-all duration-300", isPurchaseOrderLoading ? "blur-[4px]" : "blur-none")}>
-                    {isPurchaseOrderLoading ? placeholder(20, true) : reception.name}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className={cn("w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity", isPurchaseOrderLoading && "hidden")}
-                    onClick={() => router.push(`/purchases/purchase-receipts/${reception.id}`)}
-                  >
-                    <Eye />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <RenderFields
+          fields={fields}
+          loading={isPurchaseOrderLoading}
+          data={purchaseOrder}
+        />
       )}
     </div>
   )

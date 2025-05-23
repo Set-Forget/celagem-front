@@ -34,11 +34,19 @@ export default function TableFooter() {
         </TableCell>
       </TableRow>
       <TableRow className="bg-background">
-        <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-semibold py-0 text-end !border-b-0 bg-muted/50">
+        <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-semibold py-0 text-end">
           <span>Total</span>
         </TableCell>
-        <TableCell className="h-6 text-xs font-semibold py-0 bg-muted/50">
+        <TableCell className="h-6 text-xs font-semibold py-0">
           <span>{currency} {total.toFixed(2)}</span>
+        </TableCell>
+      </TableRow>
+      <TableRow className="bg-background">
+        <TableCell colSpan={columns.length - 1} className="h-6 text-xs font-semibold py-0 text-end !border-b-0 bg-muted/50">
+          <span>Saldo pendiente</span>
+        </TableCell>
+        <TableCell className="h-6 text-xs font-semibold py-0 bg-muted/50">
+          <span>{currency} {invoice?.amount_residual.toFixed(2)}</span>
         </TableCell>
       </TableRow>
     </ShadcnTableFooter>

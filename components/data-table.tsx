@@ -21,6 +21,8 @@ import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 import * as React from "react"
 import { Button } from "./ui/button"
 import { Table as ShadcnTable, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
+import { useSidebar } from "./ui/sidebar"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -85,8 +87,8 @@ export function DataTable<TData, TValue>({
   return (
     <div className={cn("space-y-4 flex flex-col justify-between", className)}>
       {toolbar && toolbar({ table })}
-      <div className="overflow-hidden rounded-sm border border-border bg-background shadow-md shadow-border/50">
-        <ShadcnTable className="[&_td]:border-border [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
+      <div className="overflow-hidden rounded-sm border border-border bg-background shadow-md shadow-border/50 relative">
+        <ShadcnTable className={cn("[&_td]:border-border [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none")}>
           <TableHeader
             className="sticky top-0 z-10 bg-sidebar backdrop-blur-sm after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-border rounded-t-sm">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -116,7 +118,7 @@ export function DataTable<TData, TValue>({
               <TableRow className="border-none">
                 <TableCell
                   colSpan={columns.length}
-                  className="text-xs text-center h-10 border-b"
+                  className="text-xs text-center h-9 border-b"
                 >
                   <div className="flex items-center justify-center gap-2 text-muted-foreground">
                     <Loader2 className="animate-spin" size={14} />
@@ -129,7 +131,7 @@ export function DataTable<TData, TValue>({
               <TableRow className="border-none">
                 <TableCell
                   colSpan={columns.length}
-                  className="text-xs text-center h-10 border-b text-muted-foreground"
+                  className="text-xs text-center h-9 border-b text-muted-foreground"
                 >
                   No hay items
                 </TableCell>
@@ -138,7 +140,7 @@ export function DataTable<TData, TValue>({
             {table?.getRowModel()?.rows?.length > 0 && table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className={cn("h-10 group", onRowClick && "cursor-pointer")}
+                className={cn("h-9 group", onRowClick && "cursor-pointer")}
                 data-state={row.getIsSelected() && "selected"}
                 onClick={() => onRowClick?.(row.original)}
               >
@@ -153,7 +155,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableBody>
-          {footer && footer()}
+          {!loading && footer && footer()}
         </ShadcnTable>
       </div>
       {pagination && (

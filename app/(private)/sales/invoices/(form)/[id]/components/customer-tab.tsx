@@ -2,27 +2,50 @@ import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { InvoiceDetail } from "../../../schemas/invoices";
 import { useGetInvoiceQuery } from "@/lib/services/invoices";
+import RenderFields from "@/components/render-fields";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { routes } from "@/lib/routes";
 
 const fields: FieldDefinition<InvoiceDetail>[] = [
   {
-    label: "Proveedor",
+    label: "Cliente",
     placeholderLength: 14,
-    getValue: (p) => p.customer?.name || "No especificado",
+    render: (p) => <Button
+      variant="link"
+      className="p-0 h-auto text-foreground font-normal"
+      asChild
+    >
+      <Link href={routes.customers.detail(p.customer.id)} target="_blank">
+        {p.customer.name}
+      </Link>
+    </Button>,
   },
   {
     label: "Número de teléfono",
     placeholderLength: 13,
-    getValue: (p) => p.customer?.phone || "No especificado",
+    render: (p) => p.customer?.phone || "No especificado",
   },
   {
     label: "Correo electrónico",
     placeholderLength: 10,
-    getValue: (p) => p.customer?.email || "No especificado",
+    render: (p) => <Button
+      variant="link"
+      className="p-0 h-auto text-foreground font-normal"
+      asChild
+    >
+      <Link
+        href={`mailto:${p.customer?.email}`}
+        target="_blank"
+      >
+        {p.customer?.email}
+      </Link>
+    </Button>,
   },
   {
     label: "Dirección",
     placeholderLength: 20,
-    getValue: (p) => p.customer?.address || "No especificado",
+    render: (p) => p.customer?.address || "No especificado",
   }
 ];
 
@@ -32,29 +55,11 @@ export default function CustomerTab() {
   const { data: invoice, isLoading: isInvoiceLoading } = useGetInvoiceQuery(id);
 
   return (
-    <div className="p-4 flex flex-col gap-4">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {fields.map((field) => {
-          const displayValue = isInvoiceLoading
-            ? placeholder(field.placeholderLength)
-            : field.getValue(invoice!) ?? "";
-          return (
-            <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-              <label className="text-muted-foreground text-sm">
-                {field.label}
-              </label>
-              <span
-                className={cn(
-                  "text-sm transition-all duration-300",
-                  isInvoiceLoading ? "blur-[4px]" : "blur-none"
-                )}
-              >
-                {displayValue}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
+    <RenderFields
+      fields={fields}
+      loading={isInvoiceLoading}
+      data={invoice}
+      className="p-4"
+    />
   )
 }

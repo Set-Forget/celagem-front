@@ -15,7 +15,7 @@ export const suppliersApi = erpApi.injectEndpoints({
         }),
         providesTags: ['Supplier']
       }),
-    getSupplier: builder.query<SupplierDetail, string>({
+    getSupplier: builder.query<SupplierDetail, string | number>({
       query: (id) => `/suppliers/${id}`,
       transformResponse: (response: SupplierDetailResponse) => response.data,
       providesTags: ['Supplier']
@@ -28,12 +28,22 @@ export const suppliersApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Supplier']
     }),
+    updateSupplier: builder.mutation<{ status: string, message: string }, { body: Partial<Omit<NewSupplier, 'property_payment_term' | 'contact_address_inline'> & { property_payment_term: number; id: string | number }>, id: string | number }>({
+      query: ({ body, id }) => ({
+        url: `/suppliers/${id}`,
+        method: 'PUT',
+        body: { ...body },
+      }),
+      invalidatesTags: ['Supplier']
+    }),
   }),
 });
 
 export const {
   useListSuppliersQuery,
   useLazyListSuppliersQuery,
+  useLazyGetSupplierQuery,
   useGetSupplierQuery,
   useCreateSupplierMutation,
+  useUpdateSupplierMutation,
 } = suppliersApi;

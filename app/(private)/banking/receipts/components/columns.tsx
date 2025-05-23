@@ -1,36 +1,55 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 import {
   ColumnDef
 } from "@tanstack/react-table"
+import { ChargeList } from "../schemas/receipts"
+import { chargeStatus } from "../utils"
 
-import { format, parseISO } from "date-fns"
-import { es } from "date-fns/locale"
-import { RECEIPT_MODE_ADAPTER } from "../adapters/receipts"
-
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<ChargeList>[] = [
   {
-    accessorKey: "transaction_id",
-    header: "ID de transacción",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("transaction_id")}</div>,
+    accessorKey: "name",
+    header: "Número",
+    cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "receipt_mode",
-    header: "Modo de cobro",
+    accessorKey: "state",
+    header: "Estado",
     cell: ({ row }) => {
-      return <div>{RECEIPT_MODE_ADAPTER[row.getValue("receipt_mode") as keyof typeof RECEIPT_MODE_ADAPTER]}</div>
+      const status = chargeStatus[row.getValue("state") as keyof typeof chargeStatus];
+
+      return (
+        <Badge
+          variant="custom"
+          className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
+        >
+          {status?.label}
+        </Badge>
+      );
     },
   },
   {
-    accessorKey: "receipt_date",
-    header: "Fecha de cobro",
-    cell: ({ row }) => <div>
-      {format(parseISO(row.getValue("receipt_date")), "PP", { locale: es })}
-    </div>,
+    accessorKey: "partner",
+    header: "Proveedor",
+    cell: ({ row }) => <div>{row.getValue("partner")}</div>,
+  },
+  {
+    accessorKey: 'journal',
+    header: 'Diario',
+    cell: ({ row }) => <div>{row.getValue("journal")}</div>,
+  },
+  {
+    accessorKey: "source_account",
+    header: "Cuenta origen",
+    cell: ({ row }) => <div>{row.getValue("source_account")}</div>,
   },
   {
     accessorKey: "amount",
     header: "Monto",
-    cell: ({ row }) => <div className="font-medium">ARS {row.getValue("amount")}</div>,
+    cell: ({ row }) => <div className="font-medium">
+      {row.original.currency} {row.getValue("amount")}
+    </div>,
   },
 ]

@@ -2,13 +2,12 @@
 
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useListAccountingAccountsQuery } from "@/lib/services/accounting-accounts";
 import { setDialogsState } from "@/lib/store/dialogs-store";
-import { ChevronDown } from "lucide-react";
+import { Plus } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import NestedAccountTable from "./components/nested-account-table";
 import NewAccountDialog from "./components/new-account-dialog";
-import { useSearchParams } from "next/navigation";
 
 export default function Page() {
   const searchParams = useSearchParams()
@@ -17,36 +16,39 @@ export default function Page() {
   const accountType = JSON.parse(searchParams.get('account_type') || 'null')
 
   const { data: accounts, isLoading: isAccountsLoading } = useListAccountingAccountsQuery({
-    name: search.field === "name" ? search?.query : undefined,
+    //name: search.field === "name" ? search?.query : undefined,
     account_type: accountType || undefined,
     parent: String(0)
   }, { refetchOnMountOrArgChange: true })
 
+  const nameQuery = search.field === "name" ? search?.query : undefined
+  const codeQuery = search.field === "code" ? search?.query : undefined
+
+  console.log("accounts", accounts)
+  console.log(nameQuery, codeQuery)
+
   return (
     <div className="flex flex-col h-full">
       <Header title="Plan de cuentas">
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger className="ml-auto" asChild>
-            <Button size="sm">
-              Crear
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              onSelect={(e) => {
-                setDialogsState({
-                  open: "new-account",
-                })
-              }}
-            >
-              Nueva cuenta
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button
+          className="ml-auto"
+          size="sm"
+          onClick={() => setDialogsState({
+            open: "new-account",
+          })}
+        >
+          <Plus />
+          Crear cuenta
+        </Button>
       </Header>
       <div className="flex flex-col p-4 h-full justify-between">
-        <NestedAccountTable data={accounts?.data} loading={isAccountsLoading} />
+        <NestedAccountTable
+          data={accounts?.data.filter(acc =>
+            (!nameQuery || acc.name.toLowerCase().includes(nameQuery.toLowerCase())) &&
+            (!codeQuery || acc.code.toLowerCase().includes(codeQuery.toLowerCase()))
+          ) ?? []}
+          loading={isAccountsLoading}
+        />
       </div>
       <NewAccountDialog />
     </div>

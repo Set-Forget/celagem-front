@@ -20,27 +20,28 @@ import FiscalTab from "./components/fiscal"
 import NotesTab from "./components/notes-tab"
 import SupplierTab from "./components/supplier-tab"
 import TableFooter from "./components/table-footer"
+import RenderFields from "@/components/render-fields"
 
 const fields: FieldDefinition<PurchaseOrderDetail>[] = [
   {
     label: "Solicitado por",
     placeholderLength: 14,
-    getValue: (p) => p?.required_by || "No especificado",
+    render: (p) => p?.required_by || "No especificado",
   },
   {
     label: "Fecha de requerimiento",
     placeholderLength: 10,
-    getValue: (p) => p?.required_date ? format(parseISO(p?.required_date), "PP", { locale: es }) : "No especificada",
+    render: (p) => p?.required_date ? format(parseISO(p?.required_date), "PP", { locale: es }) : "No especificada",
   },
   {
     label: "Fecha de creación",
     placeholderLength: 10,
-    getValue: (p) => p?.created_at ? format(parseISO(p.created_at), "PP", { locale: es }) : "No especificada",
+    render: (p) => p?.created_at ? format(parseISO(p.created_at), "PP", { locale: es }) : "No especificada",
   },
   {
     label: "Compañía",
     placeholderLength: 10,
-    getValue: (p) => p?.company?.name || "No especificada",
+    render: (p) => p?.company?.name || "No especificada",
   }
 ];
 
@@ -101,28 +102,11 @@ export default function Page() {
         <Actions state={purchaseOrder?.status} />
       </Header>
       <div className="flex flex-col gap-4 p-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {fields.map((field) => {
-            const displayValue = isPurchaseOrderLoading
-              ? placeholder(field.placeholderLength)
-              : field.getValue(purchaseOrder!) ?? "";
-            return (
-              <div className={cn("flex flex-col gap-1", field.className)} key={field.label}>
-                <label className="text-muted-foreground text-sm">
-                  {field.label}
-                </label>
-                <span
-                  className={cn(
-                    "text-sm transition-all duration-300",
-                    isPurchaseOrderLoading ? "blur-[4px]" : "blur-none"
-                  )}
-                >
-                  {displayValue}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+        <RenderFields
+          fields={fields}
+          loading={isPurchaseOrderLoading}
+          data={purchaseOrder}
+        />
         <DataTable
           data={purchaseOrder?.items.map((item) => ({ ...item, currency: purchaseOrder?.currency.name })) ?? []}
           loading={isPurchaseOrderLoading}

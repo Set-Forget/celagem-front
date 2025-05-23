@@ -14,12 +14,14 @@ export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
 
-  const status = searchParams.get('status')
-  const date_range = JSON.parse(searchParams.get('date_range') || '{}') as { field: string, from: string, to: string }
   const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
+  const status = JSON.parse(searchParams.get('status') || '[]').join(',') || []
+  const type = JSON.parse(searchParams.get('type') || '[]').join(',') || []
+  const date_range = JSON.parse(searchParams.get('date_range') || '{}') as { field: string, from: string, to: string }
 
   const { data: invoices, isLoading: isInvoicesLoading } = useListInvoicesQuery({
-    number: search ? search.query : undefined,
+    number: search.field === "number" ? search?.query : undefined,
+    //status: status ? JSON.parse(status).join(',') : undefined,
     date_start: date_range?.field === "date" ? date_range.from : undefined,
     date_end: date_range?.field === "date" ? date_range.to : undefined,
     due_date_start: date_range?.field === "due_date" ? date_range.from : undefined,
@@ -28,7 +30,7 @@ export default function Page() {
 
   return (
     <div>
-      <Header title="Facturas de venta">
+      <Header title="Comprobantes de venta">
         <Button
           className="ml-auto"
           size="sm"
@@ -40,11 +42,14 @@ export default function Page() {
       </Header>
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)] [&_*[data-table='true']]:w-[calc(100svw-306px)]">
         <DataTable
-          data={invoices?.data || []}
+          data={invoices
+            ?.toSorted((a, b) => Date.parse(b.date) - Date.parse(a.date) || String(b.number).localeCompare(String(a.number), undefined, { numeric: true }))
+            .filter(invoice => type.length === 0 || type.includes(invoice.type))
+            .filter(invoice => status.length === 0 || status.includes(invoice.status)) ?? []}
           columns={columns}
           onRowClick={(row) => {
-            if (row.type === "debit_note") return router.push(`${pathname.replace(/^\/sales\/invoices/, "")}/debit-notes/${row.id}`)
-            if (row.type === "credit_note") return router.push(`${pathname.replace(/^\/sales\/invoices/, "")}/credit-notes/${row.id}`)
+            if (row.type === "debit_note") return router.push(`debit-notes/${row.id}`)
+            if (row.type === "credit_note") return router.push(`credit-notes/${row.id}`)
             return router.push(`${pathname}/${row.id}`)
           }}
           toolbar={({ table }) => <Toolbar table={table} />}

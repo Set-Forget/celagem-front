@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { useGetCustomerQuery } from "@/lib/services/customers"
 import { cn, placeholder } from "@/lib/utils"
 import { Calculator, Edit, FileSearch, Mail, Wallet } from "lucide-react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 import { customerStatus } from "../../utils"
 import AccountingTab from "./components/accounting-tab"
@@ -44,6 +44,8 @@ const tabs = [
 ]
 
 export default function Page() {
+  const router = useRouter()
+
   const { id } = useParams<{ id: string }>()
 
   const [tab, setTab] = useState(tabs[0].value)
@@ -67,9 +69,13 @@ export default function Page() {
             {status?.label}
           </Badge>
         </div>
-        <Button className="ml-auto" size="sm">
+        <Button
+          className="ml-auto"
+          size="sm"
+          onClick={() => router.push(`/sales/customers/${id}/edit`)}
+        >
           <Edit />
-          Editar cliente
+          Editar
         </Button>
       </Header>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">

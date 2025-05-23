@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 export const columns: ColumnDef<PurchaseOrderItem & { currency: string }>[] = [
   {
     accessorKey: "product_name",
-    header: "Nombre",
+    header: "Producto / Servicio",
     cell: ({ row }) => (
       <span className="font-medium">
         {row.getValue("product_name")}

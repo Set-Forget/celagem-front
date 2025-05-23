@@ -22,11 +22,11 @@ export const purchaseRequestsApi = erpApi.injectEndpoints({
       transformResponse: (response: PurchaseRequestDetailResponse) => response.data,
       providesTags: (result, error, id) => [{ type: 'PurchaseRequest', id }],
     }),
-    updatePurchaseRequest: builder.mutation<{ status: string, message: string }, Partial<PurchaseRequestDetail>>({
-      query: ({ id, ...data }) => ({
+    updatePurchaseRequest: builder.mutation<{ status: string, message: string }, { body: Overwrite<Partial<NewPurchaseRequest>, { request_date: string, company: number }>, id: string | number }>({
+      query: ({ body, id }) => ({
         url: `purchase_requests/${id}`,
         method: 'PUT',
-        body: data,
+        body: { ...body },
       }),
       invalidatesTags: ['PurchaseRequest'],
     }),

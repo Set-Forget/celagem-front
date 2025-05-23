@@ -22,6 +22,7 @@ export const accountListSchema = z.object({
   company: z.array(z.string()),
   parent_id: z.number().nullable(),
   has_children: z.boolean(),
+  balance: z.number(),
 })
 
 export const accountDetailSchema = z.object({
@@ -67,6 +68,10 @@ export const accountMoveLineSchema = z.object({
   }),
   date: z.string(),
   partner: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  currency: z.object({
     id: z.number(),
     name: z.string(),
   }),

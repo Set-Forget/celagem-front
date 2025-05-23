@@ -8,7 +8,7 @@ import { PurchaseReceiptItem } from "../../../schemas/purchase-receipts"
 export const columns: ColumnDef<PurchaseReceiptItem>[] = [
   {
     accessorKey: "display_name",
-    header: "Material",
+    header: "Producto / Servicio",
     size: 300,
     cell: ({ row }) => (
       <div className="font-medium">

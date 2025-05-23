@@ -6,11 +6,11 @@ export const newCustomerGeneralSchema = z.object({
 
   // ! Debe eliminarse.
 
-  country_id: z.number().optional(),
-  state_id: z.number().optional(),
-  city: z.string().optional(),
-  zip: z.string().optional(),
-  street: z.string().optional(),
+  country_id: z.any().optional(),
+  state_id: z.any().optional(),
+  city: z.any().optional(),
+  zip: z.any().optional(),
+  street: z.any().optional(),
 })
 
 export const newCustomerContactSchema = z.object({
@@ -36,7 +36,7 @@ export const newCustomerFiscalSchema = z.object({
 export const newCustomerAccountingSchema = z.object({
   currency: z.number(),
   property_payment_term: z.number({ required_error: "La condición de pago es requerida" }),
-  property_account_position: z.union([z.string(), z.literal(false)]), // ? ¿Esto que es?
+  property_account_position: z.union([z.string(), z.literal(false)]).optional(), // ? ¿Esto que es?
   payment_method: z.number({ required_error: "El método de pago es requerido" }),
   account: z.number({ required_error: "La cuenta contable es requerida" }),
 })
@@ -132,8 +132,8 @@ export const customerDetailSchema = z.object({
   street: z.string(),
   city: z.string(),
   zip: z.string(),
-  state_id: z.string(),
-  country_id: z.string(),
+  state_id: z.number(),
+  country_id: z.number(),
 })
 
 export const customerListResponseSchema = z.object({

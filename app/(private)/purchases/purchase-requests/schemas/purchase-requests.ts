@@ -34,7 +34,6 @@ export const newPurchaseRequestNotesSchema = z.object({
 });
 
 export const newPurchaseRequestGeneralSchema = z.object({
-  name: z.string({ required_error: "El título es requerido" }).nonempty("El título es requerido"),
   request_date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de requerimiento es requerida" }),

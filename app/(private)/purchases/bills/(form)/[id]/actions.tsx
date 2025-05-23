@@ -1,18 +1,22 @@
+import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useApproveBillMutation, useCancelBillMutation, useConfirmBillMutation } from "@/lib/services/bills";
+import { routes } from "@/lib/routes";
+import { useApproveBillMutation, useCancelBillMutation, useConfirmBillMutation, useGetBillQuery } from "@/lib/services/bills";
+import { generatePDF } from "@/lib/templates/utils.client";
 import { cn } from "@/lib/utils";
-import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCcw, Stamp } from "lucide-react";
+import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, Stamp } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { BillStatus, BillTypes } from "../../schemas/bills";
-import CustomSonner from "@/components/custom-sonner";
 import { toast } from "sonner";
+import { b } from "vitest/dist/chunks/suite.B2jumIFP.js";
 
-export default function Actions({ state, type }: { state?: BillStatus, type?: BillTypes }) {
+export default function Actions() {
   const router = useRouter()
 
   const { id } = useParams<{ id: string }>()
+
+  const { data: bill } = useGetBillQuery(id);
 
   const [confirmBill, { isLoading: isBillConfirming }] = useConfirmBillMutation();
   const [approveBill, { isLoading: isBillApproving }] = useApproveBillMutation();
@@ -63,6 +67,24 @@ export default function Actions({ state, type }: { state?: BillStatus, type?: Bi
     }
   }
 
+  const handleGeneratePDF = async () => {
+    if (!bill) throw new Error("No se ha encontrado la factura de compra")
+    try {
+      const pdf = await generatePDF({
+        templateName: 'bill',
+        data: bill,
+      });
+      pdf.view();
+    } catch (error) {
+      toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
+      console.error('Error al generar el PDF:', error);
+    }
+  };
+
+  const state = bill?.status
+  const type = bill?.type
+  const hasPurchaseOrder = (bill?.purchase_orders?.length ?? 0) > 0
+
   if (!state || !type) {
     return null
   }
@@ -77,11 +99,11 @@ export default function Actions({ state, type }: { state?: BillStatus, type?: Bi
             </Button>
           }
         >
-          <DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => console.log("Editar")}>
+          <DropdownMenuItem onSelect={() => router.push(`/purchases/bills/${id}/edit`)}>
             <EditIcon />
             Editar
           </DropdownMenuItem>
@@ -97,10 +119,10 @@ export default function Actions({ state, type }: { state?: BillStatus, type?: Bi
         </Dropdown>
         <Button
           size="sm"
-          onClick={handleConfirmBill}
-          loading={isBillConfirming}
+          onClick={hasPurchaseOrder ? handleApproveBill : handleConfirmBill}
+          loading={isBillConfirming || isBillApproving}
         >
-          <Check className={cn(isBillConfirming && "hidden")} />
+          <Check className={cn((isBillConfirming || isBillApproving) && "hidden")} />
           Confirmar
         </Button>
       </div>
@@ -117,11 +139,11 @@ export default function Actions({ state, type }: { state?: BillStatus, type?: Bi
             </Button>
           }
         >
-          <DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => console.log("Editar")}>
+          <DropdownMenuItem onSelect={() => router.push(`/purchases/bills/${id}/edit`)}>
             <EditIcon />
             Editar
           </DropdownMenuItem>
@@ -157,7 +179,7 @@ export default function Actions({ state, type }: { state?: BillStatus, type?: Bi
             </Button>
           }
         >
-          <DropdownMenuItem /* onSelect={handleGeneratePDF} */>
+          <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
@@ -170,13 +192,13 @@ export default function Actions({ state, type }: { state?: BillStatus, type?: Bi
             </Button>
           }
         >
-          <DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => router.push(routes.payments.new(bill?.id))}>
             Registro de pago
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => router.push(`/credit-notes/new?billId=${id}`)}>
+          <DropdownMenuItem onSelect={() => router.push(`/purchases/credit-notes/new?billId=${id}`)}>
             Nota de crédito
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => router.push(`/debit-notes/new?billId=${id}`)}>
+          <DropdownMenuItem onSelect={() => router.push(`/purchases/debit-notes/new?billId=${id}`)}>
             Nota de débito
           </DropdownMenuItem>
         </Dropdown>
@@ -184,7 +206,7 @@ export default function Actions({ state, type }: { state?: BillStatus, type?: Bi
     )
   }
 
-  if (state === "posted" && type === "credit_note" || type === "debit_note") {
+  if ((state === "posted" && type === "credit_note" || type === "debit_note") || state === "done") {
     return (
       <div className="flex gap-2">
         <Dropdown
@@ -194,7 +216,7 @@ export default function Actions({ state, type }: { state?: BillStatus, type?: Bi
             </Button>
           }
         >
-          <DropdownMenuItem /* onSelect={handleGeneratePDF} */>
+          <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
@@ -206,17 +228,16 @@ export default function Actions({ state, type }: { state?: BillStatus, type?: Bi
     )
   }
 
-  // ! No se puede re-abrir por el momento.
-  if (state === "cancel") {
-    return (
-      <Button
-        size="sm"
-      >
-        <RotateCcw /* className={cn(isInvoiceUpdating && "hidden")} */ />
-        Reabrir
-      </Button>
-    )
-  }
+  // // ! No se puede re-abrir por el momento.
+  // if (state === "cancel") {
+  //   return (
+  //     <Button
+  //       size="sm"
+  //     >
+  //       <RotateCcw /* className={cn(isInvoiceUpdating && "hidden")} */ />
+  //       Reabrir
+  //     </Button>
+  //   )
+  // }
 
-  // ! Falta manejar el estado done.
 }

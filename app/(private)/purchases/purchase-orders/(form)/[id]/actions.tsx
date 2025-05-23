@@ -1,17 +1,17 @@
 import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useApprovePurchaseOrderMutation, useCancelPurchaseOrderMutation, useConfirmPurchaseOrderMutation, useGetPurchaseOrderQuery, useResetPurchaseOrderMutation } from "@/lib/services/purchase-orders";
+import { generatePDF } from "@/lib/templates/utils.client";
 import { cn } from "@/lib/utils";
-import { generatePDF } from "@/templates/utils.client";
-import { Check, ChevronDown, CircleAlertIcon, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCcw, Stamp } from "lucide-react";
+import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCcw, Stamp } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PurchaseOrderState } from "../../schemas/purchase-orders";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 
 export default function Actions({ state }: { state?: PurchaseOrderState }) {
   const router = useRouter()
@@ -89,13 +89,15 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
   }
 
   const handleGeneratePDF = async () => {
+    if (!purchaseOrder) throw new Error("No se ha encontrado la orden de compra")
     try {
       const pdf = await generatePDF({
         templateName: 'purchaseOrder',
-        data: { orderNumber: "1437" },
+        data: purchaseOrder,
       });
       pdf.view();
     } catch (error) {
+      toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />);
       console.error('Error al generar el PDF:', error);
     }
   };
@@ -118,7 +120,7 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => console.log("Editar")}>
+          <DropdownMenuItem onSelect={() => router.push(`/purchases/purchase-orders/${id}/edit`)}>
             <EditIcon />
             Editar
           </DropdownMenuItem>
@@ -159,7 +161,7 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => console.log("Editar")}>
+          <DropdownMenuItem onSelect={() => router.push(`/purchases/purchase-orders/${id}/edit`)}>
             <EditIcon />
             Editar
           </DropdownMenuItem>
@@ -284,5 +286,4 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
       </Button>
     )
   }
-
 }

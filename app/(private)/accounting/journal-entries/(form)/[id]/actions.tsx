@@ -2,23 +2,18 @@ import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useCancelJournalEntryMutation, useConfirmJournalEntryMutation, useDeleteJournalEntryMutation, useUpdateJournalEntryMutation } from "@/lib/services/journal-entries";
+import { useCancelJournalEntryMutation, useConfirmJournalEntryMutation } from "@/lib/services/journal-entries";
 import { cn } from "@/lib/utils";
-import { Ban, Check, EditIcon, Ellipsis, Trash2, Undo } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { Ban, Check, EditIcon, Ellipsis } from "lucide-react";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { updateStateMessageMap } from "./utils";
 import { JournalEntryStatus } from "../../schemas/journal-entries";
 
 export default function Actions({ state }: { state?: JournalEntryStatus }) {
-  const router = useRouter()
-
   const { id } = useParams<{ id: string }>()
-
 
   const [confirmJournalEntry, { isLoading: isJournalEntryConfirming }] = useConfirmJournalEntryMutation();
   const [cancelJournalEntry, { isLoading: isJournalEntryCancelling }] = useCancelJournalEntryMutation();
-
 
   const handleConfirmJournalEntry = async () => {
     try {
@@ -60,11 +55,6 @@ export default function Actions({ state }: { state?: JournalEntryStatus }) {
             </Button>
           }
         >
-          <DropdownMenuItem onSelect={() => console.log("Editar")}>
-            <EditIcon />
-            Editar
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <DropdownMenuItem
             onSelect={handleCancelJournalEntry}
             loading={isJournalEntryCancelling}
@@ -86,26 +76,26 @@ export default function Actions({ state }: { state?: JournalEntryStatus }) {
     )
   }
 
-  if (state === "posted") {
-    return (
-      <div className="flex gap-2">
-        <Dropdown
-          trigger={
-            <Button size="icon" variant="outline" className="h-8 w-8">
-              <Ellipsis />
-            </Button>
-          }
-        >
-          <DropdownMenuItem
-            //onSelect={() => handleUpdateJournalEntry("cancel")}
-            loading={isJournalEntryConfirming}
-            className="text-destructive focus:text-destructive"
+  /*   if (state === "posted") {
+      return (
+        <div className="flex gap-2">
+          <Dropdown
+            trigger={
+              <Button size="icon" variant="outline" className="h-8 w-8">
+                <Ellipsis />
+              </Button>
+            }
           >
-            <Undo className={cn(isJournalEntryConfirming && "hidden")} />
-            Revertir
-          </DropdownMenuItem>
-        </Dropdown>
-      </div>
-    )
-  }
+            <DropdownMenuItem
+              //onSelect={() => handleUpdateJournalEntry("cancel")}
+              loading={isJournalEntryConfirming}
+              className="text-destructive focus:text-destructive"
+            >
+              <Undo className={cn(isJournalEntryConfirming && "hidden")} />
+              Revertir
+            </DropdownMenuItem>
+          </Dropdown>
+        </div>
+      )
+    } */
 }

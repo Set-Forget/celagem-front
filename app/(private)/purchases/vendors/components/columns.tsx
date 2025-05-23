@@ -61,10 +61,5 @@ export const columns: ColumnDef<SupplierList>[] = [
     accessorKey: "tax_id",
     header: "Identificación fiscal",
     cell: ({ row }) => <div>{row.getValue("tax_id")}</div>,
-  },
-  {
-    accessorKey: "contact_address_inline",
-    header: "Dirección",
-    cell: ({ row }) => <div>{row.getValue("contact_address_inline")}</div>,
   }
 ]

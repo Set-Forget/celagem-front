@@ -7,11 +7,14 @@ import { BillItem } from "../../../schemas/bills"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { routes } from "@/lib/routes"
 
 export const columns: ColumnDef<BillItem & { currency: string }>[] = [
   {
     accessorKey: "product_name",
-    header: "Nombre",
+    header: "Producto / Servicio",
     cell: ({ row }) => {
       return <span className="font-medium">
         {row.getValue("product_name")}
@@ -96,7 +99,15 @@ export const columns: ColumnDef<BillItem & { currency: string }>[] = [
   {
     accessorKey: "account",
     header: "Cuenta contable",
-    cell: ({ row }) => row.original.account.name ?? "No asignada",
+    cell: ({ row }) => <Button
+      variant="link"
+      className="p-0 h-auto text-foreground"
+      asChild
+    >
+      <Link href={routes.chartOfAccounts.detail(row.original.account.id)} target="_blank">
+        {row.original.account.name}
+      </Link>
+    </Button>,
   },
   {
     accessorKey: "cost_center",
