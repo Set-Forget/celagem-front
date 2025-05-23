@@ -7,10 +7,10 @@ import { useMemo } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { useListCurrenciesQuery } from "@/lib/services/currencies";
-import { newPaymentSchema } from "../../../schemas/payments";
 import { columns } from "./columns";
+import { newChargeSchema } from "../../../schemas/receipts";
 
-type PaymentForm = z.infer<typeof newPaymentSchema>;
+type PaymentForm = z.infer<typeof newChargeSchema>;
 
 export default function TableFooter() {
   const { control } = useFormContext<PaymentForm>();
