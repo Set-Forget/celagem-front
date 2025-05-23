@@ -64,7 +64,10 @@ export default function AccountingForm() {
 
   const handleSearchPaymentMethod = async (query?: string) => {
     try {
-      const response = await searchPaymentMethods({ name: query }).unwrap()
+      const response = await searchPaymentMethods({
+        name: query,
+        payment_type: "outbound"
+      }).unwrap()
       return response.data?.map(method => ({
         id: method.id,
         name: method.name
