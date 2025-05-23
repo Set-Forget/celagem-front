@@ -115,7 +115,7 @@ export default function Page() {
           quantity: item?.quantity,
           price_unit: item?.price_unit,
           account_id: item?.account.id,
-          cost_center: item?.cost_center.id,
+          cost_center: item?.cost_center?.id,
           taxes_id: item?.taxes.map((tax) => tax.id),
         })) || [],
       })
