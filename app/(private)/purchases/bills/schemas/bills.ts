@@ -138,8 +138,8 @@ export const billDetailSchema = z.object({
     id: z.number(),
     name: z.string(),
   }),
-  internal_notes: z.string(),
-  tyc_notes: z.string(),
+  internal_notes: z.union([z.string(), z.boolean()]),
+  tyc_notes: z.union([z.string(), z.boolean()]),
   purchase_orders: z.array(z.object({
     id: z.number(),
     name: z.string(),

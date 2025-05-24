@@ -24,7 +24,7 @@ export default function Page() {
   const form = useForm<z.infer<typeof newPaymentSchema>>({
     resolver: zodResolver(newPaymentSchema),
   })
-
+  console.log(form.formState.errors)
   const onSubmit = async (data: z.infer<typeof newPaymentSchema>) => {
     const { bills, ...rest } = data
 
