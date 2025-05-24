@@ -7,13 +7,13 @@ import {
 import { billTypes } from "@/app/(private)/purchases/bills/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { AdaptedBillDetail } from "@/lib/adapters/bills"
 import { routes } from "@/lib/routes"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import Link from "next/link"
+import { NewPayment } from "../../../schemas/payments"
 
-export const columns: ColumnDef<AdaptedBillDetail>[] = [
+export const columns: ColumnDef<NonNullable<NewPayment['invoices']>[number]>[] = [
   {
     accessorKey: "number",
     header: "Número",
@@ -27,7 +27,11 @@ export const columns: ColumnDef<AdaptedBillDetail>[] = [
           asChild
         >
           <Link
-            href={routes.bill.detail(row.original.id)}
+            href={
+              row.original.type === "debit_note" ?
+                routes.purchaseDebitNote.detail(row.original.id) :
+                routes.bill.detail(row.original.id)
+            }
             target="_blank"
           >
             {row.original.number}

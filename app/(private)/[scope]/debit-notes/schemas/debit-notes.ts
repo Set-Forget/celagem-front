@@ -1,7 +1,7 @@
 import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
-export const debitNoteStatus = z.enum(["draft", "posted", "cancel"]);
+export const debitNoteStatus = z.enum(['draft', 'posted', 'cancel', 'done', 'overdue']);
 export const debitNoteMoveType = z.enum(["out_invoice", "in_invoice"]);
 
 export const newDebitNoteLineSchema = z.object({

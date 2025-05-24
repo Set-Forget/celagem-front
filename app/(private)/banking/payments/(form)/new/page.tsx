@@ -24,18 +24,18 @@ export default function Page() {
   const form = useForm<z.infer<typeof newPaymentSchema>>({
     resolver: zodResolver(newPaymentSchema),
   })
-  console.log(form.formState.errors)
+
   const onSubmit = async (data: z.infer<typeof newPaymentSchema>) => {
-    const { bills, ...rest } = data
+    const { invoices, ...rest } = data
 
     try {
       const response = await createPayment({
         ...rest,
         date: rest.date.toString(),
-        amount: rest.amount || bills?.reduce((acc, b) => acc + b.amount_residual, 0),
-        partner: rest.partner || bills?.[0]?.supplier.id,
+        amount: rest.amount || invoices?.reduce((acc, b) => acc + b.amount_residual, 0),
+        partner: rest.partner || invoices?.[0]?.supplier.id,
         journal: 6,
-        invoices: bills?.map((b) => b.id) || undefined,
+        invoices: invoices?.map((b) => b.id) || undefined,
       }).unwrap()
 
       if (response.status === "success") {

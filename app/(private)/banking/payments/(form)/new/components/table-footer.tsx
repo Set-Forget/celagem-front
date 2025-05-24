@@ -15,7 +15,7 @@ type PaymentForm = z.infer<typeof newPaymentSchema>;
 export default function TableFooter() {
   const { control } = useFormContext<PaymentForm>();
 
-  const bills = useWatch({ control, name: "bills" }) || [];
+  const bills = useWatch({ control, name: "invoices" }) || [];
   const currency = useWatch({ control, name: "currency" });
 
   const { data: currencies } = useListCurrenciesQuery();

@@ -26,16 +26,16 @@ export default function Page() {
   })
 
   const onSubmit = async (data: z.infer<typeof newChargeSchema>) => {
-    const { bills, ...rest } = data
+    const { invoices, ...rest } = data
 
     try {
       const response = await createCharge({
         ...rest,
         date: rest.date.toString(),
-        amount: rest.amount || bills?.reduce((acc, b) => acc + b.amount_residual, 0),
-        partner: rest.partner || bills?.[0]?.customer.id,
+        amount: rest.amount || invoices?.reduce((acc, b) => acc + b.amount_residual, 0),
+        partner: rest.partner || invoices?.[0]?.customer.id,
         journal: 6,
-        invoices: bills?.map((b) => b.id) || undefined,
+        invoices: invoices?.map((b) => b.id) || undefined,
       }).unwrap()
 
       if (response.status === "success") {

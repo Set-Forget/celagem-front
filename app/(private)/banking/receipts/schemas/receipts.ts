@@ -67,12 +67,12 @@ export const paymentDetailSchema = z.object({
   reconciled_invoices: z.array(z.object({
     id: z.number(),
     name: z.string(),
-    amount: z.number(),
+    amount_total: z.number(),
   })),
   reconciled_bills: z.array(z.object({
     id: z.number(),
     name: z.string(),
-    amount: z.number(),
+    amount_total: z.number(),
   })),
   traceability: z.object({
     created_by: z.string(),
@@ -91,10 +91,21 @@ export const newChargeSchema = z.object({
   partner: z.number().optional(),
   payment_method: z.number({ required_error: "El método de pago es requerido" }),
   payment_reference: z.string().optional(),
-  invoices: z.array(z.number()).optional(),
-
-  // ! Esto no existe
-  bills: z.array(invoiceDetailSchema).optional(),
+  invoices: z.array(z.object({
+    id: z.number(),
+    number: z.string(),
+    type: z.enum(["invoice", "credit_note", "debit_note"]),
+    amount_residual: z.number(),
+    currency: z.object({
+      id: z.number(),
+      name: z.string(),
+    }),
+    due_date: z.string(),
+    customer: z.object({
+      id: z.number(),
+      name: z.string(),
+    }),
+  })).optional(),
 })
 
 export const newChargeResponseSchema = z.object({

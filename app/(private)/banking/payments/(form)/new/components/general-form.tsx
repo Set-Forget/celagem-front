@@ -21,6 +21,7 @@ import TableFooter from "./table-footer"
 import { DataTable } from "@/components/data-table"
 import { AdaptedBillDetail } from "@/lib/adapters/bills"
 import { Label } from "@/components/ui/label"
+import { getLocalTimeZone, today } from "@internationalized/date"
 
 export default function GeneralForm() {
   const params = useSearchParams()
@@ -86,7 +87,7 @@ export default function GeneralForm() {
     }
   }
 
-  const bills = useWatch({ control, name: "bills" })
+  const bills = useWatch({ control, name: "invoices" })
 
   useEffect(() => {
     if (billIds) {
@@ -94,7 +95,7 @@ export default function GeneralForm() {
         const ids = billIds.split(",").map((id) => Number(id))
         const bills = await Promise.all(ids.map((id) => getBill(id).unwrap()))
 
-        setValue("bills", bills)
+        setValue("invoices", bills)
       })()
     }
   }, [billIds])
@@ -216,6 +217,7 @@ export default function GeneralForm() {
               <DatePicker
                 value={field.value || null}
                 onChange={(date) => field.onChange(date)}
+                isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) > 0}
               />
             </FormControl>
             {formState.errors.date ? (

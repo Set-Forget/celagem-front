@@ -4,7 +4,7 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 
-import { billTypes } from "@/app/(private)/purchases/bills/utils"
+import { invoiceTypes } from "@/app/(private)/sales/invoices/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices"
@@ -12,7 +12,6 @@ import { routes } from "@/lib/routes"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import Link from "next/link"
-import { invoiceTypes } from "@/app/(private)/sales/invoices/utils"
 
 export const columns: ColumnDef<AdaptedInvoiceDetail & { payed_amount: number }>[] = [
   {
@@ -28,7 +27,11 @@ export const columns: ColumnDef<AdaptedInvoiceDetail & { payed_amount: number }>
           asChild
         >
           <Link
-            href={routes.invoice.detail(row.original.id)}
+            href={
+              row.original.type === "debit_note" ?
+                routes.salesDebitNote.detail(row.original.id) :
+                routes.invoice.detail(row.original.id)
+            }
             target="_blank"
           >
             {row.original.number}
@@ -57,7 +60,6 @@ export const columns: ColumnDef<AdaptedInvoiceDetail & { payed_amount: number }>
     accessorKey: "due_date",
     header: "Fecha de vencimiento",
     cell: ({ row }) => {
-      if (row.original.type === 'credit_note') return
       return <div className="text-nowrap">
         {format(parseISO(row.getValue("due_date")), "PP", { locale: es })}
       </div>

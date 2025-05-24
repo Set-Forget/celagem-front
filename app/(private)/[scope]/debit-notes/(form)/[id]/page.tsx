@@ -76,7 +76,7 @@ export default function Page() {
 
   const { data: debitNote, isLoading: isDebitNoteLoading } = useGetDebitNoteQuery(id)
 
-  const status = debitNoteStatus[debitNote?.status === "posted" && new Date(debitNote?.due_date) < new Date() ? "overdue" : debitNote?.status as keyof typeof debitNoteStatus];
+  const status = debitNoteStatus[debitNote?.status as keyof typeof debitNoteStatus];
 
   return (
     <div>

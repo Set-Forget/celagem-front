@@ -27,7 +27,11 @@ export const columns: ColumnDef<AdaptedBillDetail & { payed_amount: number }>[] 
           asChild
         >
           <Link
-            href={routes.bill.detail(row.original.id)}
+            href={
+              row.original.type === "debit_note" ?
+                routes.purchaseDebitNote.detail(row.original.id) :
+                routes.bill.detail(row.original.id)
+            }
             target="_blank"
           >
             {row.original.number}

@@ -68,20 +68,20 @@ export default function Page() {
 
   const [getInvoice, { isLoading: isGettingInvoices }] = useLazyGetInvoiceQuery()
 
-  const [bills, setBills] = useState<(AdaptedInvoiceDetail & { payed_amount: number })[]>([])
+  const [invoices, setInvoices] = useState<(AdaptedInvoiceDetail & { payed_amount: number })[]>([])
 
   const { data: charge, isLoading: isChargeLoading } = useGetChargeQuery(id);
 
   const status = chargeStatus[charge?.state as keyof typeof chargeStatus];
-  const chargeBills = charge?.invoices?.map((invoice) => invoice.id) ?? [];
+  const chargeInvoices = charge?.reconciled_invoices?.map((invoice) => invoice.id) ?? [];
 
   useEffect(() => {
-    if (chargeBills.length === 0) return
+    if (chargeInvoices.length === 0) return
     (async () => {
-      const bills = await Promise.all(chargeBills.map((id) => getInvoice(id).unwrap()))
-      setBills(bills.map((bill) => ({
-        ...bill,
-        payed_amount: charge?.invoices?.find((i) => i.id === bill.id)?.amount_total || 0,
+      const invoices = await Promise.all(chargeInvoices.map((id) => getInvoice(id).unwrap()))
+      setInvoices(invoices.map((invoice) => ({
+        ...invoice,
+        payed_amount: charge?.reconciled_invoices?.find((i) => i.id === invoice.id)?.amount_total || 0,
       })))
     })()
   }, [charge])
@@ -109,11 +109,11 @@ export default function Page() {
           loading={isChargeLoading}
           data={charge}
         />
-        {bills.length > 0 && (
+        {invoices.length > 0 && (
           <div className="space-y-1">
             <Label className="text-sm text-muted-foreground">Comprobantes</Label>
             <DataTable
-              data={bills}
+              data={invoices}
               loading={isChargeLoading || isGettingInvoices}
               columns={columns}
               pagination={false}

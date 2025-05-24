@@ -15,7 +15,7 @@ type PaymentForm = z.infer<typeof newChargeSchema>;
 export default function TableFooter() {
   const { control } = useFormContext<PaymentForm>();
 
-  const bills = useWatch({ control, name: "bills" }) || [];
+  const invoices = useWatch({ control, name: "invoices" }) || [];
   const currency = useWatch({ control, name: "currency" });
 
   const { data: currencies } = useListCurrenciesQuery();
@@ -33,11 +33,11 @@ export default function TableFooter() {
     );
 
     return {
-      subtotal: bills.reduce((s, b) => s + Number(b.amount_residual), 0),
+      subtotal: invoices.reduce((s, b) => s + Number(b.amount_residual), 0),
       subtotalWithholdings: totalWithheld,
       withholdingTotals: totals,
     };
-  }, [bills]);
+  }, [invoices]);
 
   return (
     <ShadcnTableFooter>

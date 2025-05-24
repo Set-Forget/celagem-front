@@ -4,22 +4,22 @@ import { DataTable } from "@/components/data-table";
 import Header from "@/components/header";
 import RenderFields from "@/components/render-fields";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { AdaptedBillDetail } from "@/lib/adapters/bills";
+import { routes } from "@/lib/routes";
 import { useLazyGetBillQuery } from "@/lib/services/bills";
 import { useGetPaymentQuery } from "@/lib/services/payments";
 import { cn, FieldDefinition, placeholder } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Label } from "react-aria-components";
 import { PaymentDetail } from "../../schemas/payments";
 import { paymentStatus } from "../../utils";
-import { columns } from "./components/columns";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { routes } from "@/lib/routes";
 import Actions from "./actions";
+import { columns } from "./components/columns";
 
 const fields: FieldDefinition<PaymentDetail>[] = [
   {
@@ -71,18 +71,19 @@ export default function Page() {
   const { data: payment, isLoading: isPaymentLoading } = useGetPaymentQuery(id);
 
   const status = paymentStatus[payment?.state as keyof typeof paymentStatus];
-  const paymentBills = payment?.invoices?.map((invoice) => invoice.id) ?? [];
 
-  console.log(payment)
+  const paymentBills = payment?.reconciled_bills?.map((bill) => bill.id) ?? [];
 
   useEffect(() => {
     if (paymentBills.length === 0) return
     (async () => {
       const bills = await Promise.all(paymentBills.map((id) => getBill(id).unwrap()))
+
       setBills(bills.map((bill) => ({
         ...bill,
-        payed_amount: payment?.invoices?.find((i) => i.id === bill.id)?.amount_total || 0,
+        payed_amount: payment?.reconciled_bills?.find((i) => i.id === bill.id)?.amount_total || 0,
       })))
+
     })()
   }, [payment])
 

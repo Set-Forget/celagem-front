@@ -18,6 +18,7 @@ import { columns } from "./columns"
 import TableFooter from "./table-footer"
 import { useLazyGetCustomerQuery, useLazyListCustomersQuery } from "@/lib/services/customers"
 import { useLazyGetInvoiceQuery } from "@/lib/services/invoices"
+import { getLocalTimeZone, today } from "@internationalized/date"
 
 export default function GeneralForm() {
   const params = useSearchParams()
@@ -26,7 +27,7 @@ export default function GeneralForm() {
 
   const [currency, setCurrency] = useState<{ id: number, name: string } | undefined>(undefined)
 
-  const billIds = params.get("bill_ids")
+  const invoiceIds = params.get("bill_ids")
 
   const [getInvoice, { isLoading: isLoadingInvoices }] = useLazyGetInvoiceQuery()
   const [getCustomer] = useLazyGetCustomerQuery()
@@ -83,18 +84,18 @@ export default function GeneralForm() {
     }
   }
 
-  const bills = useWatch({ control, name: "bills" })
+  const invoices = useWatch({ control, name: "invoices" })
 
   useEffect(() => {
-    if (billIds) {
+    if (invoiceIds) {
       (async () => {
-        const ids = billIds.split(",").map((id) => Number(id))
-        const bills = await Promise.all(ids.map((id) => getInvoice(id).unwrap()))
+        const ids = invoiceIds.split(",").map((id) => Number(id))
+        const invoices = await Promise.all(ids.map((id) => getInvoice(id).unwrap()))
 
-        setValue("bills", bills)
+        setValue("invoices", invoices)
       })()
     }
-  }, [billIds])
+  }, [invoiceIds])
 
   const apply = useMemo(
     () => createApply<z.infer<typeof newChargeSchema>>(setValue, resetField),
@@ -103,7 +104,7 @@ export default function GeneralForm() {
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-      {!billIds && (
+      {!invoiceIds && (
         <>
           <FormField
             control={control}
@@ -213,6 +214,7 @@ export default function GeneralForm() {
               <DatePicker
                 value={field.value || null}
                 onChange={(date) => field.onChange(date)}
+                isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) > 0}
               />
             </FormControl>
             {formState.errors.date ? (
@@ -317,12 +319,12 @@ export default function GeneralForm() {
           </FormItem>
         )}
       />
-      {billIds && (
+      {invoiceIds && (
         <div className="col-span-2 space-y-1">
           <Label className="text-sm font-medium">Comprobantes</Label>
           <DataTable
             columns={columns}
-            data={bills || []}
+            data={invoices || []}
             loading={isLoadingInvoices}
             footer={() => <TableFooter />}
             pagination={false}
