@@ -5,7 +5,7 @@ import { purchaseRequestStatus } from "@/app/(private)/purchases/purchase-reques
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 
-Font.register({
+/* Font.register({
   family: "Geist",
   fonts: [
     {
@@ -26,11 +26,11 @@ Font.register({
       src: "/Geist-Regular.ttf",
     }
   ],
-})
+}) */
 
 const styles = StyleSheet.create({
   page: {
-    fontFamily: "Geist",
+    //fontFamily: "Geist",
     fontSize: 8,
     padding: 0,
     margin: 0,

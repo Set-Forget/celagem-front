@@ -4,7 +4,7 @@ import type { PurchaseReceiptDetail } from "@/app/(private)/purchases/purchase-r
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 
-Font.register({
+/* Font.register({
   family: "Geist",
   fonts: [
     {
@@ -26,10 +26,10 @@ Font.register({
     }
   ],
 })
-
+ */
 const styles = StyleSheet.create({
   page: {
-    fontFamily: "Geist",
+    //fontFamily: "Geist",
     fontSize: 8,
     padding: 0,
     margin: 0,
