@@ -1,36 +1,12 @@
-import type React from "react"
-import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
 import type { PurchaseRequestDetail } from "@/app/(private)/purchases/purchase-requests/schemas/purchase-requests"
 import { purchaseRequestStatus } from "@/app/(private)/purchases/purchase-requests/utils"
+import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-
-/* Font.register({
-  family: "Geist",
-  fonts: [
-    {
-      src: "/Geist-Regular.ttf",
-      fontWeight: 400,
-    },
-    {
-      src: "/Geist-Medium.ttf",
-      fontWeight: 500,
-    },
-    {
-      src: "/Geist-Semibold.ttf",
-      fontWeight: 700,
-    },
-    {
-      fontWeight: 400,
-      fontStyle: "italic",
-      src: "/Geist-Regular.ttf",
-    }
-  ],
-}) */
+import type React from "react"
 
 const styles = StyleSheet.create({
   page: {
-    //fontFamily: "Geist",
     fontSize: 8,
     padding: 0,
     margin: 0,

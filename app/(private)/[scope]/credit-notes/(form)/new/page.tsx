@@ -124,7 +124,7 @@ export default function Page() {
           product_id: item.product_id,
           quantity: item.quantity,
           taxes_id: item.taxes.map((tax) => tax.id),
-          price_unit: document.amount_residual / (1 + item.taxes.reduce((s, { amount }) => s + amount / 100, 0))
+          price_unit: item.price_unit,
         })),
       })
     }

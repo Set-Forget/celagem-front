@@ -16,6 +16,11 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
     cell: ({ row }) => row.getValue("date") && format(parseISO(row.getValue("date")), "PP", { locale: es }),
   },
   {
+    accessorKey: "name",
+    header: "Referencia",
+    cell: ({ row }) => row.original.name
+  },
+  {
     accessorKey: "partner",
     header: "Entidad",
     cell: ({ row }) => <Button

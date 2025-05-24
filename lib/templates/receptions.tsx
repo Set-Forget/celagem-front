@@ -4,32 +4,8 @@ import type { PurchaseReceiptDetail } from "@/app/(private)/purchases/purchase-r
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 
-/* Font.register({
-  family: "Geist",
-  fonts: [
-    {
-      src: "/Geist-Regular.ttf",
-      fontWeight: 400,
-    },
-    {
-      src: "/Geist-Medium.ttf",
-      fontWeight: 500,
-    },
-    {
-      src: "/Geist-Semibold.ttf",
-      fontWeight: 700,
-    },
-    {
-      fontWeight: 400,
-      fontStyle: "italic",
-      src: "/Geist-Regular.ttf",
-    }
-  ],
-})
- */
 const styles = StyleSheet.create({
   page: {
-    //fontFamily: "Geist",
     fontSize: 8,
     padding: 0,
     margin: 0,
