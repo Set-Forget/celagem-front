@@ -108,8 +108,8 @@ export default function Page() {
         currency: bill?.currency?.id,
         payment_term: bill?.payment_term?.id,
         payment_method: bill?.payment_method?.id,
-        internal_notes: bill?.internal_notes || "",
-        tyc_notes: bill?.tyc_notes || "",
+        internal_notes: typeof bill?.internal_notes === "string" ? bill.internal_notes : undefined,
+        tyc_notes: typeof bill?.tyc_notes === "string" ? bill.tyc_notes : "",
         items: bill?.items?.map((item) => ({
           product_id: item?.product_id,
           quantity: item?.quantity,

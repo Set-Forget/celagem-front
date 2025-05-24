@@ -106,8 +106,8 @@ export default function Page() {
         currency: invoice?.currency?.id,
         payment_term: invoice?.payment_term?.id,
         payment_method: invoice?.payment_method?.id,
-        internal_notes: invoice?.internal_notes || "",
-        tyc_notes: invoice?.tyc_notes || "",
+        internal_notes: typeof invoice?.internal_notes === "string" ? invoice.internal_notes : "",
+        tyc_notes: typeof invoice?.tyc_notes === "string" ? invoice.tyc_notes : "",
         items: invoice?.items?.map((item) => ({
           product_id: item?.product_id,
           quantity: item?.quantity,

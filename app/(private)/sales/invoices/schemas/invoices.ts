@@ -105,8 +105,8 @@ export const invoiceDetailSchema = z.object({
     id: z.number(),
     name: z.string(),
   }).nullable(),
-  internal_notes: z.string().optional(),
-  tyc_notes: z.string().optional(),
+  internal_notes: z.union([z.string(), z.boolean()]),
+  tyc_notes: z.union([z.string(), z.boolean()]),
   credit_notes: z.array(z.object({
     id: z.number(),
     number: z.string(),

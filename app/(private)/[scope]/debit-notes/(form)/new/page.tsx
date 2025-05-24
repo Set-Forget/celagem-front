@@ -117,7 +117,7 @@ export default function Page() {
         associated_invoice: document.id,
         payment_term: document.payment_term?.id,
         payment_method: document.payment_method?.id,
-        tyc_notes: document.tyc_notes || "",
+        tyc_notes: typeof document.tyc_notes === "string" ? document.tyc_notes : "",
         date: scope === "sales" ? parseDate(format(new Date(), "yyyy-MM-dd")) : undefined,
         items: []
       })
