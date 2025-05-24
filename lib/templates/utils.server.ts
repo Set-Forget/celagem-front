@@ -33,7 +33,7 @@ async function launchBrowser() {
 }
 
 async function generatePDFFromComponent(component: React.ReactElement): Promise<Buffer> {
-    const { renderToStaticMarkup } = require("react-dom/server");
+    const { renderToStaticMarkup } = await import("react-dom/server");
 
     const html = `<!DOCTYPE html>${renderToStaticMarkup(component)}`;
     const browser = await launchBrowser();
