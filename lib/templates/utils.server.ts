@@ -4,10 +4,17 @@ import React from "react";
 import { TemplateMap, templates } from "./templates";
 
 async function launchBrowser() {
-    const isServerless = !!process.env.VERCEL;
+    const isServerless = Boolean(process.env.VERCEL);
+
     if (isServerless) {
-        const chromium = require("chrome-aws-lambda");
-        const puppeteer = require("puppeteer-core");
+        // en Vercel (o cualquier entorno serverless)
+        const chromiumPkg = await import("chrome-aws-lambda");
+        const puppeteerCorePkg = await import("puppeteer-core");
+
+        // chrome-aws-lambda y puppeteer-core son CJS, por eso miramos .default
+        const chromium = chromiumPkg.default ?? chromiumPkg;
+        const puppeteer = puppeteerCorePkg.default ?? puppeteerCorePkg;
+
         return puppeteer.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
@@ -15,7 +22,10 @@ async function launchBrowser() {
             headless: chromium.headless,
         });
     } else {
-        const puppeteer = require("puppeteer");
+        // en tu máquina local
+        const puppeteerPkg = await import("puppeteer");
+        const puppeteer = puppeteerPkg.default ?? puppeteerPkg;
+
         return puppeteer.launch({
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
         });
