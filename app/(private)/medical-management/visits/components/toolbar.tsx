@@ -58,7 +58,7 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
   const [getAppointment] = useLazyGetAppointmentQuery()
   const [getPatient] = useLazyGetPatientQuery()
 
-  const handleGeneratePDF = async (mode: "single" | "merged") => {
+  /* const handleGeneratePDF = async (mode: "single" | "merged") => {
     if (!selectedRows.length) return
 
     setLoading(true)
@@ -116,7 +116,7 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
       setLoading(false)
       table.toggleAllRowsSelected(false)
     }
-  }
+  } */
 
   return (
     <div className="flex items-center justify-between">
@@ -136,13 +136,13 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem
-            onSelect={() => handleGeneratePDF("merged")}
+          //onSelect={() => handleGeneratePDF("merged")}
           >
             <File />
             Único documento
           </DropdownMenuItem>
           <DropdownMenuItem
-            onSelect={() => handleGeneratePDF("single")}
+          //onSelect={() => handleGeneratePDF("single")}
           >
             <FileStack />
             Múltiples documentos
