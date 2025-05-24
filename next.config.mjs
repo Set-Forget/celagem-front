@@ -39,6 +39,24 @@ const nextConfig = {
       }
     ];
   },
+  webpack(config, { isServer }) {
+    if (isServer) {
+      if (Array.isArray(config.externals)) {
+        config.externals.push('chrome-aws-lambda', 'puppeteer-core');
+      } else {
+        config.externals = [
+          config.externals,
+          'chrome-aws-lambda',
+          'puppeteer-core'
+        ];
+      }
+    }
+    return config;
+  },
+
+  experimental: {
+    serverComponentsExternalPackages: ['chrome-aws-lambda', 'puppeteer-core'],
+  },
 };
 
 export default nextConfig;

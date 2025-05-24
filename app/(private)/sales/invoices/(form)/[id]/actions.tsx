@@ -2,7 +2,11 @@ import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useApproveInvoiceMutation, useCancelInvoiceMutation, useGetInvoiceQuery } from "@/lib/services/invoices";
+import {
+    useApproveInvoiceMutation,
+    useCancelInvoiceMutation,
+    useGetInvoiceQuery,
+} from "@/lib/services/invoices";
 import { cn } from "@/lib/utils";
 import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, Stamp } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -10,223 +14,217 @@ import { toast } from "sonner";
 import { InvoiceStatus, InvoiceTypes } from "../../schemas/invoices";
 import { generatePDF } from "@/lib/templates/utils.client";
 
-export default function Actions({ state, type }: { state?: InvoiceStatus, type?: InvoiceTypes }) {
-  const router = useRouter()
+export default function Actions({ state, type }: { state?: InvoiceStatus; type?: InvoiceTypes }) {
+    const router = useRouter();
 
-  const { id } = useParams<{ id: string }>()
+    const { id } = useParams<{ id: string }>();
 
-  const { data: invoice } = useGetInvoiceQuery(id, { skip: !id });
+    const { data: invoice } = useGetInvoiceQuery(id, { skip: !id });
 
-  const [approveInvoice, { isLoading: isInvoiceApproving }] = useApproveInvoiceMutation();
-  const [cancelInvoice, { isLoading: isInvoiceCancelling }] = useCancelInvoiceMutation();
+    const [approveInvoice, { isLoading: isInvoiceApproving }] = useApproveInvoiceMutation();
+    const [cancelInvoice, { isLoading: isInvoiceCancelling }] = useCancelInvoiceMutation();
 
-  const handleApproveInvoice = async () => {
-    try {
-      const response = await approveInvoice({
-        id: id,
-      }).unwrap()
+    const handleApproveInvoice = async () => {
+        try {
+            const response = await approveInvoice({
+                id: id,
+            }).unwrap();
 
-      if (response.status === "success") {
-        toast.custom((t) => <CustomSonner t={t} description="Factura de venta confirmada" variant="success" />)
-      }
-    } catch (error) {
-      console.error(error)
-      toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la factura de venta" variant="error" />)
+            if (response.status === "success") {
+                toast.custom((t) => (
+                    <CustomSonner t={t} description="Factura de venta confirmada" variant="success" />
+                ));
+            }
+        } catch (error) {
+            console.error(error);
+            toast.custom((t) => (
+                <CustomSonner t={t} description="Error al confirmar la factura de venta" variant="error" />
+            ));
+        }
+    };
+
+    const handleCancelInvoice = async () => {
+        try {
+            const response = await cancelInvoice({
+                id: id,
+            }).unwrap();
+
+            if (response.status === "success") {
+                toast.custom((t) => (
+                    <CustomSonner t={t} description="Factura de venta cancelada" variant="success" />
+                ));
+            }
+        } catch (error) {
+            console.error(error);
+            toast.custom((t) => (
+                <CustomSonner t={t} description="Error al cancelar la factura de venta" variant="error" />
+            ));
+        }
+    };
+
+    const handleGeneratePDF = async () => {
+        if (!invoice) throw Error("No se ha encontrado la factura de venta");
+        try {
+            const pdf = await generatePDF({
+                templateName: "invoice",
+                data: invoice,
+            });
+            pdf.view();
+        } catch (error) {
+            toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />);
+            console.error("Error al generar el PDF:", error);
+        }
+    };
+
+    if (!state || !type) {
+        return null;
     }
-  }
 
-  const handleCancelInvoice = async () => {
-    try {
-      const response = await cancelInvoice({
-        id: id,
-      }).unwrap()
-
-      if (response.status === "success") {
-        toast.custom((t) => <CustomSonner t={t} description="Factura de venta cancelada" variant="success" />)
-      }
-    } catch (error) {
-      console.error(error)
-      toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la factura de venta" variant="error" />)
+    if (state === "draft") {
+        return (
+            <div className="flex gap-2">
+                <Dropdown
+                    trigger={
+                        <Button size="icon" variant="outline" className="h-8 w-8">
+                            <Ellipsis />
+                        </Button>
+                    }
+                >
+                    <DropdownMenuItem onSelect={handleGeneratePDF}>
+                        <FileTextIcon />
+                        Previsualizar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => router.push(`/sales/invoices/${id}/edit`)}>
+                        <EditIcon />
+                        Editar
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                        onSelect={handleCancelInvoice}
+                        loading={isInvoiceCancelling}
+                        className="text-destructive focus:text-destructive"
+                    >
+                        <CircleX className={cn(isInvoiceCancelling && "hidden")} />
+                        Cancelar
+                    </DropdownMenuItem>
+                </Dropdown>
+                <Button size="sm" onClick={handleApproveInvoice} loading={isInvoiceApproving}>
+                    <Check className={cn(isInvoiceApproving && "hidden")} />
+                    Confirmar
+                </Button>
+            </div>
+        );
     }
-  }
 
-  const handleGeneratePDF = async () => {
-    if (!invoice) throw Error("No se ha encontrado la factura de venta")
-    try {
-      const pdf = await generatePDF({
-        templateName: 'invoice',
-        data: invoice,
-      });
-      pdf.view();
-    } catch (error) {
-      toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
-      console.error('Error al generar el PDF:', error);
+    if (state === "to_approve") {
+        return (
+            <div className="flex gap-2">
+                <Dropdown
+                    trigger={
+                        <Button size="icon" variant="outline" className="h-8 w-8">
+                            <Ellipsis />
+                        </Button>
+                    }
+                >
+                    <DropdownMenuItem onSelect={handleGeneratePDF}>
+                        <FileTextIcon />
+                        Previsualizar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => router.push(`/sales/invoices/${id}/edit`)}>
+                        <EditIcon />
+                        Editar
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                        onSelect={handleCancelInvoice}
+                        loading={isInvoiceCancelling}
+                        className="text-destructive focus:text-destructive"
+                    >
+                        <CircleX className={cn(isInvoiceCancelling && "hidden")} />
+                        Rechazar
+                    </DropdownMenuItem>
+                </Dropdown>
+                <Button size="sm" onClick={handleApproveInvoice} loading={isInvoiceApproving}>
+                    <Stamp className={cn(isInvoiceApproving && "hidden")} />
+                    Aprobar
+                </Button>
+            </div>
+        );
     }
-  };
 
-  if (!state || !type) {
-    return null
-  }
+    if (state === "posted" && type === "invoice") {
+        return (
+            <div className="flex gap-2">
+                <Dropdown
+                    trigger={
+                        <Button size="icon" variant="outline" className="h-8 w-8">
+                            <Ellipsis />
+                        </Button>
+                    }
+                >
+                    <DropdownMenuItem onSelect={handleGeneratePDF}>
+                        <FileTextIcon />
+                        Previsualizar
+                    </DropdownMenuItem>
+                </Dropdown>
+                <Dropdown
+                    trigger={
+                        <Button size="sm">
+                            Crear
+                            <ChevronDown />
+                        </Button>
+                    }
+                >
+                    <DropdownMenuItem onClick={() => router.push(`/purchases/purchase-receipts/new`)}>
+                        Registro de pago
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push(`/sales/credit-notes/new?invoiceId=${id}`)}>
+                        Nota de crédito
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push(`/sales/debit-notes/new?invoiceId=${id}`)}>
+                        Nota de débito
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => router.push(`/sales/delivery-notes/new?invoiceId=${id}`)}
+                    >
+                        Remito
+                    </DropdownMenuItem>
+                </Dropdown>
+            </div>
+        );
+    }
 
-  if (state === "draft") {
-    return (
-      <div className="flex gap-2">
-        <Dropdown
-          trigger={
-            <Button size="icon" variant="outline" className="h-8 w-8">
-              <Ellipsis />
-            </Button>
-          }
-        >
-          <DropdownMenuItem onSelect={handleGeneratePDF}>
-            <FileTextIcon />
-            Previsualizar
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => router.push(`/sales/invoices/${id}/edit`)}>
-            <EditIcon />
-            Editar
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onSelect={handleCancelInvoice}
-            loading={isInvoiceCancelling}
-            className="text-destructive focus:text-destructive"
-          >
-            <CircleX className={cn(isInvoiceCancelling && "hidden")} />
-            Cancelar
-          </DropdownMenuItem>
-        </Dropdown>
-        <Button
-          size="sm"
-          onClick={handleApproveInvoice}
-          loading={isInvoiceApproving}
-        >
-          <Check className={cn(isInvoiceApproving && "hidden")} />
-          Confirmar
-        </Button>
-      </div>
-    )
-  }
-
-  if (state === "to_approve") {
-    return (
-      <div className="flex gap-2">
-        <Dropdown
-          trigger={
-            <Button size="icon" variant="outline" className="h-8 w-8">
-              <Ellipsis />
-            </Button>
-          }
-        >
-          <DropdownMenuItem onSelect={handleGeneratePDF}>
-            <FileTextIcon />
-            Previsualizar
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => router.push(`/sales/invoices/${id}/edit`)}>
-            <EditIcon />
-            Editar
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onSelect={handleCancelInvoice}
-            loading={isInvoiceCancelling}
-            className="text-destructive focus:text-destructive"
-          >
-            <CircleX className={cn(isInvoiceCancelling && "hidden")} />
-            Rechazar
-          </DropdownMenuItem>
-        </Dropdown>
-        <Button
-          size="sm"
-          onClick={handleApproveInvoice}
-          loading={isInvoiceApproving}
-        >
-          <Stamp className={cn(isInvoiceApproving && "hidden")} />
-          Aprobar
-        </Button>
-      </div>
-    )
-  }
-
-  if (state === "posted" && type === "invoice") {
-    return (
-      <div className="flex gap-2">
-        <Dropdown
-          trigger={
-            <Button size="icon" variant="outline" className="h-8 w-8">
-              <Ellipsis />
-            </Button>
-          }
-        >
-          <DropdownMenuItem onSelect={handleGeneratePDF}>
-            <FileTextIcon />
-            Previsualizar
-          </DropdownMenuItem>
-        </Dropdown>
-        <Dropdown
-          trigger={
-            <Button size="sm">
-              Crear
-              <ChevronDown />
-            </Button>
-          }
-        >
-          <DropdownMenuItem
-            onClick={() => router.push(`/purchases/purchase-receipts/new`)}
-          >
-            Registro de pago
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => router.push(`/sales/credit-notes/new?invoiceId=${id}`)}
-          >
-            Nota de crédito
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => router.push(`/sales/debit-notes/new?invoiceId=${id}`)}
-          >
-            Nota de débito
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => router.push(`/sales/delivery-notes/new?invoiceId=${id}`)}
-          >
-            Remito
-          </DropdownMenuItem>
-        </Dropdown>
-      </div>
-    )
-  }
-
-  if ((state === "posted" && type === "credit_note" || type === "debit_note") || state === "done") {
-    return (
-      <div className="flex gap-2">
-        <Dropdown
-          trigger={
-            <Button size="icon" variant="outline" className="h-8 w-8">
-              <Ellipsis />
-            </Button>
-          }
-        >
-          <DropdownMenuItem onSelect={handleGeneratePDF}>
-            <FileTextIcon />
-            Previsualizar
-          </DropdownMenuItem>
-          {/* 
+    if ((state === "posted" && type === "credit_note") || type === "debit_note" || state === "done") {
+        return (
+            <div className="flex gap-2">
+                <Dropdown
+                    trigger={
+                        <Button size="icon" variant="outline" className="h-8 w-8">
+                            <Ellipsis />
+                        </Button>
+                    }
+                >
+                    <DropdownMenuItem onSelect={handleGeneratePDF}>
+                        <FileTextIcon />
+                        Previsualizar
+                    </DropdownMenuItem>
+                    {/* 
             // ! Se deberían poder retornar las notas de crédito/débito a borrador, pero no se puede por el momento.
           */}
-        </Dropdown>
-      </div>
-    )
-  }
+                </Dropdown>
+            </div>
+        );
+    }
 
-  // // ! No se puede re-abrir por el momento.
-  // if (state === "cancel") {
-  //   return (
-  //     <Button
-  //       size="sm"
-  //     >
-  //       <RotateCcw /* className={cn(isInvoiceUpdating && "hidden")} */ />
-  //       Reabrir
-  //     </Button>
-  //   )
-  // }
+    // // ! No se puede re-abrir por el momento.
+    // if (state === "cancel") {
+    //   return (
+    //     <Button
+    //       size="sm"
+    //     >
+    //       <RotateCcw /* className={cn(isInvoiceUpdating && "hidden")} */ />
+    //       Reabrir
+    //     </Button>
+    //   )
+    // }
 }
