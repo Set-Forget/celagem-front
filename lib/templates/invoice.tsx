@@ -1,15 +1,215 @@
-import { BillDetail } from '@/app/(private)/purchases/bills/schemas/bills';
-import { PDF } from '@/components/pdf-component';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import React from 'react';
-import { toWords } from '../utils';
-import { InvoiceDetail } from '@/app/(private)/sales/invoices/schemas/invoices';
+import type React from "react"
+import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
+import type { InvoiceDetail } from "@/app/(private)/sales/invoices/schemas/invoices"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
+import { toWords } from "../utils"
+
+Font.register({
+  family: "Geist",
+  fonts: [
+    {
+      src: "/Geist-Regular.ttf",
+      fontWeight: 400,
+    },
+    {
+      src: "/Geist-Medium.ttf",
+      fontWeight: 500,
+    },
+    {
+      src: "/Geist-Semibold.ttf",
+      fontWeight: 700,
+    },
+    {
+      fontWeight: 400,
+      fontStyle: "italic",
+      src: "/Geist-Regular.ttf",
+    }
+  ],
+})
+
+const styles = StyleSheet.create({
+  page: {
+    fontFamily: "Geist",
+    fontSize: 8,
+    padding: 0,
+    margin: 0,
+  },
+  container: {
+    padding: 20,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 24,
+    fontSize: 8,
+    gap: 20,
+  },
+  headerLeft: {
+    width: "50%",
+    paddingHorizontal: 12,
+  },
+  headerRight: {
+    width: "50%",
+    paddingHorizontal: 12,
+    marginTop: 48,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 700,
+    marginBottom: 20,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 2,
+  },
+  label: {
+    fontWeight: 400,
+  },
+  value: {
+    fontWeight: 700,
+  },
+  logo: {
+    width: 362,
+    height: 77,
+  },
+  gridContainer: {
+    flexDirection: "row",
+    gap: 20,
+    marginBottom: 24,
+    fontSize: 8,
+  },
+  gridItem: {
+    backgroundColor: "#f8f9fa",
+    padding: 12,
+    borderRadius: 8,
+    width: "50%",
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    marginBottom: 16,
+  },
+  table: {
+    width: "100%",
+    marginBottom: 24,
+    fontSize: 8,
+  },
+  tableHeader: {
+    flexDirection: "row",
+    backgroundColor: "#f8f9fa",
+    fontSize: 8,
+  },
+  tableHeaderCell: {
+    padding: 8,
+    fontWeight: 700,
+  },
+  tableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  tableCell: {
+    padding: 8,
+  },
+  tableCellRight: {
+    padding: 8,
+    textAlign: "right",
+  },
+  // Columnas para la tabla de factura (7 columnas)
+  colProductId: { width: "12%" },
+  colDescription: { width: "25%" },
+  colQuantity: { width: "10%" },
+  colUnitPrice: { width: "15%" },
+  colSubtotal: { width: "13%" },
+  colTax: { width: "10%" },
+  colTotal: { width: "15%" },
+  bottomSection: {
+    flexDirection: "row",
+    gap: 24,
+  },
+  termsSection: {
+    width: "50%",
+    fontSize: 8,
+  },
+  termsTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    marginTop: 20,
+    marginBottom: 16,
+  },
+  termsList: {
+    paddingLeft: 20,
+  },
+  termsItem: {
+    marginBottom: 4,
+  },
+  termsNote: {
+    marginTop: 20,
+  },
+  summarySection: {
+    backgroundColor: "#f8f9fa",
+    padding: 12,
+    borderRadius: 8,
+    width: "50%",
+  },
+  summaryRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 4,
+    fontSize: 8,
+  },
+  summaryDivider: {
+    height: 1,
+    backgroundColor: "#eee",
+    marginVertical: 8,
+  },
+  summaryTotal: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    fontSize: 12,
+    fontWeight: 700,
+  },
+  summaryNote: {
+    marginTop: 8,
+    fontSize: 8,
+    fontStyle: "italic",
+    textAlign: "right",
+  },
+  signaturesSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 24,
+    marginTop: 24,
+  },
+  signatureBox: {
+    backgroundColor: "#f8f9fa",
+    padding: 12,
+    borderRadius: 8,
+    width: "50%",
+    minHeight: 80,
+  },
+  signatureTitle: {
+    fontSize: 8,
+    fontWeight: 700,
+    marginBottom: 12,
+  },
+  signatureName: {
+    fontSize: 8,
+    paddingVertical: 12,
+  },
+  signatureLine: {
+    borderTopWidth: 1,
+    borderTopColor: "#000",
+    marginTop: "auto",
+  },
+})
 
 const InvoicePDF: React.FC<{ data: InvoiceDetail }> = ({ data }) => {
-  const formattedDate = format(data.date, 'PP', { locale: es })
-  const formattedDueDate = format(data.due_date, 'PP', { locale: es })
-  const formattedCreatedDate = format(data.created_at, 'PP', { locale: es })
+  const formattedDate = format(data.date, "PP", { locale: es })
+  const formattedDueDate = format(data.due_date, "PP", { locale: es })
+  const formattedCreatedDate = format(data.created_at, "PP", { locale: es })
 
   const subtotal = data.items.reduce((sum, item) => sum + item.price_subtotal, 0)
   const taxes = data.items.reduce((sum, item) => sum + item.price_tax, 0)
@@ -24,195 +224,182 @@ const InvoicePDF: React.FC<{ data: InvoiceDetail }> = ({ data }) => {
   const totalInWords = `${currencyCode} ${toWords(total.toFixed(2))}`
 
   return (
-    <PDF
-      options={{
-        title: `Factura de Compra ${invoiceNumber}`,
-      }}
-    >
-      <div className="flex justify-between mb-6 text-xs gap-5">
-        <div className="w-full px-3">
-          <h1 className="mb-5 text-2xl font-bold">FACTURA DE VENTA</h1>
-          <div className="flex justify-between">
-            <span className="inline-block">Factura No:</span>
-            <span className="font-medium">
-              <strong>{invoiceNumber}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Creado por:</span>
-            <span className="font-medium">
-              <strong>{data.created_by}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Fecha de creación:</span>
-            <span className="font-medium">
-              <strong>{formattedCreatedDate}</strong>
-            </span>
-          </div>
-        </div>
-        <div className="w-full px-3 mt-12">
-          <img src="/celagem-logo.svg" className="block w-[362px] h-[77px]" />
-        </div>
-      </div>
+    <Document title={`Factura de Venta ${invoiceNumber}`}>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.container}>
+          {/* Header */}
+          <View style={styles.header}>
+            <View style={styles.headerLeft}>
+              <Text style={styles.title}>FACTURA DE VENTA</Text>
+              <View style={styles.row}>
+                <Text style={styles.label}>Factura No:</Text>
+                <Text style={styles.value}>{invoiceNumber}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Creado por:</Text>
+                <Text style={styles.value}>{data.created_by}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Fecha de creación:</Text>
+                <Text style={styles.value}>{formattedCreatedDate}</Text>
+              </View>
+            </View>
+            <View style={styles.headerRight}>
+              <Image src="/celagem-logo.jpg" />
+            </View>
+          </View>
 
-      <div className="grid grid-cols-2 gap-5 mb-6 text-xs">
-        <div className="bg-[#f8f9fa] p-3 rounded-lg">
-          <h3 className="mb-4 text-sm font-bold">DATOS DEL CLIENTE</h3>
-          <div className="flex justify-between">
-            <span>Cliente:</span>
-            <span className="font-medium">
-              <strong>{data.customer.name}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Dirección:</span>
-            <span className="font-medium">
-              <strong>{data.customer.address}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Teléfono:</span>
-            <span className="font-medium">
-              <strong>{data.customer.phone}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Email:</span>
-            <span className="font-medium">
-              <strong>{data.customer.email}</strong>
-            </span>
-          </div>
-        </div>
-        <div className="bg-[#f8f9fa] p-3 rounded-lg">
-          <h3 className="mb-4 text-sm font-bold">DATOS DE PAGO</h3>
-          <div className="flex justify-between">
-            <span>Moneda:</span>
-            <span className="font-medium">
-              <strong>{data.currency.name}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Término de pago:</span>
-            <span className="font-medium">
-              <strong>{data.payment_term.name}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Método de pago:</span>
-            <span className="font-medium">
-              <strong>{data?.payment_method?.name}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="inline-block">Fecha de emisión:</span>
-            <span className="font-medium">
-              <strong>{formattedDate}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="inline-block">Fecha de vencimiento:</span>
-            <span className="font-medium">
-              <strong>{formattedDueDate}</strong>
-            </span>
-          </div>
-        </div>
-      </div>
+          {/* Grid Section */}
+          <View style={styles.gridContainer}>
+            <View style={styles.gridItem}>
+              <Text style={styles.sectionTitle}>DATOS DEL CLIENTE</Text>
+              <View style={styles.row}>
+                <Text>Cliente:</Text>
+                <Text style={styles.value}>{data.customer.name}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Dirección:</Text>
+                <Text style={styles.value}>{data.customer.address}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Teléfono:</Text>
+                <Text style={styles.value}>{data.customer.phone}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Email:</Text>
+                <Text style={styles.value}>{data.customer.email}</Text>
+              </View>
+            </View>
+            <View style={styles.gridItem}>
+              <Text style={styles.sectionTitle}>DATOS DE PAGO</Text>
+              <View style={styles.row}>
+                <Text>Moneda:</Text>
+                <Text style={styles.value}>{data.currency.name}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Término de pago:</Text>
+                <Text style={styles.value}>{data.payment_term.name}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Método de pago:</Text>
+                <Text style={styles.value}>{data?.payment_method?.name}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Fecha de emisión:</Text>
+                <Text style={styles.value}>{formattedDate}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Fecha de vencimiento:</Text>
+                <Text style={styles.value}>{formattedDueDate}</Text>
+              </View>
+            </View>
+          </View>
 
-      <table className="w-full border-collapse mb-6 text-xs">
-        <thead>
-          <tr className="bg-[#f8f9fa] text-[12px]">
-            <th className="px-3 py-2 text-left">PRODUCTO ID</th>
-            <th className="px-3 py-2 text-left">DESCRIPCIÓN</th>
-            <th className="px-3 py-2 text-right">CANTIDAD</th>
-            <th className="px-3 py-2 text-right">PRECIO UNITARIO</th>
-            <th className="px-3 py-2 text-right">SUBTOTAL</th>
-            <th className="px-3 py-2 text-right">IMPUESTO</th>
-            <th className="px-3 py-2 text-right">TOTAL</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.items.map((item) => (
-            <tr key={item.id} className="border-b border-[#eee]">
-              <td className="px-3 py-2">{item.product_id}</td>
-              <td className="px-3 py-2">{item.product_name}</td>
-              <td className="px-3 py-2 text-right">{item.quantity.toLocaleString("es-ES")}</td>
-              <td className="px-3 py-2 text-right">{currencyCode} {item.price_unit.toFixed(2)}</td>
-              <td className="px-3 py-2 text-right">{currencyCode} {item.price_subtotal.toFixed(2)}</td>
-              <td className="px-3 py-2 text-right">{item.taxes.map((tax) => tax.name).join(', ')}</td>
-              <td className="px-3 py-2 text-right">
-                {currencyCode} {(item.price_subtotal + item.price_tax).toFixed(2)}
-              </td>
-            </tr>
-          ))}
-          {data.items.length < 5 &&
-            Array(5 - data.items.length)
-              .fill(0)
-              .map((_, index) => (
-                <tr key={`empty-${index}`} className="border-b border-[#eee]">
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                </tr>
-              ))}
-        </tbody>
-      </table>
+          {/* Table */}
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableHeaderCell, styles.colProductId]}>PRODUCTO ID</Text>
+              <Text style={[styles.tableHeaderCell, styles.colDescription]}>DESCRIPCIÓN</Text>
+              <Text style={[styles.tableHeaderCell, styles.colQuantity, { textAlign: "right" }]}>CANTIDAD</Text>
+              <Text style={[styles.tableHeaderCell, styles.colUnitPrice, { textAlign: "right" }]}>PRECIO UNITARIO</Text>
+              <Text style={[styles.tableHeaderCell, styles.colSubtotal, { textAlign: "right" }]}>SUBTOTAL</Text>
+              <Text style={[styles.tableHeaderCell, styles.colTax, { textAlign: "right" }]}>IMPUESTO</Text>
+              <Text style={[styles.tableHeaderCell, styles.colTotal, { textAlign: "right" }]}>TOTAL</Text>
+            </View>
+            {data.items.map((item) => (
+              <View key={item.id} style={styles.tableRow}>
+                <Text style={[styles.tableCell, styles.colProductId]}>{item.product_id}</Text>
+                <Text style={[styles.tableCell, styles.colDescription]}>{item.product_name}</Text>
+                <Text style={[styles.tableCellRight, styles.colQuantity]}>{item.quantity.toLocaleString("es-ES")}</Text>
+                <Text style={[styles.tableCellRight, styles.colUnitPrice]}>
+                  {currencyCode} {item.price_unit.toFixed(2)}
+                </Text>
+                <Text style={[styles.tableCellRight, styles.colSubtotal]}>
+                  {currencyCode} {item.price_subtotal.toFixed(2)}
+                </Text>
+                <Text style={[styles.tableCellRight, styles.colTax]}>
+                  {item.taxes.map((tax) => tax.name).join(", ")}
+                </Text>
+                <Text style={[styles.tableCellRight, styles.colTotal]}>
+                  {currencyCode} {(item.price_subtotal + item.price_tax).toFixed(2)}
+                </Text>
+              </View>
+            ))}
+            {/* Empty rows */}
+            {data.items.length < 5 &&
+              Array(5 - data.items.length)
+                .fill(0)
+                .map((_, index) => (
+                  <View key={`empty-${index}`} style={styles.tableRow}>
+                    <Text style={[styles.tableCell, styles.colProductId]}> </Text>
+                    <Text style={[styles.tableCell, styles.colDescription]}> </Text>
+                    <Text style={[styles.tableCell, styles.colQuantity]}> </Text>
+                    <Text style={[styles.tableCell, styles.colUnitPrice]}> </Text>
+                    <Text style={[styles.tableCell, styles.colSubtotal]}> </Text>
+                    <Text style={[styles.tableCell, styles.colTax]}> </Text>
+                    <Text style={[styles.tableCell, styles.colTotal]}> </Text>
+                  </View>
+                ))}
+          </View>
 
-      <div className="grid grid-cols-2 gap-6">
-        <div className="text-xs">
-          <h3 className="mt-5 mb-4 text-sm font-bold">TÉRMINOS Y CONDICIONES:</h3>
-          {data.tyc_notes ? (
-            <div dangerouslySetInnerHTML={{ __html: data.tyc_notes }} />
-          ) : (
-            <ol className="pl-5 m-0 list-decimal">
-              <li>Los precios incluyen impuestos según corresponda</li>
-              <li>El pago debe realizarse antes de la fecha de vencimiento</li>
-              <li>Los productos entregados están sujetos a las políticas de garantía</li>
-            </ol>
-          )}
+          {/* Bottom Section */}
+          <View style={styles.bottomSection}>
+            <View style={styles.termsSection}>
+              <Text style={styles.termsTitle}>TÉRMINOS Y CONDICIONES:</Text>
+              {data.tyc_notes ? (
+                <Text>{data.tyc_notes}</Text>
+              ) : (
+                <View style={styles.termsList}>
+                  <Text style={styles.termsItem}>1. Los precios incluyen impuestos según corresponda</Text>
+                  <Text style={styles.termsItem}>2. El pago debe realizarse antes de la fecha de vencimiento</Text>
+                  <Text style={styles.termsItem}>
+                    3. Los productos entregados están sujetos a las políticas de garantía
+                  </Text>
+                </View>
+              )}
 
-          <p className='mt-5'>
-            Por favor, realice su pago antes del <strong>{formattedDueDate}</strong>. Incluya el número de factura{" "}
-            <strong>{data.number}</strong> como referencia.
-          </p>
-        </div>
+              <View style={styles.termsNote}>
+                <Text>
+                  Por favor, realice su pago antes del <Text style={styles.value}>{formattedDueDate}</Text>. Incluya el
+                  número de factura <Text style={styles.value}>{data.number}</Text> como referencia.
+                </Text>
+              </View>
+            </View>
 
+            <View style={styles.summarySection}>
+              <View style={styles.summaryRow}>
+                <Text>SUBTOTAL:</Text>
+                <Text style={styles.value}>{formattedSubtotal}</Text>
+              </View>
+              <View style={styles.summaryRow}>
+                <Text>IMPUESTO:</Text>
+                <Text style={styles.value}>{formattedTaxes}</Text>
+              </View>
+              <View style={styles.summaryDivider} />
+              <View style={styles.summaryTotal}>
+                <Text>TOTAL:</Text>
+                <Text>{formattedTotal}</Text>
+              </View>
+              <Text style={styles.summaryNote}>SON: {totalInWords}</Text>
+            </View>
+          </View>
 
-        <div className="bg-[#f8f9fa] p-3 rounded-lg">
-          <div className="grid grid-cols-[1fr_auto] gap-2 text-right text-xs">
-            <span>SUBTOTAL:</span>
-            <span>
-              <strong>{formattedSubtotal}</strong>
-            </span>
-            <span>IMPUESTO:</span>
-            <span>
-              <strong>{formattedTaxes}</strong>
-            </span>
-            <div className="col-span-2 h-px bg-[#eee] my-2"></div>
-            <span className="font-bold text-sm">TOTAL:</span>
-            <span className="font-bold text-sm">{formattedTotal}</span>
-          </div>
-          <p className="mt-2 italic text-right text-xs">SON: {totalInWords}</p>
-        </div>
-      </div>
-
-      <div className="mt-6 flex justify-between gap-6">
-        <div className="bg-[#f8f9fa] p-3 rounded-lg flex flex-col w-full justify-between">
-          <p className="mb-3 font-bold text-left text-xs">APROBADO POR</p>
-          <p className="text-xs py-3">{data.created_by}</p>
-          <hr className="w-full border-t border-black m-0" />
-        </div>
-        <div className="bg-[#f8f9fa] p-3 rounded-lg flex flex-col w-full justify-between">
-          <p className="mb-3 font-bold text-left text-xs">FIRMA Y SELLO DEL CLIENTE</p>
-          <p className="text-xs py-3">{data.customer.name}</p>
-          <hr className="w-full border-t border-black m-0" />
-        </div>
-      </div>
-    </PDF>
+          {/* Signatures */}
+          <View style={styles.signaturesSection}>
+            <View style={styles.signatureBox}>
+              <Text style={styles.signatureTitle}>APROBADO POR</Text>
+              <Text style={styles.signatureName}>{data.created_by}</Text>
+              <View style={styles.signatureLine} />
+            </View>
+            <View style={styles.signatureBox}>
+              <Text style={styles.signatureTitle}>FIRMA Y SELLO DEL CLIENTE</Text>
+              <Text style={styles.signatureName}>{data.customer.name}</Text>
+              <View style={styles.signatureLine} />
+            </View>
+          </View>
+        </View>
+      </Page>
+    </Document>
   )
 }
 

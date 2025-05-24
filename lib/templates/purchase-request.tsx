@@ -1,171 +1,342 @@
-import { PurchaseRequestDetail } from "@/app/(private)/purchases/purchase-requests/schemas/purchase-requests"
+import type React from "react"
+import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
+import type { PurchaseRequestDetail } from "@/app/(private)/purchases/purchase-requests/schemas/purchase-requests"
 import { purchaseRequestStatus } from "@/app/(private)/purchases/purchase-requests/utils"
-import { PDF } from "@/components/pdf-component"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import type React from "react"
 
-const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ data }) => {
+Font.register({
+  family: "Geist",
+  fonts: [
+    {
+      src: "/Geist-Regular.ttf",
+      fontWeight: 400,
+    },
+    {
+      src: "/Geist-Medium.ttf",
+      fontWeight: 500,
+    },
+    {
+      src: "/Geist-Semibold.ttf",
+      fontWeight: 700,
+    },
+    {
+      fontWeight: 400,
+      fontStyle: "italic",
+      src: "/Geist-Regular.ttf",
+    }
+  ],
+})
+
+const styles = StyleSheet.create({
+  page: {
+    fontFamily: "Geist",
+    fontSize: 8,
+    padding: 0,
+    margin: 0,
+  },
+  container: {
+    padding: 20,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 24,
+    fontSize: 8,
+    gap: 20,
+  },
+  headerLeft: {
+    width: "50%",
+    paddingHorizontal: 12,
+  },
+  headerRight: {
+    width: "50%",
+    paddingHorizontal: 12,
+    marginTop: 48,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 700,
+    marginBottom: 20,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 2,
+  },
+  label: {
+    fontWeight: 400,
+    fontSize: 8,
+  },
+  value: {
+    fontWeight: 700,
+    fontSize: 8,
+  },
+  gridContainer: {
+    flexDirection: "row",
+    gap: 20,
+    marginBottom: 24,
+    fontSize: 8,
+  },
+  gridItem: {
+    backgroundColor: "#f8f9fa",
+    padding: 12,
+    borderRadius: 8,
+    width: "50%",
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    marginBottom: 16,
+  },
+  table: {
+    width: "100%",
+    marginBottom: 24,
+    fontSize: 8,
+  },
+  tableHeader: {
+    flexDirection: "row",
+    backgroundColor: "#f8f9fa",
+    fontSize: 8,
+  },
+  tableHeaderCell: {
+    padding: 8,
+    fontWeight: 700,
+  },
+  tableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  tableCell: {
+    padding: 8,
+  },
+  tableCellRight: {
+    padding: 8,
+    textAlign: "right",
+  },
+  col1: { width: "15%" },
+  col2: { width: "20%" },
+  col3: { width: "45%" },
+  col4: { width: "20%" },
+  bottomSection: {
+    flexDirection: "row",
+    gap: 24,
+  },
+  termsSection: {
+    width: "50%",
+    fontSize: 8,
+  },
+  termsTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    marginTop: 20,
+    marginBottom: 16,
+  },
+  termsList: {
+    paddingLeft: 20,
+  },
+  termsItem: {
+    marginBottom: 4,
+  },
+  summarySection: {
+    backgroundColor: "#f8f9fa",
+    padding: 12,
+    borderRadius: 8,
+    width: "50%",
+  },
+  summaryRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 4,
+    fontSize: 8,
+  },
+  summaryDivider: {
+    height: 1,
+    backgroundColor: "#eee",
+    marginVertical: 8,
+  },
+  summaryTotal: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    fontSize: 12,
+    fontWeight: 700,
+  },
+  summaryNote: {
+    marginTop: 8,
+    fontSize: 8,
+    fontStyle: "italic",
+    textAlign: "right",
+  },
+  signaturesSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 24,
+    marginTop: 24,
+  },
+  signatureBox: {
+    backgroundColor: "#f8f9fa",
+    padding: 12,
+    borderRadius: 8,
+    width: "50%",
+    minHeight: 80,
+  },
+  signatureTitle: {
+    fontSize: 8,
+    fontWeight: 700,
+    marginBottom: 12,
+  },
+  signatureName: {
+    fontSize: 8,
+    paddingVertical: 12,
+  },
+  signatureLine: {
+    borderTopWidth: 1,
+    borderTopColor: "#000",
+    marginTop: "auto",
+  },
+})
+
+export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ data }) => {
   const formattedRequestDate = format(data.request_date, "PP", { locale: es })
   const formattedCreatedDate = format(data.created_at, "PP", { locale: es })
 
   return (
-    <PDF
-      options={{
-        title: `Solicitud de Pedido ${data.name}`,
-      }}
-    >
-      <div className="flex justify-between mb-6 text-xs gap-5">
-        <div className="w-full px-3">
-          <h1 className="mb-5 text-2xl font-bold">SOLICITUD DE PEDIDO</h1>
-          <div className="flex justify-between">
-            <span className="inline-block">Nombre:</span>
-            <span className="font-medium">
-              <strong>{data.name}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="inline-block">Fecha de solicitud:</span>
-            <span className="font-medium">
-              <strong>{formattedRequestDate}</strong>
-            </span>
-          </div>
-        </div>
-        <div className="w-full px-3 mt-12">
-          <img src="/celagem-logo.svg" alt={data.company.name} className="block w-[362px] h-[77px]" />
-        </div>
-      </div>
+    <Document title={`Solicitud de Pedido ${data.name}`}>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.container}>
+          {/* Header */}
+          <View style={styles.header}>
+            <View style={styles.headerLeft}>
+              <Text style={styles.title}>SOLICITUD DE PEDIDO</Text>
+              <View style={styles.row}>
+                <Text style={styles.label}>Pedido No:</Text>
+                <Text style={styles.value}>{data.name}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Fecha de solicitud:</Text>
+                <Text style={styles.value}>{formattedRequestDate}</Text>
+              </View>
+            </View>
+            <View style={styles.headerRight}>
+              <Image src="/celagem-logo.jpg" />
+            </View>
+          </View>
 
-      <div className="grid grid-cols-2 gap-5 mb-6 text-xs">
-        <div className="bg-[#f8f9fa] p-3 rounded-lg">
-          <h3 className="mb-4 text-sm font-bold">DATOS DE LA SOLICITUD</h3>
-          <div className="flex justify-between">
-            <span>Creado por:</span>
-            <span className="font-medium">
-              <strong>{data.created_by.name}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="inline-block">Estado:</span>
-            <span className="font-medium">
-              <strong>{purchaseRequestStatus[data.state].label}</strong>
-            </span>
-          </div>
-          {data.purchase_order && (
-            <div className="flex justify-between">
-              <span className="inline-block">Orden de Compra:</span>
-              <span className="font-medium">
-                <strong>{data.purchase_order.name}</strong>
-              </span>
-            </div>
-          )}
-        </div>
-        <div className="bg-[#f8f9fa] p-3 rounded-lg">
-          <h3 className="mb-4 text-sm font-bold">DATOS DE LA EMPRESA</h3>
-          <div className="flex justify-between">
-            <span>Razón Social:</span>
-            <span className="font-medium">
-              <strong>{data.company.name}</strong>
-            </span>
-          </div>
-          {/*           <div className="flex justify-between">
-            <span>Dirección:</span>
-            <span className="font-medium">
-              <strong>Av. Siempre Viva 123</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>PBX:</span>
-            <span className="font-medium">
-              <strong>7456614</strong>
-            </span>
-          </div> */}
-        </div>
-      </div>
+          {/* Grid Section */}
+          <View style={styles.gridContainer}>
+            <View style={styles.gridItem}>
+              <Text style={styles.sectionTitle}>DATOS DE LA SOLICITUD</Text>
+              <View style={styles.row}>
+                <Text>Creado por:</Text>
+                <Text style={styles.value}>{data.created_by.name}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Estado:</Text>
+                <Text style={styles.value}>{purchaseRequestStatus[data.state].label}</Text>
+              </View>
+              {data.purchase_order && (
+                <View style={styles.row}>
+                  <Text>Orden de Compra:</Text>
+                  <Text style={styles.value}>{data.purchase_order.name}</Text>
+                </View>
+              )}
+            </View>
+            <View style={styles.gridItem}>
+              <Text style={styles.sectionTitle}>DATOS DE LA EMPRESA</Text>
+              <View style={styles.row}>
+                <Text>Razón Social:</Text>
+                <Text style={styles.value}>{data.company.name}</Text>
+              </View>
+            </View>
+          </View>
 
-      <table className="w-full border-collapse mb-6 text-xs">
-        <thead>
-          <tr className="bg-[#f8f9fa] text-[12px]">
-            <th className="px-3 py-2 text-left">ID</th>
-            <th className="px-3 py-2 text-left">PRODUCTO ID</th>
-            <th className="px-3 py-2 text-left">DESCRIPCIÓN</th>
-            <th className="px-3 py-2 text-right">CANTIDAD</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.items.map((item) => (
-            <tr key={item.id} className="border-b border-[#eee]">
-              <td className="px-3 py-2">{item.id}</td>
-              <td className="px-3 py-2">{item.product_id}</td>
-              <td className="px-3 py-2">{item.product_name}</td>
-              <td className="px-3 py-2 text-right">{item.quantity.toLocaleString("es-ES")}</td>
-            </tr>
-          ))}
-          {/* Si hay pocos items, podemos agregar filas vacías para mantener la estructura */}
-          {data.items.length < 5 &&
-            Array(5 - data.items.length)
-              .fill(0)
-              .map((_, index) => (
-                <tr key={`empty-${index}`} className="border-b border-[#eee]">
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                </tr>
-              ))}
-        </tbody>
-      </table>
+          {/* Table */}
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableHeaderCell, styles.col1]}>ID</Text>
+              <Text style={[styles.tableHeaderCell, styles.col2]}>PRODUCTO ID</Text>
+              <Text style={[styles.tableHeaderCell, styles.col3]}>DESCRIPCIÓN</Text>
+              <Text style={[styles.tableHeaderCell, styles.col4, { textAlign: "right" }]}>CANTIDAD</Text>
+            </View>
+            {data.items.map((item) => (
+              <View key={item.id} style={styles.tableRow}>
+                <Text style={[styles.tableCell, styles.col1]}>{item.id}</Text>
+                <Text style={[styles.tableCell, styles.col2]}>{item.product_id}</Text>
+                <Text style={[styles.tableCell, styles.col3]}>{item.product_name}</Text>
+                <Text style={[styles.tableCellRight, styles.col4]}>{item.quantity.toLocaleString("es-ES")}</Text>
+              </View>
+            ))}
+            {/* Empty rows */}
+            {data.items.length < 5 &&
+              Array(5 - data.items.length)
+                .fill(0)
+                .map((_, index) => (
+                  <View key={`empty-${index}`} style={styles.tableRow}>
+                    <Text style={[styles.tableCell, styles.col1]}> </Text>
+                    <Text style={[styles.tableCell, styles.col2]}> </Text>
+                    <Text style={[styles.tableCell, styles.col3]}> </Text>
+                    <Text style={[styles.tableCell, styles.col4]}> </Text>
+                  </View>
+                ))}
+          </View>
 
-      <div className="grid grid-cols-2 gap-6">
-        <div className="text-xs">
-          <h3 className="mt-5 mb-4 text-sm font-bold">TÉRMINOS Y CONDICIONES:</h3>
-          {data.tyc_notes ? (
-            <p>{data.tyc_notes}</p>
-          ) : (
-            <ol className="pl-5 m-0 list-decimal">
-              <li>Los productos solicitados deben cumplir con las especificaciones requeridas</li>
-              <li>La entrega debe realizarse en el tiempo establecido</li>
-              <li>Los productos deben contar con garantía del fabricante</li>
-              <li>Se debe entregar la documentación completa de los productos</li>
-            </ol>
-          )}
-        </div>
+          {/* Bottom Section */}
+          <View style={styles.bottomSection}>
+            <View style={styles.termsSection}>
+              <Text style={styles.termsTitle}>TÉRMINOS Y CONDICIONES:</Text>
+              {data.tyc_notes ? (
+                <Text>{data.tyc_notes}</Text>
+              ) : (
+                <View style={styles.termsList}>
+                  <Text style={styles.termsItem}>
+                    1. Los productos solicitados deben cumplir con las especificaciones requeridas
+                  </Text>
+                  <Text style={styles.termsItem}>2. La entrega debe realizarse en el tiempo establecido</Text>
+                  <Text style={styles.termsItem}>3. Los productos deben contar con garantía del fabricante</Text>
+                  <Text style={styles.termsItem}>4. Se debe entregar la documentación completa de los productos</Text>
+                </View>
+              )}
+            </View>
 
-        <div className="bg-[#f8f9fa] p-3 rounded-lg">
-          <div className="grid grid-cols-[1fr_auto] gap-2 text-right text-xs">
-            <span>TOTAL ITEMS:</span>
-            <span>
-              <strong>{data.items.length}</strong>
-            </span>
-            <span>TOTAL CANTIDAD:</span>
-            <span>
-              <strong>{data.items.reduce((sum, item) => sum + item.quantity, 0).toLocaleString("es-ES")}</strong>
-            </span>
-            <div className="col-span-2 h-px bg-[#eee] my-2"></div>
-            <span className="font-bold text-sm">ESTADO:</span>
-            <span className="font-bold text-sm">
-              <strong>{purchaseRequestStatus[data.state].label}</strong>
-            </span>
-          </div>
-          {data.purchase_order && (
-            <p className="mt-2 italic text-right text-xs">Orden de compra asociada: {data.purchase_order.name}</p>
-          )}
-        </div>
-      </div>
+            <View style={styles.summarySection}>
+              <View style={styles.summaryRow}>
+                <Text>TOTAL ITEMS:</Text>
+                <Text style={styles.value}>{data.items.length}</Text>
+              </View>
+              <View style={styles.summaryRow}>
+                <Text>TOTAL CANTIDAD:</Text>
+                <Text style={styles.value}>
+                  {data.items.reduce((sum, item) => sum + item.quantity, 0).toLocaleString("es-ES")}
+                </Text>
+              </View>
+              <View style={styles.summaryDivider} />
+              <View style={styles.summaryTotal}>
+                <Text>ESTADO:</Text>
+                <Text>{purchaseRequestStatus[data.state].label}</Text>
+              </View>
+              {data.purchase_order && (
+                <Text style={styles.summaryNote}>Orden de compra asociada: {data.purchase_order.name}</Text>
+              )}
+            </View>
+          </View>
 
-      <div className="mt-6 flex justify-between gap-6">
-        <div className="bg-[#f8f9fa] p-3 rounded-lg flex flex-col w-full justify-between">
-          <p className="mb-3 font-bold text-left text-xs">SOLICITADO POR</p>
-          <p className="text-xs py-3">{data.created_by.name}</p>
-          <hr className="w-full border-t border-black m-0" />
-        </div>
-        <div className="bg-[#f8f9fa] p-3 rounded-lg flex flex-col w-full justify-between">
-          <p className="mb-3 font-bold text-left text-xs">APROBADO POR</p>
-          <p className="text-xs py-3"></p>
-          <hr className="w-full border-t border-black m-0" />
-        </div>
-      </div>
-    </PDF>
+          {/* Signatures */}
+          <View style={styles.signaturesSection}>
+            <View style={styles.signatureBox}>
+              <Text style={styles.signatureTitle}>SOLICITADO POR</Text>
+              <Text style={styles.signatureName}>{data.created_by.name}</Text>
+              <View style={styles.signatureLine} />
+            </View>
+            <View style={styles.signatureBox}>
+              <Text style={styles.signatureTitle}>APROBADO POR</Text>
+              <Text style={styles.signatureName}> </Text>
+              <View style={styles.signatureLine} />
+            </View>
+          </View>
+        </View>
+      </Page>
+    </Document>
   )
 }
 

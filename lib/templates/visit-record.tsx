@@ -1,236 +1,398 @@
-import { AppointmentDetail } from '@/app/(private)/medical-management/calendar/schemas/appointments';
-import { Section, TemplateDetail, templateDetailSchema } from '@/app/(private)/medical-management/(masters)/schemas/templates';
-import { modesOfCare } from '@/app/(private)/medical-management/calendar/utils';
-import { PatientDetail } from '@/app/(private)/medical-management/patients/schema/patients';
-import { biologicalSexTypes, disabilityTypes, documentTypes } from '@/app/(private)/medical-management/patients/utils';
-import { resolveFieldDisplayValue } from '@/app/(private)/medical-management/visits/(form)/[visit_id]/components/template-view';
-import { VisitDetail } from '@/app/(private)/medical-management/visits/schemas/visits';
-import { PDF } from '@/components/pdf-component';
-import { format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { Fragment } from 'react';
+import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
+import type { AppointmentDetail } from "@/app/(private)/medical-management/calendar/schemas/appointments"
+import type { Section, TemplateDetail } from "@/app/(private)/medical-management/(masters)/schemas/templates"
+import { templateDetailSchema } from "@/app/(private)/medical-management/(masters)/schemas/templates"
+import { modesOfCare } from "@/app/(private)/medical-management/calendar/utils"
+import type { PatientDetail } from "@/app/(private)/medical-management/patients/schema/patients"
+import { biologicalSexTypes, disabilityTypes, documentTypes } from "@/app/(private)/medical-management/patients/utils"
+import { resolveFieldDisplayValue } from "@/app/(private)/medical-management/visits/(form)/[visit_id]/components/template-view"
+import type { VisitDetail } from "@/app/(private)/medical-management/visits/schemas/visits"
+import { format, parseISO } from "date-fns"
+import { es } from "date-fns/locale"
 
 export type VisitRecordData = {
-  visit: VisitDetail,
-  appointment: AppointmentDetail,
+  visit: VisitDetail
+  appointment: AppointmentDetail
   patient: PatientDetail
-  data: string,
-};
+  data: string
+}
+
+Font.register({
+  family: "Geist",
+  fonts: [
+    {
+      src: "/Geist-Regular.ttf",
+      fontWeight: 400,
+    },
+    {
+      src: "/Geist-Medium.ttf",
+      fontWeight: 500,
+    },
+    {
+      src: "/Geist-Semibold.ttf",
+      fontWeight: 700,
+    },
+    {
+      fontWeight: 400,
+      fontStyle: "italic",
+      src: "/Geist-Regular.ttf",
+    }
+  ],
+})
+
+const styles = StyleSheet.create({
+  page: {
+    fontFamily: "Geist",
+    fontSize: 8,
+    padding: 16,
+    margin: 0,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16,
+    gap: 16,
+  },
+  headerLeft: {
+    width: "50%",
+  },
+  headerRight: {
+    width: "50%",
+    paddingHorizontal: 12,
+    marginTop: 48,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 700,
+    marginBottom: 20,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 2,
+    fontSize: 8,
+  },
+  label: {
+    fontWeight: 400,
+  },
+  value: {
+    fontWeight: 500,
+  },
+  logo: {
+    width: 362,
+    height: 77,
+  },
+  patientSection: {
+    backgroundColor: "#f8f9fa",
+    padding: 8,
+    borderRadius: 4,
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    marginBottom: 16,
+  },
+  patientGrid: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  patientColumn: {
+    width: "50%",
+  },
+  templateTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    marginBottom: 16,
+    textTransform: "uppercase",
+  },
+  formSection: {
+    border: "1px solid #e5e7eb",
+    borderRadius: 4,
+    padding: 8,
+    marginBottom: 16,
+    width: "100%",
+  },
+  formSectionTitle: {
+    fontSize: 8,
+    fontWeight: 500,
+    marginBottom: 8,
+    textTransform: "uppercase",
+  },
+  formGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  formField: {
+    width: "48%",
+    marginBottom: 8,
+  },
+  fieldLabel: {
+    fontSize: 9,
+    color: "#6b7280",
+    marginBottom: 2,
+  },
+  fieldValue: {
+    fontSize: 8,
+  },
+  tableSection: {
+    border: "1px solid #e5e7eb",
+    borderRadius: 4,
+    padding: 8,
+    marginBottom: 16,
+    width: "100%",
+  },
+  table: {
+    width: "100%",
+    borderRadius: 2,
+    overflow: "hidden",
+    border: "1px solid #e5e7eb",
+  },
+  tableHeader: {
+    flexDirection: "row",
+    backgroundColor: "#f8f9fa",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+  },
+  tableHeaderCell: {
+    padding: 4,
+    fontSize: 8,
+    fontWeight: 500,
+    textAlign: "left",
+    flex: 1,
+  },
+  tableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+  },
+  tableCell: {
+    padding: 4,
+    fontSize: 9,
+    flex: 1,
+  },
+  emptyTableCell: {
+    padding: 8,
+    fontSize: 9,
+    textAlign: "center",
+    fontStyle: "italic",
+    color: "#6b7280",
+  },
+  footer: {
+    marginTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#e5e7eb",
+    paddingTop: 8,
+    fontSize: 8,
+  },
+  footerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+  },
+  footerLeft: {
+    width: "60%",
+  },
+  footerRight: {
+    width: "40%",
+    textAlign: "right",
+  },
+  doctorName: {
+    fontWeight: 600,
+    marginBottom: 2,
+  },
+})
 
 const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
-  const medicalRecord = JSON.parse(data.data ?? "{}") as { template: TemplateDetail, formData: Record<string, any> }
-  const parsedTemplate = templateDetailSchema.parse(medicalRecord.template);
+  const medicalRecord = JSON.parse(data.data ?? "{}") as {
+    template: TemplateDetail
+    formData: Record<string, any>
+  }
+  const parsedTemplate = templateDetailSchema.parse(medicalRecord.template)
 
   const visit = data.visit
   const appointment = data.appointment
   const patient = data.patient
 
   return (
-    <PDF options={{
-      title: `Visit Record 1`
-    }}>
-      <div className="p-4 text-sm">
-        <div className="flex justify-between mb-4 gap-4">
-          <div className="w-full">
-            <h1 className="mb-5 text-2xl font-bold">VISITA N° {visit.visit_number}</h1>
-            <div className="flex justify-between text-xs">
-              <span className="inline-block">Fecha y hora:</span>
-              <span className="font-medium">
-                {visit.createdAt ? format(parseISO(visit.createdAt ?? ""), "PP hh:mmaaa", { locale: es }) : 'No especificado'}
-              </span>
-            </div>
-            <div className="flex justify-between text-xs">
-              <span className="inline-block">Tipo de atención:</span>
-              <span className="font-medium">{parsedTemplate.name}</span>
-            </div>
-            <div className="flex justify-between text-xs">
-              <span className="inline-block">Modalidad:</span>
-              <span className="font-medium">{appointment?.mode_of_care ? modesOfCare[appointment.mode_of_care as keyof typeof modesOfCare] : "No especificado"}</span>
-            </div>
-          </div>
-          <div className="w-full px-3 mt-12">
-            <img src="/celagem-logo.svg" alt="CENTRO DE FERTILIDAD REPRONAT S.A.S." className="block w-[362px] h-[77px]" />
-          </div>
-        </div>
+    <Document title={`Visit Record ${visit.visit_number}`}>
+      <Page size="A4" style={styles.page}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <Text style={styles.title}>VISITA N° {visit.visit_number}</Text>
+            <View style={styles.row}>
+              <Text style={styles.label}>Fecha y hora:</Text>
+              <Text style={styles.value}>
+                {visit.createdAt
+                  ? format(parseISO(visit.createdAt ?? ""), "PP hh:mmaaa", { locale: es })
+                  : "No especificado"}
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Tipo de atención:</Text>
+              <Text style={styles.value}>{parsedTemplate.name}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Modalidad:</Text>
+              <Text style={styles.value}>
+                {appointment?.mode_of_care
+                  ? modesOfCare[appointment.mode_of_care as keyof typeof modesOfCare]
+                  : "No especificado"}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.headerRight}>
+            <Image src="/celagem-logo.jpg" />
+          </View>
+        </View>
 
-        <div className="mb-4">
-          <div className="bg-[#f8f9fa] p-2 rounded-md">
-            <h3 className="mb-4 text-sm font-bold">DATOS DEL PACIENTE</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <div className="flex justify-between text-xs">
-                  <span>Nombre:</span>
-                  <span className="font-medium">
-                    {patient.first_name} {patient.first_last_name}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>Sexo biológico:</span>
-                  <span className="font-medium">
-                    {biologicalSexTypes.find((b) => b.value === patient.biological_sex)?.label || "No especificado"}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>Fecha de nacimiento:</span>
-                  <span className="font-medium">
-                    {patient.birth_date ? format(new Date(patient.birth_date), "PP", { locale: es }) : 'No especificado'}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>Documento:</span>
-                  <span className="font-medium">
-                    {documentTypes.find((d) => d.value === patient.document_type)?.short || ""} {patient.document_number || "No especificado"}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>Discapacidad:</span>
-                  <span className="font-medium">
-                    {disabilityTypes.find((d) => d.value === patient.disability_type)?.label || "No especificado"}
-                  </span>
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between text-xs">
-                  <span>Teléfono:</span>
-                  <span className="font-medium">
-                    {patient.phone_number || "No especificado"}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>Email:</span>
-                  <span className="font-medium">
-                    {patient.email || "No especificado"}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>Dirección de residencia:</span>
-                  <span className="font-medium">
-                    {patient.address?.formatted_address || "No especificado"}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>Clase:</span>
-                  <span className="font-medium">
-                    {patient.class?.name || "No especificado"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Patient Section */}
+        <View style={styles.patientSection}>
+          <Text style={styles.sectionTitle}>DATOS DEL PACIENTE</Text>
+          <View style={styles.patientGrid}>
+            <View style={styles.patientColumn}>
+              <View style={styles.row}>
+                <Text>Nombre:</Text>
+                <Text style={styles.value}>
+                  {patient.first_name} {patient.first_last_name}
+                </Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Sexo biológico:</Text>
+                <Text style={styles.value}>
+                  {biologicalSexTypes.find((b) => b.value === patient.biological_sex)?.label || "No especificado"}
+                </Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Fecha de nacimiento:</Text>
+                <Text style={styles.value}>
+                  {patient.birth_date ? format(new Date(patient.birth_date), "PP", { locale: es }) : "No especificado"}
+                </Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Documento:</Text>
+                <Text style={styles.value}>
+                  {documentTypes.find((d) => d.value === patient.document_type)?.short || ""}{" "}
+                  {patient.document_number || "No especificado"}
+                </Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Discapacidad:</Text>
+                <Text style={styles.value}>
+                  {disabilityTypes.find((d) => d.value === patient.disability_type)?.label || "No especificado"}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.patientColumn}>
+              <View style={styles.row}>
+                <Text>Teléfono:</Text>
+                <Text style={styles.value}>{patient.phone_number || "No especificado"}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Email:</Text>
+                <Text style={styles.value}>{patient.email || "No especificado"}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Dirección de residencia:</Text>
+                <Text style={styles.value}>{patient.address?.formatted_address || "No especificado"}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Clase:</Text>
+                <Text style={styles.value}>{patient.class?.name || "No especificado"}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
 
-        <div className="flex flex-col gap-4">
-          <span className="text-sm font-bold">{parsedTemplate.name.toUpperCase()}</span>
+        {/* Template Content */}
+        <Text style={styles.templateTitle}>{parsedTemplate.name.toUpperCase()}</Text>
 
-          {parsedTemplate.sections.map((section: Section) => {
-            const sectionKey = medicalRecord.formData[section.name]
+        {parsedTemplate.sections.map((section: Section) => {
+          const sectionKey = medicalRecord.formData[section.name]
 
-            if (section.type === "form") {
-              return (
-                <div
-                  key={section.id}
-                  className="border border-input rounded-md p-2 min-w-0 w-full mb-4"
-                >
-                  {section.name && (
-                    <div className="inline-block mb-2 text-xs font-medium">
-                      {section.name.toUpperCase()}
-                    </div>
+          if (section.type === "form") {
+            return (
+              <View key={section.id} style={styles.formSection}>
+                {section.name && <Text style={styles.formSectionTitle}>{section.name.toUpperCase()}</Text>}
+
+                <View style={styles.formGrid}>
+                  {section.fields.map((field) => {
+                    const rawValue = medicalRecord.formData[field.code]
+                    const displayValue = resolveFieldDisplayValue(field, rawValue)
+                    return (
+                      <View key={field.id} style={styles.formField}>
+                        <Text style={styles.fieldLabel}>{field.title}</Text>
+                        <Text style={styles.fieldValue}>{displayValue}</Text>
+                      </View>
+                    )
+                  })}
+                </View>
+              </View>
+            )
+          }
+
+          if (section.type === "table") {
+            const rows: Record<string, unknown>[] = Array.isArray(sectionKey) ? sectionKey : []
+
+            return (
+              <View key={section.id} style={styles.tableSection}>
+                {section.name && <Text style={styles.formSectionTitle}>{section.name.toUpperCase()}</Text>}
+
+                <View style={styles.table}>
+                  <View style={styles.tableHeader}>
+                    {section.fields.map((col) => (
+                      <Text key={col.id} style={styles.tableHeaderCell}>
+                        {col.title}
+                      </Text>
+                    ))}
+                  </View>
+
+                  {rows.length > 0 ? (
+                    rows.map((row, idx) => (
+                      <View key={idx} style={styles.tableRow}>
+                        {section.fields.map((col) => (
+                          <Text key={col.id} style={styles.tableCell}>
+                            {resolveFieldDisplayValue(col, row[col.code])}
+                          </Text>
+                        ))}
+                      </View>
+                    ))
+                  ) : (
+                    <View style={styles.tableRow}>
+                      <Text style={[styles.emptyTableCell, { width: "100%" }]}>— Sin datos —</Text>
+                    </View>
                   )}
+                </View>
+              </View>
+            )
+          }
+          return null
+        })}
 
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                    {section.fields.map(field => {
-                      const rawValue = medicalRecord.formData[field.code]
-                      const displayValue = resolveFieldDisplayValue(field, rawValue);
-                      return (
-                        <Fragment key={field.id}>
-                          <div className="text-muted-foreground text-xs">
-                            {field.title}
-                          </div>
-                          <div className="text-xs">
-                            {displayValue}
-                          </div>
-                        </Fragment>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            }
+        {/* Footer */}
+        <View style={styles.footer}>
+          <View style={styles.footerContent}>
+            <View style={styles.footerLeft}>
+              <Text>CENTRO DE FERTILIDAD REPRONAT S.A.S.</Text>
+              <Text>Informe de Visita Confidencial</Text>
+              <Text>Este documento contiene información médica confidencial protegida por la ley.</Text>
+            </View>
+            <View style={styles.footerRight}>
+              <Text style={styles.doctorName}>
+                Dr. {appointment.doctor.first_name} {appointment.doctor.last_name}
+              </Text>
+              <Text>Médico Especialista</Text>
+              <Text>
+                Fecha de firma:{" "}
+                {visit.signed_at ? format(new Date(visit.signed_at ?? ""), "PP", { locale: es }) : "No firmado"}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </Page>
+    </Document>
+  )
+}
 
-            if (section.type === "table") {
-              const rows: Record<string, unknown>[] = Array.isArray(sectionKey) ? sectionKey : []
-
-              return (
-                <div
-                  key={section.id}
-                  className="border border-input rounded-md p-2 min-w-0 w-full mb-4"
-                >
-                  {section.name && (
-                    <div className="inline-block mb-2 text-xs font-medium">
-                      {section.name.toUpperCase()}
-                    </div>
-                  )}
-
-                  <div className="overflow-hidden border rounded-sm">
-                    <table className="w-full text-xs border-collapse">
-                      <thead className="border-b bg-[#f8f9fa]">
-                        <tr>
-                          {section.fields.map(col => (
-                            <th key={col.id} className="px-2 py-1 text-left font-medium text-xs">
-                              {col.title}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {rows.length > 0 ? (
-                          rows.map((row, idx) => (
-                            <tr key={idx} className="border-b last:border-b-0">
-                              {section.fields.map(col => (
-                                <td key={col.id} className="px-2 py-1">
-                                  {resolveFieldDisplayValue(col, row[col.code])}
-                                </td>
-                              ))}
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td
-                              colSpan={section.fields.length}
-                              className="px-2 py-2 text-center text-muted-foreground italic"
-                            >
-                              — Sin datos —
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )
-            }
-            return null
-          })}
-        </div>
-
-        <div className="mt-4 border-t border-gray-200 pt-2 text-xs">
-          <div className="flex justify-between items-end">
-            <div>
-              <p className="m-0">CENTRO DE FERTILIDAD REPRONAT S.A.S.</p>
-              <p className="m-0">Informe de Visita Confidencial</p>
-              <p className="m-0">Este documento contiene información médica confidencial protegida por la ley.</p>
-            </div>
-            <div className="text-right">
-              <p className="m-0 font-semibold">Dr. {appointment.doctor.first_name} {appointment.doctor.last_name}</p>
-              <p className="m-0">Médico Especialista</p>
-              <p className="m-0">Fecha de firma: {visit.signed_at ? format(new Date(visit.signed_at ?? ""), "PP", { locale: es }) : 'No firmado'}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </PDF>
-  );
-};
-
-export default VisitRecordPDF;
+export default VisitRecordPDF

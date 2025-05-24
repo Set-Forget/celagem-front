@@ -7,7 +7,7 @@ import { useGetProfileQuery } from "@/lib/services/auth";
 import { useLazyGetPatientQuery } from "@/lib/services/patients";
 import { useGetVisitQuery, useUpdateVisitMutation } from "@/lib/services/visits";
 import { cn } from "@/lib/utils";
-import { generatePDF } from "@/lib/templates/utils.client";
+import { generatePDF } from "@/lib/templates/utils";
 import { EditIcon, Ellipsis, FileDown, FileTextIcon, Loader2, Signature } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";

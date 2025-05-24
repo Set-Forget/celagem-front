@@ -3,7 +3,7 @@ import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useGetDeliveryQuery } from "@/lib/services/deliveries";
-import { generatePDF } from "@/lib/templates/utils.client";
+import { generatePDF } from "@/lib/templates/utils";
 import { Ellipsis, FileTextIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";

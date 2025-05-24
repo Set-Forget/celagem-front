@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { routes } from "@/lib/routes";
 import { useApproveBillMutation, useCancelBillMutation, useConfirmBillMutation, useGetBillQuery } from "@/lib/services/bills";
-import { generatePDF } from "@/lib/templates/utils.client";
+import { generatePDF } from "@/lib/templates/utils";
 import { cn } from "@/lib/utils";
 import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, Stamp } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";

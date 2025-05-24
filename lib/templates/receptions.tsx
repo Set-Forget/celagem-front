@@ -1,184 +1,377 @@
-import { PurchaseReceiptDetail } from '@/app/(private)/purchases/purchase-receipts/schemas/purchase-receipts';
-import { PDF } from '@/components/pdf-component';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import React from 'react';
+import type React from "react"
+import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
+import type { PurchaseReceiptDetail } from "@/app/(private)/purchases/purchase-receipts/schemas/purchase-receipts"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
+
+Font.register({
+  family: "Geist",
+  fonts: [
+    {
+      src: "/Geist-Regular.ttf",
+      fontWeight: 400,
+    },
+    {
+      src: "/Geist-Medium.ttf",
+      fontWeight: 500,
+    },
+    {
+      src: "/Geist-Semibold.ttf",
+      fontWeight: 700,
+    },
+    {
+      fontWeight: 400,
+      fontStyle: "italic",
+      src: "/Geist-Regular.ttf",
+    }
+  ],
+})
+
+const styles = StyleSheet.create({
+  page: {
+    fontFamily: "Geist",
+    fontSize: 8,
+    padding: 0,
+    margin: 0,
+  },
+  container: {
+    padding: 20,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 24,
+    fontSize: 8,
+    gap: 20,
+  },
+  headerLeft: {
+    width: "50%",
+    paddingHorizontal: 12,
+  },
+  headerRight: {
+    width: "50%",
+    paddingHorizontal: 12,
+    marginTop: 48,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 700,
+    marginBottom: 20,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 2,
+  },
+  label: {
+    fontWeight: 400,
+  },
+  value: {
+    fontWeight: 700,
+  },
+  logo: {
+    width: 362,
+    height: 77,
+  },
+  supplierSection: {
+    marginBottom: 24,
+    fontSize: 8,
+  },
+  supplierItem: {
+    backgroundColor: "#f8f9fa",
+    padding: 12,
+    borderRadius: 8,
+    width: "100%",
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    marginBottom: 16,
+  },
+  table: {
+    width: "100%",
+    marginBottom: 24,
+    fontSize: 8,
+  },
+  tableHeader: {
+    flexDirection: "row",
+    backgroundColor: "#f8f9fa",
+    fontSize: 8,
+  },
+  tableHeaderCell: {
+    padding: 8,
+    fontWeight: 700,
+  },
+  tableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  tableCell: {
+    padding: 8,
+  },
+  tableCellRight: {
+    padding: 8,
+    textAlign: "right",
+  },
+  tableCellLeft: {
+    padding: 8,
+    textAlign: "left",
+  },
+  colProductId: { width: "15%" },
+  colDescription: { width: "30%" },
+  colScheduled: { width: "15%" },
+  colReceived: { width: "15%" },
+  colUnit: { width: "12%" },
+  colLot: { width: "13%" },
+  bottomSection: {
+    flexDirection: "row",
+    gap: 24,
+  },
+  notesSection: {
+    width: "50%",
+    fontSize: 8,
+  },
+  notesTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    marginBottom: 16,
+  },
+  conditionsTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    marginTop: 20,
+    marginBottom: 16,
+  },
+  conditionsList: {
+    paddingLeft: 20,
+  },
+  conditionsItem: {
+    marginBottom: 4,
+  },
+  summarySection: {
+    backgroundColor: "#f8f9fa",
+    padding: 12,
+    borderRadius: 8,
+    width: "50%",
+  },
+  summaryRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 4,
+    fontSize: 8,
+  },
+  summaryDivider: {
+    height: 1,
+    backgroundColor: "#eee",
+    marginVertical: 8,
+  },
+  summaryTotal: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    fontSize: 12,
+    fontWeight: 700,
+  },
+  summaryNote: {
+    marginTop: 8,
+    fontSize: 8,
+    fontStyle: "italic",
+    textAlign: "right",
+  },
+  signaturesSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 24,
+    marginTop: 24,
+  },
+  signatureBox: {
+    backgroundColor: "#f8f9fa",
+    padding: 12,
+    borderRadius: 8,
+    width: "50%",
+    minHeight: 80,
+  },
+  signatureTitle: {
+    fontSize: 8,
+    fontWeight: 700,
+    marginBottom: 12,
+  },
+  signatureName: {
+    fontSize: 8,
+    paddingVertical: 12,
+  },
+  signatureLine: {
+    borderTopWidth: 1,
+    borderTopColor: "#000",
+    marginTop: "auto",
+  },
+})
 
 const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
-  const formattedScheduledDate = format(data.scheduled_date, 'PP', { locale: es })
-  const formattedReceptionDate = format(data.reception_date, 'PP', { locale: es })
+  const formattedScheduledDate = format(data.scheduled_date, "PP", { locale: es })
+  const formattedReceptionDate = format(data.reception_date, "PP", { locale: es })
 
   const totalItems = data.items.length
   const totalQuantity = data.items.reduce((sum, item) => sum + item.quantity, 0)
   const totalScheduledQuantity = data.items.reduce((sum, item) => sum + item.product_uom_qty, 0)
 
   return (
-    <PDF
-      options={{
-        title: `Recepción ${data.number}`,
-      }}
-    >
-      <div className="flex justify-between mb-6 text-xs gap-5">
-        <div className="w-full px-3">
-          <h1 className="mb-5 text-2xl font-bold">RECEPCIÓN DE MERCANCÍA</h1>
-          <div className="flex justify-between">
-            <span className="inline-block">Recepción No:</span>
-            <span className="font-medium">
-              <strong>{data.number}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="inline-block">Fecha programada:</span>
-            <span className="font-medium">
-              <strong>{formattedScheduledDate}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="inline-block">Fecha de recepción:</span>
-            <span className="font-medium">
-              <strong>{formattedReceptionDate}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="inline-block">Ubicación destino:</span>
-            <span className="font-medium">
-              <strong>{data.reception_location}</strong>
-            </span>
-          </div>
-          {data.purchase_orders.length > 0 && (
-            <div className="flex justify-between">
-              <span className="inline-block">Orden de Compra</span>
-              <span className="font-medium">
-                <strong>{data.purchase_orders[0].name}</strong>
-              </span>
-            </div>
-          )}
-        </div>
-        <div className="w-full px-3 mt-12">
-          <img src="/celagem-logo.svg" alt="Logo de la empresa" className="block w-[362px] h-[77px]" />
-        </div>
-      </div>
+    <Document title={`Recepción ${data.number}`}>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.container}>
+          {/* Header */}
+          <View style={styles.header}>
+            <View style={styles.headerLeft}>
+              <Text style={styles.title}>RECEPCIÓN</Text>
+              <View style={styles.row}>
+                <Text style={styles.label}>Recepción No:</Text>
+                <Text style={styles.value}>{data.number}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Fecha programada:</Text>
+                <Text style={styles.value}>{formattedScheduledDate}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Fecha de recepción:</Text>
+                <Text style={styles.value}>{formattedReceptionDate}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Ubicación destino:</Text>
+                <Text style={styles.value}>{data.reception_location}</Text>
+              </View>
+              {data.purchase_orders.length > 0 && (
+                <View style={styles.row}>
+                  <Text style={styles.label}>Orden de Compra:</Text>
+                  <Text style={styles.value}>{data.purchase_orders[0].name}</Text>
+                </View>
+              )}
+            </View>
+            <View style={styles.headerRight}>
+              <Image src="/celagem-logo.jpg" />
+            </View>
+          </View>
 
-      <div className="grid grid-cols-1 gap-5 mb-6 text-xs">
-        <div className="bg-[#f8f9fa] p-3 rounded-lg">
-          <h3 className="mb-4 text-sm font-bold">DATOS DEL PROVEEDOR</h3>
-          <div className="flex justify-between">
-            <span>Razón Social:</span>
-            <span className="font-medium">
-              <strong>{data.supplier.name}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Dirección:</span>
-            <span className="font-medium">
-              <strong>{data.supplier.address}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Teléfono:</span>
-            <span className="font-medium">
-              <strong>{data.supplier.phone}</strong>
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Email:</span>
-            <span className="font-medium">
-              <strong>{data.supplier.email}</strong>
-            </span>
-          </div>
-        </div>
-      </div>
+          {/* Supplier Section */}
+          <View style={styles.supplierSection}>
+            <View style={styles.supplierItem}>
+              <Text style={styles.sectionTitle}>DATOS DEL PROVEEDOR</Text>
+              <View style={styles.row}>
+                <Text>Razón Social:</Text>
+                <Text style={styles.value}>{data.supplier.name}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Dirección:</Text>
+                <Text style={styles.value}>{data.supplier.address}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Teléfono:</Text>
+                <Text style={styles.value}>{data.supplier.phone}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text>Email:</Text>
+                <Text style={styles.value}>{data.supplier.email}</Text>
+              </View>
+            </View>
+          </View>
 
-      <table className="w-full border-collapse mb-6 text-xs">
-        <thead>
-          <tr className="bg-[#f8f9fa] text-[12px]">
-            <th className="px-3 py-2 text-left">PRODUCTO ID</th>
-            <th className="px-3 py-2 text-left">DESCRIPCIÓN</th>
-            <th className="px-3 py-2 text-right">CANT. PROGRAMADA</th>
-            <th className="px-3 py-2 text-right">CANT. RECIBIDA</th>
-            <th className="px-3 py-2 text-left">UNIDAD</th>
-            <th className="px-3 py-2 text-left">LOTE</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.items.map((item, index) => (
-            <tr key={index} className="border-b border-[#eee]">
-              <td className="px-3 py-2">{item.product_id}</td>
-              <td className="px-3 py-2">{item.display_name}</td>
-              <td className="px-3 py-2 text-right">{item.product_uom_qty.toLocaleString("es-ES")}</td>
-              <td className="px-3 py-2 text-right">{item.quantity.toLocaleString("es-ES")}</td>
-              <td className="px-3 py-2 text-left">{item.product_uom.name}</td>
-              <td className="px-3 py-2 text-left">{item.lot ? item.lot.name : "N/A"}</td>
-            </tr>
-          ))}
-          {data.items.length < 5 &&
-            Array(5 - data.items.length)
-              .fill(0)
-              .map((_, index) => (
-                <tr key={`empty-${index}`} className="border-b border-[#eee]">
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                  <td className="px-3 py-2">&nbsp;</td>
-                </tr>
-              ))}
-        </tbody>
-      </table>
+          {/* Table */}
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableHeaderCell, styles.colProductId]}>PRODUCTO ID</Text>
+              <Text style={[styles.tableHeaderCell, styles.colDescription]}>DESCRIPCIÓN</Text>
+              <Text style={[styles.tableHeaderCell, styles.colScheduled, { textAlign: "right" }]}>CANT. PROGRAMADA</Text>
+              <Text style={[styles.tableHeaderCell, styles.colReceived, { textAlign: "right" }]}>CANT. RECIBIDA</Text>
+              <Text style={[styles.tableHeaderCell, styles.colUnit]}>UNIDAD</Text>
+              <Text style={[styles.tableHeaderCell, styles.colLot]}>LOTE</Text>
+            </View>
+            {data.items.map((item, index) => (
+              <View key={index} style={styles.tableRow}>
+                <Text style={[styles.tableCell, styles.colProductId]}>{item.product_id}</Text>
+                <Text style={[styles.tableCell, styles.colDescription]}>{item.display_name}</Text>
+                <Text style={[styles.tableCellRight, styles.colScheduled]}>
+                  {item.product_uom_qty.toLocaleString("es-ES")}
+                </Text>
+                <Text style={[styles.tableCellRight, styles.colReceived]}>
+                  {item.quantity.toLocaleString("es-ES")}
+                </Text>
+                <Text style={[styles.tableCellLeft, styles.colUnit]}>{item.product_uom.name}</Text>
+                <Text style={[styles.tableCellLeft, styles.colLot]}>{item.lot ? item.lot.name : "N/A"}</Text>
+              </View>
+            ))}
+            {/* Empty rows */}
+            {data.items.length < 5 &&
+              Array(5 - data.items.length)
+                .fill(0)
+                .map((_, index) => (
+                  <View key={`empty-${index}`} style={styles.tableRow}>
+                    <Text style={[styles.tableCell, styles.colProductId]}> </Text>
+                    <Text style={[styles.tableCell, styles.colDescription]}> </Text>
+                    <Text style={[styles.tableCell, styles.colScheduled]}> </Text>
+                    <Text style={[styles.tableCell, styles.colReceived]}> </Text>
+                    <Text style={[styles.tableCell, styles.colUnit]}> </Text>
+                    <Text style={[styles.tableCell, styles.colLot]}> </Text>
+                  </View>
+                ))}
+          </View>
 
-      <div className="grid grid-cols-2 gap-6">
-        <div className="text-xs">
-          <h3 className="mb-4 text-sm font-bold">NOTAS:</h3>
-          {data.note ? <p>{data.note}</p> : <p>Sin notas adicionales</p>}
+          {/* Bottom Section */}
+          <View style={styles.bottomSection}>
+            <View style={styles.notesSection}>
+              <Text style={styles.notesTitle}>NOTAS:</Text>
+              <Text>{data.note ? data.note : "Sin notas adicionales"}</Text>
 
-          <h3 className="mt-5 mb-4 text-sm font-bold">CONDICIONES DE RECEPCIÓN:</h3>
-          <ol className="pl-5 m-0 list-decimal">
-            <li>Verificar que los productos recibidos coincidan con la orden de compra</li>
-            <li>Inspeccionar el estado físico de los productos</li>
-            <li>Confirmar las cantidades recibidas</li>
-            <li>Registrar cualquier discrepancia o daño</li>
-            <li>Almacenar los productos en la ubicación designada</li>
-          </ol>
-        </div>
+              <Text style={styles.conditionsTitle}>CONDICIONES DE RECEPCIÓN:</Text>
+              <View style={styles.conditionsList}>
+                <Text style={styles.conditionsItem}>
+                  1. Verificar que los productos recibidos coincidan con la orden de compra
+                </Text>
+                <Text style={styles.conditionsItem}>2. Inspeccionar el estado físico de los productos</Text>
+                <Text style={styles.conditionsItem}>3. Confirmar las cantidades recibidas</Text>
+                <Text style={styles.conditionsItem}>4. Registrar cualquier discrepancia o daño</Text>
+                <Text style={styles.conditionsItem}>5. Almacenar los productos en la ubicación designada</Text>
+              </View>
+            </View>
 
-        <div className="bg-[#f8f9fa] p-3 rounded-lg">
-          <div className="grid grid-cols-[1fr_auto] gap-2 text-right text-xs">
-            <span>TOTAL ITEMS:</span>
-            <span>
-              <strong>{totalItems}</strong>
-            </span>
-            <span>CANTIDAD PROGRAMADA:</span>
-            <span>
-              <strong>{totalScheduledQuantity.toLocaleString("es-ES")}</strong>
-            </span>
-            <span>CANTIDAD RECIBIDA:</span>
-            <span>
-              <strong>{totalQuantity.toLocaleString("es-ES")}</strong>
-            </span>
-            <div className="col-span-2 h-px bg-[#eee] my-2"></div>
-            <span className="font-bold text-sm">ESTADO:</span>
-            <span className="font-bold text-sm">
-              {totalQuantity === totalScheduledQuantity ? "COMPLETA" : "PARCIAL"}
-            </span>
-          </div>
-          <p className="mt-2 italic text-right text-xs">Recepción realizada el {format(data.reception_date, 'PP', { locale: es })}</p>
-        </div>
-      </div>
+            <View style={styles.summarySection}>
+              <View style={styles.summaryRow}>
+                <Text>TOTAL ITEMS:</Text>
+                <Text style={styles.value}>{totalItems}</Text>
+              </View>
+              <View style={styles.summaryRow}>
+                <Text>CANTIDAD PROGRAMADA:</Text>
+                <Text style={styles.value}>{totalScheduledQuantity.toLocaleString("es-ES")}</Text>
+              </View>
+              <View style={styles.summaryRow}>
+                <Text>CANTIDAD RECIBIDA:</Text>
+                <Text style={styles.value}>{totalQuantity.toLocaleString("es-ES")}</Text>
+              </View>
+              <View style={styles.summaryDivider} />
+              <View style={styles.summaryTotal}>
+                <Text>ESTADO:</Text>
+                <Text>{totalQuantity === totalScheduledQuantity ? "COMPLETA" : "PARCIAL"}</Text>
+              </View>
+              <Text style={styles.summaryNote}>
+                Recepción realizada el {format(data.reception_date, "PP", { locale: es })}
+              </Text>
+            </View>
+          </View>
 
-      <div className="mt-6 flex justify-between gap-6">
-        <div className="bg-[#f8f9fa] p-3 rounded-lg flex flex-col w-full justify-between">
-          <p className="mb-3 font-bold text-left text-xs">RECIBIDO POR</p>
-          <p className="text-xs py-3"></p>
-          <hr className="w-full border-t border-black m-0" />
-        </div>
-        <div className="bg-[#f8f9fa] p-3 rounded-lg flex flex-col w-full justify-between">
-          <p className="mb-3 font-bold text-left text-xs">ENTREGADO POR</p>
-          <p className="text-xs py-3">{data.supplier.name}</p>
-          <hr className="w-full border-t border-black m-0" />
-        </div>
-      </div>
-    </PDF>
+          {/* Signatures */}
+          <View style={styles.signaturesSection}>
+            <View style={styles.signatureBox}>
+              <Text style={styles.signatureTitle}>RECIBIDO POR</Text>
+              <Text style={styles.signatureName}> </Text>
+              <View style={styles.signatureLine} />
+            </View>
+            <View style={styles.signatureBox}>
+              <Text style={styles.signatureTitle}>ENTREGADO POR</Text>
+              <Text style={styles.signatureName}>{data.supplier.name}</Text>
+              <View style={styles.signatureLine} />
+            </View>
+          </View>
+        </View>
+      </Page>
+    </Document>
   )
 }
 

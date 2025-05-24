@@ -8,7 +8,7 @@ import { Check, CircleX, EditIcon, Ellipsis, FileTextIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { DebitNoteStatus } from "../../schemas/debit-notes";
-import { generatePDF } from "@/lib/templates/utils.client";
+import { generatePDF } from "@/lib/templates/utils";
 
 export default function Actions({ state }: { state?: DebitNoteStatus }) {
   const { id, scope } = useParams<{ id: string, scope: "sales" | "purchases" }>()

@@ -8,7 +8,7 @@ import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCc
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PurchaseRequestState } from "../../schemas/purchase-requests";
-import { generatePDF } from "@/lib/templates/utils.client";
+import { generatePDF } from "@/lib/templates/utils";
 
 export default function Actions({ state }: { state?: PurchaseRequestState }) {
   const router = useRouter()
@@ -54,18 +54,23 @@ export default function Actions({ state }: { state?: PurchaseRequestState }) {
   }
 
   const handleGeneratePDF = async () => {
-    if (!purchaseRequest) throw new Error("No se ha encontrado la solicitud de pedido")
+    if (!purchaseRequest) {
+      throw new Error('No se ha encontrado la solicitud de pedido')
+    }
     try {
       const pdf = await generatePDF({
         templateName: 'purchaseRequest',
         data: purchaseRequest,
-      });
-      pdf.view();
+      })
+      pdf.view()
     } catch (error) {
-      toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
-      console.error('Error al generar el PDF:', error);
+      toast.custom(t => (
+        <CustomSonner t={t} description="Error al generar el PDF" variant="error" />
+      ))
+      console.error('Error al generar el PDF:', error)
     }
-  };
+  }
+
 
   if (!state) {
     return null

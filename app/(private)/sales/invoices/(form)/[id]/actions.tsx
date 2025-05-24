@@ -8,7 +8,7 @@ import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, Stamp } 
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { InvoiceStatus, InvoiceTypes } from "../../schemas/invoices";
-import { generatePDF } from "@/lib/templates/utils.client";
+import { generatePDF } from "@/lib/templates/utils";
 
 export default function Actions({ state, type }: { state?: InvoiceStatus, type?: InvoiceTypes }) {
   const router = useRouter()

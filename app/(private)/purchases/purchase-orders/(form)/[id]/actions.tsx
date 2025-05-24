@@ -6,7 +6,7 @@ import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdow
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useApprovePurchaseOrderMutation, useCancelPurchaseOrderMutation, useConfirmPurchaseOrderMutation, useGetPurchaseOrderQuery, useResetPurchaseOrderMutation } from "@/lib/services/purchase-orders";
-import { generatePDF } from "@/lib/templates/utils.client";
+import { generatePDF } from "@/lib/templates/utils";
 import { cn } from "@/lib/utils";
 import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCcw, Stamp } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
