@@ -3,9 +3,9 @@ import { z } from "zod";
 export const newCustomerGeneralSchema = z.object({
   name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
   commercial_company_name: z.string().optional(),
+  legal_name: z.string().optional(),
 
   // ! Debe eliminarse.
-
   country_id: z.any().optional(),
   state_id: z.any().optional(),
   city: z.any().optional(),
@@ -34,7 +34,7 @@ export const newCustomerFiscalSchema = z.object({
 })
 
 export const newCustomerAccountingSchema = z.object({
-  currency: z.number(),
+  currency: z.number({ required_error: "La moneda es requerida" }),
   property_payment_term: z.number({ required_error: "La condición de pago es requerida" }),
   property_account_position: z.union([z.string(), z.literal(false)]).optional(), // ? ¿Esto que es?
   payment_method: z.number({ required_error: "El método de pago es requerido" }),

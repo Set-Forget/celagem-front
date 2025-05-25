@@ -64,7 +64,7 @@ export default function Page() {
       website: "",
       contact_address_inline: "",
       property_account_position: false,
-      commercial_company_name: "",
+      legal_name: "",
       tax_id: "",
     }
   })

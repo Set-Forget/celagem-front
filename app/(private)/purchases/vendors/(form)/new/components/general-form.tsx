@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newSupplierSchema } from "../../../schema/suppliers"
-import { Textarea } from "@/components/ui/textarea"
 
 export default function GeneralForm() {
   const { control, formState } = useFormContext<z.infer<typeof newSupplierSchema>>()
@@ -34,7 +33,7 @@ export default function GeneralForm() {
       />
       <FormField
         control={control}
-        name="commercial_company_name"
+        name="legal_name"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
             <FormLabel className="w-fit">Razón social</FormLabel>
@@ -44,7 +43,7 @@ export default function GeneralForm() {
                 placeholder="Celagem S.A.S."
               />
             </FormControl>
-            {formState.errors.name ? (
+            {formState.errors.legal_name ? (
               <FormMessage />
             ) :
               <FormDescription>

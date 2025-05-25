@@ -22,7 +22,7 @@ const fields: FieldDefinition<SupplierDetail>[] = [
   {
     label: "Razón social",
     placeholderLength: 16,
-    render: (p) => p.commercial_company_name || "No especificado",
+    render: (p) => p.legal_name || "No especificado",
   }
 ];
 

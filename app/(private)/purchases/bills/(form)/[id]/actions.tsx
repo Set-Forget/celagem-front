@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, Stamp } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { b } from "vitest/dist/chunks/suite.B2jumIFP.js";
 
 export default function Actions() {
   const router = useRouter()
@@ -85,9 +84,7 @@ export default function Actions() {
   const type = bill?.type
   const hasPurchaseOrder = (bill?.purchase_orders?.length ?? 0) > 0
 
-  if (!state || !type) {
-    return null
-  }
+  if (!state || !type) return null
 
   if (state === "draft") {
     return (

@@ -70,14 +70,13 @@ export default function Page() {
       website: "",
       contact_address_inline: "",
       property_account_position: false,
-      commercial_company_name: "",
       tax_id: "",
       is_resident: true,
     }
   })
 
   const onSubmit = async (data: z.infer<typeof newCustomerSchema>) => {
-    const { contact_address_inline, ...rest } = data
+    const { contact_address_inline, commercial_company_name, ...rest } = data
 
     try {
       const response = await updateCustomer({

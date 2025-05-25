@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const newSupplierGeneralSchema = z.object({
   name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
-  commercial_company_name: z.string({ required_error: "El nombre registrado del proveedor es requerido" }).min(1, { message: "El nombre registrado del proveedor es requerido" }),
+  legal_name: z.string({ required_error: "El nombre registrado del proveedor es requerido" }).min(1, { message: "El nombre registrado del proveedor es requerido" }),
 
   // ! Debe eliminarse.
 
@@ -63,7 +63,7 @@ export const supplierDetailSchema = z.object({
   name: z.string(),
   status: z.boolean(),
   tags: z.array(z.string()),
-  commercial_company_name: z.string(),
+  legal_name: z.string(),
   payment_amount_due: z.number(),
   payment_amount_overdue: z.number(),
   total_invoiced: z.number(),

@@ -53,7 +53,7 @@ export default function Page() {
 
   const router = useRouter()
 
-  const { data: supplier, isLoading: isSupplierLoading } = useGetSupplierQuery(id, {
+  const { data: supplier } = useGetSupplierQuery(id, {
     skip: !id,
   })
   const [updateSupplier, { isLoading: isUpdatingSupplier }] = useUpdateSupplierMutation()
@@ -69,7 +69,7 @@ export default function Page() {
       website: "",
       contact_address_inline: "",
       property_account_position: false,
-      commercial_company_name: "",
+      legal_name: "",
       tax_id: "",
     }
   })
@@ -115,7 +115,7 @@ export default function Page() {
     if (supplier) {
       form.reset({
         ...supplier,
-        commercial_company_name: supplier.commercial_company_name || "",
+        legal_name: supplier.legal_name || "",
         property_payment_term: supplier.property_payment_term?.id,
         property_account_position: supplier.property_account_position || undefined,
         currency: supplier.currency?.id,
