@@ -15,7 +15,7 @@ export const columns: ColumnDef<PurchaseRequestList>[] = [
   {
     accessorKey: "name",
     header: "Titulo",
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+    cell: ({ row }) => <span className="text-nowrap font-medium">{row.getValue("name")}</span>,
   },
   {
     accessorKey: "state",
@@ -33,9 +33,9 @@ export const columns: ColumnDef<PurchaseRequestList>[] = [
   {
     accessorKey: "company",
     header: "Sede",
-    cell: ({ row }) => <div>
+    cell: ({ row }) => <span className="text-nowrap">
       {row.original.company.name}
-    </div>,
+    </span>,
   },
   {
     accessorKey: "request_date",
@@ -54,7 +54,7 @@ export const columns: ColumnDef<PurchaseRequestList>[] = [
   {
     accessorKey: "created_by",
     header: "Solicitado por",
-    cell: ({ row }) => <div>
+    cell: ({ row }) => <div className="text-nowrap">
       {row.getValue("created_by")}
     </div>,
   },

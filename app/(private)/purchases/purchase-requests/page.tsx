@@ -4,16 +4,13 @@ import { DataTable } from "@/components/data-table";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { useListPurchaseRequestsQuery } from "@/lib/services/purchase-requests";
+import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
 
 export default function Page() {
-  const isMobile = useIsMobile()
-
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
@@ -27,7 +24,7 @@ export default function Page() {
     name: search.field === "name" ? search?.query : undefined,
     //request_date_start: date_range?.field === "request_date" ? date_range.from : undefined,
     //request_date_end: date_range?.field === "request_date" ? date_range.to : undefined,
-  }, { refetchOnMountOrArgChange: true })
+  })
 
   const requestDateStart = date_range.field === "request_date" ? date_range.from.slice(0, 10) : undefined;
   const requestDateEnd = date_range.field === "request_date" ? date_range.to.slice(0, 10) : undefined;
@@ -44,7 +41,7 @@ export default function Page() {
           Crear solicitud de pedido
         </Button>
       </Header>
-      <div className={cn("flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]", !isMobile && "[&_*[data-table='true']]:w-[calc(100svw-306px)]")}>
+      <div className={cn("flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]", "[&_*[data-table='true']]:w-[calc(100svw-306px)]")}>
         <DataTable
           data={purchaseRequests?.data
             ?.toSorted((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at) || String(b.name).localeCompare(String(a.name), undefined, { numeric: true }))

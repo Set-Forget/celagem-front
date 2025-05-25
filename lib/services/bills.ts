@@ -32,9 +32,13 @@ export const billsApi = erpApi.injectEndpoints({
         method: 'POST',
         body: bill,
       }),
-      invalidatesTags: (result, error, { purchase_order_id }) => purchase_order_id
-        ? [{ type: 'Bill' }, { type: 'PurchaseOrder', id: purchase_order_id }]
-        : [{ type: 'Bill' }]
+      invalidatesTags: [
+        'Bill',
+        'AccountsPayable',
+        'JournalEntry',
+        'AccountingAccount',
+        'PurchaseOrder'
+      ]
     }),
     updateBill: builder.mutation<{ status: string, message: string }, { body: Omit<Partial<NewBill>, "accounting_date" | "date"> & { accounting_date: string, date: string }, id: string | number }>({
       query: ({ body, id }) => ({

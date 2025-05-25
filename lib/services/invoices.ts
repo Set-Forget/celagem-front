@@ -34,7 +34,12 @@ export const invoicesApi = erpApi.injectEndpoints({
         method: 'POST',
         body: invoice,
       }),
-      invalidatesTags: ['Invoice'],
+      invalidatesTags: [
+        'Invoice',
+        'AccountsReceivable',
+        'JournalEntry',
+        'AccountingAccount'
+      ]
     }),
     updateInvoice: builder.mutation<{ status: string, message: string }, { body: Partial<Overwrite<NewInvoice, { accounting_date: string, payment_method: number, items: { product_id: number, taxes_id?: number[], quantity: number }[] }>>, id: string | number }>({
       query: ({ body, id }) => ({
