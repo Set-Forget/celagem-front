@@ -217,7 +217,7 @@ const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
               {data?.purchase_order && (
                 <View style={styles.row}>
                   <Text style={styles.label}>Orden de Compra:</Text>
-                  <Text style={styles.value}>{data.purchase_order.number}</Text>
+                  <Text style={styles.value}>{data.purchase_order.name}</Text>
                 </View>
               )}
             </View>
