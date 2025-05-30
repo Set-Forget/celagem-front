@@ -2,8 +2,8 @@ import { AsyncCommand } from "@/components/async-command"
 import CustomSonner from "@/components/custom-sonner"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useLazyListPurchaseOrdersQuery } from "@/lib/services/purchase-orders"
-import { useCreatePurchaseReceiptMutation } from "@/lib/services/purchase-receipts"
+import { useGetPurchaseOrderQuery, useLazyListPurchaseOrdersQuery } from "@/lib/services/purchase-orders"
+import { useCreatePurchaseReceiptMutation, useUpdatePurchaseReceiptMutation, useValidatePurchaseReceiptMutation } from "@/lib/services/purchase-receipts"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
@@ -26,8 +26,14 @@ export default function Actions() {
 
   const [openCommand, setOpenCommand] = useState(false)
 
+  const { data: purchaseOrder } = useGetPurchaseOrderQuery(purchaseOrderId!, {
+    skip: !purchaseOrderId,
+  })
+
   const [searchPurchaseOrder] = useLazyListPurchaseOrdersQuery()
   const [createPurchaseReceipt, { isLoading: isCreatingPurchaseReceipt }] = useCreatePurchaseReceiptMutation()
+  const [updatePurchaseReceipt, { isLoading: isUpdatingPurchaseReceipt }] = useUpdatePurchaseReceiptMutation()
+  const [validatePurchaseReceipt, { isLoading: isPurchaseReceiptValidating }] = useValidatePurchaseReceiptMutation();
 
   const handleSearchPurchaseOrder = async (query?: string) => {
     try {
@@ -54,24 +60,52 @@ export default function Actions() {
   const onSubmit = async (data: z.infer<typeof newPurchaseReceiptSchema>) => {
     const { purchase_order, ...rest } = data
 
-    try {
-      const response = await createPurchaseReceipt({
-        ...rest,
-        items: rest.items.map(item => ({
-          ...item,
-          expected_quantity: item.quantity,
-        })),
-        reception_date: rest.reception_date.toString(),
-        source_location: 7, // Assuming a default source location
-      }).unwrap()
+    if (!purchaseOrderId) {
+      try {
+        const response = await createPurchaseReceipt({
+          ...rest,
+          items: rest.items.map(item => ({
+            ...item,
+            expected_quantity: item.quantity,
+          })),
+          reception_date: rest.reception_date.toString(),
+          source_location: 7, // Assuming a default source location
+        }).unwrap()
 
-      if (response.status === "success") {
-        router.push(`/purchases/purchase-receipts/${response.data.id}`)
-        toast.custom((t) => <CustomSonner t={t} description="Recepción de compra creada exitosamente" variant="success" />)
+        if (response.status === "success") {
+          router.push(`/purchases/purchase-receipts/${response.data.id}`)
+          toast.custom((t) => <CustomSonner t={t} description="Recepción de compra creada exitosamente" variant="success" />)
+        }
+      } catch (error) {
+        console.error(error)
+        toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la recepción de compra" variant="error" />)
       }
-    } catch (error) {
-      console.error(error)
-      toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la recepción de compra" variant="error" />)
+    } else {
+      const purchaseReceipt = purchaseOrder?.receptions?.slice().sort((a, b) => a.id - b.id).at(-1);
+      if (!purchaseReceipt) throw new Error("No se encontró una recepción de compra para actualizar")
+
+      try {
+        const response = await updatePurchaseReceipt({
+          id: purchaseReceipt?.id,
+          data: {
+            items: rest.items.map(item => ({
+              product_id: item.product_id,
+              product_uom: item.product_uom,
+              expected_quantity: purchaseOrder?.items.find(poItem => poItem.product_id === item.product_id)?.product_qty,
+              quantity: item.quantity,
+              purchase_line_id: purchaseOrder?.items.find(poItem => poItem.product_id === item.product_id)?.id,
+            }))
+          }
+        }).unwrap()
+        if (response.status === "success") {
+          router.push(`/purchases/purchase-receipts/${purchaseReceipt?.id}`)
+          await validatePurchaseReceipt({ id: purchaseReceipt?.id }).unwrap()
+          toast.custom((t) => <CustomSonner t={t} description="Recepción de compra creada exitosamente" variant="success" />)
+        }
+      } catch (error) {
+        console.error(error)
+        toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la recepción de compra" variant="error" />)
+      }
     }
   }
 
@@ -102,10 +136,10 @@ export default function Actions() {
         <Button
           type="submit"
           onClick={handleSubmit(onSubmit)}
-          loading={isCreatingPurchaseReceipt}
+          loading={isCreatingPurchaseReceipt || isUpdatingPurchaseReceipt}
           size="sm"
         >
-          <Save className={cn(isCreatingPurchaseReceipt && "hidden")} />
+          <Save className={cn((isCreatingPurchaseReceipt || isUpdatingPurchaseReceipt) && "hidden")} />
           Guardar
         </Button>
       </div>

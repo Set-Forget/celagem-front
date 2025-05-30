@@ -49,7 +49,7 @@ export default function Page() {
         product_id: item.product_id,
         name: item.product_name, // ! No debería ser necesario. Esto es un bug en el backend, debería venir en el item.
         //purchase_line_id: item.id,
-        quantity: item.product_qty,
+        quantity: item.product_qty - item.qty_received,
         product_uom: item.product_uom.id,
       }))
     })

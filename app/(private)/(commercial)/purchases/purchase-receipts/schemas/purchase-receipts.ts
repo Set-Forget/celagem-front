@@ -86,7 +86,7 @@ export const purchaseReceiptDetailSchema = z.object({
   }),
   purchase_order: z.object({
     id: z.number(),
-    number: z.string(),
+    name: z.string(),
   }).nullable(),
   backorder: z.boolean(),
   backorders: z.array(z.object({

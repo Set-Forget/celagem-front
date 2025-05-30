@@ -14,18 +14,18 @@ const fields: FieldDefinition<PurchaseReceiptDetail>[] = [
     placeholderLength: 14,
     show: (p) => !!p.purchase_order,
     render: (p) =>
-      <div className="grid grid-cols-1 justify-items-start" key={p.id}>
+      <div className="grid grid-cols-1 justify-items-start" key={p?.purchase_order?.id}>
         <Button
-          key={p.id}
+          key={p?.purchase_order?.id}
           variant="link"
           className="p-0 h-auto text-foreground"
           asChild
         >
           <Link
-            href={routes.purchaseOrder.detail(p.id)}
+            href={routes.purchaseOrder.detail(p?.purchase_order?.id!)}
             target="_blank"
           >
-            {p.number}
+            {p?.purchase_order?.name}
           </Link>
         </Button>
       </div>

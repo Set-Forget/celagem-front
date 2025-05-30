@@ -31,7 +31,16 @@ export const purchaseReceiptsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ["PurchaseReceipt"],
     }),
-    validatePurchaseReceipt: builder.mutation<{ status: string, message: string }, { id: string }>({
+    updatePurchaseReceipt: builder.mutation<PurchaseReceiptDetailResponse, { id: string | number, data: Partial<Omit<Overwrite<NewPurchaseReceipt, { reception_location: number; source_location: number; reception_date: string }>, "purchase_order">> }>({
+      query: ({ id, data }) => ({
+        url: `receptions/${id}`,
+        method: 'PUT',
+        body: { ...data },
+      }),
+      invalidatesTags: ["PurchaseReceipt"],
+    }),
+
+    validatePurchaseReceipt: builder.mutation<{ status: string, message: string }, { id: string | number }>({
       query: ({ id }) => ({
         url: `receptions/${id}/validate`,
         method: 'POST',
@@ -47,6 +56,7 @@ export const {
   useCreatePurchaseReceiptMutation,
   useValidatePurchaseReceiptMutation,
   useLazyListPurchaseReceiptsQuery,
+  useUpdatePurchaseReceiptMutation,
 } = purchaseReceiptsApi;
 
 
