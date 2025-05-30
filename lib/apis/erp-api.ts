@@ -14,6 +14,7 @@ export const erpApi = createApi({
     'CreditNote',
     'DebitNote',
     'PurchaseRequest',
+    'PurchaseReceipt',
     'Material',
     'Currency',
     'PaymentTerm',

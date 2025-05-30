@@ -27,7 +27,7 @@ export const currenciesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Currency'],
     }),
-    getCurrency: builder.query<Currencies, string>({
+    getCurrency: builder.query<Currencies, string | number>({
       query: (id) => `currencies/${id}`,
       transformResponse: (response: CurrencyResponse) => response.data,
       providesTags: ['Currency'],
@@ -58,6 +58,7 @@ export const {
   useLazyListCurrenciesQuery,
   useCreateCurrencyMutation,
   useGetCurrencyQuery,
+  useLazyGetCurrencyQuery,
   useUpdateCurrencyMutation,
   useDeleteCurrencyMutation,
 } = currenciesApi;

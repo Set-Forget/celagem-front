@@ -1,5 +1,5 @@
-import { InvoiceDetail, InvoiceList } from "@/app/(private)/sales/invoices/schemas/invoices";
-import { getInvoiceStatus } from "@/app/(private)/sales/invoices/utils";
+import { InvoiceDetail, InvoiceList } from "@/app/(private)/(commercial)/sales/invoices/schemas/invoices";
+import { getInvoiceStatus } from "@/app/(private)/(commercial)/sales/invoices/utils";
 
 export function listInvoicesAdapter(data: InvoiceList) {
   return {

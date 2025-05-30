@@ -1,4 +1,4 @@
-import { CustomerDetail, CustomerDetailResponse, CustomerListResponse, NewCustomer, NewCustomerResponse } from '@/app/(private)/sales/customers/schema/customers';
+import { CustomerDetail, CustomerDetailResponse, CustomerListResponse, NewCustomer, NewCustomerResponse } from '@/app/(private)/(commercial)/sales/customers/schema/customers';
 import { erpApi } from '../apis/erp-api';
 import { Overwrite } from '../utils';
 

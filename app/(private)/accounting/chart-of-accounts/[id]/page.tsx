@@ -79,13 +79,11 @@ export default function Page() {
           <div className="flex flex-col gap-4 [&_*[data-table='true']]:h-[calc(100svh-358px)]">
             <DataTable
               data={accountMoves?.data
+                ?.toSorted((a, b) => b.id - a.id)
                 .filter(move => {
                   if (!dateStart && !dateEnd) return true;
                   const d = new Date(move.date);
-                  return (
-                    (!dateStart || d >= new Date(dateStart)) &&
-                    (!dateEnd || d <= new Date(dateEnd))
-                  );
+                  return ((!dateStart || d >= new Date(dateStart)) && (!dateEnd || d <= new Date(dateEnd)));
                 })
                 .filter(move => moveSearch ? move.move_id.name.toString().includes(moveSearch) : true)
                 .filter(move => movePartner ? move.partner?.name.toLowerCase().includes(movePartner.toLowerCase()) : true)

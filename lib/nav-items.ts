@@ -85,10 +85,6 @@ const reportingItems = [
     url: "/reporting/account-types-master",
   },
   {
-    title: "Extras",
-    url: "/reporting/extras",
-  },
-  {
     title: "Cuentas por cobrar",
     url: "/reporting/accounts-receivable"
   },
@@ -133,6 +129,10 @@ const administrationItems = [
   {
     title: 'Clases',
     url: '/management/classes',
+  },
+  {
+    title: "Extras",
+    url: "/management/extras",
   },
 ]
 

@@ -1,20 +1,19 @@
 "use client"
 
 import CustomSonner from "@/components/custom-sonner"
-import DataTabs from "@/components/data-tabs"
+import { FormTabs } from "@/components/form-tabs"
 import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useGetProfileQuery } from "@/lib/services/auth"
 import { useGetPatientQuery, useUpdatePatientMutation } from "@/lib/services/patients"
-import { cn, getFieldPaths } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CalendarDate } from "@internationalized/date"
-import { get } from "lodash"
 import { Building, Hospital, Mail, Save, Shield, Users, Wallet } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { FieldErrors, useForm } from "react-hook-form"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { newPatientAffiliationSchema, newPatientCareCompanySchema, newPatientCaregiverSchema, newPatientCompanionSchema, newPatientContactSchema, newPatientFiscalSchema, newPatientSchema } from "../../../schema/patients"
@@ -26,52 +25,48 @@ import ContactForm from "../../components/contact-form"
 import FiscalForm from "../../components/fiscal-form"
 import GeneralForm from "../../components/general-form"
 
-// ! Se puede unificar con el tabs de abajo.
-const tabToFieldsMap = {
-  "tab-1": getFieldPaths(newPatientContactSchema),
-  "tab-2": getFieldPaths(newPatientAffiliationSchema),
-  "tab-3": getFieldPaths(newPatientCompanionSchema),
-  "tab-4": getFieldPaths(newPatientCaregiverSchema),
-  "tab-5": getFieldPaths(newPatientCareCompanySchema),
-  "tab-6": getFieldPaths(newPatientFiscalSchema),
-}
-
 const tabs = [
   {
     value: "tab-1",
     label: "Contacto",
     icon: <Mail className="mr-1.5" size={16} />,
-    content: <ContactForm />
+    content: <ContactForm />,
+    schema: newPatientContactSchema,
   },
   {
     value: "tab-2",
     label: "Afiliación",
     icon: <Hospital className="mr-1.5" size={16} />,
-    content: <AffiliationForm />
+    content: <AffiliationForm />,
+    schema: newPatientAffiliationSchema,
   },
   {
     value: "tab-3",
     label: "Acompañante",
     icon: <Users className="mr-1.5" size={16} />,
-    content: <CompanionForm />
+    content: <CompanionForm />,
+    schema: newPatientCompanionSchema,
   },
   {
     value: "tab-4",
     label: "Responsable",
     icon: <Shield className="mr-1.5" size={16} />,
-    content: <CaregiverForm />
+    content: <CaregiverForm />,
+    schema: newPatientCaregiverSchema,
   },
   {
     value: "tab-5",
     label: "Empresa responsable",
     icon: <Building className="mr-1.5" size={16} />,
-    content: <CareCompanyForm />
+    content: <CareCompanyForm />,
+    schema: newPatientCareCompanySchema,
   },
   {
     value: "tab-6",
     label: "Fiscal",
     icon: <Wallet className="mr-1.5" size={16} />,
-    content: <FiscalForm />
+    content: <FiscalForm />,
+    schema: newPatientFiscalSchema,
   },
 ];
 
@@ -89,8 +84,6 @@ export default function Page() {
   const newPatientForm = useForm<z.infer<typeof newPatientSchema>>({
     resolver: zodResolver(newPatientSchema),
   })
-
-  const [tab, setTab] = useState(tabs[0].value)
 
   const onSubmit = async (data: z.infer<typeof newPatientSchema>) => {
     const { created_by, birthdate, ...rest } = data
@@ -112,18 +105,6 @@ export default function Page() {
       toast.custom((t) => <CustomSonner t={t} description="Error al actualizar paciente" variant="error" />)
     }
   }
-
-  const onError = (errors: FieldErrors<z.infer<typeof newPatientSchema>>) => {
-    for (const [tabKey, fields] of Object.entries(tabToFieldsMap)) {
-      const hasError = fields.some((fieldPath) => {
-        return get(errors, fieldPath) != null;
-      });
-      if (hasError) {
-        setTab(tabKey);
-        break;
-      }
-    }
-  };
 
   useEffect(() => {
     if (profile) {
@@ -167,7 +148,7 @@ export default function Page() {
       <Header title="Editar paciente">
         <Button
           type="submit"
-          onClick={newPatientForm.handleSubmit(onSubmit, onError)}
+          onClick={newPatientForm.handleSubmit(onSubmit)}
           size="sm"
           className="ml-auto"
           loading={isUpdatingPatient}
@@ -177,15 +158,7 @@ export default function Page() {
         </Button>
       </Header>
       <GeneralForm />
-      <DataTabs
-        tabs={tabs}
-        activeTab={tab}
-        onTabChange={setTab}
-        // ? data-[state=inactive]:hidden se usa para ocultar el contenido de las tabs que no estén activas, esto es necesario porque forceMount hace que el contenido de todas las tabs se monte al mismo tiempo.
-        contentClassName="data-[state=inactive]:hidden"
-        // ? forceMount se usa para que el contenido de las tabs no se desmonte al cambiar de tab, esto es necesario para que los errores de validación no se pierdan al cambiar de tab.
-        forceMount
-      />
+      <FormTabs tabs={tabs} />
     </Form>
   )
 }

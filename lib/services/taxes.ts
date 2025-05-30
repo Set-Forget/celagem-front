@@ -25,7 +25,7 @@ export const taxesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Tax'],
     }),
-    getTax: builder.query<Taxes, string>({
+    getTax: builder.query<Taxes, string | number>({
       query: (id) => `taxes/${id}`,
       transformResponse: (response: TaxResponse) => response.data,
       providesTags: ['Tax'],
@@ -56,6 +56,7 @@ export const {
   useLazyListTaxesQuery,
   useCreateTaxMutation,
   useGetTaxQuery,
+  useLazyGetTaxQuery,
   useUpdateTaxMutation,
   useDeleteTaxMutation,
 } = taxesApi;

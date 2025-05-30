@@ -12,8 +12,16 @@ const suppliers = "/purchases/vendors";
 const customers = "/sales/customers";
 const payments = "/banking/payments";
 const receipts = "/banking/receipts";
+const purchaseReceipts = "/purchases/purchase-receipts";
 
 export const routes = {
+  purchaseReceipts: {
+    list: purchaseReceipts,
+    detail: (id: number | string) => `${purchaseReceipts}/${id}`,
+    new: `${purchaseReceipts}/new`,
+    edit: (id: number | string) => `${purchaseReceipts}/${id}/edit`,
+  },
+
   purchaseOrder: {
     list: purchaseOrder,
     detail: (id: number | string) => `${purchaseOrder}/${id}`,
@@ -108,7 +116,7 @@ export const routes = {
   receipts: {
     list: receipts,
     detail: (id: number | string) => `${receipts}/${id}`,
-    new: (invoiceIds?: string | number) => `${receipts}/new${invoiceIds ? `?bill_ids=${invoiceIds}` : ""}`,
+    new: (invoiceIds?: string | number) => `${receipts}/new${invoiceIds ? `?invoice_ids=${invoiceIds}` : ""}`,
     edit: (id: number | string) => `${receipts}/${id}/edit`,
   },
 } as const;

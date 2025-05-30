@@ -1,4 +1,4 @@
-import { DebitNoteDetail, DebitNoteDetailResponse, NewDebitNote, NewDebitNoteResponse } from '@/app/(private)/[scope]/debit-notes/schemas/debit-notes';
+import { DebitNoteDetail, DebitNoteDetailResponse, NewDebitNote, NewDebitNoteResponse } from '@/app/(private)/(commercial)/[scope]/debit-notes/schemas/debit-notes';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
 import { getDebitNoteAdapter } from '../adapters/debit-notes';

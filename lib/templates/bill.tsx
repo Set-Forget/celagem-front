@@ -1,4 +1,4 @@
-import type { BillDetail } from "@/app/(private)/purchases/bills/schemas/bills"
+import type { BillDetail } from "@/app/(private)/(commercial)/purchases/bills/schemas/bills"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"

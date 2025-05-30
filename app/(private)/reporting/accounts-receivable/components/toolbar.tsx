@@ -10,7 +10,7 @@ const filtersConfig: Record<string, FilterConfig> = {
   date_range: {
     type: "date_range",
     options: [
-      { label: "Fecha de emisión", value: "issue_date" },
+      { label: "Fecha de emisión", value: "date" },
       { label: "Fecha de vencimiento", value: "due_date" },
     ],
     label: "Rango de fecha",
@@ -21,9 +21,8 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "search",
     label: "Buscar",
     options: [
-      { label: "Centro de costos", value: "cost_center" },
       { label: "Cliente", value: "customer" },
-      { label: "Tipo de comprobante", value: "voucher_type" },
+      { label: "Centro de costos", value: "costs_center" },
       { label: "Número de comprobante", value: "voucher_number" },
     ],
     key: "search",

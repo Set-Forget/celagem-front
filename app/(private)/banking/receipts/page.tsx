@@ -29,7 +29,9 @@ export default function Page() {
       </Header>
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
         <DataTable
-          data={charges?.data ?? []}
+          data={charges?.data
+            ?.toSorted((a, b) => b.id - a.id)
+            ?? []}
           loading={isLoadingCharges}
           columns={columns}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}

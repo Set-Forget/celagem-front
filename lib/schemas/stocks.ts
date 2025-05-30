@@ -8,6 +8,10 @@ export const stockLocationListSchema = z.object({
   active: z.boolean(),
   parent: z.string(),
   has_products: z.boolean(),
+  company: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
 });
 
 export const stockLocationListResponseSchema = z.object({

@@ -1,6 +1,6 @@
 import type React from "react"
 import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
-import type { PurchaseReceiptDetail } from "@/app/(private)/purchases/purchase-receipts/schemas/purchase-receipts"
+import type { PurchaseReceiptDetail } from "@/app/(private)/(commercial)/purchases/purchase-receipts/schemas/purchase-receipts"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 
@@ -189,7 +189,6 @@ const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
 
   const totalItems = data.items.length
   const totalQuantity = data.items.reduce((sum, item) => sum + item.quantity, 0)
-  const totalScheduledQuantity = data.items.reduce((sum, item) => sum + item.product_uom_qty, 0)
 
   return (
     <Document title={`Recepción ${data.number}`}>
@@ -213,12 +212,12 @@ const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Ubicación destino:</Text>
-                <Text style={styles.value}>{data.reception_location}</Text>
+                <Text style={styles.value}>{data?.reception_location?.name}</Text>
               </View>
-              {data.purchase_orders.length > 0 && (
+              {data?.purchase_order && (
                 <View style={styles.row}>
                   <Text style={styles.label}>Orden de Compra:</Text>
-                  <Text style={styles.value}>{data.purchase_orders[0].name}</Text>
+                  <Text style={styles.value}>{data.purchase_order.number}</Text>
                 </View>
               )}
             </View>
@@ -255,7 +254,6 @@ const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
             <View style={styles.tableHeader}>
               <Text style={[styles.tableHeaderCell, styles.colProductId]}>PRODUCTO ID</Text>
               <Text style={[styles.tableHeaderCell, styles.colDescription]}>DESCRIPCIÓN</Text>
-              <Text style={[styles.tableHeaderCell, styles.colScheduled, { textAlign: "right" }]}>CANT. PROGRAMADA</Text>
               <Text style={[styles.tableHeaderCell, styles.colReceived, { textAlign: "right" }]}>CANT. RECIBIDA</Text>
               <Text style={[styles.tableHeaderCell, styles.colUnit]}>UNIDAD</Text>
               <Text style={[styles.tableHeaderCell, styles.colLot]}>LOTE</Text>
@@ -264,9 +262,6 @@ const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
               <View key={index} style={styles.tableRow}>
                 <Text style={[styles.tableCell, styles.colProductId]}>{item.product_id}</Text>
                 <Text style={[styles.tableCell, styles.colDescription]}>{item.display_name}</Text>
-                <Text style={[styles.tableCellRight, styles.colScheduled]}>
-                  {item.product_uom_qty.toLocaleString("es-ES")}
-                </Text>
                 <Text style={[styles.tableCellRight, styles.colReceived]}>
                   {item.quantity.toLocaleString("es-ES")}
                 </Text>
@@ -313,19 +308,12 @@ const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
                 <Text>TOTAL ITEMS:</Text>
                 <Text style={styles.value}>{totalItems}</Text>
               </View>
-              <View style={styles.summaryRow}>
-                <Text>CANTIDAD PROGRAMADA:</Text>
-                <Text style={styles.value}>{totalScheduledQuantity.toLocaleString("es-ES")}</Text>
-              </View>
+
               <View style={styles.summaryRow}>
                 <Text>CANTIDAD RECIBIDA:</Text>
                 <Text style={styles.value}>{totalQuantity.toLocaleString("es-ES")}</Text>
               </View>
               <View style={styles.summaryDivider} />
-              <View style={styles.summaryTotal}>
-                <Text>ESTADO:</Text>
-                <Text>{totalQuantity === totalScheduledQuantity ? "COMPLETA" : "PARCIAL"}</Text>
-              </View>
               <Text style={styles.summaryNote}>
                 Recepción realizada el {format(data.reception_date, "PP", { locale: es })}
               </Text>

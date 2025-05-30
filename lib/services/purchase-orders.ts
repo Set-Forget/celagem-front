@@ -1,4 +1,4 @@
-import { NewPurchaseOrder, NewPurchaseOrderResponse, PurchaseOrderDetail, PurchaseOrderDetailResponse, PurchaseOrderListResponse, PurchaseOrderState } from '@/app/(private)/purchases/purchase-orders/schemas/purchase-orders';
+import { NewPurchaseOrder, NewPurchaseOrderResponse, PurchaseOrderDetail, PurchaseOrderDetailResponse, PurchaseOrderListResponse, PurchaseOrderState } from '@/app/(private)/(commercial)/purchases/purchase-orders/schemas/purchase-orders';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
 

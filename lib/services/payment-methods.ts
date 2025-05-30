@@ -1,5 +1,5 @@
 import { erpApi } from '@/lib/apis/erp-api';
-import { PaymentMethodListResponse } from '../schemas/payment-methods';
+import { PaymentMethodDetail, PaymentMethodDetailResponse, PaymentMethodListResponse } from '../schemas/payment-methods';
 
 export const paymentMethodsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,12 +10,19 @@ export const paymentMethodsApi = erpApi.injectEndpoints({
       }),
       providesTags: ['PaymentMethod'],
     }),
+    getPaymentMethod: builder.query<PaymentMethodDetail, string | number>({
+      query: (id) => `custom_payment_methods/${id}`,
+      transformResponse: (response: PaymentMethodDetailResponse) => response.data,
+      providesTags: ['PaymentMethod'],
+    }),
   }),
 });
 
 export const {
   useListPaymentMethodsQuery,
   useLazyListPaymentMethodsQuery,
+  useGetPaymentMethodQuery,
+  useLazyGetPaymentMethodQuery,
 } = paymentMethodsApi;
 
 

@@ -17,22 +17,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useListAccountsReceivableQuery } from "@/lib/services/accounts-receivable";
 import { cn } from "@/lib/utils";
+import '@tanstack/react-table';
 import {
   Column,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable
 } from "@tanstack/react-table";
 import { ArrowLeftToLineIcon, ArrowRightToLineIcon, EllipsisIcon, Loader2, PinOffIcon } from "lucide-react";
-import { CSSProperties, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { CSSProperties, useMemo } from "react";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 import { AccountsReceivableList } from "./schemas/accounts-receivable";
-import '@tanstack/react-table';
-import { useListAccountsReceivableQuery } from "@/lib/services/accounts-receivable";
+import { groupByCustomer } from "./utils";
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {
@@ -40,85 +41,58 @@ declare module '@tanstack/react-table' {
   }
 }
 
-function groupByCustomer(accounts?: AccountsReceivableList[]): AccountsReceivableList[] {
-  const groups: { [customer: string]: AccountsReceivableList[] } = {};
-  accounts?.forEach((item) => {
-    const customer = item.customer;
-    if (!groups[customer]) {
-      groups[customer] = [];
-    }
-    groups[customer].push(item);
-  });
-
-  const result: AccountsReceivableList[] = [];
-  Object.keys(groups).forEach((customer) => {
-    const items = groups[customer];
-
-    items.forEach((item) => result.push(item));
-
-    const totalInvoiced = items.reduce((sum, item) => sum + Number(item.invoiced_amount), 0);
-    const totalPaid = items.reduce((sum, item) => sum + Number(item.paid_amount), 0);
-    const totalOutstanding = items.reduce((sum, item) => sum + Number(item.outstanding_amount), 0);
-    const total30Days = items.reduce((sum, item) => sum + Number(item["30_days"]), 0);
-    const total60Days = items.reduce((sum, item) => sum + Number(item["60_days"]), 0);
-    const total90Days = items.reduce((sum, item) => sum + Number(item["90_days"]), 0);
-    const total120Days = items.reduce((sum, item) => sum + Number(item["120_days"]), 0);
-    const total120PlusDays = items.reduce((sum, item) => sum + Number(item["120+_days"]), 0);
-
-    const totalRow: AccountsReceivableList = {
-      id: -1,
-      date: "",
-      customer,
-      accounting_account: "",
-      costs_center: "",
-      voucher_type: "",
-      voucher_number: "",
-      due_date: "",
-      invoiced_amount: parseFloat(totalInvoiced.toFixed(2)),
-      paid_amount: parseFloat(totalPaid.toFixed(2)),
-      outstanding_amount: parseFloat(totalOutstanding.toFixed(2)),
-      currency: items[0].currency,
-      "30_days": parseFloat(total30Days.toFixed(2)),
-      "60_days": parseFloat(total60Days.toFixed(2)),
-      "90_days": parseFloat(total90Days.toFixed(2)),
-      "120_days": parseFloat(total120Days.toFixed(2)),
-      "120+_days": parseFloat(total120PlusDays.toFixed(2)),
-    };
-
-    result.push(totalRow);
-
-    const emptyRow: AccountsReceivableList = {
-      id: -2,
-      date: "",
-      customer: "",
-      accounting_account: "",
-      costs_center: "",
-      voucher_type: "",
-      voucher_number: "",
-      due_date: "",
-      invoiced_amount: null,
-      paid_amount: null,
-      outstanding_amount: null,
-      currency: "",
-      "30_days": null,
-      "60_days": null,
-      "90_days": null,
-      "120_days": null,
-      "120+_days": null,
-    };
-
-    result.push(emptyRow);
-  });
-
-  return result;
-}
-
 export default function AccountsReceivablePage() {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const searchParams = useSearchParams()
+
+  const date_range = JSON.parse(searchParams.get('date_range') || '{}') as { field: string, from: string, to: string }
+  const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
 
   const { data: accountsReceivable, isLoading: isAccountsReceivableLoading } = useListAccountsReceivableQuery();
 
-  const memoizedData = useMemo(() => groupByCustomer(accountsReceivable?.data), [accountsReceivable]);
+  const issueDateStart = date_range.field === "date" ? date_range.from.slice(0, 10) : undefined;
+  const issueDateEnd = date_range.field === "date" ? date_range.to.slice(0, 10) : undefined;
+
+  const dueDateStart = date_range.field === "due_date" ? date_range.from.slice(0, 10) : undefined;
+  const dueDateEnd = date_range.field === "due_date" ? date_range.to.slice(0, 10) : undefined;
+
+  const memoizedData = useMemo(() => {
+    const list = accountsReceivable?.data ?? []
+    return groupByCustomer(
+      list
+        .filter(item => {
+          if (!issueDateStart && !issueDateEnd) return true;
+          const recordDate = item.date.split("T")[0];
+          if (issueDateStart && recordDate < issueDateStart) return false;
+          if (issueDateEnd && recordDate > issueDateEnd) return false;
+          return true;
+        })
+        .filter(item => {
+          if (!dueDateStart && !dueDateEnd) return true;
+          const recordDate = item.due_date.split("T")[0];
+          if (dueDateStart && recordDate < dueDateStart) return false;
+          if (dueDateEnd && recordDate > dueDateEnd) return false;
+          return true;
+        })
+        .filter(item => {
+          if (!search.field || !search.query) return true
+          const q = search.query.toLowerCase()
+          switch (search.field) {
+            case "customer": return item.customer?.toLowerCase().includes(q)
+            case "voucher_number": return String(item.voucher_number).includes(q)
+            case "costs_center": return item.costs_center?.toLowerCase().includes(q)
+            default: return false
+          }
+        })
+    )
+  }, [
+    accountsReceivable?.data,
+    date_range.field,
+    date_range.from,
+    date_range.to,
+    search.field,
+    search.query,
+  ])
+
   const memoizedColumns = useMemo(() => columns, [columns]);
 
   const table = useReactTable({
@@ -127,8 +101,6 @@ export default function AccountsReceivablePage() {
     columnResizeMode: "onChange",
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: { sorting },
     enableSortingRemoval: false,
   });
 

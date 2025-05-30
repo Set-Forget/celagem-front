@@ -14,7 +14,7 @@ export const accountingAccountsApi = erpApi.injectEndpoints({
       query: (id) => `accounts/${id}/move_lines`,
       providesTags: ['AccountingAccount'],
     }),
-    getAccountingAccount: builder.query<AccountDetail, string>({
+    getAccountingAccount: builder.query<AccountDetail, string | number>({
       query: (id) => `accounts/${id}`,
       transformResponse: (response: AccountDetailResponse) => response.data,
       providesTags: ['AccountingAccount'],

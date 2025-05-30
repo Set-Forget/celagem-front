@@ -1,4 +1,4 @@
-import { DeliveryNoteDetail, DeliveryNoteDetailResponse, DeliveryNoteListResponse, NewDeliveryNote, NewDeliveryNoteResponse } from '@/app/(private)/sales/delivery-notes/schemas/delivery-notes';
+import { DeliveryNoteDetail, DeliveryNoteDetailResponse, DeliveryNoteListResponse, NewDeliveryNote, NewDeliveryNoteResponse } from '@/app/(private)/(commercial)/sales/delivery-notes/schemas/delivery-notes';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
 

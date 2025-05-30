@@ -1,6 +1,6 @@
 import type React from "react"
 import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
-import type { InvoiceDetail } from "@/app/(private)/sales/invoices/schemas/invoices"
+import type { InvoiceDetail } from "@/app/(private)/(commercial)/sales/invoices/schemas/invoices"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { toWords } from "../utils"

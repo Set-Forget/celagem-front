@@ -4,7 +4,7 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 
-import { invoiceTypes } from "@/app/(private)/sales/invoices/utils"
+import { invoiceTypes } from "@/app/(private)/(commercial)/sales/invoices/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices"
@@ -13,7 +13,7 @@ import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import Link from "next/link"
 
-export const columns: ColumnDef<AdaptedInvoiceDetail & { payed_amount: number }>[] = [
+export const columns: ColumnDef<AdaptedInvoiceDetail>[] = [
   {
     accessorKey: "number",
     header: "Número",
@@ -64,16 +64,5 @@ export const columns: ColumnDef<AdaptedInvoiceDetail & { payed_amount: number }>
         {format(parseISO(row.getValue("due_date")), "PP", { locale: es })}
       </div>
     }
-  },
-  {
-    accessorKey: "payed_amount",
-    header: () => <div className="text-left pr-4">Pago</div>,
-    cell: ({ row }) => {
-      if (row.original.type === 'credit_note') return
-      return <div className="text-left font-medium pr-4 text-nowrap">
-        {row.original.currency.name}{" "}
-        {row.original.payed_amount}
-      </div>
-    },
-  },
+  }
 ]

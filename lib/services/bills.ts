@@ -1,4 +1,4 @@
-import { BillDetailResponse, BillListResponse, BillStatus, NewBill, NewBillResponse } from '@/app/(private)/purchases/bills/schemas/bills';
+import { BillDetailResponse, BillListResponse, BillStatus, BillTypes, NewBill, NewBillResponse } from '@/app/(private)/(commercial)/purchases/bills/schemas/bills';
 import { erpApi } from '@/lib/apis/erp-api';
 import { AdaptedBillDetail, AdaptedBillList, getBillAdapter, listBillsAdapter } from '../adapters/bills';
 
@@ -13,6 +13,7 @@ export const billsApi = erpApi.injectEndpoints({
         date_end?: string,
         due_date_start?: string,
         due_date_end?: string,
+        type?: BillTypes
       } | void>({
         query: (data) => ({
           url: '/purchase_invoices',

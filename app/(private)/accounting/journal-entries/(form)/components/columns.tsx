@@ -1,7 +1,7 @@
-import { AsyncSelect } from "@/components/async-select";
+import { AccountSelectField } from "@/app/(private)/(commercial)/components/account-select-field";
 import { FormTableColumn } from "@/components/form-table";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
-import { useLazyListAccountingAccountsQuery } from "@/lib/services/accounting-accounts";
+import { Input } from "@/components/ui/input";
 import { useListCurrenciesQuery } from "@/lib/services/currencies";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
@@ -9,71 +9,6 @@ import { Button as AriaButton, Input as AriaInput, Label as AriaLabel, Group, Nu
 import { Control, useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { newJournalEntrySchema } from "../../schemas/journal-entries";
-import { Input } from "@/components/ui/input";
-
-const AccountingAccountCell = ({ control, index }: { control: Control<z.infer<typeof newJournalEntrySchema>>; index: number }) => {
-  const [searchAccountingAccounts] = useLazyListAccountingAccountsQuery()
-
-  const handleSearchAccountingAccount = async (query?: string) => {
-    try {
-      const response = await searchAccountingAccounts({}, true).unwrap()
-      return response.data?.map(accountingAccount => ({
-        id: accountingAccount.id,
-        name: accountingAccount.name,
-        code: accountingAccount.code,
-      }))
-        .filter(accountingAccount => accountingAccount.name.toLowerCase().includes(query?.toLowerCase() || "") || accountingAccount.code.toLowerCase().includes(query?.toLowerCase() || ""))
-        .slice(0, 10)
-    }
-    catch (error) {
-      console.error(error)
-      return []
-    }
-  }
-
-  return <FormField
-    control={control}
-    name={`items.${index}.account_id`}
-    render={({ field }) => (
-      <FormItem className="flex flex-col w-full">
-        <FormControl>
-          <AsyncSelect<{ id: number, name: string, code: string }, number>
-            label="Cuenta contable"
-            triggerClassName={cn(
-              "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
-              control._formState.errors.items?.[index]?.account_id && "outline outline-1 outline-offset-[-1px] outline-destructive"
-            )}
-            className="w-[400px]"
-            align="end"
-            placeholder="Buscar cuenta contable..."
-            fetcher={handleSearchAccountingAccount}
-            getDisplayValue={(item) => (
-              <div className="flex gap-1">
-                <span className="font-medium">
-                  {item.code}
-                </span>
-                -{" "}
-                {item.name}
-              </div>
-            )}
-            getOptionValue={(item) => item.id}
-            renderOption={(item) => <div className="truncate">
-              <span className="font-medium">
-                {item.code}
-              </span>
-              {" - "}
-              {item.name}
-            </div>}
-            onChange={field.onChange}
-            value={field.value}
-            getOptionKey={(item) => String(item.id)}
-            noResultsMessage="No se encontraron resultados"
-          />
-        </FormControl>
-      </FormItem>
-    )}
-  />
-}
 
 const DebitCell = ({ control, index }: { control: Control<z.infer<typeof newJournalEntrySchema>>; index: number }) => {
   const { setValue } = useFormContext<z.infer<typeof newJournalEntrySchema>>()
@@ -228,7 +163,10 @@ export const columns: FormTableColumn<z.infer<typeof newJournalEntrySchema>>[] =
     renderCell: (
       control,
       index,
-    ) => <AccountingAccountCell control={control} index={index} />,
+    ) => <AccountSelectField
+        control={control}
+        name={`items.${index}.account_id`}
+      />,
   },
   {
     header: "Ref/Descripción",

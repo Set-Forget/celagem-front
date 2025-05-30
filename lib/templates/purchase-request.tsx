@@ -1,5 +1,5 @@
-import type { PurchaseRequestDetail } from "@/app/(private)/purchases/purchase-requests/schemas/purchase-requests"
-import { purchaseRequestStatus } from "@/app/(private)/purchases/purchase-requests/utils"
+import type { PurchaseRequestDetail } from "@/app/(private)/(commercial)/purchases/purchase-requests/schemas/purchase-requests"
+import { purchaseRequestStatus } from "@/app/(private)/(commercial)/purchases/purchase-requests/utils"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"

@@ -1,12 +1,12 @@
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
-interface TabDefinition {
-  value: string;
-  label: string;
-  icon?: React.ReactNode;
-  content: React.ReactNode;
+export interface TabDefinition {
+  value: string
+  label: string
+  icon?: React.ReactNode
+  content: React.ReactNode
 }
 
 interface DataTabsProps {
@@ -26,7 +26,6 @@ export default function DataTabs({
   contentClassName,
   forceMount,
 }: DataTabsProps) {
-
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className={triggerClassName}>
       <ScrollArea>

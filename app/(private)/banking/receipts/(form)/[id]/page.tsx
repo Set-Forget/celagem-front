@@ -40,6 +40,13 @@ const fields: FieldDefinition<ChargeDetail>[] = [
     render: (p) => `${p.currency.name} ${p.amount}`
   },
   {
+    label: "Retenciones",
+    placeholderLength: 10,
+    render: (p) => p.withholdings?.length > 0
+      ? p.withholdings.map((w) => w.tax.name).join(", ")
+      : "No especificadas",
+  },
+  {
     label: "Cuenta contable",
     placeholderLength: 10,
     render: (p) => <Button
@@ -58,7 +65,7 @@ const fields: FieldDefinition<ChargeDetail>[] = [
   {
     label: "Referencia",
     placeholderLength: 10,
-    className: "cols-span-2",
+    className: "col-span-2",
     render: (p) => p.payment_reference || "No especificada",
   }
 ];

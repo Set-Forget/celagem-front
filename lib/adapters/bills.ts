@@ -1,5 +1,5 @@
-import { BillDetail, BillList } from "@/app/(private)/purchases/bills/schemas/bills";
-import { getBillStatus } from "@/app/(private)/purchases/bills/utils";
+import { BillDetail, BillList } from "@/app/(private)/(commercial)/purchases/bills/schemas/bills";
+import { getBillStatus } from "@/app/(private)/(commercial)/purchases/bills/utils";
 
 export function listBillsAdapter(data: BillList) {
   return {

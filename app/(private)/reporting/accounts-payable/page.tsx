@@ -33,6 +33,8 @@ import Toolbar from "./components/toolbar";
 import { AccountsPayableList } from "./schemas/accounts-payable";
 import '@tanstack/react-table';
 import { useListAccountsPayableQuery } from "@/lib/services/accounts-payable";
+import { groupBySupplier } from "./utils";
+import { useSearchParams } from "next/navigation";
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {
@@ -40,85 +42,58 @@ declare module '@tanstack/react-table' {
   }
 }
 
-function groupBySupplier(accounts?: AccountsPayableList[]): AccountsPayableList[] {
-  const groups: { [supplier: string]: AccountsPayableList[] } = {};
-  accounts?.forEach((item) => {
-    const supplier = item.customer;
-    if (!groups[supplier]) {
-      groups[supplier] = [];
-    }
-    groups[supplier].push(item);
-  });
-
-  const result: AccountsPayableList[] = [];
-  Object.keys(groups).forEach((supplier) => {
-    const items = groups[supplier];
-
-    items.forEach((item) => result.push(item));
-
-    const totalInvoiced = items.reduce((sum, item) => sum + Number(item.invoiced_amount), 0);
-    const totalPaid = items.reduce((sum, item) => sum + Number(item.paid_amount), 0);
-    const totalOutstanding = items.reduce((sum, item) => sum + Number(item.outstanding_amount), 0);
-    const total30Days = items.reduce((sum, item) => sum + Number(item["30_days"]), 0);
-    const total60Days = items.reduce((sum, item) => sum + Number(item["60_days"]), 0);
-    const total90Days = items.reduce((sum, item) => sum + Number(item["90_days"]), 0);
-    const total120Days = items.reduce((sum, item) => sum + Number(item["120_days"]), 0);
-    const total120PlusDays = items.reduce((sum, item) => sum + Number(item["120+_days"]), 0);
-
-    const totalRow: AccountsPayableList = {
-      id: -1,
-      date: "",
-      customer: supplier,
-      accounting_account: "",
-      costs_center: "",
-      voucher_type: "",
-      voucher_number: "",
-      due_date: "",
-      invoiced_amount: parseFloat(totalInvoiced.toFixed(2)),
-      paid_amount: parseFloat(totalPaid.toFixed(2)),
-      outstanding_amount: parseFloat(totalOutstanding.toFixed(2)),
-      currency: items[0].currency,
-      "30_days": parseFloat(total30Days.toFixed(2)),
-      "60_days": parseFloat(total60Days.toFixed(2)),
-      "90_days": parseFloat(total90Days.toFixed(2)),
-      "120_days": parseFloat(total120Days.toFixed(2)),
-      "120+_days": parseFloat(total120PlusDays.toFixed(2)),
-    };
-
-    result.push(totalRow);
-
-    const emptyRow: AccountsPayableList = {
-      id: -2,
-      date: "",
-      customer: "",
-      accounting_account: "",
-      costs_center: "",
-      voucher_type: "",
-      voucher_number: "",
-      due_date: "",
-      invoiced_amount: null,
-      paid_amount: null,
-      outstanding_amount: null,
-      currency: "",
-      "30_days": null,
-      "60_days": null,
-      "90_days": null,
-      "120_days": null,
-      "120+_days": null,
-    };
-
-    result.push(emptyRow);
-  });
-
-  return result;
-}
-
 export default function AccountsReceivablePage() {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const searchParams = useSearchParams()
+
+  const date_range = JSON.parse(searchParams.get('date_range') || '{}') as { field: string, from: string, to: string }
+  const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
 
   const { data: accountsPayable, isLoading: isAccountsPayableLoading } = useListAccountsPayableQuery();
 
-  const memoizedData = useMemo(() => groupBySupplier(accountsPayable?.data), [accountsPayable]);
+  const issueDateStart = date_range.field === "date" ? date_range.from.slice(0, 10) : undefined;
+  const issueDateEnd = date_range.field === "date" ? date_range.to.slice(0, 10) : undefined;
+
+  const dueDateStart = date_range.field === "due_date" ? date_range.from.slice(0, 10) : undefined;
+  const dueDateEnd = date_range.field === "due_date" ? date_range.to.slice(0, 10) : undefined;
+
+  const memoizedData = useMemo(() => {
+    const list = accountsPayable?.data ?? []
+    return groupBySupplier(
+      list
+        .filter(item => {
+          if (!issueDateStart && !issueDateEnd) return true;
+          const recordDate = item.date.split("T")[0];
+          if (issueDateStart && recordDate < issueDateStart) return false;
+          if (issueDateEnd && recordDate > issueDateEnd) return false;
+          return true;
+        })
+        .filter(item => {
+          if (!dueDateStart && !dueDateEnd) return true;
+          const recordDate = item.due_date.split("T")[0];
+          if (dueDateStart && recordDate < dueDateStart) return false;
+          if (dueDateEnd && recordDate > dueDateEnd) return false;
+          return true;
+        })
+        .filter(item => {
+          if (!search.field || !search.query) return true
+          const q = search.query.toLowerCase()
+          switch (search.field) {
+            case "customer": return item.customer?.toLowerCase().includes(q)
+            case "voucher_number": return String(item.voucher_number).includes(q)
+            case "costs_center": return item.costs_center?.toLowerCase().includes(q)
+            default: return false
+          }
+        })
+    )
+  }, [
+    accountsPayable?.data,
+    date_range.field,
+    date_range.from,
+    date_range.to,
+    search.field,
+    search.query,
+  ])
+
   const memoizedColumns = useMemo(() => columns, [columns]);
 
   const table = useReactTable({
@@ -127,8 +102,6 @@ export default function AccountsReceivablePage() {
     columnResizeMode: "onChange",
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: { sorting },
     enableSortingRemoval: false,
   });
 

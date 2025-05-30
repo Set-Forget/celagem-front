@@ -38,6 +38,13 @@ const fields: FieldDefinition<PaymentDetail>[] = [
     render: (p) => `${p.currency.name} ${p.amount}`
   },
   {
+    label: "Retenciones",
+    placeholderLength: 10,
+    render: (p) => p.withholdings?.length > 0
+      ? p.withholdings.map((w) => w.tax.name).join(", ")
+      : "No especificadas",
+  },
+  {
     label: "Cuenta contable",
     placeholderLength: 10,
     render: (p) => <Button
@@ -56,7 +63,7 @@ const fields: FieldDefinition<PaymentDetail>[] = [
   {
     label: "Referencia",
     placeholderLength: 10,
-    className: "cols-span-2",
+    className: "col-span-2",
     render: (p) => p.payment_reference || "No especificada",
   }
 ];
@@ -66,7 +73,7 @@ export default function Page() {
 
   const [getBill, { isLoading: isGettingBills }] = useLazyGetBillQuery()
 
-  const [bills, setBills] = useState<(AdaptedBillDetail & { payed_amount: number })[]>([])
+  const [bills, setBills] = useState<(AdaptedBillDetail)[]>([])
 
   const { data: payment, isLoading: isPaymentLoading } = useGetPaymentQuery(id);
 
@@ -78,12 +85,7 @@ export default function Page() {
     if (paymentBills.length === 0) return
     (async () => {
       const bills = await Promise.all(paymentBills.map((id) => getBill(id).unwrap()))
-
-      setBills(bills.map((bill) => ({
-        ...bill,
-        payed_amount: payment?.reconciled_bills?.find((i) => i.id === bill.id)?.amount_total || 0,
-      })))
-
+      setBills(bills)
     })()
   }, [payment])
 

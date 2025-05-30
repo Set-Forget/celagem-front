@@ -5,6 +5,7 @@ import React, {
   useState,
   Ref,
   forwardRef,
+  useMemo,
 } from "react";
 import type { JSX } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -46,42 +47,22 @@ export const multiSelectVariants = cva("transition", {
 export interface AsyncMultiSelectProps<T, V>
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "defaultValue">,
   VariantProps<typeof multiSelectVariants> {
-  /** Función asíncrona para obtener las opciones */
   fetcher: (query?: string) => Promise<T[]>;
-  /** Función para renderizar cada opción dentro del listado */
   renderOption: (option: T) => React.ReactNode;
-  /** Función para mostrar cómo se ve cada opción cuando está seleccionada (Badge) */
   getDisplayValue: (option: T) => React.ReactNode;
-  /** Función para obtener el valor interno de cada opción */
   getOptionValue: (option: T) => V;
-  /**
-   * Función para obtener una key única por cada opción.
-   * Si no se provee, se convierte `getOptionValue(option)` a string.
-   */
   getOptionKey?: (option: T) => string;
-  /** Callback para notificar cuando cambia la selección de valores */
   onValueChange: (value: V[]) => void;
-  /** Valor inicial de la selección */
   defaultValue?: V[];
-  /** Placeholder que se ve en el trigger cuando no hay selección */
   placeholder?: string;
-  /** Cantidad máxima de Badges visibles */
   maxCount?: number;
-  /** Permite que el Popover sea modal */
   modalPopover?: boolean;
-  /** Clase adicional que se aplicará al botón principal */
   className?: string;
-  /** Placeholder para el input de búsqueda */
   searchPlaceholder?: string;
-  /** Mensaje de "no hay resultados" */
   noResultsMessage?: string;
-  /** Mensaje de error personalizado */
   errorMessage?: React.ReactNode;
-  /** Skeleton o loading custom */
   loadingSkeleton?: React.ReactNode;
-  /** Opciones iniciales */
   initialOptions?: T[];
-  /** Valor controlado */
   value?: V[];
 }
 
@@ -121,6 +102,11 @@ function AsyncMultiSelectInner<T, V>(
     userDefinedMaxCount ?? 99999
   );
   const containerRef = useRef<HTMLDivElement>(null);
+  const initKey = useMemo(
+    () =>
+      initialOptions?.map((it) => getOptionValue(it)).join("|") ?? "",
+    [initialOptions, getOptionValue]
+  );
 
   const [knownItemsMap, setKnownItemsMap] = useState<Map<V, T>>(() => new Map());
 
@@ -150,18 +136,26 @@ function AsyncMultiSelectInner<T, V>(
   }, [fetcher, getOptionValue]);
 
   useEffect(() => {
-    if (debouncedSearchTerm === "" && initialOptions && initialOptions.length > 0) {
-      setOptions(initialOptions);
-      setKnownItemsMap((prev) => {
-        const newMap = new Map(prev);
-        for (const item of initialOptions) {
-          newMap.set(getOptionValue(item), item);
-        }
-        return newMap;
-      });
-    }
     void handleFetch(debouncedSearchTerm);
   }, [debouncedSearchTerm]);
+
+  useEffect(() => {
+    if (!initialOptions?.length) return;
+    const keyFn = getOptionKey ?? ((o: T) => String(getOptionValue(o)));
+    setOptions((prev) => {
+      const next = [...prev];
+      initialOptions.forEach((it) => {
+        if (!next.some((o) => keyFn(o) === keyFn(it))) next.push(it);
+      });
+      return next;
+    });
+
+    setKnownItemsMap((prev) => {
+      const map = new Map(prev);
+      initialOptions.forEach((it) => map.set(getOptionValue(it), it));
+      return map;
+    });
+  }, [initKey]);
 
   const calculateMaxTags = useCallback(() => {
     if (userDefinedMaxCount !== undefined) {
@@ -194,19 +188,30 @@ function AsyncMultiSelectInner<T, V>(
   }, [defaultValue]);
 
   const toggleOption = useCallback(
-    (option: T) => {
-      const optionVal = getOptionValue(option);
-      const isSelected = selectedValues.some((val) => val === optionVal);
-      let newSelectedValues: V[];
+    (opt: T) => {
+      const val = getOptionValue(opt);
+      const isSelected = selectedValues.includes(val);
+
+      let next: V[];
       if (isSelected) {
-        newSelectedValues = selectedValues.filter((val) => val !== optionVal);
+        next = selectedValues.filter((v) => v !== val);
+
+        setOptions((prev) =>
+          prev.some((o) => getOptionValue(o) === val) ? prev : [...prev, opt],
+        );
+        setKnownItemsMap((prev) => {
+          const map = new Map(prev);
+          map.set(val, opt);
+          return map;
+        });
       } else {
-        newSelectedValues = [...selectedValues, optionVal];
+        next = [...selectedValues, val];
       }
-      setSelectedValues(newSelectedValues);
-      onValueChange(newSelectedValues);
+
+      setSelectedValues(next);
+      onValueChange(next);
     },
-    [selectedValues, onValueChange, getOptionValue]
+    [selectedValues, onValueChange, getOptionValue],
   );
 
   return (
@@ -384,9 +389,9 @@ function AsyncMultiSelectInner<T, V>(
             {!loading && !error && options.length === 0 && (
               <CommandEmpty>{noResultsMessage}</CommandEmpty>
             )}
-            <CommandEmpty>
-              No hay opciones disponibles
-            </CommandEmpty>
+            {!loading && !error && options.length > 0 && (
+              <CommandEmpty>{noResultsMessage}</CommandEmpty>
+            )}
             <CommandGroup>
               {options.map((option) => {
                 const keyFn = getOptionKey

@@ -26,7 +26,7 @@ export const paymentTermsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['PaymentTerm'],
     }),
-    getPaymentTerm: builder.query<PaymentTerms, string>({
+    getPaymentTerm: builder.query<PaymentTerms, string | number>({
       query: (id) => `payment_terms/${id}`,
       transformResponse: (response: PaymentTermResponse) => response.data,
       providesTags: ['PaymentTerm'],

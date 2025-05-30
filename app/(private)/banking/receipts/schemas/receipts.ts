@@ -1,5 +1,3 @@
-import { billDetailSchema } from "@/app/(private)/purchases/bills/schemas/bills";
-import { invoiceDetailSchema } from "@/app/(private)/sales/invoices/schemas/invoices";
 import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
@@ -74,6 +72,16 @@ export const paymentDetailSchema = z.object({
     name: z.string(),
     amount_total: z.number(),
   })),
+  withholdings: z.array(z.object({
+    tax: z.object({
+      id: z.number(),
+      name: z.string(),
+    }),
+    account: z.object({
+      id: z.number(),
+      name: z.string(),
+    }),
+  })),
   traceability: z.object({
     created_by: z.string(),
     created_at: z.string(),
@@ -91,6 +99,7 @@ export const newChargeSchema = z.object({
   partner: z.number().optional(),
   payment_method: z.number({ required_error: "El método de pago es requerido" }),
   payment_reference: z.string().optional(),
+  withholdings: z.array(z.number()).optional(),
   invoices: z.array(z.object({
     id: z.number(),
     number: z.string(),

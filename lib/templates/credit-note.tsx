@@ -1,4 +1,4 @@
-import type { CreditNoteDetail } from "@/app/(private)/[scope]/credit-notes/schemas/credit-notes"
+import type { CreditNoteDetail } from "@/app/(private)/(commercial)/[scope]/credit-notes/schemas/credit-notes"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"

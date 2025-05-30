@@ -13,7 +13,7 @@ export const newTaxGeneralSchema = z.object({
 export const newTaxSchema = newTaxGeneralSchema;
 
 export const taxesSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   name: z.string(),
   amount: z.number(),
   tax_group: taxesTypesSchema,

@@ -1,19 +1,19 @@
-import { PurchaseOrderDetail } from "@/app/(private)/purchases/purchase-orders/schemas/purchase-orders";
-import { PurchaseRequestDetail } from "@/app/(private)/purchases/purchase-requests/schemas/purchase-requests";
+import { PurchaseOrderDetail } from "@/app/(private)/(commercial)/purchases/purchase-orders/schemas/purchase-orders";
+import { PurchaseRequestDetail } from "@/app/(private)/(commercial)/purchases/purchase-requests/schemas/purchase-requests";
 import PurchaseOrderPDF from "./purchase-order";
 import PurchaseRequestPDF from "./purchase-request";
 import VisitRecordPDF, { VisitRecordData } from "./visit-record";
-import { PurchaseReceiptDetail } from "@/app/(private)/purchases/purchase-receipts/schemas/purchase-receipts";
+import { PurchaseReceiptDetail } from "@/app/(private)/(commercial)/purchases/purchase-receipts/schemas/purchase-receipts";
 import ReceptionPDF from "./receptions";
-import { BillDetail } from "@/app/(private)/purchases/bills/schemas/bills";
+import { BillDetail } from "@/app/(private)/(commercial)/purchases/bills/schemas/bills";
 import BillPDF from "./bill";
-import { CreditNoteDetail } from "@/app/(private)/[scope]/credit-notes/schemas/credit-notes";
+import { CreditNoteDetail } from "@/app/(private)/(commercial)/[scope]/credit-notes/schemas/credit-notes";
 import CreditNotePDF from "./credit-note";
-import { DebitNoteDetail } from "@/app/(private)/[scope]/debit-notes/schemas/debit-notes";
+import { DebitNoteDetail } from "@/app/(private)/(commercial)/[scope]/debit-notes/schemas/debit-notes";
 import DebitNotePDF from "./debit-note";
-import { InvoiceDetail } from "@/app/(private)/sales/invoices/schemas/invoices";
+import { InvoiceDetail } from "@/app/(private)/(commercial)/sales/invoices/schemas/invoices";
 import InvoicePDF from "./invoice";
-import { DeliveryNoteDetail } from "@/app/(private)/sales/delivery-notes/schemas/delivery-notes";
+import { DeliveryNoteDetail } from "@/app/(private)/(commercial)/sales/delivery-notes/schemas/delivery-notes";
 import DeliveryNotePDF from "./delivery-note";
 
 export type TemplateMap = {

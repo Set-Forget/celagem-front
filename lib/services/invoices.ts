@@ -1,4 +1,4 @@
-import { InvoiceDetail, InvoiceDetailResponse, InvoiceListResponse, InvoiceStatus, InvoiceTypes, NewInvoice, NewInvoiceResponse } from '@/app/(private)/sales/invoices/schemas/invoices';
+import { InvoiceDetail, InvoiceDetailResponse, InvoiceListResponse, InvoiceStatus, InvoiceTypes, NewInvoice, NewInvoiceResponse } from '@/app/(private)/(commercial)/sales/invoices/schemas/invoices';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
 import { AdaptedInvoiceList, getInvoiceAdapter, listInvoicesAdapter } from '../adapters/invoices';

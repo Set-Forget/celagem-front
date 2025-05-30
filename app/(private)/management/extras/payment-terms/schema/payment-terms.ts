@@ -13,7 +13,7 @@ export const newPaymentTermGeneralSchema = z.object({
 export const newPaymentTermSchema = newPaymentTermGeneralSchema;
 
 export const paymentTermsSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   name: z.string(),
   note: z.string(),
   active: z.boolean(),

@@ -14,7 +14,7 @@ export const newCurrencyGeneralSchema = z.object({
 export const newCurrencySchema = newCurrencyGeneralSchema;
 
 export const currenciesSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   name: z.string(),
   symbol: z.string(),
   rate: z.number(),

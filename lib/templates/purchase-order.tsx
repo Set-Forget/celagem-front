@@ -1,6 +1,6 @@
 import type React from "react"
 import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
-import type { PurchaseOrderDetail } from "@/app/(private)/purchases/purchase-orders/schemas/purchase-orders"
+import type { PurchaseOrderDetail } from "@/app/(private)/(commercial)/purchases/purchase-orders/schemas/purchase-orders"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { toWords } from "../utils"

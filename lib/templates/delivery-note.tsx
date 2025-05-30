@@ -1,4 +1,4 @@
-import type { DeliveryNoteDetail } from "@/app/(private)/sales/delivery-notes/schemas/delivery-notes"
+import type { DeliveryNoteDetail } from "@/app/(private)/(commercial)/sales/delivery-notes/schemas/delivery-notes"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"

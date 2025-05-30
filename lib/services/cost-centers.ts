@@ -4,10 +4,13 @@ import { erpApi } from '@/lib/apis/erp-api';
 export const costCentersApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
     listCostCenters: builder.query<CostCenterListResponse, { name?: string } | void>({
-      query: () => 'cost_centers',
+      query: (data) => ({
+        url: 'cost_centers',
+        params: data || {},
+      }),
       providesTags: ['CostCenter'],
     }),
-    getCostCenter: builder.query<CostCenterDetail, string>({
+    getCostCenter: builder.query<CostCenterDetail, string | number>({
       query: (id) => `cost_centers/${id}`,
       providesTags: ['CostCenter'],
       transformResponse: (response: CostCenterDetailResponse) => response.data

@@ -1,4 +1,4 @@
-import type { DebitNoteDetail } from "@/app/(private)/[scope]/debit-notes/schemas/debit-notes"
+import type { DebitNoteDetail } from "@/app/(private)/(commercial)/[scope]/debit-notes/schemas/debit-notes"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"

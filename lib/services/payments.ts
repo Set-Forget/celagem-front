@@ -18,13 +18,13 @@ export const paymentsApi = erpApi.injectEndpoints({
       transformResponse: (response: PaymentDetailResponse) => response.data,
       providesTags: ['Payment'],
     }),
-    createPayment: builder.mutation<NewPaymentResponse, Overwrite<NewPayment, { date: string, invoices?: number[] }>>({
+    createPayment: builder.mutation<NewPaymentResponse, Overwrite<NewPayment, { date: string, invoices?: number[], withholdings?: { tax_id: number, account_id: number }[] }>>({
       query: (data) => ({
         url: '/payments',
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Payment', 'Bill'],
+      invalidatesTags: ['Payment', 'Bill', 'Invoice'],
     }),
 
     confirmPayment: builder.mutation<{ status: string, message: string }, { id: string }>({
@@ -32,7 +32,7 @@ export const paymentsApi = erpApi.injectEndpoints({
         url: `/payments/${id}/confirm`,
         method: 'POST',
       }),
-      invalidatesTags: ['Payment', 'Bill'],
+      invalidatesTags: ['Payment', 'Bill', 'Invoice'],
     }),
     cancelPayment: builder.mutation<{ status: string, message: string }, { id: string }>({
       query: ({ id }) => ({

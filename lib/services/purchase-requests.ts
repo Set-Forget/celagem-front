@@ -1,4 +1,4 @@
-import { NewPurchaseRequest, NewPurchaseRequestResponse, PurchaseRequestDetail, PurchaseRequestDetailResponse, PurchaseRequestListResponse } from '@/app/(private)/purchases/purchase-requests/schemas/purchase-requests';
+import { NewPurchaseRequest, NewPurchaseRequestResponse, PurchaseRequestDetail, PurchaseRequestDetailResponse, PurchaseRequestListResponse } from '@/app/(private)/(commercial)/purchases/purchase-requests/schemas/purchase-requests';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
 
