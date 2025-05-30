@@ -19,7 +19,7 @@ export default function GeneralTab() {
   const { data: taxData, isLoading: isTaxLoading } =
     useGetTaxQuery(taxId);
 
-  const fields: FieldDefinition<Taxes>[] = [
+  const fields: FieldDefinition<any>[] = [
     {
       label: 'Nombre',
       placeholderLength: 14,
