@@ -4,11 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack -p 3000",
-    "build": "npm run build:css && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest",
-    "build:css": "npx tailwindcss -i app/globals.css -o ./public/tailwind.css --config tailwind.config.ts --minify"
+    "test": "vitest"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
