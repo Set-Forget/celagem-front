@@ -12,25 +12,23 @@ const fields: FieldDefinition<PurchaseReceiptDetail>[] = [
   {
     label: "Orden de compra",
     placeholderLength: 14,
-    show: (p) => !!p.purchase_orders.length,
+    show: (p) => !!p.purchase_order,
     render: (p) =>
-      p.purchase_orders.map((purchaseOrder) => (
-        <div className="grid grid-cols-1 justify-items-start" key={purchaseOrder.id}>
-          <Button
-            key={purchaseOrder.id}
-            variant="link"
-            className="p-0 h-auto text-foreground"
-            asChild
+      <div className="grid grid-cols-1 justify-items-start" key={p.id}>
+        <Button
+          key={p.id}
+          variant="link"
+          className="p-0 h-auto text-foreground"
+          asChild
+        >
+          <Link
+            href={routes.purchaseOrder.detail(p.id)}
+            target="_blank"
           >
-            <Link
-              href={routes.purchaseOrder.detail(purchaseOrder.id)}
-              target="_blank"
-            >
-              {purchaseOrder.name}
-            </Link>
-          </Button>
-        </div>
-      ))
+            {p.number}
+          </Link>
+        </Button>
+      </div>
   },
 ];
 
@@ -39,11 +37,11 @@ export default function DocumentsTab() {
 
   const { data: purchaseReceipt, isLoading: isPurchaseReceiptLoading } = useGetPurchaseReceiptQuery(id);
 
-  const purchaseOrders = purchaseReceipt?.purchase_orders || [];
+  const purchaseOrders = purchaseReceipt?.purchase_order
 
   return (
     <div className="p-4 flex flex-col gap-4">
-      {!purchaseOrders?.length ? (
+      {!purchaseOrders ? (
         <div className="flex flex-col gap-4 items-center col-span-full">
           <div className="bg-secondary p-3 rounded-full shadow-lg shadow-secondary">
             <FileX2 className="w-6 h-6 text-muted-foreground" />
