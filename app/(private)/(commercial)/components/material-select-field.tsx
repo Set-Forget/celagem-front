@@ -3,6 +3,7 @@ import { FormControl, FormField, FormItem } from "@/components/ui/form"
 import { cn } from "@/lib/utils"
 import { Control, FieldPath, FieldValues } from "react-hook-form"
 import { useMaterialSelect } from "../hooks/use-material-select"
+import { get } from "lodash"
 
 type MaterialOption = { id: number; name: string; code?: string; standard_price: number }
 
@@ -21,6 +22,8 @@ export function MaterialSelectField<FV extends FieldValues = FieldValues>({
 
   const { initialOptions, fetcher } = useMaterialSelect({ productId: fieldId })
 
+  const fieldError = get(control._formState.errors, name);
+
   return (
     <FormField
       control={control}
@@ -33,7 +36,7 @@ export function MaterialSelectField<FV extends FieldValues = FieldValues>({
               placeholder="Buscar producto o servicio…"
               triggerClassName={cn(
                 "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
-                control._formState.errors && "outline-destructive",
+                fieldError && "outline outline-1 outline-offset-[-1px] outline-destructive"
               )}
               fetcher={fetcher}
               getDisplayValue={i => <div className="flex gap-1">{i.code && <><span className="font-medium">{i.code}</span>-</>}{" "}{i.name}</div>}

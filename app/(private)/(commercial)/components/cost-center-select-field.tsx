@@ -3,6 +3,7 @@ import { FormField, FormItem, FormControl } from "@/components/ui/form"
 import { AsyncSelect } from "@/components/async-select"
 import { cn } from "@/lib/utils"
 import { useCostCenterSelect } from "../hooks/use-cost-center-select"
+import { get } from "lodash"
 
 type CenterOption = { id: number; name: string }
 
@@ -23,6 +24,8 @@ export function CostCenterSelectField<FV extends FieldValues = FieldValues>({
   const { initialOptions, fetcher } = useCostCenterSelect({
     costCenterId: currentId,
   })
+
+  const fieldError = get(control._formState.errors, name);
 
   return (
     <FormField
@@ -48,7 +51,7 @@ export function CostCenterSelectField<FV extends FieldValues = FieldValues>({
               noResultsMessage="No se encontraron resultados"
               triggerClassName={cn(
                 "!w-full rounded-none border-none shadow-none bg-transparent pl-4 min-w-[200px]",
-                control._formState.errors && "outline-destructive",
+                fieldError && "outline outline-1 outline-offset-[-1px] outline-destructive"
               )}
             />
           </FormControl>

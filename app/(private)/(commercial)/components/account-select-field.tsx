@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils"
 import { FormField, FormItem, FormControl } from "@/components/ui/form"
 import { AsyncSelect } from "@/components/async-select"
 import { useAccountingAccountSelect } from "../hooks/use-account-select"
+import { get } from "lodash"
 
 type AccountOption = { id: number; name: string; code: string }
 
@@ -21,12 +22,13 @@ export function AccountSelectField<FV extends FieldValues = FieldValues>({
   width = 200,
   align = "end",
 }: Props<FV>) {
-  const currentId =
-    (control._getWatch(name) as unknown as number | undefined) ?? undefined
+  const currentId = (control._getWatch(name) as unknown as number | undefined) ?? undefined
 
   const { initialOptions, fetcher } = useAccountingAccountSelect({
     accountId: currentId,
   })
+
+  const fieldError = get(control._formState.errors, name);
 
   return (
     <FormField
@@ -59,7 +61,7 @@ export function AccountSelectField<FV extends FieldValues = FieldValues>({
               }}
               triggerClassName={cn(
                 "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
-                control._formState.errors && "outline-destructive",
+                fieldError && "outline outline-1 outline-offset-[-1px] outline-destructive"
               )}
               noResultsMessage="No se encontraron resultados"
               align={align}
