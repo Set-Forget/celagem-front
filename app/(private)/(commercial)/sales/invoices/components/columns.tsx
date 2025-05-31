@@ -124,9 +124,4 @@ export const columns: ColumnDef<InvoiceList>[] = [
       </div>
     },
   },
-  /*   {
-      accessorKey: "percentage_paid",
-      header: "Porcentaje saldado",
-      cell: ({ row }) => <PercentagePaidCell row={row} />,
-    }, */
 ]

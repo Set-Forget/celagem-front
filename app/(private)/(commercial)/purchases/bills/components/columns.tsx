@@ -99,7 +99,6 @@ export const columns: ColumnDef<AdaptedBillList>[] = [
     accessorKey: "amount_residual",
     header: () => <div className="text-right pr-4">Saldo</div>,
     cell: ({ row }) => {
-      if (row.original.type === 'credit_note') return
       return <div className="text-right font-medium pr-4 text-nowrap">
         {row.original.currency.name}{" "}
         {row.original.amount_residual}
