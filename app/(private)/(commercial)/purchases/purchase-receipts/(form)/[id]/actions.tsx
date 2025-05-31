@@ -2,7 +2,7 @@ import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useGetPurchaseReceiptQuery, useValidatePurchaseReceiptMutation } from "@/lib/services/purchase-receipts";
+import { useCancelPurchaseReceiptMutation, useGetPurchaseReceiptQuery, useValidatePurchaseReceiptMutation } from "@/lib/services/purchase-receipts";
 import { generatePDF } from "@/lib/templates/utils";
 import { Check, CircleX, EditIcon, Ellipsis, FileTextIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -19,6 +19,7 @@ export default function Actions({ state }: { state?: PurchaseReceiptStatus }) {
   const { data: purchaseReceipt } = useGetPurchaseReceiptQuery(id);
 
   const [validatePurchaseReceipt, { isLoading: isPurchaseReceiptValidating }] = useValidatePurchaseReceiptMutation();
+  const [cancelPurchaseReceipt, { isLoading: isPurchaseReceiptCancelling }] = useCancelPurchaseReceiptMutation();
 
   const handleValidatePurchaseReceipt = async () => {
     try {
@@ -34,6 +35,21 @@ export default function Actions({ state }: { state?: PurchaseReceiptStatus }) {
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la recepcion de compra" variant="error" />)
     }
   }
+
+  const handleCancelPurchaseReceipt = async () => {
+    try {
+      const response = await cancelPurchaseReceipt({
+        id: id,
+      }).unwrap()
+
+      if (response.status === "success") {
+        toast.custom((t) => <CustomSonner t={t} description="Recepcion de compra cancelada" variant="success" />)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la recepcion de compra" variant="error" />)
+    }
+  };
 
   const handleGeneratePDF = async () => {
     if (!purchaseReceipt) throw new Error("No se ha encontrado la recepción de compra")
@@ -73,11 +89,11 @@ export default function Actions({ state }: { state?: PurchaseReceiptStatus }) {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            //onSelect={() => handleCancelPurchaseReceipt()}
-            //loading={isPurchaseReceiptCancelling}
+            onSelect={handleCancelPurchaseReceipt}
+            loading={isPurchaseReceiptCancelling}
             className="text-destructive focus:text-destructive"
           >
-            <CircleX /* className={cn(isPurchaseReceiptCancelling && "hidden")} */ />
+            <CircleX className={cn(isPurchaseReceiptCancelling && "hidden")} />
             Cancelar
           </DropdownMenuItem>
         </Dropdown>

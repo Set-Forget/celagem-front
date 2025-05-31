@@ -47,6 +47,13 @@ export const purchaseReceiptsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ["PurchaseReceipt"],
     }),
+    cancelPurchaseReceipt: builder.mutation<{ status: string, message: string }, { id: string | number }>({
+      query: ({ id }) => ({
+        url: `receptions/${id}/cancel`,
+        method: 'POST',
+      }),
+      invalidatesTags: ["PurchaseReceipt"],
+    }),
   }),
 });
 
@@ -57,6 +64,7 @@ export const {
   useValidatePurchaseReceiptMutation,
   useLazyListPurchaseReceiptsQuery,
   useUpdatePurchaseReceiptMutation,
+  useCancelPurchaseReceiptMutation,
 } = purchaseReceiptsApi;
 
 
