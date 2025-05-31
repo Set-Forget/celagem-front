@@ -14,7 +14,7 @@ import { AccountSelectField } from "@/app/(private)/(commercial)/components/acco
 const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof newCreditNoteSchema>>; index: number }) => {
   const { setValue } = useFormContext<z.infer<typeof newCreditNoteSchema>>()
 
-  return <MaterialSelectField
+  return <MaterialSelectField<z.infer<typeof newCreditNoteSchema>>
     control={control}
     name={`items.${index}.product_id`}
     onSelect={(value, option) => {

@@ -17,7 +17,7 @@ const DebitCell = ({ row }: { row: Row<JournalEntryItem> }) => {
 
   return (
     <div>
-      {journalEntry?.currency.name}{" "}
+      USD{" "}
       {row.getValue("debit")}
     </div>
   )
@@ -29,7 +29,7 @@ const CreditCell = ({ row }: { row: Row<JournalEntryItem> }) => {
 
   return (
     <div>
-      {journalEntry?.currency.name}{" "}
+      USD{" "}
       {row.getValue("credit")}
     </div>
   )

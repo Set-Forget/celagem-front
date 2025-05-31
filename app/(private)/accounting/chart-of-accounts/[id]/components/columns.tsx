@@ -37,7 +37,11 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
   {
     accessorKey: "name",
     header: "Referencia",
-    cell: ({ row }) => row.original.name
+    cell: ({ row }) => {
+      return <div className="text-nowrap max-w-[200px] truncate">
+        {row.original.name}
+      </div>
+    },
   },
   {
     accessorKey: "partner",
@@ -77,7 +81,7 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
     header: "Debe",
     cell: ({ row }) => {
       return <div className="text-nowrap">
-        {row.original.currency.name}{" "}
+        USD{" "}
         {row.getValue("debit")}
       </div>
     },
@@ -87,7 +91,7 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
     header: "Haber",
     cell: ({ row }) => {
       return <div className="text-nowrap">
-        {row.original.currency.name}{" "}
+        USD{" "}
         {row.getValue("credit")}
       </div>
     },
@@ -97,7 +101,7 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
     header: "Balance",
     cell: ({ row }) => {
       return <div className="text-nowrap">
-        {row.original.currency.name}{" "}
+        USD{" "}
         {row.getValue("balance")}
       </div>
     },

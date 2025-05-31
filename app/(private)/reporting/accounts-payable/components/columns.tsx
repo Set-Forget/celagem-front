@@ -71,9 +71,8 @@ export const columns: ColumnDef<AccountsPayableList>[] = [
         (sum, row) => sum + Number(row.original.invoiced_amount),
         0
       );
-      const currency = table.getRowModel().rows[0]?.original.currency || "";
       return <span className="font-semibold">
-        {currency + " " + total.toFixed(2)}
+        {total.toFixed(2)}
       </span>
     }
   },
@@ -89,9 +88,8 @@ export const columns: ColumnDef<AccountsPayableList>[] = [
         (sum, row) => sum + Number(row.original.paid_amount),
         0
       );
-      const currency = table.getRowModel().rows[0]?.original.currency || "";
       return <span className="font-semibold">
-        {currency + " " + total.toFixed(2)}
+        {total.toFixed(2)}
       </span>
     }
   },
@@ -107,9 +105,8 @@ export const columns: ColumnDef<AccountsPayableList>[] = [
         (sum, row) => sum + Number(row.original.outstanding_amount),
         0
       );
-      const currency = table.getRowModel().rows[0]?.original.currency || "";
       return <span className="font-semibold">
-        {currency + " " + total.toFixed(2)}
+        {total.toFixed(2)}
       </span>
     }
   },
@@ -125,9 +122,8 @@ export const columns: ColumnDef<AccountsPayableList>[] = [
         (sum, row) => sum + Number(row.original["30_days"]),
         0
       );
-      const currency = table.getRowModel().rows[0]?.original.currency || "";
       return <span className="font-semibold">
-        {currency + " " + total.toFixed(2)}
+        {total.toFixed(2)}
       </span>
     }
   },
@@ -143,9 +139,8 @@ export const columns: ColumnDef<AccountsPayableList>[] = [
         (sum, row) => sum + Number(row.original["60_days"]),
         0
       );
-      const currency = table.getRowModel().rows[0]?.original.currency || "";
       return <span className="font-semibold">
-        {currency + " " + total.toFixed(2)}
+        {total.toFixed(2)}
       </span>
     }
   },
@@ -161,9 +156,8 @@ export const columns: ColumnDef<AccountsPayableList>[] = [
         (sum, row) => sum + Number(row.original["90_days"]),
         0
       );
-      const currency = table.getRowModel().rows[0]?.original.currency || "";
       return <span className="font-semibold">
-        {currency + " " + total.toFixed(2)}
+        {total.toFixed(2)}
       </span>
     }
   },
@@ -179,9 +173,8 @@ export const columns: ColumnDef<AccountsPayableList>[] = [
         (sum, row) => sum + Number(row.original["120_days"]),
         0
       );
-      const currency = table.getRowModel().rows[0]?.original.currency || "";
       return <span className="font-semibold">
-        {currency + " " + total.toFixed(2)}
+        {total.toFixed(2)}
       </span>
     }
   },
@@ -197,9 +190,8 @@ export const columns: ColumnDef<AccountsPayableList>[] = [
         (sum, row) => sum + Number(row.original["120+_days"]),
         0
       );
-      const currency = table.getRowModel().rows[0]?.original.currency || "";
       return <span className="font-semibold">
-        {currency + " " + total.toFixed(2)}
+        {total.toFixed(2)}
       </span>
     }
   },

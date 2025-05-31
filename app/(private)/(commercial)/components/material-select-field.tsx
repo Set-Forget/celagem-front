@@ -1,7 +1,7 @@
 import { AsyncSelect } from "@/components/async-select"
 import { FormControl, FormField, FormItem } from "@/components/ui/form"
 import { cn } from "@/lib/utils"
-import { Control, FieldPath, FieldValues } from "react-hook-form"
+import { Control, FieldPath, FieldValues, useFormContext } from "react-hook-form"
 import { useMaterialSelect } from "../hooks/use-material-select"
 import { get } from "lodash"
 
@@ -18,11 +18,42 @@ export function MaterialSelectField<FV extends FieldValues = FieldValues>({
   name,
   onSelect
 }: Props<FV>) {
+  const { setValue } = useFormContext<FV>()
+
   const fieldId = control._getWatch(name)
 
   const { initialOptions, fetcher } = useMaterialSelect({ productId: fieldId })
 
   const fieldError = get(control._formState.errors, name);
+
+  const handleCreateProduct = async (input: string) => {
+    const response = await fetch("/jsonrpc", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "jsonrpc": "2.0",
+        "method": "call",
+        "params": {
+          "service": "object",
+          "method": "execute_kw",
+          "args": [
+            "ciro",
+            2,
+            "admin",
+            "product.product",
+            "name_create",
+            [`${input}`],
+            {}
+          ]
+        }
+      }),
+    });
+    const data = await response.json();
+    const newProductId = data?.result?.[0] as number;
+    setValue(name, newProductId as FV[typeof name], { shouldValidate: true });
+  }
 
   return (
     <FormField
@@ -49,9 +80,9 @@ export function MaterialSelectField<FV extends FieldValues = FieldValues>({
                 onSelect?.(value, option)
               }}
               creatable={{
-                label: (input) => <>Añadir nuevo material &quot;{input}&quot;</>,
+                label: (input) => <>Añadir &quot;{input}&quot;</>,
                 onCreate: (input) => {
-                  console.log("Crear material con nombre:", input)
+                  handleCreateProduct(input)
                 },
               }}
               noResultsMessage="No se encontraron resultados"

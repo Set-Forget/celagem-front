@@ -23,7 +23,7 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
     getPurchaseOrder: builder.query<PurchaseOrderDetail, string>({
       query: (id) => `/purchase_orders/${id}`,
       transformResponse: (response: PurchaseOrderDetailResponse) => response.data,
-      providesTags: (result, error, id) => [{ type: 'PurchaseOrder', id }],
+      providesTags: ["PurchaseOrder"]
     }),
     updatePurchaseOrder: builder.mutation<{ status: string, message: string }, { body: Partial<Overwrite<Omit<NewPurchaseOrder, 'currency' | 'payment_term' | 'required_date'> & { currency: number; payment_term: number; required_date: string }, { company: number }>>, id: string | number }>({
       query: ({ id, body }) => ({
@@ -47,9 +47,7 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
         url: `/purchase_orders/${id}/to_approve`,
         method: 'POST',
       }),
-      invalidatesTags: (result, error, { purchaseRequestId }) => purchaseRequestId
-        ? [{ type: 'PurchaseOrder' }, { type: 'PurchaseRequest', id: purchaseRequestId }]
-        : [{ type: 'PurchaseOrder' }]
+      invalidatesTags: ["PurchaseOrder"],
     }),
     cancelPurchaseOrder: builder.mutation<{ status: string, message: string }, { id: string, rejection_reason: string }>({
       query: ({ id, rejection_reason }) => ({
@@ -71,7 +69,7 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
         url: `/purchase_orders/${id}/reset_to_draft`,
         method: 'POST',
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'PurchaseOrder', id }],
+      invalidatesTags: ['PurchaseOrder'],
     }),
   }),
 });

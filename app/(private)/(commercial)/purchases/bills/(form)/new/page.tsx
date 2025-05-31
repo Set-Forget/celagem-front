@@ -60,10 +60,10 @@ export default function Page() {
         payment_method: supplier?.payment_method?.id,
         items: purchaseOrder.items.map((item) => ({
           product_id: item.product_id,
-          quantity: item.product_qty,
+          quantity: item.product_qty - item.qty_invoiced,
           taxes_id: item.taxes.map((tax) => tax.id),
           price_unit: item.price_unit
-        }))
+        })).filter(item => item.quantity > 0),
       })
     })()
   }, [purchaseOrder, purchaseOrderId])

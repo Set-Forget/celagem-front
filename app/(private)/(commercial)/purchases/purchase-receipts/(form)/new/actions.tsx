@@ -33,7 +33,7 @@ export default function Actions() {
   const [searchPurchaseOrder] = useLazyListPurchaseOrdersQuery()
   const [createPurchaseReceipt, { isLoading: isCreatingPurchaseReceipt }] = useCreatePurchaseReceiptMutation()
   const [updatePurchaseReceipt, { isLoading: isUpdatingPurchaseReceipt }] = useUpdatePurchaseReceiptMutation()
-  const [validatePurchaseReceipt, { isLoading: isPurchaseReceiptValidating }] = useValidatePurchaseReceiptMutation();
+  const [validatePurchaseReceipt] = useValidatePurchaseReceiptMutation();
 
   const handleSearchPurchaseOrder = async (query?: string) => {
     try {
@@ -88,13 +88,13 @@ export default function Actions() {
         const response = await updatePurchaseReceipt({
           id: purchaseReceipt?.id,
           data: {
-            items: rest.items.map(item => ({
-              product_id: item.product_id,
-              product_uom: item.product_uom,
-              expected_quantity: purchaseOrder?.items.find(poItem => poItem.product_id === item.product_id)?.product_qty,
-              quantity: item.quantity,
-              purchase_line_id: purchaseOrder?.items.find(poItem => poItem.product_id === item.product_id)?.id,
-            }))
+            items: purchaseOrder?.items.map(item => ({
+              product_id: rest.items.find(poItem => poItem.product_id === item.product_id)?.product_id || item.product_id,
+              product_uom: rest.items.find(poItem => poItem.product_id === item.product_id)?.product_uom || item.product_uom.id,
+              quantity: rest.items.find(poItem => poItem.product_id === item.product_id)?.quantity || 0,
+              expected_quantity: item.product_qty,
+              purchase_line_id: item.id,
+            })).filter(item => item.quantity > 0),
           }
         }).unwrap()
         if (response.status === "success") {

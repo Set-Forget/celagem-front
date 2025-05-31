@@ -24,9 +24,6 @@ export default function Page() {
   const nameQuery = search.field === "name" ? search?.query : undefined
   const codeQuery = search.field === "code" ? search?.query : undefined
 
-  console.log("accounts", accounts)
-  console.log(nameQuery, codeQuery)
-
   return (
     <div className="flex flex-col h-full">
       <Header title="Plan de cuentas">

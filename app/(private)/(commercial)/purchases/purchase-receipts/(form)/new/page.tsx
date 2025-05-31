@@ -47,11 +47,11 @@ export default function Page() {
       move_type: "direct",
       items: purchaseOrder.items.map((item) => ({
         product_id: item.product_id,
-        name: item.product_name, // ! No debería ser necesario. Esto es un bug en el backend, debería venir en el item.
+        name: item.product_name, // ! No debería ser necesario.
         //purchase_line_id: item.id,
         quantity: item.product_qty - item.qty_received,
         product_uom: item.product_uom.id,
-      }))
+      })).filter(item => item.quantity > 0),
     })
   }, [purchaseOrder, purchaseOrderId])
 

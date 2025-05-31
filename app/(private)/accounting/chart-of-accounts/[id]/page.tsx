@@ -76,7 +76,7 @@ export default function Page() {
           <label className="text-muted-foreground text-sm">
             Movimientos
           </label>
-          <div className="flex flex-col gap-4 [&_*[data-table='true']]:h-[calc(100svh-358px)]">
+          <div className="flex flex-col gap-4 [&_*[data-table='true']]:h-[calc(100svh-358px)] [&_*[data-table='true']]:w-[calc(100svw-306px)]">
             <DataTable
               data={accountMoves?.data
                 ?.toSorted((a, b) => b.id - a.id)

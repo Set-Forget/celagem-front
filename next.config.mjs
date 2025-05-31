@@ -18,6 +18,10 @@ const nextConfig = {
   async rewrites() {
     return [
       {
+        source: '/jsonrpc',
+        destination: `${process.env.NEXT_PUBLIC_ERP_URL}/jsonrpc`,
+      },
+      {
         source: '/erp/api/:path*',
         destination: `${process.env.NEXT_PUBLIC_ERP_URL}/api/v1/:path*`,
       },
