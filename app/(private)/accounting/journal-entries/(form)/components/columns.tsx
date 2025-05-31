@@ -166,6 +166,7 @@ export const columns: FormTableColumn<z.infer<typeof newJournalEntrySchema>>[] =
     ) => <AccountSelectField
         control={control}
         name={`items.${index}.account_id`}
+        width={300}
       />,
   },
   {

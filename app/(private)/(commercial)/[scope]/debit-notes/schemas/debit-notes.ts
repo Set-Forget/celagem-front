@@ -61,6 +61,7 @@ export const debitNoteDetailSchema = z.object({
     name: z.string(),
   }),
   internal_notes: z.string(),
+  amount_residual: z.number(),
   associated_invoice: z.object({
     id: z.number(),
     name: z.string(),

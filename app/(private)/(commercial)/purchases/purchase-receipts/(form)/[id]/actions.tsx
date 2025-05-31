@@ -5,12 +5,15 @@ import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdow
 import { useGetPurchaseReceiptQuery, useValidatePurchaseReceiptMutation } from "@/lib/services/purchase-receipts";
 import { generatePDF } from "@/lib/templates/utils";
 import { Check, CircleX, EditIcon, Ellipsis, FileTextIcon } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PurchaseReceiptStatus } from "../../schemas/purchase-receipts";
 import { cn } from "@/lib/utils";
+import { routes } from "@/lib/routes";
 
 export default function Actions({ state }: { state?: PurchaseReceiptStatus }) {
+  const router = useRouter();
+
   const { id } = useParams<{ id: string }>()
 
   const { data: purchaseReceipt } = useGetPurchaseReceiptQuery(id);
@@ -64,7 +67,7 @@ export default function Actions({ state }: { state?: PurchaseReceiptStatus }) {
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
-          <DropdownMenuItem >
+          <DropdownMenuItem onSelect={() => router.push(routes.purchaseReceipts.edit(id))}>
             <EditIcon />
             Editar
           </DropdownMenuItem>

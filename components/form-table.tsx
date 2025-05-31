@@ -80,7 +80,7 @@ export default function FormTable<TFormValues extends FieldValues>({
               </TableRow>
             )}
             {fields.map((item, index) => (
-              <TableRow key={item.id} className="group h-9">
+              <TableRow key={`${item.id}-${index}`} className="group h-9">
                 {columns.map((col, idx) => (
                   <TableCell
                     key={idx}

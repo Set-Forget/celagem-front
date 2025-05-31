@@ -31,11 +31,11 @@ const fields: FieldDefinition<PurchaseReceiptDetail>[] = [
     placeholderLength: 12,
     render: (p) => format(parseISO(p.reception_date), "PP", { locale: es }),
   },
-  {
-    label: "Fecha de requerimiento",
-    placeholderLength: 12,
-    render: (p) => format(parseISO(p.scheduled_date), "PP", { locale: es }),
-  }
+  /*   {
+      label: "Fecha de requerimiento",
+      placeholderLength: 12,
+      render: (p) => format(parseISO(p.scheduled_date), "PP", { locale: es }),
+    } */
 ];
 
 const tabs = [

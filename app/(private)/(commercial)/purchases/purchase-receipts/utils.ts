@@ -11,9 +11,9 @@ export const purchaseReceiptStatus = {
     text_color: "text-yellow-800",
   },
   assigned: {
-    label: "Asignada",
-    bg_color: "bg-orange-100",
-    text_color: "text-orange-800",
+    label: "Borrador",
+    bg_color: "bg-slate-100",
+    text_color: "text-slate-800",
   },
   confirmed: {
     label: "A recibir",

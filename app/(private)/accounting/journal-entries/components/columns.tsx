@@ -60,12 +60,6 @@ export const columns: ColumnDef<JournalEntryList>[] = [
     },
   },
   {
-    accessorKey: "journal",
-    header: "Diario contable",
-    cell: ({ row }) => row.original.journal.name,
-  },
-
-  {
     accessorKey: "date",
     header: "Fecha de creación",
     cell: ({ row }) => {

@@ -8,6 +8,25 @@ import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import Link from "next/link"
 import { AccountMoveLine } from "../../schemas/account"
+import { routes } from "@/lib/routes"
+
+const typeToRoute: Record<string, (id: number) => string> = {
+  in_invoice: routes.bill.detail,
+  out_invoice: routes.invoice.detail,
+  in_credit_note: routes.purchaseCreditNote.detail,
+  out_credit_note: routes.salesCreditNote.detail,
+  in_debit_note: routes.purchaseDebitNote.detail,
+  out_debit_note: routes.salesDebitNote.detail,
+}
+
+const typeToPartner: Record<string, (id: number) => string> = {
+  in_invoice: routes.suppliers.detail,
+  out_invoice: routes.customers.detail,
+  in_credit_note: routes.suppliers.detail,
+  out_credit_note: routes.customers.detail,
+  in_debit_note: routes.suppliers.detail,
+  out_debit_note: routes.customers.detail,
+}
 
 export const columns: ColumnDef<AccountMoveLine>[] = [
   {
@@ -28,7 +47,10 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
       className="p-0 h-auto text-foreground"
       asChild
     >
-      <Link href={""}>
+      <Link
+        href={typeToPartner[row.original.type]?.(row.original.partner?.id) || ""}
+        target="_blank"
+      >
         {row.original.partner?.name}
       </Link>
     </Button>,
@@ -42,7 +64,9 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
         className="p-0 h-auto text-foreground"
         asChild
       >
-        <Link href={""}>
+        <Link href={typeToRoute[row.original.type]?.(row.original.move_id?.id) || ""}
+          target="_blank"
+        >
           {row.original.move_id?.name}
         </Link>
       </Button>
@@ -52,7 +76,7 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
     accessorKey: "debit",
     header: "Debe",
     cell: ({ row }) => {
-      return <div>
+      return <div className="text-nowrap">
         {row.original.currency.name}{" "}
         {row.getValue("debit")}
       </div>
@@ -62,7 +86,7 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
     accessorKey: "credit",
     header: "Haber",
     cell: ({ row }) => {
-      return <div>
+      return <div className="text-nowrap">
         {row.original.currency.name}{" "}
         {row.getValue("credit")}
       </div>
@@ -72,7 +96,7 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
     accessorKey: "balance",
     header: "Balance",
     cell: ({ row }) => {
-      return <div>
+      return <div className="text-nowrap">
         {row.original.currency.name}{" "}
         {row.getValue("balance")}
       </div>

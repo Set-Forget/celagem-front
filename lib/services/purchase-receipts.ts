@@ -31,7 +31,7 @@ export const purchaseReceiptsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ["PurchaseReceipt"],
     }),
-    updatePurchaseReceipt: builder.mutation<PurchaseReceiptDetailResponse, { id: string | number, data: Partial<Omit<Overwrite<NewPurchaseReceipt, { reception_location: number; source_location: number; reception_date: string }>, "purchase_order">> }>({
+    updatePurchaseReceipt: builder.mutation<{ status: string, message: string }, { id: string | number, data: Partial<Omit<Overwrite<NewPurchaseReceipt, { reception_location: number; source_location: number; reception_date: string }>, "purchase_order">> }>({
       query: ({ id, data }) => ({
         url: `receptions/${id}`,
         method: 'PUT',

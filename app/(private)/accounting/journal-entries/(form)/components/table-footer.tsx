@@ -62,7 +62,7 @@ export default function TableFooter({ append }: { append: (value: any) => void }
     <ShadcnTableFooter>
       <TableRow className="!border-b bg-background h-6" />
       <TableRow>
-        <TableCell colSpan={columns.length - 2} className="h-6 text-xs font-semibold py-0 text-end">
+        <TableCell colSpan={columns.length - 2} className="h-6 text-xs font-semibold py-0 text-start">
           <span>Total</span>
         </TableCell>
         <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5">

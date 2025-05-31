@@ -108,7 +108,7 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
     )
   }
 
-  if (state === "posted") {
+  if (state === "posted" || state === "done") {
     return (
       <div className="flex gap-2">
         <Dropdown

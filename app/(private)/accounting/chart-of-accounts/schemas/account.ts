@@ -85,6 +85,7 @@ export const accountMoveLineSchema = z.object({
     code: z.string(),
     name: z.string(),
   }),
+  type: z.enum(["in_credit_note", "out_credit_note", "in_debit_note", "out_debit_note", "in_invoice", "out_invoice", "general"]),
 })
 
 export const accountMoveLineResponseSchema = z.object({

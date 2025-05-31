@@ -31,11 +31,18 @@ export const debitNoteStatus = {
     text_color: "text-stone-800",
     pure_bg_color: "bg-stone-500",
   },
+  done: {
+    label: "Completada",
+    key: "done",
+    bg_color: "bg-green-100",
+    text_color: "text-green-800",
+    pure_bg_color: "bg-green-500",
+  },
 }
 
 interface DebitNoteLike {
   status: DebitNoteStatus
-  //amount_residual: number
+  amount_residual: number
   due_date: string
 }
 
@@ -51,9 +58,9 @@ export function getDebitNoteStatus(
     return "cancel"
   }
 
-  /*   if (debitNote.status === "posted" && debitNote.amount_residual === 0) {
-      return "done"
-    } */
+  if (debitNote.status === "posted" && debitNote.amount_residual === 0) {
+    return "done"
+  }
 
   if (debitNote.status === "posted" && new Date(debitNote.due_date) < today) {
     return "overdue"
