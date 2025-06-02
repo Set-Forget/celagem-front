@@ -81,7 +81,7 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
     header: "Debe",
     cell: ({ row }) => {
       return <div className="text-nowrap">
-        USD{" "}
+        {row.original.currency.name}{" "}
         {row.getValue("debit")}
       </div>
     },
@@ -91,7 +91,7 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
     header: "Haber",
     cell: ({ row }) => {
       return <div className="text-nowrap">
-        USD{" "}
+        {row.original.currency.name}{" "}
         {row.getValue("credit")}
       </div>
     },
@@ -101,7 +101,7 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
     header: "Balance",
     cell: ({ row }) => {
       return <div className="text-nowrap">
-        USD{" "}
+        {row.original.currency.name}{" "}
         {row.getValue("balance")}
       </div>
     },

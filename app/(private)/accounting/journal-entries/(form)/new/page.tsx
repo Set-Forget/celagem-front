@@ -156,7 +156,7 @@ export default function Page() {
                 <FormMessage />
               ) :
                 <FormDescription>
-                  Moneda que figura en la factura de compra.
+                  Moneda que figura en el asiento contable.
                 </FormDescription>
               }
             </FormItem>

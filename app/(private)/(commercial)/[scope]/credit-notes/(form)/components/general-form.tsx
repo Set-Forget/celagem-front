@@ -159,7 +159,7 @@ export default function GeneralForm() {
         name="accounting_date"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">Fecha de contabilidad</FormLabel>
+            <FormLabel className="w-fit">Fecha de contabilización</FormLabel>
             <FormControl>
               <DatePicker
                 value={field.value || null}

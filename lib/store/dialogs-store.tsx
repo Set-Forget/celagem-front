@@ -36,7 +36,7 @@ export type DialogsState = {
   | "new-journal"
   | "new-account-type"
   | "edit-account"
-  | "load-bills"
+  | "confirm-billed-po"
   | false;
   payload?: any;
 };

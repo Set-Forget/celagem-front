@@ -3,7 +3,7 @@ import CustomSonner from "@/components/custom-sonner";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useCreateBillMutation } from "@/lib/services/bills";
-import { useGetPurchaseOrderQuery, useLazyListPurchaseOrdersQuery } from "@/lib/services/purchase-orders";
+import { useGetPurchaseOrderQuery, useLazyGetPurchaseOrderQuery, useLazyListPurchaseOrdersQuery } from "@/lib/services/purchase-orders";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { newBillSchema } from "../../schemas/bills";
 import PurchaseOrderPopover from "./components/purchase-order-popover";
+import { setDialogsState } from "@/lib/store/dialogs-store";
 
 export default function Actions() {
   const router = useRouter()
@@ -29,6 +30,8 @@ export default function Actions() {
   const purchaseOrderId = searchParams.get("purchase_order_id")
 
   const [searchPurchaseOrder] = useLazyListPurchaseOrdersQuery()
+  const [getPurchaseOrder] = useLazyGetPurchaseOrderQuery()
+
   const { data: purchaseOrder } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
 
   const handleSearchPurchaseOrder = async (query?: string) => {
@@ -142,7 +145,14 @@ export default function Actions() {
           </div>
         )}
         getOptionValue={(r) => r.id}
-        onSelect={(id, r) => {
+        onSelect={async (id, r) => {
+          const purchaseOrder = await getPurchaseOrder(id).unwrap();
+          const fullBilledItems = purchaseOrder.items.some(item => item.product_qty - item.qty_invoiced <= 0);
+          if (fullBilledItems) return setDialogsState({
+            open: "confirm-billed-po",
+            payload: { purchase_order_id: id }
+          });
+
           window.history.pushState({}, "", `/purchases/bills/new?purchase_order_id=${id}`);
         }}
       />

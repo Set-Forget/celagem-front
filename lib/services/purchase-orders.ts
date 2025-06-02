@@ -20,7 +20,7 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
         }),
         providesTags: ['PurchaseOrder'],
       }),
-    getPurchaseOrder: builder.query<PurchaseOrderDetail, string>({
+    getPurchaseOrder: builder.query<PurchaseOrderDetail, string | number>({
       query: (id) => `/purchase_orders/${id}`,
       transformResponse: (response: PurchaseOrderDetailResponse) => response.data,
       providesTags: ["PurchaseOrder"]
@@ -77,6 +77,7 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
 export const {
   useListPurchaseOrdersQuery,
   useGetPurchaseOrderQuery,
+  useLazyGetPurchaseOrderQuery,
   useLazyListPurchaseOrdersQuery,
   useCreatePurchaseOrderMutation,
   useUpdatePurchaseOrderMutation,

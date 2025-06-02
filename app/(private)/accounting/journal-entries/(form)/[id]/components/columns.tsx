@@ -14,10 +14,10 @@ import { routes } from "@/lib/routes"
 const DebitCell = ({ row }: { row: Row<JournalEntryItem> }) => {
   const { id } = useParams<{ id: string }>()
   const { data: journalEntry } = useGetJournalEntryQuery(id)
-
+  const currency = journalEntry?.currency?.name
   return (
     <div>
-      USD{" "}
+      {currency}{" "}
       {row.getValue("debit")}
     </div>
   )
@@ -26,10 +26,11 @@ const DebitCell = ({ row }: { row: Row<JournalEntryItem> }) => {
 const CreditCell = ({ row }: { row: Row<JournalEntryItem> }) => {
   const { id } = useParams<{ id: string }>()
   const { data: journalEntry } = useGetJournalEntryQuery(id)
+  const currency = journalEntry?.currency?.name
 
   return (
     <div>
-      USD{" "}
+      {currency}{" "}
       {row.getValue("credit")}
     </div>
   )

@@ -17,6 +17,8 @@ import GeneralForm from "../components/general-form"
 import NotesForm from "../components/notes-form"
 import Actions from "./actions"
 import { defaultValues } from "../default-values"
+import { setDialogsState } from "@/lib/store/dialogs-store"
+import ConfirmPurchaseOrderDialog from "./components/confirm-purchase-order-dialog"
 
 const tabs = [
   {
@@ -51,6 +53,7 @@ export default function Page() {
 
   useEffect(() => {
     if (!purchaseOrder || !purchaseOrderId) return
+
     (async () => {
       const supplier = await getSupplier(purchaseOrder.supplier.id).unwrap()
       newBillForm.reset({
@@ -60,10 +63,10 @@ export default function Page() {
         payment_method: supplier?.payment_method?.id,
         items: purchaseOrder.items.map((item) => ({
           product_id: item.product_id,
-          quantity: item.product_qty - item.qty_invoiced,
+          quantity: item.product_qty,
           taxes_id: item.taxes.map((tax) => tax.id),
           price_unit: item.price_unit
-        })).filter(item => item.quantity > 0),
+        }))
       })
     })()
   }, [purchaseOrder, purchaseOrderId])
@@ -75,6 +78,7 @@ export default function Page() {
       </Header>
       <GeneralForm />
       <FormTabs tabs={tabs} />
+      <ConfirmPurchaseOrderDialog />
     </Form>
   )
 }

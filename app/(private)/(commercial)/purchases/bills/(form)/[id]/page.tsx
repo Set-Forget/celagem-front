@@ -102,13 +102,15 @@ export default function Page() {
           loading={isBillLoading}
           data={bill}
         />
-        <DataTable
-          data={bill?.items.map((item) => ({ ...item, currency: bill?.currency.name })) ?? []}
-          loading={isBillLoading}
-          columns={columns}
-          pagination={false}
-          footer={() => <TableFooter />}
-        />
+        <div className="[&_*[data-table='true']]:w-[calc(100svw-306px)]">
+          <DataTable
+            data={bill?.items.map((item) => ({ ...item, currency: bill?.currency.name })) ?? []}
+            loading={isBillLoading}
+            columns={columns}
+            pagination={false}
+            footer={() => <TableFooter />}
+          />
+        </div>
       </div>
       <DataTabs
         tabs={tabs}
