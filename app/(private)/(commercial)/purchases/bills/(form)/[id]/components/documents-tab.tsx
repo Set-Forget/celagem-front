@@ -7,8 +7,9 @@ import { FileX2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { BillDetail } from "../../../schemas/bills";
+import { AdaptedBillDetail } from "@/lib/adapters/bills";
 
-const fields: FieldDefinition<BillDetail>[] = [
+const fields: FieldDefinition<AdaptedBillDetail>[] = [
   {
     label: "Órdenes de compra",
     placeholderLength: 14,

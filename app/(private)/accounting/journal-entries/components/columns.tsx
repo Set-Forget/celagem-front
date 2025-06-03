@@ -36,11 +36,11 @@ export const columns: ColumnDef<JournalEntryList>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "number",
+    accessorKey: "sequence_id",
     header: "Número",
     cell: ({ row }) => (
       <div className="capitalize flex gap-1">
-        <div className="font-medium">{row.getValue("number")}</div>
+        <div className="font-medium">{row.getValue("sequence_id")}</div>
       </div>
     ),
   },

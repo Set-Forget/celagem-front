@@ -85,7 +85,7 @@ export default function Page() {
                   const d = new Date(move.date);
                   return ((!dateStart || d >= new Date(dateStart)) && (!dateEnd || d <= new Date(dateEnd)));
                 })
-                .filter(move => moveSearch ? move.move_id.name.toString().includes(moveSearch) : true)
+                .filter(move => moveSearch ? move.move_id.sequence_id.toString().includes(moveSearch) : true)
                 .filter(move => movePartner ? move.partner?.name.toLowerCase().includes(movePartner.toLowerCase()) : true)
                 ?? []}
               loading={isAccountMovesLoading}

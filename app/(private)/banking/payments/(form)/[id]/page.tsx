@@ -25,7 +25,7 @@ const fields: FieldDefinition<PaymentDetail>[] = [
   {
     label: "Fecha de pago",
     placeholderLength: 14,
-    render: (p) => format(parseISO(p.date), "PP", { locale: es }),
+    render: (p) => p?.date && format(parseISO(p.date), "PP", { locale: es }),
   },
   {
     label: "Método de pago",
@@ -35,13 +35,13 @@ const fields: FieldDefinition<PaymentDetail>[] = [
   {
     label: "Monto",
     placeholderLength: 10,
-    render: (p) => `${p.currency.name} ${p.amount}`
+    render: (p) => `${p?.currency?.name} ${p?.amount}`
   },
   {
     label: "Retenciones",
     placeholderLength: 10,
-    render: (p) => p.withholdings?.length > 0
-      ? p.withholdings.map((w) => w.tax.name).join(", ")
+    render: (p) => p?.withholdings?.length > 0
+      ? p?.withholdings.map((w) => w.tax.name).join(", ")
       : "No especificadas",
   },
   {
@@ -56,7 +56,7 @@ const fields: FieldDefinition<PaymentDetail>[] = [
         href={routes.chartOfAccounts.detail(p.source_account?.id)}
         target="_blank"
       >
-        {p.source_account?.name}
+        {p?.source_account?.name}
       </Link>
     </Button>
   },
@@ -93,7 +93,7 @@ export default function Page() {
     <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isPaymentLoading ? "blur-[4px]" : "blur-none")}>
-          {isPaymentLoading ? placeholder(13, true) : payment?.name}
+          {isPaymentLoading ? placeholder(13, true) : payment?.sequence_id}
         </h1>
       }>
         <div className="mr-auto">

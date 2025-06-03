@@ -6,8 +6,9 @@ import { FieldDefinition } from "@/lib/utils";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { InvoiceDetail } from "../../../schemas/invoices";
+import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices";
 
-const fields: FieldDefinition<InvoiceDetail>[] = [
+const fields: FieldDefinition<AdaptedInvoiceDetail>[] = [
   {
     label: "Cliente",
     placeholderLength: 14,

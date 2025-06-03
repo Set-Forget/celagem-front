@@ -23,7 +23,7 @@ export default function Page() {
   const date_range = JSON.parse(searchParams.get('date_range') || '{}') as { field: string, from: string, to: string }
 
   const { data: bills, isLoading: isBillsLoading } = useListBillsQuery({
-    number: search.field === "number" ? search?.query : undefined,
+    //number: search.field === "number" ? search?.query : undefined,
     //status: status ? JSON.parse(status).join(',') : undefined,
     supplier: search.field === "supplier" ? search?.query : undefined,
     date_start: date_range?.field === "date" ? date_range.from : undefined,
@@ -61,6 +61,7 @@ export default function Page() {
         <DataTable
           data={bills
             ?.toSorted((a, b) => b.id - a.id)
+            .filter(bill => bill.number.toString().toLowerCase().includes(search?.query?.toLowerCase() ?? ""))
             .filter(bill => type.length === 0 || type.includes(bill.type))
             .filter(bill => status.length === 0 || status.includes(bill.status)) ?? []}
           loading={isBillsLoading}

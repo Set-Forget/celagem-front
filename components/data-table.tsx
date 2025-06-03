@@ -21,8 +21,6 @@ import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 import * as React from "react"
 import { Button } from "./ui/button"
 import { Table as ShadcnTable, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
-import { useSidebar } from "./ui/sidebar"
-import { useIsMobile } from "@/hooks/use-mobile"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

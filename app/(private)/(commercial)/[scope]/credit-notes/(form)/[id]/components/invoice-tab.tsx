@@ -1,6 +1,7 @@
 import { InvoiceDetail } from "@/app/(private)/(commercial)/sales/invoices/schemas/invoices";
 import RenderFields from "@/components/render-fields";
 import { Button } from "@/components/ui/button";
+import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices";
 import { routes } from "@/lib/routes";
 import { useGetCreditNoteQuery } from "@/lib/services/credit-notes";
 import { useGetInvoiceQuery } from "@/lib/services/invoices";
@@ -13,7 +14,7 @@ import { useParams } from "next/navigation";
 export default function InvoiceTab() {
   const { id, scope } = useParams<{ id: string, scope: "purchases" | "sales" }>()
 
-  const fields: FieldDefinition<InvoiceDetail>[] = [
+  const fields: FieldDefinition<AdaptedInvoiceDetail>[] = [
     {
       label: "Número",
       placeholderLength: 13,
@@ -39,22 +40,22 @@ export default function InvoiceTab() {
     {
       label: "Fecha de emisión",
       placeholderLength: 13,
-      render: (p) => p.date ? format(parseISO(p.date), "dd MMM yyyy", { locale: es }) : "No especificado",
+      render: (p) => p?.date ? format(parseISO(p.date), "dd MMM yyyy", { locale: es }) : "No especificado",
     },
     {
       label: "Fecha de vencimiento",
       placeholderLength: 13,
-      render: (p) => p.due_date ? format(parseISO(p.due_date), "dd MMM yyyy", { locale: es }) : "No especificado",
+      render: (p) => p?.due_date ? format(parseISO(p.due_date), "dd MMM yyyy", { locale: es }) : "No especificado",
     },
     {
       label: "Condición de pago",
       placeholderLength: 10,
-      render: (p) => p.payment_term.name || "No especificado",
+      render: (p) => p?.payment_term.name || "No especificado",
     },
     {
       label: "Método de pago",
       placeholderLength: 10,
-      render: (p) => p.payment_method?.name || "No especificado",
+      render: (p) => p?.payment_method?.name || "No especificado",
     }
   ]
 

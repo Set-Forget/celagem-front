@@ -4,7 +4,7 @@ import { z } from "zod";
 
 export const paymentListSchema = z.object({
   id: z.number(),
-  name: z.string(),
+  sequence_id: z.string(),
   amount: z.number(),
   state: z.string(),
   currency: z.string(),
@@ -18,7 +18,7 @@ export const paymentListSchema = z.object({
 
 export const paymentDetailSchema = z.object({
   id: z.number(),
-  name: z.string(),
+  sequence_id: z.string(),
   amount: z.number(),
   date: z.string(),
   state: z.string(),

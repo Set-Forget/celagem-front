@@ -18,8 +18,9 @@ import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
 import NotesTab from "./components/notes-tab"
 import RenderFields from "@/components/render-fields"
+import { AdaptedPurchaseRequestDetail } from "@/lib/adapters/purchase-requests"
 
-const fields: FieldDefinition<PurchaseRequestDetail>[] = [
+const fields: FieldDefinition<AdaptedPurchaseRequestDetail>[] = [
   {
     label: "Solicitado por",
     placeholderLength: 14,

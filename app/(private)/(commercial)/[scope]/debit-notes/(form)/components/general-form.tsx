@@ -17,7 +17,7 @@ import { useMemo } from "react"
 import { useFormContext } from "react-hook-form"
 import { v4 as uuidv4 } from 'uuid'
 import { z } from "zod"
-import { newDebitNoteSchema } from "../../schemas/debit-notes"
+import { NewDebitNote, NewDebitNoteLine, newDebitNoteSchema } from "../../schemas/debit-notes"
 import { columns } from "./columns"
 
 export default function GeneralForm() {
@@ -28,7 +28,7 @@ export default function GeneralForm() {
   const invoiceId = params.get("invoiceId");
   const billId = params.get("billId");
 
-  const { control, formState, setValue, resetField } = useFormContext<z.infer<typeof newDebitNoteSchema>>()
+  const { control, formState, setValue, resetField } = useFormContext<NewDebitNote>()
 
   const [getSupplier] = useLazyGetSupplierQuery()
   const [getCustomer] = useLazyGetCustomerQuery()
@@ -51,7 +51,7 @@ export default function GeneralForm() {
 
 
   const apply = useMemo(
-    () => createApply<z.infer<typeof newDebitNoteSchema>>(setValue, resetField),
+    () => createApply<NewDebitNote>(setValue, resetField),
     [setValue, resetField]
   );
 
@@ -62,7 +62,7 @@ export default function GeneralForm() {
         <>
           <FormField
             control={control}
-            name="number"
+            name="custom_sequence_number"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
                 <FormLabel className="w-fit">
@@ -74,7 +74,7 @@ export default function GeneralForm() {
                     placeholder="Número de nota de débito"
                   />
                 </FormControl>
-                {formState.errors.number ? (
+                {formState.errors.custom_sequence_number ? (
                   <FormMessage />
                 ) :
                   <FormDescription>
@@ -181,22 +181,25 @@ export default function GeneralForm() {
           <FormItem className="flex flex-col w-full col-span-2">
             <FormLabel className="w-fit">Items</FormLabel>
             <FormControl>
-              <FormTable<z.infer<typeof newDebitNoteSchema>>
+              <FormTable<NewDebitNote>
+                name="items"
+                className="col-span-2"
                 columns={columns}
+                loading={isInvoiceLoading || isBillLoading}
                 footer={({ append }) =>
-                  <FormTableFooter<z.infer<typeof newDebitNoteSchema>>
+                  <FormTableFooter<NewDebitNote, NewDebitNoteLine>
                     control={control}
                     onAddRow={() => append({ id: uuidv4(), quantity: 1, taxes_id: [] })}
-                    itemsPath="items"
-                    currencyPath="currency"
-                    unitPriceKey="price_unit"
-                    qtyKey="quantity"
-                    taxesKey="taxes_id"
                     colSpan={columns.length}
-                  />}
-                name="items"
-                loading={isInvoiceLoading || isBillLoading}
-                className="col-span-2"
+                    selectors={{
+                      items: (values) => values.items,
+                      currencyId: (values) => values.currency,
+                      unitPrice: (items) => items.price_unit,
+                      quantity: (items) => items.quantity,
+                      taxes: (items) => items.taxes_id ?? [],
+                    }}
+                  />
+                }
               />
             </FormControl>
             {formState.errors.items?.message && (

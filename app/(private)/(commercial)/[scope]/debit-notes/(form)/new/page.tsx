@@ -58,7 +58,6 @@ export default function Page() {
     resolver: zodResolver(newDebitNoteSchema),
     defaultValues: {
       ...defaultValues,
-      number: scope === "purchases" ? "" : undefined,
       move_type: scope === "purchases" ? "in_invoice" : "out_invoice"
     }
   })

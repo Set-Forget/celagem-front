@@ -49,7 +49,7 @@ export default function Page() {
   const form = useForm<z.infer<typeof newDebitNoteSchema>>({
     resolver: zodResolver(newDebitNoteSchema),
     defaultValues: {
-      number: "",
+      custom_sequence_number: "",
     }
   })
 
@@ -79,7 +79,7 @@ export default function Page() {
       form.reset({
         partner: debitNote?.partner?.id,
         currency: debitNote?.currency?.id,
-        number: scope === "purchases" ? debitNote?.number : undefined,
+        custom_sequence_number: scope === "purchases" ? debitNote?.custom_sequence_number : undefined,
         date: debitNote?.date && parseDate(debitNote.date),
         accounting_date: debitNote?.accounting_date && parseDate(debitNote.accounting_date),
         payment_method: debitNote?.payment_method?.id,

@@ -17,6 +17,8 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { newPaymentSchema } from "../../schemas/payments";
 import BillPopover from "./components/bill-popover";
+import { AdaptedBillList } from "@/lib/adapters/bills";
+import { useBillSelect } from "@/app/(private)/(commercial)/hooks/use-bill-select";
 
 export default function Actions() {
   const router = useRouter()
@@ -30,28 +32,16 @@ export default function Actions() {
 
   const billIds = searchParams.get("bill_ids")
 
-  const [searchBills] = useLazyListBillsQuery()
-
-  const handleSearchBill = async (query?: string) => {
-    try {
-      const bill = await searchBills({
-        number: query,
-        status: "posted",
-        type: "invoice"
-      }).unwrap()
-
-      return bill?.map(bill => ({
-        ...bill,
-        partner: bill.supplier,
-      }))
-        .filter(bill => bill.amount_residual > 0)
-        .slice(0, 10)
-    }
-    catch (error) {
-      console.error(error)
-      return []
-    }
-  }
+  const { fetcher: handleSearchBill } = useBillSelect({
+    map: (b) => ({
+      ...b,
+      partner: b.supplier,
+    }),
+    filter: (b) =>
+      b.amount_residual > 0 &&
+      b.type === "invoice" &&
+      b.status === "posted"
+  })
 
   const onSubmit = async (data: z.infer<typeof newPaymentSchema>) => {
     const { invoices, ...rest } = data
@@ -64,10 +54,6 @@ export default function Actions() {
         partner: rest.partner || invoices?.[0]?.supplier.id,
         journal: 6,
         invoices: invoices?.map((b) => b.id) || undefined,
-        withholdings: data?.withholdings?.map((id) => ({
-          tax_id: id,
-          account_id: id === 2 ? 10 : 1,
-        })),
       }).unwrap()
 
       if (response.status === "success") {
@@ -88,11 +74,12 @@ export default function Actions() {
             {!billIds ? (
               <Button
                 variant="secondary"
-                size="icon"
-                className="h-7 w-7 shadow-lg shadow-secondary"
+                size="sm"
+                className="h-7 shadow-lg shadow-secondary"
                 onClick={() => setOpenCommand(true)}
               >
                 <LinkIcon />
+                Asociar
               </Button>
             ) : (
               <BillPopover />
@@ -114,7 +101,7 @@ export default function Actions() {
           Guardar
         </Button>
       </div>
-      <AsyncCommand<Omit<BillList, "supplier"> & { partner: string }, number>
+      <AsyncCommand<Omit<AdaptedBillList, "supplier"> & { partner: string }, number>
         open={openCommand}
         onOpenChange={setOpenCommand}
         label="Facturas"

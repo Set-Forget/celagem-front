@@ -20,7 +20,7 @@ export default function Page() {
 
   const { data: purchaseOrders, isLoading } = useListPurchaseOrdersQuery({
     //status: status ? JSON.parse(status).join(',') : undefined,
-    number: search.field === "number" ? search?.query : undefined,
+    //number: search.field === "number" ? search?.query : undefined,
     supplier: search.field === "supplier" ? search?.query : undefined,
     //created_at_start: date_range?.field === "created_at" ? date_range.from : undefined,
     //created_at_end: date_range?.field === "created_at" ? date_range.to : undefined,
@@ -47,8 +47,9 @@ export default function Page() {
       </Header>
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
         <DataTable
-          data={purchaseOrders?.data
+          data={purchaseOrders
             ?.toSorted((a, b) => b.id - a.id)
+            .filter(item => search.field === "number" ? item?.number?.toString().includes(search.query) : true)
             .filter(purchaseOrder => status.length === 0 || status.includes(purchaseOrder.status))
             .filter((po) => {
               if (!requiredDateStart && !requiredDateEnd) return true;

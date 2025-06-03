@@ -5,6 +5,7 @@ export function getDebitNoteAdapter(data: DebitNoteDetail) {
   return {
     ...data,
     status: getDebitNoteStatus(data),
+    number: data.sequence_id,
   }
 }
 

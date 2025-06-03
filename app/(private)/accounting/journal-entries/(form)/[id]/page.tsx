@@ -45,7 +45,7 @@ export default function Page() {
     <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isJournalEntryLoading ? "blur-[4px]" : "blur-none")}>
-          {isJournalEntryLoading ? placeholder(20, true) : journalEntry?.number}
+          {isJournalEntryLoading ? placeholder(20, true) : journalEntry?.sequence_id}
         </h1>
       }>
         <div className="mr-auto">

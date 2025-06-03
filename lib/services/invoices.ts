@@ -1,7 +1,7 @@
 import { InvoiceDetail, InvoiceDetailResponse, InvoiceListResponse, InvoiceStatus, InvoiceTypes, NewInvoice, NewInvoiceResponse } from '@/app/(private)/(commercial)/sales/invoices/schemas/invoices';
 import { erpApi } from '@/lib/apis/erp-api';
 import { Overwrite } from '../utils';
-import { AdaptedInvoiceList, getInvoiceAdapter, listInvoicesAdapter } from '../adapters/invoices';
+import { AdaptedInvoiceDetail, AdaptedInvoiceList, getInvoiceAdapter, listInvoicesAdapter } from '../adapters/invoices';
 
 export const invoicesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -23,12 +23,12 @@ export const invoicesApi = erpApi.injectEndpoints({
         transformResponse: (response: InvoiceListResponse) => response.data.map(listInvoicesAdapter),
         providesTags: ['Invoice'],
       }),
-    getInvoice: builder.query<InvoiceDetail, string | number>({
+    getInvoice: builder.query<AdaptedInvoiceDetail, string | number>({
       query: (id) => `sales_invoices/${id}`,
       transformResponse: (response: InvoiceDetailResponse) => getInvoiceAdapter(response.data),
       providesTags: ['Invoice'],
     }),
-    createInvoice: builder.mutation<NewInvoiceResponse, Overwrite<NewInvoice, { accounting_date: string, payment_method: number, items: { product_id: number, taxes_id?: number[], quantity: number }[] }>>({
+    createInvoice: builder.mutation<NewInvoiceResponse, Overwrite<NewInvoice, { accounting_date: string, date: string, payment_method: number, items: { product_id: number, taxes_id?: number[], quantity: number }[] }>>({
       query: (invoice) => ({
         url: '/sales_invoices',
         method: 'POST',

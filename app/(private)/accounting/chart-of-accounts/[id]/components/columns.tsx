@@ -17,15 +17,9 @@ const typeToRoute: Record<string, (id: number) => string> = {
   out_credit_note: routes.salesCreditNote.detail,
   in_debit_note: routes.purchaseDebitNote.detail,
   out_debit_note: routes.salesDebitNote.detail,
-}
-
-const typeToPartner: Record<string, (id: number) => string> = {
-  in_invoice: routes.suppliers.detail,
-  out_invoice: routes.customers.detail,
-  in_credit_note: routes.suppliers.detail,
-  out_credit_note: routes.customers.detail,
-  in_debit_note: routes.suppliers.detail,
-  out_debit_note: routes.customers.detail,
+  entry: routes.journalEntries.detail,
+  payment: routes.journalEntries.detail,
+  charge: routes.journalEntries.detail,
 }
 
 export const columns: ColumnDef<AccountMoveLine>[] = [
@@ -44,22 +38,6 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
     },
   },
   {
-    accessorKey: "partner",
-    header: "Entidad",
-    cell: ({ row }) => <Button
-      variant="link"
-      className="p-0 h-auto text-foreground"
-      asChild
-    >
-      <Link
-        href={typeToPartner[row.original.type]?.(row.original.partner?.id) || ""}
-        target="_blank"
-      >
-        {row.original.partner?.name}
-      </Link>
-    </Button>,
-  },
-  {
     accessorKey: "move_id",
     header: "Comprobante",
     cell: ({ row }) => {
@@ -71,7 +49,7 @@ export const columns: ColumnDef<AccountMoveLine>[] = [
         <Link href={typeToRoute[row.original.type]?.(row.original.move_id?.id) || ""}
           target="_blank"
         >
-          {row.original.move_id?.name}
+          {row.original.move_id?.sequence_id}
         </Link>
       </Button>
     }

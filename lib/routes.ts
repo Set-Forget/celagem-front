@@ -13,8 +13,16 @@ const customers = "/sales/customers";
 const payments = "/banking/payments";
 const receipts = "/banking/receipts";
 const purchaseReceipts = "/purchases/purchase-receipts";
+const journalEntries = "/accounting/journal-entries";
 
 export const routes = {
+  journalEntries: {
+    list: journalEntries,
+    detail: (id: number | string) => `${journalEntries}/${id}`,
+    new: `${journalEntries}/new`,
+    edit: (id: number | string) => `${journalEntries}/${id}/edit`,
+  },
+
   purchaseReceipts: {
     list: purchaseReceipts,
     detail: (id: number | string) => `${purchaseReceipts}/${id}`,

@@ -1,14 +1,14 @@
 import RenderFields from "@/components/render-fields";
 import { Button } from "@/components/ui/button";
+import { AdaptedPurchaseOrderDetail } from "@/lib/adapters/purchase-order";
+import { routes } from "@/lib/routes";
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
 import { FieldDefinition } from "@/lib/utils";
 import { FileX2 } from "lucide-react";
-import { useParams } from "next/navigation";
-import { PurchaseOrderDetail } from "../../../schemas/purchase-orders";
 import Link from "next/link";
-import { routes } from "@/lib/routes";
+import { useParams } from "next/navigation";
 
-const fields: FieldDefinition<PurchaseOrderDetail>[] = [
+const fields: FieldDefinition<AdaptedPurchaseOrderDetail>[] = [
   {
     label: "Solicitud de pedido",
     placeholderLength: 14,
@@ -23,7 +23,7 @@ const fields: FieldDefinition<PurchaseOrderDetail>[] = [
           href={routes.purchaseRequest.detail(p.purchase_request?.id)}
           target="_blank"
         >
-          {p.purchase_request?.name}
+          {p.purchase_request?.sequence_id}
         </Link>
       </Button>
   },
@@ -43,7 +43,7 @@ const fields: FieldDefinition<PurchaseOrderDetail>[] = [
             href={routes.bill.detail(invoice.id)}
             target="_blank"
           >
-            {invoice.name}
+            {invoice.sequence_id}
           </Link>
         </Button>
       </div>
@@ -65,7 +65,7 @@ const fields: FieldDefinition<PurchaseOrderDetail>[] = [
             href={routes.reception.detail(reception.id)}
             target="_blank"
           >
-            {reception.name}
+            {reception.sequence_id}
           </Link>
         </Button>
       </div>

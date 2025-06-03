@@ -1,32 +1,32 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
-import Link from "next/link"
-import { useSearchParams, useRouter } from "next/navigation"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import {
-  LinkIcon,
   Building2,
   Calendar,
   DollarSign,
+  FileText,
+  LinkIcon,
   Package,
   Unlink,
-  FileText,
 } from "lucide-react"
+import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useMemo, useState } from "react"
 
-import { Button } from "@/components/ui/button"
+import { invoiceStatus } from "@/app/(private)/(commercial)/sales/invoices/utils"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
+import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices"
+import { useLazyGetInvoiceQuery } from "@/lib/services/invoices"
 import { cn } from "@/lib/utils"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newChargeSchema } from "../../../schemas/receipts"
-import { useLazyGetInvoiceQuery } from "@/lib/services/invoices"
-import { InvoiceDetail } from "@/app/(private)/(commercial)/sales/invoices/schemas/invoices"
 import { defaultValues } from "../../default-values"
-import { invoiceStatus } from "@/app/(private)/(commercial)/sales/invoices/utils"
 
 export default function InvoicePopover() {
   const params = useSearchParams()
@@ -39,7 +39,7 @@ export default function InvoicePopover() {
   )
 
   const [getInvoice] = useLazyGetInvoiceQuery()
-  const [invoices, setInvoices] = useState<InvoiceDetail[]>([])
+  const [invoices, setInvoices] = useState<AdaptedInvoiceDetail[]>([])
   const [isLoadingInvoices, setLoadingInvoices] = useState(false)
 
   useEffect(() => {
@@ -70,12 +70,13 @@ export default function InvoicePopover() {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          size="icon"
+          size="sm"
           variant="secondary"
           loading={isLoadingInvoices}
-          className="h-7 w-7 bg-indigo-50 text-indigo-600 shadow-lg shadow-indigo-50 hover:bg-indigo-100"
+          className="h-7 bg-indigo-50 text-indigo-600 shadow-lg shadow-indigo-50 hover:bg-indigo-100 hover:shadow-indigo-100 transition-all"
         >
           <LinkIcon className={cn(isLoadingInvoices && "hidden")} />
+          {invoices.length} {invoices.length === 1 ? "Factura" : "Facturas"}
         </Button>
       </PopoverTrigger>
 

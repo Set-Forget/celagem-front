@@ -26,7 +26,8 @@ export const creditNoteLineSchema = z.object({
 
 export const creditNoteDetailSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string(),
+  custom_sequence_number: z.string(),
   partner: z.object({
     id: z.number(),
     name: z.string(),
@@ -65,7 +66,7 @@ export const newCreditNoteSchema = z.object({
   date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de emisión es requerida" }),
-  number: z.string().optional(),
+  custom_sequence_number: z.string().optional(),
   accounting_date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de contabilización es requerida" }),
@@ -75,10 +76,10 @@ export const newCreditNoteSchema = z.object({
   associated_invoice: z.number().optional(),
   items: z.array(newCreditNoteLineSchema).min(1, { message: "Debe agregar al menos un item" }),
 }).superRefine((data, ctx) => {
-  if (data.move_type === 'in_refund' && (!data.number || data.number.trim() === '')) {
+  if (data.move_type === 'in_refund' && (!data.custom_sequence_number || data.custom_sequence_number.trim() === '')) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      path: ['number'],
+      path: ['custom_sequence_number'],
       message: 'El número es obligatorio para notas de crédito entrantes',
     });
   }
@@ -104,6 +105,7 @@ export type CreditNoteDetailResponse = z.infer<typeof creditNoteDetailResponseSc
 export type CreditNoteItem = z.infer<typeof creditNoteLineSchema>;
 
 export type NewCreditNote = z.infer<typeof newCreditNoteSchema>;
+export type NewCreditNoteLine = z.infer<typeof newCreditNoteLineSchema>;
 export type NewCreditNoteResponse = z.infer<typeof newCreditNoteResponseSchema>;
 
 export type CreditNoteStatus = z.infer<typeof creditNoteStatus>;

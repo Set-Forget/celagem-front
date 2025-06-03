@@ -7,8 +7,9 @@ import { FileX2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { InvoiceDetail } from "../../../schemas/invoices";
+import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices";
 
-const fields: FieldDefinition<InvoiceDetail>[] = [
+const fields: FieldDefinition<AdaptedInvoiceDetail>[] = [
   {
     label: "Notas de crédito",
     placeholderLength: 14,

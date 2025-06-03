@@ -17,8 +17,7 @@ import { useParams, useSearchParams } from "next/navigation"
 import { useMemo } from "react"
 import { useFormContext } from "react-hook-form"
 import { v4 as uuidv4 } from 'uuid'
-import { z } from "zod"
-import { newCreditNoteSchema } from "../../schemas/credit-notes"
+import { NewCreditNote, NewCreditNoteLine } from "../../schemas/credit-notes"
 import { columns } from "./columns"
 
 export default function GeneralForm() {
@@ -29,7 +28,7 @@ export default function GeneralForm() {
   const invoiceId = params.get("invoiceId");
   const billId = params.get("billId");
 
-  const { control, formState, setValue, resetField } = useFormContext<z.infer<typeof newCreditNoteSchema>>()
+  const { control, formState, setValue, resetField } = useFormContext<NewCreditNote>()
 
   const [getSupplier] = useLazyGetSupplierQuery()
   const [getCustomer] = useLazyGetCustomerQuery()
@@ -56,7 +55,7 @@ export default function GeneralForm() {
   const isDocumentLoading = isInvoiceLoading || isBillLoading
 
   const apply = useMemo(
-    () => createApply<z.infer<typeof newCreditNoteSchema>>(setValue, resetField),
+    () => createApply<NewCreditNote>(setValue, resetField),
     [setValue, resetField]
   );
 
@@ -66,7 +65,7 @@ export default function GeneralForm() {
         <>
           <FormField
             control={control}
-            name="number"
+            name="custom_sequence_number"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
                 <FormLabel className="w-fit">
@@ -78,7 +77,7 @@ export default function GeneralForm() {
                     placeholder="Número de nota de crédito"
                   />
                 </FormControl>
-                {formState.errors.number ? (
+                {formState.errors.custom_sequence_number ? (
                   <FormMessage />
                 ) :
                   <FormDescription>
@@ -216,23 +215,25 @@ export default function GeneralForm() {
           <FormItem className="flex flex-col w-full col-span-2">
             <FormLabel className="w-fit">Items</FormLabel>
             <FormControl>
-              <FormTable<z.infer<typeof newCreditNoteSchema>>
+              <FormTable<NewCreditNote>
+                name="items"
+                className="col-span-2"
                 columns={columns}
+                loading={isDocumentLoading}
                 footer={({ append }) =>
-                  <FormTableFooter<z.infer<typeof newCreditNoteSchema>>
+                  <FormTableFooter<NewCreditNote, NewCreditNoteLine>
                     control={control}
                     onAddRow={() => append({ id: uuidv4(), quantity: 1, taxes_id: [] })}
-                    itemsPath="items"
-                    currencyPath="currency"
-                    unitPriceKey="price_unit"
-                    qtyKey="quantity"
-                    taxesKey="taxes_id"
                     colSpan={columns.length}
+                    selectors={{
+                      items: (values) => values.items,
+                      currencyId: (values) => values.currency,
+                      unitPrice: (items) => items.price_unit,
+                      quantity: (items) => items.quantity,
+                      taxes: (items) => items.taxes_id ?? [],
+                    }}
                   />
                 }
-                name="items"
-                loading={isDocumentLoading}
-                className="col-span-2"
               />
             </FormControl>
             {formState.errors.items?.message && (

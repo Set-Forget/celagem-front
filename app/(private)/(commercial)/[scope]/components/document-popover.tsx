@@ -47,11 +47,12 @@ export default function DocumentPopover() {
       <PopoverTrigger asChild>
         <Button
           variant="secondary"
-          size="icon"
+          size="sm"
           loading={isDocumentLoading}
-          className="h-7 w-7 bg-indigo-50 text-indigo-600 shadow-lg shadow-indigo-50 hover:bg-indigo-100 hover:shadow-indigo-100"
+          className="h-7 bg-indigo-50 text-indigo-600 shadow-lg shadow-indigo-50 hover:bg-indigo-100 hover:shadow-indigo-100 transition-all"
         >
           <LinkIcon className={cn(isDocumentLoading && "hidden")} />
+          {document?.number}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0 overflow-hidden" align="start">

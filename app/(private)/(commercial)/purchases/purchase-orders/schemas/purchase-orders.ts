@@ -2,6 +2,7 @@ import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
 export const purchaseOrderState = z.enum(["draft", "to approve", "purchase", "done", "cancel"])
+export const purchaseOrderReceiptStatus = z.enum(["full", "partial", "pending", "cancel"])
 
 const newPurchaseOrderLineSchema = z.object({
   product_id: z.number({ required_error: "El producto es requerido" }),
@@ -37,11 +38,12 @@ export const newPurchaseOrderSchema = newPurchaseOrderGeneralSchema
 
 export const purchaseOrderListSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string(),
   supplier: z.object({
     id: z.number(),
     name: z.string(),
   }),
+  receipt_status: purchaseOrderReceiptStatus,
   status: purchaseOrderState,
   price: z.number(),
   required_date: z.string(),
@@ -78,7 +80,7 @@ export const purchaseOrderLineSchema = z.object({
 
 export const purchaseOrderDetailSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string(),
   supplier: z.object({
     id: z.number(),
     name: z.string(),
@@ -86,6 +88,7 @@ export const purchaseOrderDetailSchema = z.object({
     email: z.string(),
     address: z.string(),
   }),
+  receipt_status: purchaseOrderReceiptStatus,
   status: purchaseOrderState,
   price: z.number(),
   required_date: z.string(),
@@ -112,10 +115,10 @@ export const purchaseOrderDetailSchema = z.object({
   created_at: z.string(),
   purchase_request: z.object({
     id: z.number(),
-    name: z.string(),
+    sequence_id: z.string(),
   }),
-  invoices: z.array(z.object({ id: z.number(), name: z.string() })),
-  receptions: z.array(z.object({ id: z.number(), name: z.string() })),
+  invoices: z.array(z.object({ id: z.number(), sequence_id: z.string() })),
+  receptions: z.array(z.object({ id: z.number(), sequence_id: z.string() })),
   items: z.array(purchaseOrderLineSchema),
 })
 
@@ -140,12 +143,14 @@ export const newPurchaseOrderResponseSchema = z.object({
 export type PurchaseOrderItem = z.infer<typeof purchaseOrderLineSchema>;
 
 export type PurchaseOrderList = z.infer<typeof purchaseOrderListSchema>;
+export type PurchaseOrderLine = z.infer<typeof purchaseOrderLineSchema>;
 export type PurchaseOrderListResponse = z.infer<typeof purchaseOrderListResponseSchema>;
 
 export type PurchaseOrderDetail = z.infer<typeof purchaseOrderDetailSchema>;
 export type PurchaseOrderDetailResponse = z.infer<typeof purchaseOrderDetailResponseSchema>;
 
 export type NewPurchaseOrder = z.infer<typeof newPurchaseOrderSchema>;
+export type NewPurchaseOrderLine = z.infer<typeof newPurchaseOrderLineSchema>;
 
 export type NewPurchaseOrderResponse = z.infer<typeof newPurchaseOrderResponseSchema>;
 export type NewPurchaseOrderItem = z.infer<typeof newPurchaseOrderLineSchema>;

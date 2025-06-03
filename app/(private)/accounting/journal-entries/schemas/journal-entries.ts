@@ -5,7 +5,7 @@ const journalEntryStatus = z.enum(["draft", "posted", "cancelled"]);
 
 export const journalEntryListSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string(),
   status: journalEntryStatus,
   date: z.string(),
   amount_total: z.number(),
@@ -36,7 +36,6 @@ export const newJournalEntryItemSchema = z.object({
 );
 
 export const newJournalEntrySchema = z.object({
-  number: z.string().optional(), // @ Debería generarse automáticamente.
   date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha del asiento es requerida" }),
@@ -78,7 +77,7 @@ export const journalEntryLineSchema = z.object({
 
 export const journalEntryDetailSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string(),
   status: journalEntryStatus,
   date: z.string(),
   currency: z.object({

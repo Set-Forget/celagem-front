@@ -1,6 +1,7 @@
 import { InvoiceDetail } from "@/app/(private)/(commercial)/sales/invoices/schemas/invoices";
 import RenderFields from "@/components/render-fields";
 import { Button } from "@/components/ui/button";
+import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices";
 import { routes } from "@/lib/routes";
 import { useGetDebitNoteQuery } from "@/lib/services/debit-notes";
 import { useGetInvoiceQuery } from "@/lib/services/invoices";
@@ -13,7 +14,7 @@ import { useParams } from "next/navigation";
 export default function InvoiceTab() {
   const { id, scope } = useParams<{ id: string, scope: "purchases" | "sales" }>()
 
-  const fields: FieldDefinition<InvoiceDetail>[] = [
+  const fields: FieldDefinition<AdaptedInvoiceDetail>[] = [
     {
       label: "Número",
       placeholderLength: 13,

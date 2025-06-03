@@ -13,7 +13,7 @@ export const columns: ColumnDef<CreditNoteItem & { currency: string }>[] = [
     accessorKey: "product_name",
     header: "Producto / Servicio",
     cell: ({ row }) => {
-      return <span className="font-medium">
+      return <span className="font-medium text-nowrap">
         {row.getValue("product_name")}
       </span>
     },

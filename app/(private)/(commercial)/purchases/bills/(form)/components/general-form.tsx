@@ -1,38 +1,26 @@
+import { FormTableFooter } from "@/app/(private)/(commercial)/components/form-table-footer"
+import { useSupplierSelect } from "@/app/(private)/(commercial)/hooks/use-supplier-select"
 import { AsyncSelect } from "@/components/async-select"
 import DatePicker from "@/components/date-picker"
 import FormTable from "@/components/form-table"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useLazyGetSupplierQuery, useLazyListSuppliersQuery } from "@/lib/services/suppliers"
+import { useLazyGetSupplierQuery } from "@/lib/services/suppliers"
 import { createApply } from "@/lib/utils"
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { useMemo } from "react"
 import { useFormContext } from "react-hook-form"
+import { v4 as uuidv4 } from "uuid"
 import { z } from "zod"
-import { newBillSchema } from "../../schemas/bills"
+import { NewBill, NewBillLine, newBillSchema } from "../../schemas/bills"
 import { columns } from "./columns"
-import TableFooter from "./table-footer"
 
 export default function GeneralForm() {
   const { control, formState, setValue, resetField } = useFormContext<z.infer<typeof newBillSchema>>()
 
-  const [searchSuppliers] = useLazyListSuppliersQuery()
   const [getSupplier] = useLazyGetSupplierQuery()
 
-  const handleSearchSupplier = async (query?: string) => {
-    try {
-      const response = await searchSuppliers({ name: query }).unwrap()
-      return response.data?.map(supplier => ({
-        id: supplier.id,
-        name: supplier.name
-      }))
-        .slice(0, 10)
-    }
-    catch (error) {
-      console.error(error)
-      return []
-    }
-  }
+  const { fetcher: handleSearchSupplier } = useSupplierSelect()
 
   const apply = useMemo(
     () => createApply<z.infer<typeof newBillSchema>>(setValue, resetField),
@@ -43,7 +31,7 @@ export default function GeneralForm() {
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
       <FormField
         control={control}
-        name="number"
+        name="custom_sequence_number"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
             <FormLabel className="w-fit">Número de factura</FormLabel>
@@ -53,7 +41,7 @@ export default function GeneralForm() {
                 placeholder="Número de factura"
               />
             </FormControl>
-            {formState.errors.number ? (
+            {formState.errors.custom_sequence_number ? (
               <FormMessage />
             ) :
               <FormDescription>
@@ -153,10 +141,31 @@ export default function GeneralForm() {
             <FormLabel className="w-fit">Items</FormLabel>
             <FormControl>
               <FormTable<z.infer<typeof newBillSchema>>
-                columns={columns}
-                footer={({ append }) => <TableFooter append={append} />}
                 name="items"
                 className="col-span-2"
+                columns={columns}
+                footer={({ append }) =>
+                  <FormTableFooter<NewBill, NewBillLine>
+                    control={control}
+                    onAddRow={() => append({
+                      id: uuidv4(),
+                      product_id: null,
+                      quantity: 1,
+                      price_unit: 0,
+                      account_id: null,
+                      cost_center: null,
+                      taxes_id: []
+                    })}
+                    colSpan={columns.length}
+                    selectors={{
+                      items: (values) => values.items,
+                      currencyId: (values) => values.currency,
+                      unitPrice: (item) => item.price_unit,
+                      quantity: (item) => item.quantity,
+                      taxes: (item) => item.taxes_id || [],
+                    }}
+                  />
+                }
               />
             </FormControl>
             {formState.errors.items?.message && (

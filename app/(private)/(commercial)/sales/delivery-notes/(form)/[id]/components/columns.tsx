@@ -11,7 +11,7 @@ export const columns: ColumnDef<DeliveryNoteItem>[] = [
 		header: "Producto / Servicio",
 		size: 300,
 		cell: ({ row }) => (
-			<div className="font-medium">
+			<div className="font-medium text-nowrap">
 				{row.getValue("display_name")}
 			</div>
 		),

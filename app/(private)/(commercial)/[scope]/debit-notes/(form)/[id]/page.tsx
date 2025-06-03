@@ -5,6 +5,7 @@ import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
 import RenderFields from "@/components/render-fields"
 import { Badge } from "@/components/ui/badge"
+import { AdaptedDebitNoteDetail } from "@/lib/adapters/debit-notes"
 import { useGetDebitNoteQuery } from "@/lib/services/debit-notes"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
@@ -12,15 +13,19 @@ import { es } from "date-fns/locale"
 import { Box, Receipt } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
-import { DebitNoteDetail } from "../../schemas/debit-notes"
+import PartnerTab from "../../../credit-notes/(form)/[id]/components/partner-tab"
 import { debitNoteStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
 import InvoiceTab from "./components/invoice-tab"
 import TableFooter from "./components/table-footer"
-import PartnerTab from "../../../credit-notes/(form)/[id]/components/partner-tab"
 
-const fields: FieldDefinition<DebitNoteDetail>[] = [
+const fields: FieldDefinition<AdaptedDebitNoteDetail>[] = [
+  {
+    label: "Número",
+    placeholderLength: 14,
+    render: (p) => p.custom_sequence_number,
+  },
   {
     label: "Fecha de emisión",
     placeholderLength: 14,

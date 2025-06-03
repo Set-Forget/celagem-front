@@ -6,8 +6,9 @@ import { PurchaseOrderDetail } from "../../../schemas/purchase-orders";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { routes } from "@/lib/routes";
+import { AdaptedPurchaseOrderDetail } from "@/lib/adapters/purchase-order";
 
-const fields: FieldDefinition<PurchaseOrderDetail>[] = [
+const fields: FieldDefinition<AdaptedPurchaseOrderDetail>[] = [
   {
     label: "Proveedor",
     placeholderLength: 14,

@@ -32,7 +32,7 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "search",
     label: "Buscar",
     options: [
-      { label: "Titulo", value: "name" },
+      { label: "Número", value: "name" },
     ],
     key: "search",
     icon: Search

@@ -1,9 +1,11 @@
+import { usePurchaseOrderSelect } from "@/app/(private)/(commercial)/hooks/use-purchase-order-select";
 import { AsyncCommand } from "@/components/async-command";
 import CustomSonner from "@/components/custom-sonner";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useCreateBillMutation } from "@/lib/services/bills";
-import { useGetPurchaseOrderQuery, useLazyGetPurchaseOrderQuery, useLazyListPurchaseOrdersQuery } from "@/lib/services/purchase-orders";
+import { useGetPurchaseOrderQuery, useLazyGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
+import { setDialogsState } from "@/lib/store/dialogs-store";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -15,7 +17,6 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { newBillSchema } from "../../schemas/bills";
 import PurchaseOrderPopover from "./components/purchase-order-popover";
-import { setDialogsState } from "@/lib/store/dialogs-store";
 
 export default function Actions() {
   const router = useRouter()
@@ -29,32 +30,20 @@ export default function Actions() {
 
   const purchaseOrderId = searchParams.get("purchase_order_id")
 
-  const [searchPurchaseOrder] = useLazyListPurchaseOrdersQuery()
   const [getPurchaseOrder] = useLazyGetPurchaseOrderQuery()
 
   const { data: purchaseOrder } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
 
-  const handleSearchPurchaseOrder = async (query?: string) => {
-    try {
-      const response = await searchPurchaseOrder({
-        number: query,
-        status: "purchase"
-      }).unwrap()
-
-      return response.data?.map(purchaseOrder => ({
-        id: purchaseOrder.id,
-        number: purchaseOrder.number,
-        supplier: purchaseOrder.supplier.name,
-        created_by: purchaseOrder.created_by,
-        required_date: purchaseOrder.required_date,
-      }))
-        .slice(0, 10)
-    }
-    catch (error) {
-      console.error(error)
-      return []
-    }
-  }
+  const { fetcher: handleSearchPurchaseOrder } = usePurchaseOrderSelect({
+    map: (purchaseOrder) => ({
+      id: purchaseOrder.id,
+      number: purchaseOrder.number,
+      supplier: purchaseOrder.supplier.name,
+      created_by: purchaseOrder.created_by,
+      required_date: purchaseOrder.required_date,
+    }),
+    filter: (purchaseOrder) => purchaseOrder.status === "purchase"
+  })
 
   const onSubmit = async (data: z.infer<typeof newBillSchema>) => {
     try {
@@ -87,12 +76,13 @@ export default function Actions() {
           <TooltipTrigger asChild>
             {!purchaseOrderId ? (
               <Button
+                size="sm"
                 variant="secondary"
-                size="icon"
-                className="h-7 w-7 shadow-lg shadow-secondary"
+                className="h-7 shadow-lg shadow-secondary"
                 onClick={() => setOpenCommand(true)}
               >
                 <LinkIcon />
+                Asociar
               </Button>
             ) : (
               <PurchaseOrderPopover />
@@ -117,7 +107,7 @@ export default function Actions() {
       <AsyncCommand<{ id: number, number: string, supplier: string, created_by: string, required_date: string }, number>
         open={openCommand}
         onOpenChange={setOpenCommand}
-        label="Buscar orden de compra"
+        label="Ordenes de compra"
         fetcher={handleSearchPurchaseOrder}
         renderOption={(r) => (
           <div className="flex flex-col gap-1">

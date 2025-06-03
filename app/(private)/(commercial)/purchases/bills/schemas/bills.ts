@@ -9,14 +9,14 @@ export const newBillLineSchema = z.object({
   quantity: z.number(),
   price_unit: z.number({ required_error: "El precio unitario es requerido" }),
   account_id: z.number({ required_error: "La cuenta contable es requerida" }),
-  cost_center: z.number().optional(),
+  cost_center: z.number().nullable().optional(),
   taxes_id: z.array(z.number()).optional(),
   purchase_line_id: z.number().optional(),
 });
 
 export const newBillGeneralSchema = z.object({
   supplier: z.number({ required_error: "El proveedor es requerido" }),
-  number: z.string({ required_error: "El número de factura es requerido" }).min(1, { message: "El número de factura es requerido" }),
+  custom_sequence_number: z.string({ required_error: "El número de factura es requerido" }).min(1, { message: "El número de factura es requerido" }),
   date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de factura es requerida" }),
@@ -80,8 +80,9 @@ export const billLineSchema = z.object({
 
 export const billListSchema = z.object({
   id: z.number(),
-  number: z.string(),
   supplier: z.string(),
+  sequence_id: z.string(),
+  custom_sequence_number: z.string(),
   status: billStatus,
   date: z.string(),
   due_date: z.string(),
@@ -111,7 +112,8 @@ export const billListSchema = z.object({
 
 export const billDetailSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string(),
+  custom_sequence_number: z.string(),
   supplier: z.object({
     id: z.number(),
     name: z.string(),

@@ -3,8 +3,9 @@ import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
 import { FieldDefinition } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { PurchaseOrderDetail } from "../../../schemas/purchase-orders";
+import { AdaptedPurchaseOrderDetail } from "@/lib/adapters/purchase-order";
 
-const fields: FieldDefinition<PurchaseOrderDetail>[] = [
+const fields: FieldDefinition<AdaptedPurchaseOrderDetail>[] = [
   {
     label: "Notas",
     placeholderLength: 30,

@@ -38,6 +38,7 @@ export const columns: FormTableColumn<z.infer<typeof newDebitNoteSchema>>[] = [
   {
     header: "Producto / Servicio",
     width: 300,
+    headerClassName: "text-nowrap",
     cellClassName: "pr-0",
     renderCell: (control, index) => <MaterialsCell control={control} index={index} />,
   },

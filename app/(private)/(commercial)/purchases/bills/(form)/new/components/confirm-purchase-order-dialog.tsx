@@ -1,10 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useGetAppointmentQuery } from "@/lib/services/appointments";
-import { closeDialogs, DialogsState, dialogsStateObservable, setDialogsState as setMasterDialogsState } from "@/lib/store/dialogs-store";
-import { cn, placeholder } from "@/lib/utils";
-import { Pencil } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { useEffect, useState } from "react";
 
 export default function ConfirmPurchaseOrderDialog() {

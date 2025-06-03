@@ -17,6 +17,8 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { newChargeSchema } from "../../schemas/receipts";
 import InvoicePopover from "./components/invoice-popover";
+import { AdaptedInvoiceList } from "@/lib/adapters/invoices";
+import { useInvoiceSelect } from "@/app/(private)/(commercial)/hooks/use-invoice-select";
 
 export default function Actions() {
   const router = useRouter()
@@ -30,28 +32,16 @@ export default function Actions() {
 
   const invoiceIds = searchParams.get("invoice_ids")
 
-  const [searchInvoices] = useLazyListInvoicesQuery()
-
-  const handleSearchInvoice = async (query?: string) => {
-    try {
-      const invoice = await searchInvoices({
-        number: query,
-        status: "posted",
-        type: "invoice"
-      }).unwrap()
-
-      return invoice?.map(invoice => ({
-        ...invoice,
-        partner: invoice.customer,
-      }))
-        .filter(invoice => invoice.amount_residual > 0)
-        .slice(0, 10)
-    }
-    catch (error) {
-      console.error(error)
-      return []
-    }
-  }
+  const { fetcher: handleSearchInvoice } = useInvoiceSelect({
+    map: (i) => ({
+      ...i,
+      partner: i.customer,
+    }),
+    filter: (i) =>
+      i.amount_residual > 0 &&
+      i.type === "invoice" &&
+      i.status === "posted"
+  })
 
   const onSubmit = async (data: z.infer<typeof newChargeSchema>) => {
     const { invoices, ...rest } = data
@@ -64,10 +54,6 @@ export default function Actions() {
         partner: rest.partner || invoices?.[0]?.customer.id,
         journal: 6,
         invoices: invoices?.map((b) => b.id) || undefined,
-        withholdings: data?.withholdings?.map((id) => ({
-          tax_id: id,
-          account_id: id === 1 ? 22 : 1,
-        })),
       }).unwrap()
 
       if (response.status === "success") {
@@ -88,11 +74,12 @@ export default function Actions() {
             {!invoiceIds ? (
               <Button
                 variant="secondary"
-                size="icon"
-                className="h-7 w-7 shadow-lg shadow-secondary"
+                size="sm"
+                className="h-7 shadow-lg shadow-secondary"
                 onClick={() => setOpenCommand(true)}
               >
                 <LinkIcon />
+                Asociar
               </Button>
             ) : (
               <InvoicePopover />
@@ -114,7 +101,7 @@ export default function Actions() {
           Guardar
         </Button>
       </div>
-      <AsyncCommand<Omit<InvoiceList, "customer"> & { partner: string }, number>
+      <AsyncCommand<Omit<AdaptedInvoiceList, "customer"> & { partner: string }, number>
         open={openCommand}
         onOpenChange={setOpenCommand}
         label="Facturas"

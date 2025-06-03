@@ -4,6 +4,7 @@ import type { InvoiceDetail } from "@/app/(private)/(commercial)/sales/invoices/
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { toWords } from "../utils"
+import { AdaptedInvoiceDetail } from "../adapters/invoices"
 
 const styles = StyleSheet.create({
   page: {
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const InvoicePDF: React.FC<{ data: InvoiceDetail }> = ({ data }) => {
+const InvoicePDF: React.FC<{ data: AdaptedInvoiceDetail }> = ({ data }) => {
   const formattedDate = format(data.date, "PP", { locale: es })
   const formattedDueDate = format(data.due_date, "PP", { locale: es })
   const formattedCreatedDate = format(data.created_at, "PP", { locale: es })

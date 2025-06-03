@@ -1,17 +1,18 @@
 'use client'
 
 import { DataTable } from "@/components/data-table"
+import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
+import RenderFields from "@/components/render-fields"
 import { Badge } from "@/components/ui/badge"
+import { AdaptedPurchaseOrderDetail } from "@/lib/adapters/purchase-order"
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
-import DataTabs from "@/components/data-tabs"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { Box, Paperclip, Sticker, Wallet } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
-import { PurchaseOrderDetail } from "../../schemas/purchase-orders"
 import { purchaseOrderStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
@@ -20,9 +21,8 @@ import FiscalTab from "./components/fiscal"
 import NotesTab from "./components/notes-tab"
 import SupplierTab from "./components/supplier-tab"
 import TableFooter from "./components/table-footer"
-import RenderFields from "@/components/render-fields"
 
-const fields: FieldDefinition<PurchaseOrderDetail>[] = [
+const fields: FieldDefinition<AdaptedPurchaseOrderDetail>[] = [
   {
     label: "Solicitado por",
     placeholderLength: 14,

@@ -13,7 +13,7 @@ export const columns: ColumnDef<PurchaseOrderItem & { currency: string }>[] = [
     accessorKey: "product_name",
     header: "Producto / Servicio",
     cell: ({ row }) => (
-      <span className="font-medium">
+      <span className="font-medium text-nowrap">
         {row.getValue("product_name")}
       </span>
     ),

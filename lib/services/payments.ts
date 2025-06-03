@@ -18,7 +18,7 @@ export const paymentsApi = erpApi.injectEndpoints({
       transformResponse: (response: PaymentDetailResponse) => response.data,
       providesTags: ['Payment'],
     }),
-    createPayment: builder.mutation<NewPaymentResponse, Overwrite<NewPayment, { date: string, invoices?: number[], withholdings?: { tax_id: number, account_id: number }[] }>>({
+    createPayment: builder.mutation<NewPaymentResponse, Overwrite<NewPayment, { date: string, invoices?: number[] }>>({
       query: (data) => ({
         url: '/payments',
         method: 'POST',

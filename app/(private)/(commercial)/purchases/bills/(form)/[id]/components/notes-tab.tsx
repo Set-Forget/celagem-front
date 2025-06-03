@@ -4,8 +4,9 @@ import { useParams } from "next/navigation";
 import { BillDetail } from "../../../schemas/bills";
 import { useGetBillQuery } from "@/lib/services/bills";
 import RenderFields from "@/components/render-fields";
+import { AdaptedBillDetail } from "@/lib/adapters/bills";
 
-const fields: FieldDefinition<BillDetail>[] = [
+const fields: FieldDefinition<AdaptedBillDetail>[] = [
   {
     label: "Notas",
     placeholderLength: 30,

@@ -1,10 +1,12 @@
-import { NewPurchaseOrder, NewPurchaseOrderResponse, PurchaseOrderDetail, PurchaseOrderDetailResponse, PurchaseOrderListResponse, PurchaseOrderState } from '@/app/(private)/(commercial)/purchases/purchase-orders/schemas/purchase-orders';
+import { NewPurchaseOrder, NewPurchaseOrderResponse, PurchaseOrderDetailResponse, PurchaseOrderListResponse, PurchaseOrderState } from '@/app/(private)/(commercial)/purchases/purchase-orders/schemas/purchase-orders';
 import { erpApi } from '@/lib/apis/erp-api';
+import { AdaptedPurchaseOrderDetail, AdaptedPurchaseOrderList, getPurchaseOrderAdapter, listPurchaseOrdersAdapter } from '../adapters/purchase-order';
 import { Overwrite } from '../utils';
 
 export const purchaseOrdersApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listPurchaseOrders: builder.query<PurchaseOrderListResponse,
+    listPurchaseOrders: builder.query<
+      AdaptedPurchaseOrderList[],
       {
         number?: string,
         status?: PurchaseOrderState,
@@ -18,13 +20,16 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
           url: '/purchase_orders',
           params: data || {},
         }),
+        transformResponse: (response: PurchaseOrderListResponse) => response.data.map(listPurchaseOrdersAdapter),
         providesTags: ['PurchaseOrder'],
       }),
-    getPurchaseOrder: builder.query<PurchaseOrderDetail, string | number>({
-      query: (id) => `/purchase_orders/${id}`,
-      transformResponse: (response: PurchaseOrderDetailResponse) => response.data,
-      providesTags: ["PurchaseOrder"]
-    }),
+    getPurchaseOrder: builder.query<
+      AdaptedPurchaseOrderDetail,
+      string | number>({
+        query: (id) => `/purchase_orders/${id}`,
+        transformResponse: (response: PurchaseOrderDetailResponse) => getPurchaseOrderAdapter(response.data),
+        providesTags: ["PurchaseOrder"]
+      }),
     updatePurchaseOrder: builder.mutation<{ status: string, message: string }, { body: Partial<Overwrite<Omit<NewPurchaseOrder, 'currency' | 'payment_term' | 'required_date'> & { currency: number; payment_term: number; required_date: string }, { company: number }>>, id: string | number }>({
       query: ({ id, body }) => ({
         url: `purchase_orders/${id}`,

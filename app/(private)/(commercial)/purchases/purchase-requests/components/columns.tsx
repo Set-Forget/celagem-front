@@ -14,7 +14,7 @@ import { es } from "date-fns/locale"
 export const columns: ColumnDef<PurchaseRequestList>[] = [
   {
     accessorKey: "name",
-    header: "Titulo",
+    header: "Número",
     cell: ({ row }) => <span className="text-nowrap font-medium">{row.getValue("name")}</span>,
   },
   {

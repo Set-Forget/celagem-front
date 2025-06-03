@@ -1,3 +1,5 @@
+import { FormTableFooter } from "@/app/(private)/(commercial)/components/form-table-footer"
+import { useSupplierSelect } from "@/app/(private)/(commercial)/hooks/use-supplier-select"
 import { AsyncSelect } from "@/components/async-select"
 import DatePicker from "@/components/date-picker"
 import FormTable from "@/components/form-table"
@@ -7,11 +9,10 @@ import { useLazyListStocksQuery } from "@/lib/services/stocks"
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { useSearchParams } from "next/navigation"
 import { useFormContext } from "react-hook-form"
+import { v4 as uuidv4 } from "uuid"
 import { z } from "zod"
-import { newPurchaseReceiptSchema } from "../../schemas/purchase-receipts"
+import { NewPurchaseReceipt, NewPurchaseReceiptLine, newPurchaseReceiptSchema } from "../../schemas/purchase-receipts"
 import { columns } from "./columns"
-import TableFooter from "./table-footer"
-import { useSupplierSelect } from "@/app/(private)/(commercial)/hooks/use-supplier-select"
 
 export default function GeneralForm() {
   const searchParams = useSearchParams()
@@ -141,11 +142,20 @@ export default function GeneralForm() {
             <FormLabel className="w-fit">Items</FormLabel>
             <FormControl>
               <FormTable<z.infer<typeof newPurchaseReceiptSchema>>
-                columns={columns}
-                footer={({ append }) => <TableFooter append={append} />}
-                loading={isPurchaseOrderLoading}
                 name="items"
                 className="col-span-2"
+                columns={columns}
+                loading={isPurchaseOrderLoading}
+                footer={({ append }) =>
+                  <FormTableFooter<NewPurchaseReceipt, NewPurchaseReceiptLine>
+                    control={control}
+                    onAddRow={() => append({ id: uuidv4(), product_id: null, quantity: 1 })}
+                    colSpan={columns.length}
+                    selectors={{
+                      items: (values) => values.items,
+                    }}
+                  />
+                }
               />
             </FormControl>
             {formState.errors.items?.message && (

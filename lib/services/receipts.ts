@@ -18,7 +18,7 @@ export const chargesApi = erpApi.injectEndpoints({
       transformResponse: (response: ChargeDetailResponse) => response.data,
       providesTags: ['Charge'],
     }),
-    createCharge: builder.mutation<NewChargeResponse, Overwrite<NewCharge, { date: string, invoices?: number[], withholdings?: { tax_id: number, account_id: number }[] }>>({
+    createCharge: builder.mutation<NewChargeResponse, Overwrite<NewCharge, { date: string, invoices?: number[] }>>({
       query: (data) => ({
         url: '/charges',
         method: 'POST',

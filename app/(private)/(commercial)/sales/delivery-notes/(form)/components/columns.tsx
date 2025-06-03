@@ -19,6 +19,7 @@ export const columns: FormTableColumn<z.infer<typeof newDeliveryNoteSchema>>[] =
   {
     header: "Producto / Servicio",
     width: 300,
+    headerClassName: "text-nowrap",
     cellClassName: "pr-0",
     renderCell: (
       control,

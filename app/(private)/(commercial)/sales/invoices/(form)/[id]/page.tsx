@@ -20,8 +20,9 @@ import DocumentsTab from "./components/documents-tab"
 import NotesTab from "./components/notes-tab"
 import TableFooter from "./components/table-footer"
 import RenderFields from "@/components/render-fields"
+import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices"
 
-const fields: FieldDefinition<InvoiceDetail>[] = [
+const fields: FieldDefinition<AdaptedInvoiceDetail>[] = [
   {
     label: "Fecha de emisión",
     placeholderLength: 14,

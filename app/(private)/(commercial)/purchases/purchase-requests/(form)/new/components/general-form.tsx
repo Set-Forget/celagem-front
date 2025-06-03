@@ -1,18 +1,17 @@
+import { FormTableFooter } from "@/app/(private)/(commercial)/components/form-table-footer";
 import { AsyncSelect } from "@/components/async-select";
 import DatePicker from "@/components/date-picker";
 import FormTable from "@/components/form-table";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useFormContext } from "react-hook-form";
-import { z } from "zod";
-import { newPurchaseRequestSchema } from "../../../schemas/purchase-requests";
-import { columns } from "./columns";
-import TableFooter from "./table-footer";
 import { useLazyListCompaniesQuery } from "@/lib/services/companies";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import { useFormContext } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
+import { NewPurchaseRequest, NewPurchaseRequestLine } from "../../../schemas/purchase-requests";
+import { columns } from "./columns";
 
 export default function GeneralForm() {
-  const { control, formState } = useFormContext<z.infer<typeof newPurchaseRequestSchema>>()
+  const { control, formState } = useFormContext<NewPurchaseRequest>()
 
   const [searchCompanies] = useLazyListCompaniesQuery()
 
@@ -92,11 +91,20 @@ export default function GeneralForm() {
           <FormItem className="flex flex-col w-full col-span-2">
             <FormLabel className="w-fit">Items</FormLabel>
             <FormControl>
-              <FormTable<z.infer<typeof newPurchaseRequestSchema>>
-                columns={columns}
-                footer={({ append }) => <TableFooter append={append} />}
+              <FormTable<NewPurchaseRequest>
                 name="items"
                 className="col-span-2"
+                columns={columns}
+                footer={({ append }) =>
+                  <FormTableFooter<NewPurchaseRequest, NewPurchaseRequestLine>
+                    control={control}
+                    onAddRow={() => append({ id: uuidv4(), quantity: 1, taxes_id: [] })}
+                    colSpan={columns.length}
+                    selectors={{
+                      items: (values) => values.items,
+                    }}
+                  />
+                }
               />
             </FormControl>
             {formState.errors.items?.message && (

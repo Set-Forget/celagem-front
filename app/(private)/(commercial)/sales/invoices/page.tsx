@@ -1,16 +1,16 @@
 'use client'
 
 import { DataTable } from "@/components/data-table";
+import Dropdown from "@/components/dropdown";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { routes } from "@/lib/routes";
 import { useListInvoicesQuery } from "@/lib/services/invoices";
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
-import { routes } from "@/lib/routes";
-import Dropdown from "@/components/dropdown";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 export default function Page() {
   const searchParams = useSearchParams()
@@ -23,7 +23,7 @@ export default function Page() {
   const date_range = JSON.parse(searchParams.get('date_range') || '{}') as { field: string, from: string, to: string }
 
   const { data: invoices, isLoading: isInvoicesLoading } = useListInvoicesQuery({
-    number: search.field === "number" ? search?.query : undefined,
+    //number: search.field === "number" ? search?.query : undefined,
     //status: status ? JSON.parse(status).join(',') : undefined,
     date_start: date_range?.field === "date" ? date_range.from : undefined,
     date_end: date_range?.field === "date" ? date_range.to : undefined,
@@ -60,6 +60,7 @@ export default function Page() {
         <DataTable
           data={invoices
             ?.toSorted((a, b) => b.id - a.id)
+            .filter(invoice => invoice.number.toString().toLowerCase().includes(search?.query?.toLowerCase() ?? ""))
             .filter(invoice => type.length === 0 || type.includes(invoice.type))
             .filter(invoice => status.length === 0 || status.includes(invoice.status)) ?? []}
           columns={columns}

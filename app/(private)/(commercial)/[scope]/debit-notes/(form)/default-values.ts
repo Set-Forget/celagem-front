@@ -1,7 +1,7 @@
 
 export const defaultValues = {
   partner: undefined,
-  number: "",
+  custom_sequence_number: "",
   date: undefined,
   company: undefined,
   accounting_date: undefined,

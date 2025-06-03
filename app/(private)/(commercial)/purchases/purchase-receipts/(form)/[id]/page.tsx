@@ -19,8 +19,9 @@ import NotesTab from "./components/notes-tab"
 import RenderFields from "@/components/render-fields"
 import { Badge } from "@/components/ui/badge"
 import { purchaseReceiptStatus } from "../../utils"
+import { AdaptedPurchaseReceiptDetail } from "@/lib/adapters/purchase-receipts"
 
-const fields: FieldDefinition<PurchaseReceiptDetail>[] = [
+const fields: FieldDefinition<AdaptedPurchaseReceiptDetail>[] = [
   {
     label: "Ubicación de recepción",
     placeholderLength: 14,

@@ -3,8 +3,9 @@ import { useGetPurchaseRequestQuery } from "@/lib/services/purchase-requests";
 import { FieldDefinition } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { PurchaseRequestDetail } from "../../../schemas/purchase-requests";
+import { AdaptedPurchaseRequestDetail } from "@/lib/adapters/purchase-requests";
 
-const fields: FieldDefinition<PurchaseRequestDetail>[] = [
+const fields: FieldDefinition<AdaptedPurchaseRequestDetail>[] = [
   {
     label: "Notas",
     placeholderLength: 30,

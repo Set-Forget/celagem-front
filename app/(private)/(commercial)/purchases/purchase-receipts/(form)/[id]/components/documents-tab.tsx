@@ -7,8 +7,9 @@ import { FileX2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { PurchaseReceiptDetail } from "../../../schemas/purchase-receipts";
+import { AdaptedPurchaseReceiptDetail } from "@/lib/adapters/purchase-receipts";
 
-const fields: FieldDefinition<PurchaseReceiptDetail>[] = [
+const fields: FieldDefinition<AdaptedPurchaseReceiptDetail>[] = [
   {
     label: "Orden de compra",
     placeholderLength: 14,

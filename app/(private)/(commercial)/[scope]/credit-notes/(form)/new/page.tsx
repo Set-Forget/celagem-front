@@ -49,7 +49,7 @@ export default function Page() {
     resolver: zodResolver(newCreditNoteSchema),
     defaultValues: {
       ...defaultValues,
-      number: scope === "purchases" ? "" : undefined,
+      custom_sequence_number: scope === "purchases" ? "" : undefined,
       move_type: scope === "purchases" ? "in_refund" : "out_refund"
     }
   })

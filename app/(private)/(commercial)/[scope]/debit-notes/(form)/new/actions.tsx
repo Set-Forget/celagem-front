@@ -1,14 +1,16 @@
+import { useBillSelect } from "@/app/(private)/(commercial)/hooks/use-bill-select"
+import { useInvoiceSelect } from "@/app/(private)/(commercial)/hooks/use-invoice-select"
 import { AsyncCommand } from "@/components/async-command"
 import CustomSonner from "@/components/custom-sonner"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useLazyListBillsQuery } from "@/lib/services/bills"
+import { AdaptedBillList } from "@/lib/adapters/bills"
+import { AdaptedInvoiceList } from "@/lib/adapters/invoices"
 import { useCreateDebitNoteMutation } from "@/lib/services/debit-notes"
-import { useLazyListInvoicesQuery } from "@/lib/services/invoices"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { Building2, Calendar, CalendarX2, DollarSign, LinkIcon, Save, User } from "lucide-react"
+import { Building2, CalendarX2, DollarSign, LinkIcon, Save } from "lucide-react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -16,8 +18,6 @@ import { toast } from "sonner"
 import { z } from "zod"
 import DocumentPopover from "../../../components/document-popover"
 import { newDebitNoteSchema } from "../../schemas/debit-notes"
-import { BillList } from "@/app/(private)/(commercial)/purchases/bills/schemas/bills"
-import { InvoiceList } from "@/app/(private)/(commercial)/sales/invoices/schemas/invoices"
 
 export default function Actions() {
   const { handleSubmit } = useFormContext<z.infer<typeof newDebitNoteSchema>>();
@@ -31,52 +31,29 @@ export default function Actions() {
 
   const [openCommand, setOpenCommand] = useState(false)
 
-  const [searchBills] = useLazyListBillsQuery()
-  const [searchInvoices] = useLazyListInvoicesQuery()
-
   const [createDebitNote, { isLoading: isCreatingDebitNote }] = useCreateDebitNoteMutation()
 
-  const handleSearchBill = async (query?: string) => {
-    try {
-      const bill = await searchBills({
-        number: query,
-        status: "posted",
-        type: "invoice"
-      }).unwrap()
+  const { fetcher: handleSearchBill } = useBillSelect({
+    map: (b) => ({
+      ...b,
+      partner: b.supplier,
+    }),
+    filter: (b) =>
+      b.amount_residual > 0 &&
+      b.type === "invoice" &&
+      b.status === "posted"
+  })
 
-      return bill?.map(bill => ({
-        ...bill,
-        partner: bill.supplier,
-      }))
-        .filter(bill => bill.amount_residual > 0)
-        .slice(0, 10)
-    }
-    catch (error) {
-      console.error(error)
-      return []
-    }
-  }
-
-  const handleSearchInvoice = async (query?: string) => {
-    try {
-      const response = await searchInvoices({
-        number: query,
-        status: "posted",
-        type: "invoice"
-      }).unwrap()
-
-      return response?.map(invoice => ({
-        ...invoice,
-        partner: invoice.customer,
-      }))
-        .filter(invoice => invoice.amount_residual > 0)
-        .slice(0, 10)
-    }
-    catch (error) {
-      console.error(error)
-      return []
-    }
-  }
+  const { fetcher: handleSearchInvoice } = useInvoiceSelect({
+    map: (i) => ({
+      ...i,
+      partner: i.customer,
+    }),
+    filter: (i) =>
+      i.amount_residual > 0 &&
+      i.type === "invoice" &&
+      i.status === "posted"
+  })
 
   const onSubmit = async (data: z.infer<typeof newDebitNoteSchema>) => {
     try {
@@ -104,11 +81,12 @@ export default function Actions() {
             {!invoiceId && !billId ? (
               <Button
                 variant="secondary"
-                size="icon"
-                className="h-7 w-7 shadow-lg shadow-secondary"
+                size="sm"
+                className="h-7 shadow-lg shadow-secondary"
                 onClick={() => setOpenCommand(true)}
               >
                 <LinkIcon />
+                Asociar
               </Button>
             ) : (
               <DocumentPopover />
@@ -130,7 +108,7 @@ export default function Actions() {
           Guardar
         </Button>
       </div>
-      <AsyncCommand<Omit<BillList, "supplier"> & { partner: string } | Omit<InvoiceList, "customer"> & { partner: string }, number>
+      <AsyncCommand<Omit<AdaptedBillList, "supplier"> & { partner: string } | Omit<AdaptedInvoiceList, "customer"> & { partner: string }, number>
         open={openCommand}
         onOpenChange={setOpenCommand}
         label="Facturas"

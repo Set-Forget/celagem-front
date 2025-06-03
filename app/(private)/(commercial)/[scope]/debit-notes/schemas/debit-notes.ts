@@ -34,7 +34,8 @@ export const debitNoteLineSchema = z.object({
 
 export const debitNoteDetailSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string(),
+  custom_sequence_number: z.string(),
   partner: z.object({
     id: z.number(),
     name: z.string(),
@@ -42,8 +43,6 @@ export const debitNoteDetailSchema = z.object({
     email: z.string(),
     address: z.string(),
   }),
-  created_by: z.string(),
-  created_at: z.string(),
   status: debitNoteStatus,
   date: z.string(),
   due_date: z.string(),
@@ -61,7 +60,33 @@ export const debitNoteDetailSchema = z.object({
     name: z.string(),
   }),
   internal_notes: z.string(),
+  tyc_notes: z.string(),
+  rejection_reason: z.string(),
+  purchase_orders: z.array(z.object({
+    id: z.number(),
+    sequence_id: z.string(),
+  })),
+  amount_total: z.number(),
   amount_residual: z.number(),
+  credit_notes: z.array(z.object({
+    id: z.number(),
+    sequence_id: z.string(),
+  })),
+  debit_notes: z.array(z.object({
+    id: z.number(),
+    sequence_id: z.string(),
+  })),
+  payments: z.array(z.object({
+    id: z.number(),
+    sequence_id: z.string(),
+  })),
+  company: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  type: z.literal("debit_note"),
+  created_by: z.string(),
+  created_at: z.string(),
   associated_invoice: z.object({
     id: z.number(),
     name: z.string(),
@@ -80,29 +105,28 @@ export const newDebitNoteNotesSchema = z.object({
   tyc_notes: z.string().optional(),
 })
 
-const newDebitNoteGeneralSchema = z
-  .object({
-    partner: z.number(),
-    date: z.custom<CalendarDate>((data) => {
-      return data instanceof CalendarDate;
-    }, { message: "La fecha de emisión es requerida" }),
-    number: z.string().optional(),
-    accounting_date: z.custom<CalendarDate>(
-      (data) => data instanceof CalendarDate,
-      { message: 'La fecha de contabilización es requerida' }
-    ),
-    move_type: debitNoteMoveType.optional(),
-    associated_invoice: z.number().optional(),
-    items: z.array(newDebitNoteLineSchema).min(1, { message: "Debe agregar al menos un item" }),
-  })
+const newDebitNoteGeneralSchema = z.object({
+  partner: z.number(),
+  date: z.custom<CalendarDate>((data) => {
+    return data instanceof CalendarDate;
+  }, { message: "La fecha de emisión es requerida" }),
+  custom_sequence_number: z.string().optional(),
+  accounting_date: z.custom<CalendarDate>(
+    (data) => data instanceof CalendarDate,
+    { message: 'La fecha de contabilización es requerida' }
+  ),
+  move_type: debitNoteMoveType.optional(),
+  associated_invoice: z.number().optional(),
+  items: z.array(newDebitNoteLineSchema).min(1, { message: "Debe agregar al menos un item" }),
+})
   .merge(newDebitNoteFiscalSchema)
   .merge(newDebitNoteNotesSchema);
 
 export const newDebitNoteSchema = newDebitNoteGeneralSchema.superRefine((data, ctx) => {
-  if (data.move_type === 'in_invoice' && (!data.number || data.number.trim() === '')) {
+  if (data.move_type === 'in_invoice' && (!data.custom_sequence_number || data.custom_sequence_number.trim() === '')) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      path: ['number'],
+      path: ['custom_sequence_number'],
       message: 'El número es obligatorio para notas de débito entrantes',
     });
   }
@@ -128,6 +152,7 @@ export type DebitNoteDetailResponse = z.infer<typeof debitNoteDetailResponseSche
 export type DebitNoteItem = z.infer<typeof debitNoteLineSchema>;
 
 export type NewDebitNote = z.infer<typeof newDebitNoteSchema>;
+export type NewDebitNoteLine = z.infer<typeof newDebitNoteLineSchema>;
 export type NewDebitNoteResponse = z.infer<typeof newDebitNoteResponseSchema>;
 
 export type DebitNoteStatus = z.infer<typeof debitNoteStatus>;

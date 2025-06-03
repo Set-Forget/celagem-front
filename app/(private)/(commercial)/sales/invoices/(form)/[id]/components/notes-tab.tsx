@@ -3,8 +3,9 @@ import { useGetInvoiceQuery } from "@/lib/services/invoices";
 import { FieldDefinition } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { InvoiceDetail } from "../../../schemas/invoices";
+import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices";
 
-const fields: FieldDefinition<InvoiceDetail>[] = [
+const fields: FieldDefinition<AdaptedInvoiceDetail>[] = [
   {
     label: "Notas",
     placeholderLength: 30,

@@ -6,10 +6,6 @@ import { Table } from "@tanstack/react-table";
 import { BanknoteArrowDown, CalendarFold, CircleDashed, Search, Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-interface DataTableToolbarProps<TData> {
-  table: Table<TData>
-}
-
 const filtersConfig: Record<string, FilterConfig> = {
   status: {
     type: "multiple",
@@ -56,7 +52,7 @@ const filtersConfig: Record<string, FilterConfig> = {
   },
 };
 
-export default function Toolbar<TData>({ table }: { table: Table<AdaptedInvoiceList> }) {
+export default function Toolbar({ table }: { table: Table<AdaptedInvoiceList> }) {
   const router = useRouter()
 
   const selectedRows = table.getSelectedRowModel().rows

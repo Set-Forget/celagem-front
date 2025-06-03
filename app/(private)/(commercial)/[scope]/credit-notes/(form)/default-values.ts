@@ -1,8 +1,7 @@
-
 export const defaultValues = {
   partner: undefined,
   date: undefined,
-  number: undefined,
+  custom_sequence_number: "",
   accounting_date: undefined,
   currency: undefined,
   move_type: undefined,

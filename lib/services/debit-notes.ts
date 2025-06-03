@@ -1,11 +1,11 @@
-import { DebitNoteDetail, DebitNoteDetailResponse, NewDebitNote, NewDebitNoteResponse } from '@/app/(private)/(commercial)/[scope]/debit-notes/schemas/debit-notes';
+import { DebitNoteDetailResponse, NewDebitNote, NewDebitNoteResponse } from '@/app/(private)/(commercial)/[scope]/debit-notes/schemas/debit-notes';
 import { erpApi } from '@/lib/apis/erp-api';
+import { AdaptedDebitNoteDetail, getDebitNoteAdapter } from '../adapters/debit-notes';
 import { Overwrite } from '../utils';
-import { getDebitNoteAdapter } from '../adapters/debit-notes';
 
 export const debitNotesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    getDebitNote: builder.query<DebitNoteDetail, string>({
+    getDebitNote: builder.query<AdaptedDebitNoteDetail, string>({
       query: (id) => `debit_notes/${id}`,
       transformResponse: (response: DebitNoteDetailResponse) => getDebitNoteAdapter(response.data),
       providesTags: ['DebitNote'],

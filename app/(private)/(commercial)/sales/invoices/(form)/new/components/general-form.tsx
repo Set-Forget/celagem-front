@@ -1,3 +1,4 @@
+import { FormTableFooter } from "@/app/(private)/(commercial)/components/form-table-footer"
 import { useCustomerSelect } from "@/app/(private)/(commercial)/hooks/use-customer-select"
 import { AsyncSelect } from "@/components/async-select"
 import DatePicker from "@/components/date-picker"
@@ -8,13 +9,13 @@ import { createApply } from "@/lib/utils"
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { useMemo } from "react"
 import { useFormContext } from "react-hook-form"
+import { v4 as uuidv4 } from 'uuid'
 import { z } from "zod"
-import { newInvoiceSchema } from "../../../schemas/invoices"
+import { NewInvoice, NewInvoiceLine, newInvoiceSchema } from "../../../schemas/invoices"
 import { columns } from "./columns"
-import TableFooter from "./table-footer"
 
 export default function GeneralForm() {
-  const { control, formState, setValue, resetField } = useFormContext<z.infer<typeof newInvoiceSchema>>()
+  const { control, formState, setValue, resetField } = useFormContext<NewInvoice>()
 
   const [getCustomer] = useLazyGetCustomerQuery()
 
@@ -23,7 +24,7 @@ export default function GeneralForm() {
   })
 
   const apply = useMemo(
-    () => createApply<z.infer<typeof newInvoiceSchema>>(setValue, resetField),
+    () => createApply<NewInvoice>(setValue, resetField),
     [setValue, resetField]
   );
 
@@ -68,6 +69,29 @@ export default function GeneralForm() {
       />
       <FormField
         control={control}
+        name="date"
+        render={({ field }) => (
+          <FormItem className="flex flex-col w-full">
+            <FormLabel className="w-fit">Fecha de factura</FormLabel>
+            <FormControl>
+              <DatePicker
+                value={field.value || null}
+                onChange={(date) => field.onChange(date)}
+                isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) > 0}
+              />
+            </FormControl>
+            {formState.errors.date ? (
+              <FormMessage />
+            ) :
+              <FormDescription>
+                Esta será la fecha en la que se emitió la factura.
+              </FormDescription>
+            }
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
         name="accounting_date"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -96,11 +120,32 @@ export default function GeneralForm() {
           <FormItem className="flex flex-col w-full col-span-2">
             <FormLabel className="w-fit">Items</FormLabel>
             <FormControl>
-              <FormTable<z.infer<typeof newInvoiceSchema>>
+              <FormTable<NewInvoice>
                 columns={columns}
-                footer={({ append }) => <TableFooter append={append} />}
                 name="items"
                 className="col-span-2"
+                footer={({ append }) =>
+                  <FormTableFooter<NewInvoice, NewInvoiceLine>
+                    control={control}
+                    onAddRow={() => append({
+                      id: uuidv4(),
+                      product_id: null,
+                      quantity: 1,
+                      price_unit: 0,
+                      account_id: null,
+                      cost_center: null,
+                      taxes_id: []
+                    })}
+                    colSpan={columns.length}
+                    selectors={{
+                      items: (values) => values.items,
+                      currencyId: (values) => values.currency,
+                      unitPrice: (items) => items.price_unit,
+                      quantity: (items) => items.quantity,
+                      taxes: (items) => items.taxes_id ?? [],
+                    }}
+                  />
+                }
               />
             </FormControl>
             {formState.errors.items?.message && (

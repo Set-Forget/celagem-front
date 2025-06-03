@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { newPurchaseOrderSchema } from "../../schemas/purchase-orders";
 import PurchaseRequestPopover from "./components/purchase-request-popover";
+import { usePurchaseRequestSelect } from "@/app/(private)/(commercial)/hooks/use-purchase-request-select";
 
 export default function Actions() {
   const router = useRouter()
@@ -26,8 +27,18 @@ export default function Actions() {
 
   const purchaseRequestId = searchParams.get("purchase_request_id")
 
-  const [searchPurchaseRequest] = useLazyListPurchaseRequestsQuery()
   const [createPurchaseOrder, { isLoading: isCreatingPurchaseOrder }] = useCreatePurchaseOrderMutation()
+
+  const { fetcher: handleSearchPurchaseRequest } = usePurchaseRequestSelect({
+    map: (purchaseRequest) => ({
+      id: purchaseRequest.id,
+      name: purchaseRequest.name,
+      company_name: purchaseRequest.company.name,
+      created_by: purchaseRequest.created_by,
+      request_date: purchaseRequest.request_date,
+    }),
+    filter: (purchaseRequest) => purchaseRequest.state === "approved"
+  })
 
   const onSubmit = async (data: z.infer<typeof newPurchaseOrderSchema>) => {
     try {
@@ -47,28 +58,6 @@ export default function Actions() {
     }
   }
 
-  const handleSearchPurchaseRequest = async (query?: string) => {
-    try {
-      const response = await searchPurchaseRequest({
-        name: query,
-        status: "approved"
-      }).unwrap()
-
-      return response.data?.map(purchaseRequest => ({
-        id: purchaseRequest.id,
-        name: purchaseRequest.name,
-        company_name: purchaseRequest.company.name,
-        created_by: purchaseRequest.created_by,
-        request_date: purchaseRequest.request_date,
-      }))
-        .slice(0, 10)
-    }
-    catch (error) {
-      console.error(error)
-      return []
-    }
-  }
-
   return (
     <>
       <TooltipProvider>
@@ -77,11 +66,12 @@ export default function Actions() {
             {!purchaseRequestId ? (
               <Button
                 variant="secondary"
-                size="icon"
-                className="h-7 w-7 shadow-lg shadow-secondary"
+                size="sm"
+                className="h-7 shadow-lg shadow-secondary"
                 onClick={() => setOpenCommand(true)}
               >
                 <LinkIcon />
+                Asociar
               </Button>
             ) : (
               <PurchaseRequestPopover />

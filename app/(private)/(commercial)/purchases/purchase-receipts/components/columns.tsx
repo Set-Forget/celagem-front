@@ -42,11 +42,9 @@ export const columns: ColumnDef<PurchaseReceiptList>[] = [
   },
   {
     accessorKey: 'reception_location',
-    header: 'Movimiento',
+    header: 'Ubicación de recepción',
     cell: ({ row }) => (
       <div className="text-sm flex items-center gap-1">
-        {row.original.source_location}{' '}
-        <ArrowRight size={14} />{' '}
         {row.original.reception_location}
       </div>
     ),

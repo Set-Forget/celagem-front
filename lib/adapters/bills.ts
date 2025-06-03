@@ -5,6 +5,7 @@ export function listBillsAdapter(data: BillList) {
   return {
     ...data,
     status: getBillStatus(data),
+    number: data.sequence_id,
   }
 }
 
@@ -12,6 +13,7 @@ export function getBillAdapter(data: BillDetail) {
   return {
     ...data,
     status: getBillStatus(data),
+    number: data.sequence_id,
   }
 }
 

@@ -3,26 +3,24 @@
 import { Save, Sticker, Wallet } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { cn, getFieldPaths } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 import CustomSonner from "@/components/custom-sonner"
-import DataTabs from "@/components/data-tabs"
+import { FormTabs } from "@/components/form-tabs"
 import Header from "@/components/header"
 import { Form } from "@/components/ui/form"
 import { useGetInvoiceQuery, useUpdateInvoiceMutation } from "@/lib/services/invoices"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { parseDate } from "@internationalized/date"
-import { get } from "lodash"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { FieldErrors, useForm } from "react-hook-form"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { newInvoiceFiscalSchema, newInvoiceNotesSchema, newInvoiceSchema } from "../../../schemas/invoices"
 import FiscalForm from "../../new/components/fiscal-form"
 import GeneralForm from "../../new/components/general-form"
 import NotesForm from "../../new/components/notes-form"
-import { FormTabs } from "@/components/form-tabs"
 
 const tabs = [
   {

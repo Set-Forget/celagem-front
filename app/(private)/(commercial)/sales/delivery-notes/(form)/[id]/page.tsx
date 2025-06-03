@@ -19,11 +19,6 @@ import RenderFields from '@/components/render-fields';
 
 const fields: FieldDefinition<DeliveryNoteDetail>[] = [
   {
-    label: "Ubicación de origen",
-    placeholderLength: 14,
-    render: (p) => p.source_location || "No especificado",
-  },
-  {
     label: "Ubicación de entrega",
     placeholderLength: 14,
     render: (p) => p.delivery_location || "No especificado",

@@ -104,7 +104,7 @@ export default function Page() {
       newCreditNoteForm.reset({
         partner: creditNote?.partner?.id,
         currency: creditNote?.currency?.id,
-        number: scope === "purchases" ? creditNote?.number : undefined,
+        custom_sequence_number: scope === "purchases" ? creditNote?.number : undefined,
         date: creditNote?.date && parseDate(creditNote.date),
         accounting_date: creditNote?.accounting_date && parseDate(creditNote.accounting_date),
         internal_notes: creditNote?.internal_notes || "",

@@ -1,3 +1,4 @@
+import { FormTableFooter } from "@/app/(private)/(commercial)/components/form-table-footer"
 import { useSupplierSelect } from "@/app/(private)/(commercial)/hooks/use-supplier-select"
 import { AsyncSelect } from "@/components/async-select"
 import DatePicker from "@/components/date-picker"
@@ -9,10 +10,10 @@ import { createApply } from "@/lib/utils"
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { useMemo } from "react"
 import { useFormContext } from "react-hook-form"
+import { v4 as uuidv4 } from "uuid"
 import { z } from "zod"
-import { newPurchaseOrderSchema } from "../../schemas/purchase-orders"
+import { NewPurchaseOrder, NewPurchaseOrderLine, newPurchaseOrderSchema } from "../../schemas/purchase-orders"
 import { columns } from "./columns"
-import TableFooter from "./table-footer"
 
 export default function GeneralForm() {
   const { control, formState, setValue, resetField } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()
@@ -145,10 +146,23 @@ export default function GeneralForm() {
               <FormLabel className="w-fit">Items</FormLabel>
               <FormControl>
                 <FormTable<z.infer<typeof newPurchaseOrderSchema>>
-                  columns={columns}
-                  footer={({ append }) => <TableFooter append={append} />}
                   name="items"
                   className="col-span-2"
+                  columns={columns}
+                  footer={({ append }) =>
+                    <FormTableFooter<NewPurchaseOrder, NewPurchaseOrderLine>
+                      control={control}
+                      onAddRow={() => append({ id: uuidv4(), product_id: null, price_unit: null, product_qty: 1, taxes_id: [] })}
+                      colSpan={columns.length}
+                      selectors={{
+                        items: (values) => values.items,
+                        currencyId: (values) => values.currency,
+                        unitPrice: (item) => item.price_unit,
+                        quantity: (item) => item.product_qty,
+                        taxes: (item) => item.taxes_id || [],
+                      }}
+                    />
+                  }
                 />
               </FormControl>
               {formState.errors.items?.message && (

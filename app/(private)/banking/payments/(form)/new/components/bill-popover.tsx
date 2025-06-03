@@ -27,6 +27,7 @@ import { z } from "zod"
 import { newPaymentSchema } from "../../../schemas/payments"
 import { defaultValues } from "../../default-values"
 import { BillDetail } from "@/app/(private)/(commercial)/purchases/bills/schemas/bills"
+import { AdaptedBillDetail } from "@/lib/adapters/bills"
 
 export default function BillPopover() {
   const params = useSearchParams()
@@ -39,7 +40,7 @@ export default function BillPopover() {
   )
 
   const [getBill] = useLazyGetBillQuery()
-  const [bills, setBills] = useState<BillDetail[]>([])
+  const [bills, setBills] = useState<AdaptedBillDetail[]>([])
   const [isLoadingBills, setLoadingBills] = useState(false)
 
   useEffect(() => {
@@ -70,12 +71,13 @@ export default function BillPopover() {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          size="icon"
+          size="sm"
           variant="secondary"
           loading={isLoadingBills}
-          className="h-7 w-7 bg-indigo-50 text-indigo-600 shadow-lg shadow-indigo-50 hover:bg-indigo-100"
+          className="h-7 bg-indigo-50 text-indigo-600 shadow-lg shadow-indigo-50 hover:bg-indigo-100 hover:shadow-indigo-100 transition-all"
         >
           <LinkIcon className={cn(isLoadingBills && "hidden")} />
+          {bills.length} {bills.length === 1 ? "Factura" : "Facturas"}
         </Button>
       </PopoverTrigger>
 

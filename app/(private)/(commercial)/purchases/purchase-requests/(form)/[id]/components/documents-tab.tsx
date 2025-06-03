@@ -7,8 +7,9 @@ import { useParams } from "next/navigation";
 import { PurchaseRequestDetail } from "../../../schemas/purchase-requests";
 import Link from "next/link";
 import { routes } from "@/lib/routes";
+import { AdaptedPurchaseRequestDetail } from "@/lib/adapters/purchase-requests";
 
-const fields: FieldDefinition<PurchaseRequestDetail>[] = [
+const fields: FieldDefinition<AdaptedPurchaseRequestDetail>[] = [
   {
     label: "Orden de compra",
     placeholderLength: 14,

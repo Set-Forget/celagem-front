@@ -1,42 +1,19 @@
 "use client"
 
 import {
-  ColumnDef,
-  Row
+  ColumnDef
 } from "@tanstack/react-table"
 
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Progress } from "@/components/ui/progress"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { AdaptedInvoiceList } from "@/lib/adapters/invoices"
 import { cn } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { creditNoteStatus } from "../../../[scope]/credit-notes/utils"
-import { InvoiceList } from "../schemas/invoices"
 import { invoiceStatus, invoiceTypes } from "../utils"
 
-const PercentagePaidCell = ({ row }: { row: Row<InvoiceList> }) => {
-  const percentagePaid = row.original.percentage_paid
-
-  const creditNote = row.original.type === 'credit_note'
-
-  if (creditNote) return
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Progress className="w-[100px]" value={percentagePaid} />
-        </TooltipTrigger>
-        <TooltipContent>
-          {percentagePaid.toFixed()}%
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  )
-};
-
-export const columns: ColumnDef<InvoiceList>[] = [
+export const columns: ColumnDef<AdaptedInvoiceList>[] = [
   {
     id: "select",
     header: ({ table }) => (

@@ -52,7 +52,7 @@ export default function Page() {
       items: [],
       date: "",
       accounting_date: "",
-      number: "",
+      custom_sequence_number: "",
       internal_notes: "",
       tyc_notes: "",
     }
@@ -84,7 +84,7 @@ export default function Page() {
     if (bill) {
       newBillForm.reset({
         supplier: bill?.supplier?.id,
-        number: bill?.number || "",
+        custom_sequence_number: bill?.custom_sequence_number || "",
         date: bill?.date && parseDate(bill.date),
         accounting_date: bill?.accounting_date && parseDate(bill.accounting_date),
         currency: bill?.currency?.id,

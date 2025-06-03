@@ -97,7 +97,7 @@ export default function Page() {
     <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isChargeLoading ? "blur-[4px]" : "blur-none")}>
-          {isChargeLoading ? placeholder(13, true) : charge?.name}
+          {isChargeLoading ? placeholder(13, true) : charge?.sequence_id}
         </h1>
       }>
         <div className="mr-auto">

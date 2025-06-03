@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import RenderFields from "@/components/render-fields";
 import { routes } from "@/lib/routes";
+import { AdaptedBillDetail } from "@/lib/adapters/bills";
 
-const fields: FieldDefinition<BillDetail>[] = [
+const fields: FieldDefinition<AdaptedBillDetail>[] = [
   {
     label: "Proveedor",
     placeholderLength: 14,

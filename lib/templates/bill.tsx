@@ -4,6 +4,7 @@ import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import type React from "react"
 import { toWords } from "../utils"
+import { AdaptedBillDetail } from "../adapters/bills"
 
 const styles = StyleSheet.create({
   page: {
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const BillPDF: React.FC<{ data: BillDetail }> = ({ data }) => {
+const BillPDF: React.FC<{ data: AdaptedBillDetail }> = ({ data }) => {
   const formattedDate = format(data.date, "PP", { locale: es })
   const formattedDueDate = format(data.due_date, "PP", { locale: es })
   const formattedCreatedDate = format(data.created_at, "PP", { locale: es })

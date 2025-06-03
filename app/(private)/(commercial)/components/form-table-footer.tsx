@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import {
-  TableFooter as ShadFooter,
   TableCell,
+  TableFooter,
   TableRow,
 } from "@/components/ui/table"
 import { useGetCurrencyQuery } from "@/lib/services/currencies"
@@ -9,121 +9,136 @@ import { useLazyGetTaxQuery } from "@/lib/services/taxes"
 import { cn } from "@/lib/utils"
 import { Plus } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Control, FieldPath, FieldValues, useWatch } from "react-hook-form"
+import { Control, FieldValues, useWatch } from "react-hook-form"
 
-type Props<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>> = {
-  control: Control<TFieldValues>
-  itemsPath: TName
-  currencyPath: TName
-  unitPriceKey: string
-  qtyKey: string
-  taxesKey: string
-  colSpan: number
-  onAddRow?: () => void
-  className?: string
+interface FooterSelectors<FV extends FieldValues, I> {
+  items: (values: FV) => readonly I[];
+  currencyId?: (values: FV) => number | undefined;
+  unitPrice?: (item: I) => number;
+  quantity?: (item: I) => number;
+  taxes?: (item: I) => readonly number[];
+  withholdings?: (values: FV) => readonly number[];
 }
 
-export function FormTableFooter<FV extends FieldValues = FieldValues>({
+interface FormTableFooterProps<FV extends FieldValues, I> {
+  control: Control<FV>;
+  selectors: FooterSelectors<FV, I>;
+  colSpan: number;
+  onAddRow?: () => void;
+  className?: string;
+}
+
+export function FormTableFooter<
+  FV extends FieldValues = FieldValues,
+  I = unknown
+>({
   control,
-  itemsPath,
-  currencyPath,
-  unitPriceKey,
-  qtyKey,
-  taxesKey,
+  selectors,
   colSpan,
   className,
   onAddRow,
-}: Props<FV>) {
-  const items = useWatch({ control, name: itemsPath }) as any[] || []
-  const currencyId = useWatch({ control, name: currencyPath }) as number | undefined
+}: FormTableFooterProps<FV, I>) {
+  const values = useWatch({ control }) as FV
+  const items = selectors.items(values) || []
 
-  const { data: currency } = useGetCurrencyQuery(currencyId!, { skip: !currencyId })
+  const currency = useGetCurrencyQuery(
+    selectors.currencyId?.(values)!,
+    { skip: !selectors.currencyId?.(values) }
+  ).data
 
   const [getTax] = useLazyGetTaxQuery()
 
   const [taxMap, setTaxMap] = useState<Map<number, number>>(new Map())
 
-  const allTaxIds = items.flatMap((it) => it[taxesKey] as number[] || [])
+  const allTaxIds = [...new Set(items.flatMap(it => selectors.taxes?.(it) || []))]
 
   const subtotal = items.reduce((s, it) =>
-    s + Number(it[qtyKey] || 0) * Number(it[unitPriceKey] || 0), 0)
+    s + (selectors.quantity?.(it) ?? 0) * (selectors.unitPrice?.(it) ?? 0), 0)
 
-  const taxTotal = items.reduce((s, it) => {
-    const amount = Number(it[unitPriceKey] || 0) * Number(it[qtyKey] || 0)
-    const pct = (it[taxesKey] as number[] | undefined)
-      ?.reduce((acc, id) => acc + (taxMap.get(id) ?? 0), 0) ?? 0
-    return s + amount * pct / 100
-  }, 0)
+  const taxBreakdown = items.reduce<Map<number, number>>((acc, it) => {
+    const base = (selectors.unitPrice?.(it) ?? 0) * (selectors.quantity?.(it) ?? 0)
+    for (const id of selectors.taxes?.(it) || []) {
+      const pct = taxMap.get(id) ?? 0
+      const value = base * pct / 100
+      acc.set(id, (acc.get(id) ?? 0) + value)
+    }
+    return acc
+  }, new Map())
 
+  const taxTotal = [...taxBreakdown.values()].reduce((s, v) => s + v, 0)
   const total = subtotal + taxTotal
 
   useEffect(() => {
-    const getTaxes = async () => {
+    (async () => {
       const map = new Map<number, number>()
       for (const id of allTaxIds) {
         try {
           const tax = await getTax(id).unwrap()
           if (tax) map.set(id, tax.amount)
         } catch (e) {
-          console.error(`Error fetching tax with ID ${id}:`, e)
+          console.error(`Error fetching tax ${id}:`, e)
         }
       }
       setTaxMap(map)
-    }
-    getTaxes()
-  }, [items])
+    })()
+  }, [JSON.stringify(allTaxIds)])
 
   return (
-    <ShadFooter className={cn("border-t-0", className)}>
+    <TableFooter className={cn("border-t-0", className)}>
       <TableRow className="!border-b bg-background h-6" />
 
-      <TableRow className="!border-b bg-background">
-        <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end">
-          Subtotal&nbsp;(Sin imp.)
-        </TableCell>
-        <TableCell className="h-6 text-xs py-0 pr-5">
-          {currency?.name} {subtotal.toFixed(2)}
-        </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5" />
-      </TableRow>
+      {selectors.unitPrice && selectors.quantity && (
+        <TableRow className="!border-b bg-background">
+          <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end">
+            Subtotal&nbsp;(sin impuestos)
+          </TableCell>
+          <TableCell className="h-6 text-xs py-0 pr-5">
+            {currency?.name} {subtotal.toFixed(2)}
+          </TableCell>
+          <TableCell className="h-6 text-xs py-0 pr-5" />
+        </TableRow>
+      )}
 
-      <TableRow className="!border-b bg-background">
-        <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end">
-          Impuestos&nbsp;(
-          {subtotal > 0 ? ((taxTotal / subtotal) * 100).toFixed(2) : 0}%)
-        </TableCell>
-        <TableCell className="h-6 text-xs py-0 pr-5">
-          {currency?.name} {taxTotal.toFixed(2)}
-        </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5" />
-      </TableRow>
+      {Array.from(taxBreakdown.entries()).map(([id, amount]) => (
+        <TableRow key={`tax-${id}`} className="!border-b bg-background">
+          <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end">
+            Impuesto&nbsp;({(taxMap.get(id) ?? 0).toFixed(2)}%)
+          </TableCell>
+          <TableCell className="h-6 text-xs py-0 pr-5">
+            {currency?.name} {amount.toFixed(2)}
+          </TableCell>
+          <TableCell className="h-6 text-xs py-0 pr-5" />
+        </TableRow>
+      ))}
 
-      <TableRow className="!border-b">
-        <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end font-semibold">
-          Total
-        </TableCell>
-        <TableCell className="h-6 text-xs py-0 pr-5 font-semibold">
-          {currency?.name} {total.toFixed(2)}
-        </TableCell>
-        <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5" />
-      </TableRow>
+      {selectors.unitPrice && selectors.quantity && (
+        <TableRow className="!border-b">
+          <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end font-semibold">
+            Total
+          </TableCell>
+          <TableCell className="h-6 text-xs py-0 pr-5 font-semibold">
+            {currency?.name} {total.toFixed(2)}
+          </TableCell>
+          <TableCell className="h-6 text-xs py-0 pr-5" />
+        </TableRow>
+      )}
 
       {onAddRow && (
         <TableRow className="bg-background border-b-0 border-t">
-          <TableCell colSpan={colSpan} className="p-0">
+          <TableCell colSpan={colSpan + 1} className="p-0">
             <Button
               type="button"
-              variant="ghost"
+              variant="secondary"
               size="sm"
-              className="h-7 w-full rounded-none"
+              className="h-7 w-full rounded-none bg-sidebar"
               onClick={onAddRow}
             >
-              <Plus className="mr-1.5" /> Agregar item
+              <Plus />
+              Agregar línea
             </Button>
           </TableCell>
-          <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5" />
         </TableRow>
       )}
-    </ShadFooter>
+    </TableFooter>
   )
 }

@@ -5,7 +5,7 @@ export const purchaseRequestState = z.enum(["draft", "approved", "ordered", "can
 
 export const purchaseRequestListSchema = z.object({
   id: z.number(),
-  name: z.string(),
+  sequence_id: z.string(),
   state: purchaseRequestState,
   request_date: z.string(),
   company: z.object({
@@ -46,7 +46,7 @@ export const newPurchaseRequestSchema = newPurchaseRequestGeneralSchema
 
 export const purchaseRequestDetailSchema = z.object({
   id: z.number(),
-  name: z.string(),
+  sequence_id: z.string(),
   request_date: z.string(),
   state: purchaseRequestState,
   internal_notes: z.string(),
@@ -90,7 +90,7 @@ export type PurchaseRequestList = z.infer<typeof purchaseRequestListSchema>;
 export type PurchaseRequestListResponse = z.infer<typeof purchaseRequestListResponseSchema>;
 
 export type NewPurchaseRequest = z.infer<typeof newPurchaseRequestSchema>;
-export type NewPurchaseRequestItem = z.infer<typeof newPurchaseRequestLineSchema>;
+export type NewPurchaseRequestLine = z.infer<typeof newPurchaseRequestLineSchema>;
 export type NewPurchaseRequestResponse = z.infer<typeof newPurchaseRequestResponseSchema>;
 
 export type PurchaseRequestDetail = z.infer<typeof purchaseRequestDetailSchema>;

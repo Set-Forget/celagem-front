@@ -30,11 +30,12 @@ export default function PurchaseOrderPopover() {
       <PopoverTrigger asChild>
         <Button
           variant="secondary"
-          size="icon"
+          size="sm"
           loading={isPurchaseOrderLoading}
-          className="h-7 w-7 bg-indigo-50 text-indigo-600 shadow-lg shadow-indigo-50 hover:bg-indigo-100 hover:shadow-indigo-100"
+          className="h-7 bg-indigo-50 text-indigo-600 shadow-lg shadow-indigo-50 hover:bg-indigo-100 hover:shadow-indigo-100 transition-all"
         >
           <LinkIcon className={cn(isPurchaseOrderLoading && "hidden")} />
+          {purchaseOrder?.number}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0 overflow-hidden" align="start">
@@ -58,7 +59,6 @@ export default function PurchaseOrderPopover() {
             {status?.label}
           </Badge>
         </div>
-
 
         <div className="space-y-2 p-2">
           <div className="flex items-center justify-between">

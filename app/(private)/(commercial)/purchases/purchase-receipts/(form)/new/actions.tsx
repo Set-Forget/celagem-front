@@ -1,8 +1,9 @@
+import { usePurchaseOrderSelect } from "@/app/(private)/(commercial)/hooks/use-purchase-order-select"
 import { AsyncCommand } from "@/components/async-command"
 import CustomSonner from "@/components/custom-sonner"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useGetPurchaseOrderQuery, useLazyListPurchaseOrdersQuery } from "@/lib/services/purchase-orders"
+import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
 import { useCreatePurchaseReceiptMutation, useUpdatePurchaseReceiptMutation, useValidatePurchaseReceiptMutation } from "@/lib/services/purchase-receipts"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
@@ -30,32 +31,20 @@ export default function Actions() {
     skip: !purchaseOrderId,
   })
 
-  const [searchPurchaseOrder] = useLazyListPurchaseOrdersQuery()
+  const [validatePurchaseReceipt] = useValidatePurchaseReceiptMutation();
   const [createPurchaseReceipt, { isLoading: isCreatingPurchaseReceipt }] = useCreatePurchaseReceiptMutation()
   const [updatePurchaseReceipt, { isLoading: isUpdatingPurchaseReceipt }] = useUpdatePurchaseReceiptMutation()
-  const [validatePurchaseReceipt] = useValidatePurchaseReceiptMutation();
 
-  const handleSearchPurchaseOrder = async (query?: string) => {
-    try {
-      const response = await searchPurchaseOrder({
-        number: query,
-        status: "purchase"
-      }).unwrap()
-
-      return response.data?.map(purchaseOrder => ({
-        id: purchaseOrder.id,
-        number: purchaseOrder.number,
-        supplier: purchaseOrder.supplier.name,
-        created_by: purchaseOrder.created_by,
-        required_date: purchaseOrder.required_date,
-      }))
-        .slice(0, 10)
-    }
-    catch (error) {
-      console.error(error)
-      return []
-    }
-  }
+  const { fetcher: handleSearchPurchaseOrder } = usePurchaseOrderSelect({
+    map: (purchaseOrder) => ({
+      id: purchaseOrder.id,
+      number: purchaseOrder.number,
+      supplier: purchaseOrder.supplier.name,
+      created_by: purchaseOrder.created_by,
+      required_date: purchaseOrder.required_date,
+    }),
+    filter: (purchaseOrder) => purchaseOrder.status === "purchase"
+  })
 
   const onSubmit = async (data: z.infer<typeof newPurchaseReceiptSchema>) => {
     const { purchase_order, ...rest } = data
@@ -69,7 +58,6 @@ export default function Actions() {
             expected_quantity: item.quantity,
           })),
           reception_date: rest.reception_date.toString(),
-          source_location: 7, // Assuming a default source location
         }).unwrap()
 
         if (response.status === "success") {
@@ -117,11 +105,12 @@ export default function Actions() {
             {!purchaseOrderId ? (
               <Button
                 variant="secondary"
-                size="icon"
-                className="h-7 w-7 shadow-lg shadow-secondary"
+                size="sm"
+                className="h-7 shadow-lg shadow-secondary"
                 onClick={() => setOpenCommand(true)}
               >
                 <LinkIcon />
+                Asociar
               </Button>
             ) : (
               <PurchaseOrderPopover />

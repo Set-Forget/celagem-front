@@ -63,7 +63,7 @@ export const accountMoveLineSchema = z.object({
   id: z.number(),
   move_id: z.object({
     id: z.number(),
-    name: z.string(),
+    sequence_id: z.string(),
     state: z.string(),
   }),
   date: z.string(),

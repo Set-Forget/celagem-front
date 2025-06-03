@@ -46,7 +46,6 @@ export default function Page() {
     resolver: zodResolver(newInvoiceSchema),
     defaultValues: {
       items: [],
-      date: new Date().toISOString(),
       accounting_date: "",
       internal_notes: "",
       tyc_notes: "",
@@ -57,7 +56,8 @@ export default function Page() {
     try {
       const response = await createInvoice({
         ...data,
-        accounting_date: data.accounting_date.toString()
+        accounting_date: data.accounting_date.toString(),
+        date: data.date.toString()
       }).unwrap()
 
       if (response.status === "success") {

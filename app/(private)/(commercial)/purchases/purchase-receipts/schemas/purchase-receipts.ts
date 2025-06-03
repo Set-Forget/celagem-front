@@ -36,12 +36,12 @@ export const newPurchaseReceiptItemSchema = z.object({
 
 export const purchaseReceiptListSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string().nullable(),
+  hide: z.boolean(),
   supplier: z.string(),
   scheduled_date: z.string(),
   reception_date: z.string(),
   reception_location: z.string(),
-  source_location: z.string(),
   state: purchaseReceiptStatusSchema,
 });
 
@@ -51,7 +51,6 @@ export const newPurchaseReceiptSchema = z.object({
     return data instanceof CalendarDate;
   }, { message: "La fecha de recepción es requerida" }),
   reception_location: z.number({ required_error: "La ubicación de recepción es requerida" }),
-  source_location: z.number().optional(),
   move_type: z.enum(["direct"], { required_error: "El tipo de movimiento es requerido" }),
   notes: z.string().optional(),
   scheduled_date: z.string().optional(),
@@ -63,7 +62,7 @@ export const newPurchaseReceiptSchema = z.object({
 
 export const purchaseReceiptDetailSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string().nullable(),
   supplier: z.object({
     id: z.number(),
     name: z.string(),
@@ -71,16 +70,13 @@ export const purchaseReceiptDetailSchema = z.object({
     address: z.string(),
     phone: z.string(),
   }),
+  hide: z.boolean(),
   scheduled_date: z.string(),
   reception_date: z.string(),
   note: z.string(),
   move_type: z.enum(["direct"]),
   state: purchaseReceiptStatusSchema,
   reception_location: z.object({
-    id: z.number(),
-    name: z.string(),
-  }),
-  source_location: z.object({
     id: z.number(),
     name: z.string(),
   }),
@@ -127,6 +123,7 @@ export const purchaseReceiptDetailResponseSchema = z.object({
 export type PurchaseReceiptItem = z.infer<typeof purchaseReceiptItemSchema>;
 
 export type NewPurchaseReceipt = z.infer<typeof newPurchaseReceiptSchema>;
+export type NewPurchaseReceiptLine = z.infer<typeof newPurchaseReceiptItemSchema>;
 export type NewPurchaseReceiptResponse = z.infer<typeof newPurchaseReceiptResponseSchema>;
 
 export type PurchaseReceiptList = z.infer<typeof purchaseReceiptListSchema>;

@@ -53,7 +53,6 @@ export default function Page() {
 
   useEffect(() => {
     if (!purchaseOrder || !purchaseOrderId) return
-
     (async () => {
       const supplier = await getSupplier(purchaseOrder.supplier.id).unwrap()
       newBillForm.reset({

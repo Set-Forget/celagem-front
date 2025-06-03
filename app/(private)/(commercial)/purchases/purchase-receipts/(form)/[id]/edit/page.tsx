@@ -57,7 +57,6 @@ export default function Page() {
           data: {
             ...rest,
             reception_date: rest.reception_date.toString(),
-            source_location: 7,
           },
           id: id
         }).unwrap()
@@ -78,7 +77,6 @@ export default function Page() {
       ...defaultValues,
       supplier: purchaseReceipt.supplier.id,
       reception_location: purchaseReceipt.reception_location.id,
-      source_location: purchaseReceipt.source_location.id,
       reception_date: purchaseReceipt?.reception_date && parseDate(purchaseReceipt?.reception_date.split("T")[0]),
       items: purchaseReceipt.items.map(item => ({
         product_id: item.product_id,

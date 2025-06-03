@@ -1,13 +1,15 @@
-import { NewPurchaseRequest, NewPurchaseRequestResponse, PurchaseRequestDetail, PurchaseRequestDetailResponse, PurchaseRequestListResponse } from '@/app/(private)/(commercial)/purchases/purchase-requests/schemas/purchase-requests';
+import { NewPurchaseRequest, NewPurchaseRequestResponse, PurchaseRequestDetailResponse, PurchaseRequestListResponse, PurchaseRequestState } from '@/app/(private)/(commercial)/purchases/purchase-requests/schemas/purchase-requests';
 import { erpApi } from '@/lib/apis/erp-api';
+import { AdaptedPurchaseRequestDetail, AdaptedPurchaseRequestList, getPurchaseRequestAdapter, listPurchaseRequestsAdapter } from '../adapters/purchase-requests';
 import { Overwrite } from '../utils';
 
 export const purchaseRequestsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
-    listPurchaseRequests: builder.query<PurchaseRequestListResponse,
+    listPurchaseRequests: builder.query<
+      AdaptedPurchaseRequestList[],
       {
         name?: string,
-        status?: "draft" | "approved" | "ordered" | "cancelled",
+        status?: PurchaseRequestState,
         request_date_start?: string,
         request_date_end?: string,
       } | void>({
@@ -15,13 +17,16 @@ export const purchaseRequestsApi = erpApi.injectEndpoints({
           url: '/purchase_requests',
           params: data || {},
         }),
+        transformResponse: (response: PurchaseRequestListResponse) => response.data.map(listPurchaseRequestsAdapter),
         providesTags: ['PurchaseRequest'],
       }),
-    getPurchaseRequest: builder.query<PurchaseRequestDetail, string>({
-      query: (id) => `purchase_requests/${id}`,
-      transformResponse: (response: PurchaseRequestDetailResponse) => response.data,
-      providesTags: (result, error, id) => [{ type: 'PurchaseRequest', id }],
-    }),
+    getPurchaseRequest: builder.query<
+      AdaptedPurchaseRequestDetail,
+      string | number>({
+        query: (id) => `purchase_requests/${id}`,
+        transformResponse: (response: PurchaseRequestDetailResponse) => getPurchaseRequestAdapter(response.data),
+        providesTags: (result, error, id) => [{ type: 'PurchaseRequest', id }],
+      }),
     updatePurchaseRequest: builder.mutation<{ status: string, message: string }, { body: Overwrite<Partial<NewPurchaseRequest>, { request_date: string, company: number }>, id: string | number }>({
       query: ({ body, id }) => ({
         url: `purchase_requests/${id}`,

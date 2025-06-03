@@ -20,8 +20,14 @@ import SupplierTab from "./components/supplier-tab"
 import TableFooter from "./components/table-footer"
 import NotesTab from "./components/notes-tab"
 import RenderFields from "@/components/render-fields"
+import { AdaptedBillDetail } from "@/lib/adapters/bills"
 
-const fields: FieldDefinition<BillDetail>[] = [
+const fields: FieldDefinition<AdaptedBillDetail>[] = [
+  {
+    label: "Número de factura",
+    placeholderLength: 14,
+    render: (p) => p?.custom_sequence_number || p?.sequence_id || "No especificado",
+  },
   {
     label: "Fecha de emisión",
     placeholderLength: 14,

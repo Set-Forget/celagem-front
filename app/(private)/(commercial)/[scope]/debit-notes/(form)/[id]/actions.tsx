@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useCancelDebitNoteMutation, useConfirmDebitNoteMutation, useGetDebitNoteQuery } from "@/lib/services/debit-notes";
 import { cn } from "@/lib/utils";
-import { Check, CircleX, EditIcon, Ellipsis, FileTextIcon } from "lucide-react";
+import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { DebitNoteStatus } from "../../schemas/debit-notes";
 import { generatePDF } from "@/lib/templates/utils";
+import { routes } from "@/lib/routes";
 
 export default function Actions({ state }: { state?: DebitNoteStatus }) {
   const { id, scope } = useParams<{ id: string, scope: "sales" | "purchases" }>()
@@ -122,9 +123,20 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
             <FileTextIcon />
             Previsualizar
           </DropdownMenuItem>
-          {/* 
-            // ! Se deberían poder retornar las notas de crédito/débito a borrador, pero no se puede por el momento.
-          */}
+        </Dropdown>
+        <Dropdown
+          trigger={
+            <Button size="sm">
+              Crear
+              <ChevronDown />
+            </Button>
+          }
+        >
+          <DropdownMenuItem
+            onClick={() => router.push(scope === "purchases" ? routes.payments.new(debitNote?.id) : routes.receipts.new(debitNote?.id))}
+          >
+            Registro de pago
+          </DropdownMenuItem>
         </Dropdown>
       </div>
     )

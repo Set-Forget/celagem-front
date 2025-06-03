@@ -19,7 +19,6 @@ export default function Page() {
   const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
 
   const { data: journalEntries, isLoading: isJournalEntriesLoading } = useListJournalEntriesQuery({
-    number: search ? search.query : undefined,
     date_start: date_range?.field === "date" ? date_range.from : undefined,
     date_end: date_range?.field === "date" ? date_range.to : undefined,
     state: status ?? undefined,
@@ -41,6 +40,7 @@ export default function Page() {
         <DataTable
           data={journalEntries?.data
             ?.toSorted((a, b) => b.id - a.id)
+            .filter(je => je.sequence_id.toString().toLowerCase().includes(search?.query?.toLowerCase() ?? ""))
             ?? []}
           columns={columns}
           onRowClick={(row) => router.push(`${pathname}/${row.id}`)}

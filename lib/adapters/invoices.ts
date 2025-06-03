@@ -5,6 +5,7 @@ export function listInvoicesAdapter(data: InvoiceList) {
   return {
     ...data,
     status: getInvoiceStatus(data),
+    number: data.sequence_id,
   }
 }
 
@@ -12,6 +13,7 @@ export function getInvoiceAdapter(data: InvoiceDetail) {
   return {
     ...data,
     status: getInvoiceStatus(data),
+    number: data.sequence_id,
   }
 }
 

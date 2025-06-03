@@ -1,46 +1,57 @@
-import { useGetSupplierQuery, useLazyListSuppliersQuery } from "@/lib/services/suppliers"
 import { useCallback, useMemo } from "react"
+import {
+  useGetSupplierQuery,
+  useLazyListSuppliersQuery,
+} from "@/lib/services/suppliers"
+import { SupplierList } from "../purchases/vendors/schema/suppliers";
 
-interface Props {
+interface UseSupplierSelectOptions<O = { id: number; name: string }> {
   supplierId?: number
   limit?: number
   skip?: boolean
+  filter?: (s: SupplierList) => boolean
+  map?: (s: SupplierList) => O
 }
 
-export function useSupplierSelect({
+export function useSupplierSelect<
+  O = { id: number; name: string },
+>({
   supplierId,
   limit = 10,
   skip = false,
-}: Props) {
-  const [searchSupplier] = useLazyListSuppliersQuery()
-
-  const { data: supplier } = useGetSupplierQuery(supplierId!, {
+  filter,
+  map,
+}: UseSupplierSelectOptions<O> = {}) {
+  const [searchSuppliers] = useLazyListSuppliersQuery()
+  const { data: selectedSupplier } = useGetSupplierQuery(supplierId!, {
     skip: !supplierId || skip,
   })
 
+  const mapFn = useCallback(
+    (s: SupplierList): O =>
+      map ? map(s) : ({ id: s.id, name: s.name } as O),
+    [map],
+  )
+
   const initialOptions = useMemo(() => {
-    if (!supplier) return []
-    return [{ id: supplier.id, name: supplier.name }]
-  }, [supplier])
+    if (!selectedSupplier) return []
+    return [{ id: selectedSupplier.id, name: selectedSupplier.name }]
+  }, [selectedSupplier])
 
   const fetcher = useCallback(
-    async (query?: string) => {
+    async (query?: string): Promise<O[]> => {
       try {
-        const res = await searchSupplier({
-          name: query,
-        }, true).unwrap()
-
-        return (res.data?.map((supplier) => ({
-          id: supplier.id,
-          name: supplier.name,
-        })) ?? [])
+        const res = await searchSuppliers({ name: query }, true).unwrap()
+        return (res.data ?? [])
+          .filter((s) => (filter ? filter(s) : true))
           .slice(0, limit)
+          .map(mapFn)
       } catch (err) {
-        console.error(err)
+        console.error("useSupplierSelect:", err)
         return []
       }
     },
-    [searchSupplier, limit],
+    [searchSuppliers, limit, filter, mapFn],
   )
 
   return { initialOptions, fetcher }

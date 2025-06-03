@@ -8,7 +8,7 @@ export const newInvoiceLineSchema = z.object({
   product_id: z.number({ required_error: "El producto es requerido" }),
   quantity: z.number(),
   account_id: z.number({ required_error: "La cuenta contable es requerida" }),
-  cost_center: z.number().optional(),
+  cost_center: z.number().nullable().optional(),
   taxes_id: z.array(z.number()).optional(),
   price_unit: z.number({ required_error: "El precio unitario es requerido" }),
 });
@@ -19,7 +19,9 @@ export const newInvoiceGeneralSchema = z.object({
     return data instanceof CalendarDate;
   }, { message: "La fecha de contabilización es requerida" }),
   number: z.string().optional(),
-  date: z.string({ required_error: "La fecha de factura es requerida" }),
+  date: z.custom<CalendarDate>((data) => {
+    return data instanceof CalendarDate;
+  }, { message: "La fecha de factura es requerida" }),
   items: z.array(newInvoiceLineSchema).min(1, { message: "Debe agregar al menos un item" }),
 })
 
@@ -60,7 +62,8 @@ export const invoiceLineSchema = z.object({
 
 export const invoiceListSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string(),
+  custom_sequence_number: z.string(),
   customer: z.string(),
   status: invoiceStatus,
   date: z.string(),
@@ -79,7 +82,8 @@ export const invoiceListSchema = z.object({
 
 export const invoiceDetailSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string(),
+  custom_sequence_number: z.string(),
   customer: z.object({
     id: z.number(),
     name: z.string(),
@@ -162,6 +166,7 @@ export type InvoiceDetailResponse = z.infer<typeof invoiceDetailResponseSchema>;
 export type InvoiceItem = z.infer<typeof invoiceLineSchema>;
 
 export type NewInvoice = z.infer<typeof newInvoiceSchema>;
+export type NewInvoiceLine = z.infer<typeof newInvoiceLineSchema>;
 export type NewInvoiceResponse = z.infer<typeof newInvoiceResponseSchema>;
 
 export type InvoiceStatus = z.infer<typeof invoiceStatus>;
