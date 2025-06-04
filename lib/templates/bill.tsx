@@ -218,7 +218,7 @@ const BillPDF: React.FC<{ data: AdaptedBillDetail }> = ({ data }) => {
               </View>
             </View>
             <View style={styles.headerRight}>
-              <Image src="/celagem-logo.jpg" />
+              <Image src="/celagem-logo.jpg" alt="Celagem logo" />
             </View>
           </View>
 

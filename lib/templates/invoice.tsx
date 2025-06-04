@@ -222,7 +222,7 @@ const InvoicePDF: React.FC<{ data: AdaptedInvoiceDetail }> = ({ data }) => {
               </View>
             </View>
             <View style={styles.headerRight}>
-              <Image src="/celagem-logo.jpg" />
+              <Image src="/celagem-logo.jpg" alt="Celagem logo" />
             </View>
           </View>
 
