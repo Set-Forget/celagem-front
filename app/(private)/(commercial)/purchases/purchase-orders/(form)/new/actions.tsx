@@ -34,7 +34,7 @@ export default function Actions() {
       id: purchaseRequest.id,
       name: purchaseRequest.name,
       company_name: purchaseRequest.company.name,
-      created_by: purchaseRequest.created_by,
+      created_by: purchaseRequest.created_by.name,
       request_date: purchaseRequest.request_date,
     }),
     filter: (purchaseRequest) => purchaseRequest.state === "approved"

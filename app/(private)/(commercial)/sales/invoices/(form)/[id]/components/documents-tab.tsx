@@ -26,7 +26,7 @@ const fields: FieldDefinition<AdaptedInvoiceDetail>[] = [
             href={routes.salesCreditNote.detail(creditNote.id)}
             target="_blank"
           >
-            {creditNote.number}
+            {creditNote.sequence_id}
           </Link>
         </Button>
       </div>
@@ -48,7 +48,7 @@ const fields: FieldDefinition<AdaptedInvoiceDetail>[] = [
             href={routes.salesDebitNote.detail(debitNote.id)}
             target="_blank"
           >
-            {debitNote.number}
+            {debitNote.sequence_id}
           </Link>
         </Button>
       </div>
@@ -70,7 +70,7 @@ const fields: FieldDefinition<AdaptedInvoiceDetail>[] = [
             href={routes.receipts.detail(charge.id)}
             target="_blank"
           >
-            {charge.name}
+            {charge.sequence_id}
           </Link>
         </Button>
       </div >
