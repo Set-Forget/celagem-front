@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Celagem Portal Frontend
+
+This repository contains the Next.js application for the Celagem portal. The project uses the App Router with TypeScript and integrates several business modules such as commercial management, accounting, inventory and medical management.
+
+## Features
+
+- **Authentication middleware** that verifies a `sessionToken` cookie before allowing access to private routes【F:middleware.ts†L1-L23】.
+- **Redux Toolkit store** with RTK Query and multiple API slices defined under `lib/apis` and `lib/services`【F:store.ts†L1-L29】.
+- **API rewrites** configured to proxy requests to backend services using environment variables【F:next.config.mjs†L18-L44】.
+- **Tailwind CSS** with a custom theme and Shadcn UI components【F:tailwind.config.ts†L1-L23】.
+- **PDF utilities** and other React components under the `components` directory.
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies and run the development server:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To create a production build:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm run start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run tests with Vitest:
 
-## Learn More
+```bash
+npm test
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a `.env` file (or set environment variables) with the following values:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+NEXT_PUBLIC_ERP_URL=<ERP base url>
+NEXT_PUBLIC_HC_URL=<HC base url>
+NEXT_PUBLIC_USERS_URL=<Users base url>
+GOOGLE_PLACES_API=<Google Places API key>
+NEXT_PUBLIC_BASE_URL=<Site base url>
+```
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `app/` – public routes live under `(public)` and authenticated routes under `(private)`.
+- `components/` – shared UI components and widgets.
+- `lib/apis/` and `lib/services/` – RTK Query API definitions and domain services.
+- `store.ts` – Redux store configuration.
+- `middleware.ts` – authentication middleware logic.
+- `tailwind.config.ts` – Tailwind CSS setup.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+This project was bootstrapped with Next.js and uses React 19. Refer to `package.json` for the complete list of dependencies and scripts【F:package.json†L1-L94】.
