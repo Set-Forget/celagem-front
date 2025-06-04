@@ -41,12 +41,12 @@ export type DialogsState = {
   payload?: any;
 };
 
-const initalState: DialogsState = {
+const initialState: DialogsState = {
   open: false,
   payload: undefined,
 };
 
-const dialogsState$ = new BehaviorSubject(initalState);
+const dialogsState$ = new BehaviorSubject(initialState);
 
 export const setDialogsState = (state: DialogsState) => {
   dialogsState$.next(state);
