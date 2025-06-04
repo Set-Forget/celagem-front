@@ -80,6 +80,10 @@ export const debitNoteDetailSchema = z.object({
     id: z.number(),
     sequence_id: z.string(),
   })),
+  charges: z.array(z.object({
+    id: z.number(),
+    sequence_id: z.string(),
+  })),
   payments: z.array(z.object({
     id: z.number(),
     sequence_id: z.string(),

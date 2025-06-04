@@ -39,6 +39,28 @@ export default function DocumentsTab() {
       )
     },
     {
+      label: "Registro de cobros",
+      placeholderLength: 14,
+      show: (p) => !!p?.charges?.length,
+      render: (p) => p?.charges?.map((charge) => (
+        <div className="grid grid-cols-1 justify-items-start" key={charge.id}>
+          <Button
+            key={charge.id}
+            variant="link"
+            className="p-0 h-auto text-foreground"
+            asChild
+          >
+            <Link
+              href={routes.receipts.detail(charge.id)}
+              target="_blank"
+            >
+              {charge.sequence_id}
+            </Link>
+          </Button>
+        </div>
+      ))
+    },
+    {
       label: "Registro de pagos",
       placeholderLength: 14,
       show: (p) => !!p?.payments?.length,
@@ -66,7 +88,7 @@ export default function DocumentsTab() {
 
   return (
     <div className="flex flex-col p-4">
-      {debitNote?.associated_invoice && debitNote?.payments?.length === 0 ? (
+      {debitNote?.associated_invoice && debitNote?.payments?.length === 0 && debitNote?.charges?.length === 0 ? (
         <div className="flex flex-col gap-4 items-center col-span-full">
           <div className="bg-secondary p-3 rounded-full shadow-lg shadow-secondary">
             <FileX2 className="w-6 h-6 text-muted-foreground" />
