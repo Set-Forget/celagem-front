@@ -8,22 +8,12 @@ const fields: FieldDefinition<SupplierDetail>[] = [
   {
     label: "Creado por",
     placeholderLength: 16,
-    render: (p) => p.traceability.created_by || "No especificado",
+    render: (p) => p.created_by?.name || "No especificado",
   },
   {
     label: "Fecha de creación",
     placeholderLength: 16,
-    render: (p) => p.traceability.created_at ? new Date(p.traceability.created_at).toLocaleDateString() : "No especificado",
-  },
-  {
-    label: "Actualizado por",
-    placeholderLength: 16,
-    render: (p) => p.traceability.updated_by || "No especificado",
-  },
-  {
-    label: "Fecha de actualización",
-    placeholderLength: 16,
-    render: (p) => p.traceability.updated_at ? new Date(p.traceability.updated_at).toLocaleDateString() : "No especificado",
+    render: (p) => p.created_at ? new Date(p.created_at).toLocaleDateString() : "No especificado",
   }
 ];
 

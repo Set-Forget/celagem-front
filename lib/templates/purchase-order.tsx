@@ -201,7 +201,7 @@ const PurchaseOrderPDF: React.FC<{ data: PurchaseOrderDetail }> = ({ data }) => 
   const totalInWords = `${currencyCode} ${toWords(total.toFixed(2))}`
 
   return (
-    <Document title={`Orden de Compra ${data.number}`}>
+    <Document title={`Orden de Compra ${data.sequence_id}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.container}>
           {/* Header */}
@@ -210,7 +210,7 @@ const PurchaseOrderPDF: React.FC<{ data: PurchaseOrderDetail }> = ({ data }) => 
               <Text style={styles.title}>ORDEN DE COMPRA</Text>
               <View style={styles.row}>
                 <Text style={styles.label}>Orden No:</Text>
-                <Text style={styles.value}>{data.number}</Text>
+                <Text style={styles.value}>{data.sequence_id}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Fecha de orden:</Text>

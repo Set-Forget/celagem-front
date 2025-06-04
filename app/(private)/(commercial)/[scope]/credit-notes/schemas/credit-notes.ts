@@ -36,7 +36,10 @@ export const creditNoteDetailSchema = z.object({
     address: z.string(),
   }),
   created_at: z.string(),
-  created_by: z.string(),
+  created_by: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
   status: creditNoteStatus,
   date: z.string(),
   due_date: z.string(),

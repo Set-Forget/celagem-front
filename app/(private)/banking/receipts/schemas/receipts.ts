@@ -82,12 +82,11 @@ export const paymentDetailSchema = z.object({
       name: z.string(),
     }),
   })),
-  traceability: z.object({
-    created_by: z.string(),
-    created_at: z.string(),
-    updated_by: z.string(),
-    updated_at: z.string(),
+  created_by: z.object({
+    id: z.number(),
+    name: z.string(),
   }),
+  created_at: z.string(),
 })
 
 export const newChargeSchema = z.object({

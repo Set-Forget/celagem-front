@@ -205,7 +205,7 @@ const DebitNotePDF: React.FC<{ data: AdaptedDebitNoteDetail }> = ({ data }) => {
   const formattedTaxes = `${currencyCode} ${taxes.toFixed(2)}`;
   const formattedTotal = `${currencyCode} ${total.toFixed(2)}`;
 
-  const invoiceNumber = data.number ? data.number : `#${data.id}`;
+  const invoiceNumber = data.custom_sequence_number || data.sequence_id;
   const totalInWords = `${currencyCode} ${toWords(total.toFixed(2))}`;
 
   return (
@@ -222,7 +222,7 @@ const DebitNotePDF: React.FC<{ data: AdaptedDebitNoteDetail }> = ({ data }) => {
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Creado por:</Text>
-                <Text style={styles.value}>{data.created_by}</Text>
+                <Text style={styles.value}>{data.created_by.name}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Fecha de creación:</Text>
@@ -352,9 +352,9 @@ const DebitNotePDF: React.FC<{ data: AdaptedDebitNoteDetail }> = ({ data }) => {
             <View style={styles.infoSection}>
               <Text style={styles.infoTitle}>INFORMACIÓN ADICIONAL:</Text>
               <View style={styles.infoList}>
-                {data?.associated_invoice?.name && (
+                {data?.associated_invoice?.sequence_id && (
                   <Text style={styles.infoItem}>
-                    • Factura asociada: {data.associated_invoice.name} (ID:{" "}
+                    • Factura asociada: {data.associated_invoice.sequence_id} (ID:{" "}
                     {data.associated_invoice.id})
                   </Text>
                 )}
@@ -407,7 +407,7 @@ const DebitNotePDF: React.FC<{ data: AdaptedDebitNoteDetail }> = ({ data }) => {
           <View style={styles.signaturesSection}>
             <View style={styles.signatureBox}>
               <Text style={styles.signatureTitle}>APROBADO POR</Text>
-              <Text style={styles.signatureName}>{data.created_by}</Text>
+              <Text style={styles.signatureName}>{data.created_by.name}</Text>
               <View style={styles.signatureLine} />
             </View>
             <View style={styles.signatureBox}>

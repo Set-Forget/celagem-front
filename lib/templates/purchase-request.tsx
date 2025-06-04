@@ -178,7 +178,7 @@ export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ 
   const formattedCreatedDate = format(data.created_at, "PP", { locale: es })
 
   return (
-    <Document title={`Solicitud de Pedido ${data.name}`}>
+    <Document title={`Solicitud de Pedido ${data.sequence_id}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.container}>
           {/* Header */}
@@ -187,7 +187,7 @@ export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ 
               <Text style={styles.title}>SOLICITUD DE PEDIDO</Text>
               <View style={styles.row}>
                 <Text style={styles.label}>Pedido No:</Text>
-                <Text style={styles.value}>{data.name}</Text>
+                <Text style={styles.value}>{data.sequence_id}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Fecha de solicitud:</Text>
@@ -214,7 +214,7 @@ export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ 
               {data.purchase_order && (
                 <View style={styles.row}>
                   <Text>Orden de Compra:</Text>
-                  <Text style={styles.value}>{data.purchase_order.name}</Text>
+                  <Text style={styles.value}>{data.purchase_order.sequence_id}</Text>
                 </View>
               )}
             </View>
@@ -292,7 +292,7 @@ export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ 
                 <Text>{purchaseRequestStatus[data.state].label}</Text>
               </View>
               {data.purchase_order && (
-                <Text style={styles.summaryNote}>Orden de compra asociada: {data.purchase_order.name}</Text>
+                <Text style={styles.summaryNote}>Orden de compra asociada: {data.purchase_order.sequence_id}</Text>
               )}
             </View>
           </View>

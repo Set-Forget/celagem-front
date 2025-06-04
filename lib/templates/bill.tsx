@@ -210,7 +210,7 @@ const BillPDF: React.FC<{ data: AdaptedBillDetail }> = ({ data }) => {
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Creado por:</Text>
-                <Text style={styles.value}>{data.created_by}</Text>
+                <Text style={styles.value}>{data.created_by.name}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Fecha de creación:</Text>
@@ -350,7 +350,7 @@ const BillPDF: React.FC<{ data: AdaptedBillDetail }> = ({ data }) => {
           <View style={styles.signaturesSection}>
             <View style={styles.signatureBox}>
               <Text style={styles.signatureTitle}>APROBADO POR</Text>
-              <Text style={styles.signatureName}>{data.created_by}</Text>
+              <Text style={styles.signatureName}>{data.created_by.name}</Text>
               <View style={styles.signatureLine} />
             </View>
             <View style={styles.signatureBox}>

@@ -113,12 +113,11 @@ export const supplierDetailSchema = z.object({
 
   // * Trazabilidad
   internal_notes: z.string(),
-  traceability: z.object({
-    created_by: z.string(),
-    created_at: z.string(),
-    updated_by: z.string(),
-    updated_at: z.string(),
+  created_by: z.object({
+    id: z.number(),
+    name: z.string(),
   }),
+  created_at: z.string(),
 
   street: z.string(),
   city: z.string(),

@@ -207,7 +207,7 @@ const CreditNotePDF: React.FC<{ data: CreditNoteDetail }> = ({ data }) => {
 	const totalInWords = toWords(total.toFixed(2));
 
 	return (
-		<Document title={`Nota de Crédito ${data.number}`}>
+		<Document title={`Nota de Crédito ${data.custom_sequence_number || data.sequence_id}`}>
 			<Page size="A4" style={styles.page}>
 				<View style={styles.container}>
 					{/* Header */}
@@ -216,7 +216,7 @@ const CreditNotePDF: React.FC<{ data: CreditNoteDetail }> = ({ data }) => {
 							<Text style={styles.title}>NOTA DE CRÉDITO</Text>
 							<View style={styles.row}>
 								<Text style={styles.label}>Nota de Crédito No:</Text>
-								<Text style={styles.value}>{data.number}</Text>
+								<Text style={styles.value}>{data.custom_sequence_number || data.sequence_id}</Text>
 							</View>
 							<View style={styles.row}>
 								<Text style={styles.label}>Fecha de emisión:</Text>
@@ -253,7 +253,7 @@ const CreditNotePDF: React.FC<{ data: CreditNoteDetail }> = ({ data }) => {
 							<Text style={styles.sectionTitle}>DATOS DE LA NOTA DE CRÉDITO</Text>
 							<View style={styles.row}>
 								<Text>Número:</Text>
-								<Text style={styles.value}>{data.number}</Text>
+								<Text style={styles.value}>{data.custom_sequence_number || data.sequence_id}</Text>
 							</View>
 							<View style={styles.row}>
 								<Text>Moneda:</Text>
@@ -261,7 +261,7 @@ const CreditNotePDF: React.FC<{ data: CreditNoteDetail }> = ({ data }) => {
 							</View>
 							<View style={styles.row}>
 								<Text>Creado por:</Text>
-								<Text style={styles.value}>{data.created_by}</Text>
+								<Text style={styles.value}>{data.created_by.name}</Text>
 							</View>
 							<View style={styles.row}>
 								<Text>Fecha de creación:</Text>
@@ -342,9 +342,9 @@ const CreditNotePDF: React.FC<{ data: CreditNoteDetail }> = ({ data }) => {
 						<View style={styles.infoSection}>
 							<Text style={styles.infoTitle}>INFORMACIÓN ADICIONAL:</Text>
 							<View style={styles.infoList}>
-								{data?.associated_invoice?.name && (
+								{data?.associated_invoice?.sequence_id && (
 									<Text style={styles.infoItem}>
-										• Factura asociada: {data.associated_invoice.name} (ID:{" "}
+										• Factura asociada: {data.associated_invoice.sequence_id} (ID:{" "}
 										{data.associated_invoice.id})
 									</Text>
 								)}
@@ -397,7 +397,7 @@ const CreditNotePDF: React.FC<{ data: CreditNoteDetail }> = ({ data }) => {
 					<View style={styles.signaturesSection}>
 						<View style={styles.signatureBox}>
 							<Text style={styles.signatureTitle}>AUTORIZADO POR</Text>
-							<Text style={styles.signatureName}>{data.created_by}</Text>
+							<Text style={styles.signatureName}>{data.created_by.name}</Text>
 							<View style={styles.signatureLine} />
 						</View>
 						<View style={styles.signatureBox}>

@@ -89,7 +89,10 @@ export const debitNoteDetailSchema = z.object({
     name: z.string(),
   }),
   type: z.literal("debit_note"),
-  created_by: z.string(),
+  created_by: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
   created_at: z.string(),
   items: z.array(debitNoteLineSchema)
 })
