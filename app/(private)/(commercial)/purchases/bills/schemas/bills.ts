@@ -130,7 +130,10 @@ export const billDetailSchema = z.object({
   due_date: z.string(),
   accounting_date: z.string(),
   created_at: z.string(),
-  created_by: z.string(),
+  created_by: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
   currency: z.object({
     id: z.number(),
     name: z.string(),

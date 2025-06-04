@@ -112,7 +112,7 @@ export default function DocumentPopover() {
               <User className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">Creado por</span>
             </div>
-            <span className="text-sm max-w-[100px] text-nowrap truncate font-medium">{document?.created_by}</span>
+            <span className="text-sm max-w-[100px] text-nowrap truncate font-medium">{document?.created_by?.name}</span>
           </div>
         </div>
 
