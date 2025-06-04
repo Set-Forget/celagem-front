@@ -1,10 +1,9 @@
-import type { BillDetail } from "@/app/(private)/(commercial)/purchases/bills/schemas/bills"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import type React from "react"
-import { toWords } from "../utils"
 import { AdaptedBillDetail } from "../adapters/bills"
+import { toWords } from "../utils"
 
 const styles = StyleSheet.create({
   page: {
@@ -218,7 +217,7 @@ const BillPDF: React.FC<{ data: AdaptedBillDetail }> = ({ data }) => {
               </View>
             </View>
             <View style={styles.headerRight}>
-              <Image src="/celagem-logo.jpg" alt="Celagem logo" />
+              <Image src="/celagem-logo.jpg" />
             </View>
           </View>
 

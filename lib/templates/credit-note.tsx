@@ -223,9 +223,9 @@ const CreditNotePDF: React.FC<{ data: CreditNoteDetail }> = ({ data }) => {
 								<Text style={styles.value}>{formattedDate}</Text>
 							</View>
 						</View>
-                                                <View style={styles.headerRight}>
-                                                        <Image src="/celagem-logo.jpg" alt="Celagem logo" />
-                                                </View>
+						<View style={styles.headerRight}>
+							<Image src="/celagem-logo.jpg" />
+						</View>
 					</View>
 
 					{/* Grid Section */}

@@ -1,8 +1,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Bomb, FileX2 } from "lucide-react";
-import Head from "next/head";
+import { ArrowLeft, Bomb } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function Error({ error }: { error: Error }) {

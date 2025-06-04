@@ -219,7 +219,7 @@ const DeliveryNotePDF: React.FC<{ data: DeliveryNoteDetail }> = ({ data }) => {
               </View>
             </View>
             <View style={styles.headerRight}>
-              <Image src="/celagem-logo.jpg" alt="Celagem logo" />
+              <Image src="/celagem-logo.jpg" />
             </View>
           </View>
 

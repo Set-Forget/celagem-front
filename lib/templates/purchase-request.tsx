@@ -195,7 +195,7 @@ export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ 
               </View>
             </View>
             <View style={styles.headerRight}>
-              <Image src="/celagem-logo.jpg" alt="Celagem logo" />
+              <Image src="/celagem-logo.jpg" />
             </View>
           </View>
 
