@@ -24,21 +24,21 @@ const tabs = [
   {
     value: "tab-1",
     label: "Contacto",
-    icon: <Mail className="mr-1.5" size={16} />,
+    icon: <Mail size={16} />,
     content: <ContactForm />,
     schema: newCustomerContactSchema,
   },
   {
     value: "tab-2",
     label: "Fiscal",
-    icon: <Wallet className="mr-1.5" size={16} />,
+    icon: <Wallet size={16} />,
     content: <FiscalForm />,
     schema: newCustomerFiscalSchema,
   },
   {
     value: "tab-3",
     label: "Contabilidad",
-    icon: <Calculator className="mr-1.5" size={16} />,
+    icon: <Calculator size={16} />,
     content: <AccountingForm />,
     schema: newCustomerAccountingSchema,
   }

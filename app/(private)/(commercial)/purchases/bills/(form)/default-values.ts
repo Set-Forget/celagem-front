@@ -2,6 +2,7 @@
 export const defaultValues = {
   supplier: undefined,
   number: "",
+  custom_sequence_number: "",
   date: undefined,
   company: undefined,
   accounting_date: undefined,

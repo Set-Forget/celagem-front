@@ -39,7 +39,7 @@ export default function Actions() {
       id: purchaseOrder.id,
       number: purchaseOrder.number,
       supplier: purchaseOrder.supplier.name,
-      created_by: purchaseOrder.created_by,
+      created_by: purchaseOrder.created_by.name,
       required_date: purchaseOrder.required_date,
     }),
     filter: (purchaseOrder) => purchaseOrder.status === "purchase"

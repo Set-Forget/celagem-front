@@ -38,37 +38,37 @@ const tabs = [
   {
     value: "tab-1",
     label: "Contacto",
-    icon: <Mail className="mr-1.5" size={16} />,
+    icon: <Mail size={16} />,
     content: <ContactTab />
   },
   {
     value: "tab-2",
     label: "Afiliación",
-    icon: <Hospital className="mr-1.5" size={16} />,
+    icon: <Hospital size={16} />,
     content: <AffiliationTab />
   },
   {
     value: "tab-3",
     label: "Acompañante",
-    icon: <Users className="mr-1.5" size={16} />,
+    icon: <Users size={16} />,
     content: <CompanionTab />
   },
   {
     value: "tab-4",
     label: "Responsable",
-    icon: <Shield className="mr-1.5" size={16} />,
+    icon: <Shield size={16} />,
     content: <CaregiverTab />
   },
   {
     value: "tab-5",
     label: "Empresa responsable",
-    icon: <Building className="mr-1.5" size={16} />,
+    icon: <Building size={16} />,
     content: <CareCompanyTab />
   },
   {
     value: "tab-6",
     label: "Fiscal",
-    icon: <Wallet className="mr-1.5" size={16} />,
+    icon: <Wallet size={16} />,
     content: <FiscalTab />
   },
 ];

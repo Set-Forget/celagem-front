@@ -43,6 +43,11 @@ export const purchaseReceiptListSchema = z.object({
   reception_date: z.string(),
   reception_location: z.string(),
   state: purchaseReceiptStatusSchema,
+  created_by: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  created_at: z.string(),
 });
 
 export const newPurchaseReceiptSchema = z.object({
@@ -82,7 +87,7 @@ export const purchaseReceiptDetailSchema = z.object({
   }),
   purchase_order: z.object({
     id: z.number(),
-    name: z.string(),
+    sequence_id: z.string(),
   }).nullable(),
   backorder: z.boolean(),
   backorders: z.array(z.object({

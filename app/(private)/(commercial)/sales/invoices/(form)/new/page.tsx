@@ -24,14 +24,14 @@ const tabs = [
   {
     value: "tab-1",
     label: "Fiscal",
-    icon: <Wallet className="mr-1.5" size={16} />,
+    icon: <Wallet size={16} />,
     content: <FiscalForm />,
     schema: newInvoiceFiscalSchema,
   },
   {
     value: "tab-2",
     label: "Otros",
-    icon: <Sticker className="mr-1.5" size={16} />,
+    icon: <Sticker size={16} />,
     content: <NotesForm />,
     schema: newInvoiceNotesSchema,
   }

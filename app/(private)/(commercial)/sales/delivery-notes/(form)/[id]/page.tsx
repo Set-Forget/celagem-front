@@ -3,8 +3,9 @@
 import { DataTable } from '@/components/data-table';
 import DataTabs from '@/components/data-tabs';
 import Header from '@/components/header';
+import RenderFields from '@/components/render-fields';
 import { useGetDeliveryQuery } from '@/lib/services/deliveries';
-import { cn, FieldDefinition, placeholder } from '@/lib/utils';
+import { FieldDefinition } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Box, FileText } from 'lucide-react';
@@ -15,7 +16,6 @@ import Actions from './actions';
 import { columns } from './components/columns';
 import CustomerTab from './components/customer-tab';
 import InvoiceTab from './components/invoice-tab';
-import RenderFields from '@/components/render-fields';
 
 const fields: FieldDefinition<DeliveryNoteDetail>[] = [
   {
@@ -44,13 +44,13 @@ const tabs = [
   {
     value: "tab-1",
     label: "Cliente",
-    icon: <Box className="mr-1.5" size={16} />,
+    icon: <Box size={16} />,
     content: <CustomerTab />
   },
   {
     value: "tab-2",
     label: "Factura",
-    icon: <FileText className="mr-1.5" size={16} />,
+    icon: <FileText size={16} />,
     content: <InvoiceTab />
   }
 ]

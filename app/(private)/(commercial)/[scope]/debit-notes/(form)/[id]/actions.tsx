@@ -109,7 +109,7 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
     )
   }
 
-  if (state === "posted" || state === "done") {
+  if (state === "posted") {
     return (
       <div className="flex gap-2">
         <Dropdown
@@ -137,6 +137,28 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
           >
             Registro de pago
           </DropdownMenuItem>
+        </Dropdown>
+      </div>
+    )
+  }
+
+  if (state === "done") {
+    return (
+      <div className="flex gap-2">
+        <Dropdown
+          trigger={
+            <Button size="icon" variant="outline" className="h-8 w-8">
+              <Ellipsis />
+            </Button>
+          }
+        >
+          <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
+            <FileTextIcon />
+            Previsualizar
+          </DropdownMenuItem>
+          {/* 
+            // ! Se deberían poder retornar las notas de crédito/débito a borrador, pero no se puede por el momento.
+          */}
         </Dropdown>
       </div>
     )

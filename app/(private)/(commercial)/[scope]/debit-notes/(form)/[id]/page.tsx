@@ -10,14 +10,14 @@ import { useGetDebitNoteQuery } from "@/lib/services/debit-notes"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
-import { Box, Receipt } from "lucide-react"
+import { Box, Paperclip } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
 import PartnerTab from "../../../credit-notes/(form)/[id]/components/partner-tab"
 import { debitNoteStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
-import InvoiceTab from "./components/invoice-tab"
+import DocumentsTab from "./components/documents-tab"
 import TableFooter from "./components/table-footer"
 
 const fields: FieldDefinition<AdaptedDebitNoteDetail>[] = [
@@ -64,16 +64,16 @@ export default function Page() {
 
   const tabs = [
     {
-      value: "tab-1",
-      label: "Factura",
-      icon: <Receipt className="mr-1.5" size={16} />,
-      content: <InvoiceTab />
-    },
-    {
       value: "tab-2",
       label: scope === "sales" ? "Cliente" : "Proveedor",
-      icon: <Box className="mr-1.5" size={16} />,
+      icon: <Box size={16} />,
       content: <PartnerTab />
+    },
+    {
+      value: "tab-3",
+      label: "Documentos",
+      icon: <Paperclip size={16} />,
+      content: <DocumentsTab />
     }
   ]
 
@@ -82,7 +82,6 @@ export default function Page() {
   const { data: debitNote, isLoading: isDebitNoteLoading } = useGetDebitNoteQuery(id)
 
   const status = debitNoteStatus[debitNote?.status as keyof typeof debitNoteStatus];
-
   return (
     <div>
       <Header title={

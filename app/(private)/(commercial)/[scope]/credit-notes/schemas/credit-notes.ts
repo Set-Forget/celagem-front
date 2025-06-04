@@ -1,7 +1,7 @@
 import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
-const creditNoteStatus = z.enum(["draft", "posted", "cancel"]);
+const creditNoteStatus = z.enum(['draft', 'posted', 'cancel', 'done', 'overdue']);
 const creditNoteMoveType = z.enum(["out_refund", "in_refund"]);
 
 export const newCreditNoteLineSchema = z.object({
@@ -9,7 +9,7 @@ export const newCreditNoteLineSchema = z.object({
   quantity: z.number(),
   taxes_id: z.array(z.number()).optional(),
   account_id: z.number({ required_error: "La cuenta contable es requerida" }),
-  cost_center: z.number().optional(),
+  cost_center: z.number().nullable().optional(),
   price_unit: z.number(),
 });
 
@@ -54,9 +54,10 @@ export const creditNoteDetailSchema = z.object({
     name: z.string(),
   }),
   internal_notes: z.string(),
+  amount_residual: z.number(),
   associated_invoice: z.object({
     id: z.number(),
-    name: z.string(),
+    sequence_id: z.string(),
   }),
   items: z.array(creditNoteLineSchema)
 })

@@ -223,7 +223,15 @@ export default function GeneralForm() {
                 footer={({ append }) =>
                   <FormTableFooter<NewCreditNote, NewCreditNoteLine>
                     control={control}
-                    onAddRow={() => append({ id: uuidv4(), quantity: 1, taxes_id: [] })}
+                    onAddRow={() => append({
+                      id: uuidv4(),
+                      product_id: null,
+                      quantity: 1,
+                      price_unit: 0,
+                      account_id: null,
+                      cost_center: null,
+                      taxes_id: []
+                    })}
                     colSpan={columns.length}
                     selectors={{
                       items: (values) => values.items,

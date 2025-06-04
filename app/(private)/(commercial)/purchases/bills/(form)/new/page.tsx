@@ -15,23 +15,22 @@ import { newBillFiscalSchema, newBillNotesSchema, newBillSchema } from "../../sc
 import FiscalForm from "../components/fiscal-form"
 import GeneralForm from "../components/general-form"
 import NotesForm from "../components/notes-form"
-import Actions from "./actions"
 import { defaultValues } from "../default-values"
-import { setDialogsState } from "@/lib/store/dialogs-store"
+import Actions from "./actions"
 import ConfirmPurchaseOrderDialog from "./components/confirm-purchase-order-dialog"
 
 const tabs = [
   {
     value: "tab-1",
     label: "Fiscal",
-    icon: <Wallet className="mr-1.5" size={16} />,
+    icon: <Wallet size={16} />,
     content: <FiscalForm />,
     schema: newBillFiscalSchema,
   },
   {
     value: "tab-2",
     label: "Notas",
-    icon: <Sticker className="mr-1.5" size={16} />,
+    icon: <Sticker size={16} />,
     content: <NotesForm />,
     schema: newBillNotesSchema,
   }

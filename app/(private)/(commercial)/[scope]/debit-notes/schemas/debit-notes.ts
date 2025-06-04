@@ -62,6 +62,10 @@ export const debitNoteDetailSchema = z.object({
   internal_notes: z.string(),
   tyc_notes: z.string(),
   rejection_reason: z.string(),
+  associated_invoice: z.object({
+    id: z.number(),
+    sequence_id: z.string(),
+  }),
   purchase_orders: z.array(z.object({
     id: z.number(),
     sequence_id: z.string(),
@@ -87,10 +91,6 @@ export const debitNoteDetailSchema = z.object({
   type: z.literal("debit_note"),
   created_by: z.string(),
   created_at: z.string(),
-  associated_invoice: z.object({
-    id: z.number(),
-    name: z.string(),
-  }),
   items: z.array(debitNoteLineSchema)
 })
 

@@ -29,12 +29,7 @@ const tabs = [
   {
     value: 'tab-1',
     label: 'General',
-    icon: (
-      <House
-        className="mr-1.5"
-        size={16}
-      />
-    ),
+    icon: <House size={16} />,
     content: <GeneralForm />,
     schema: newAttributeGeneralSchema,
   },

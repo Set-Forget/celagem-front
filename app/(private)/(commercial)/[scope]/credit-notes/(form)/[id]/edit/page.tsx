@@ -25,7 +25,7 @@ const tabs = [
   {
     value: "tab-1",
     label: "Notas",
-    icon: <Sticker className="mr-1.5" size={16} />,
+    icon: <Sticker size={16} />,
     content: <NotesForm />
   }
 ]
@@ -78,13 +78,7 @@ export default function Page() {
         body: {
           ...data,
           date: data.date.toString(),
-          accounting_date: data.accounting_date.toString(),
-          items: data.items.map((item) => ({
-            quantity: item.quantity,
-            product_id: item.product_id,
-            taxes_id: item?.taxes_id,
-            price_unit: item.price_unit,
-          })),
+          accounting_date: data.accounting_date.toString()
         },
         id: id!
       }).unwrap()

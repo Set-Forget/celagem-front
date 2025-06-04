@@ -12,7 +12,10 @@ export const purchaseRequestListSchema = z.object({
     id: z.number(),
     name: z.string(),
   }),
-  created_by: z.string(),
+  created_by: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
   created_at: z.string()
 });
 
@@ -53,7 +56,7 @@ export const purchaseRequestDetailSchema = z.object({
   tyc_notes: z.string(),
   purchase_order: z.object({
     id: z.number(),
-    name: z.string(),
+    sequence_id: z.string(),
   }).nullable(),
   company: z.object({
     id: z.number(),

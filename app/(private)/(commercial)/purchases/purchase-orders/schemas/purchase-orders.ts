@@ -55,7 +55,10 @@ export const purchaseOrderListSchema = z.object({
     id: z.number(),
     name: z.string(),
   }),
-  created_by: z.string(),
+  created_by: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
   created_at: z.string(),
   percentage_received: z.number(),
 })

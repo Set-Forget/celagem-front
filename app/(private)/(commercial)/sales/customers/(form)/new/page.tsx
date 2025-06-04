@@ -1,47 +1,43 @@
 "use client"
 
 import CustomSonner from "@/components/custom-sonner"
-import DataTabs from "@/components/data-tabs"
+import { FormTabs } from "@/components/form-tabs"
 import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { Form } from "@/components/ui/form"
 import { useCreateCustomerMutation } from "@/lib/services/customers"
-import { cn, getFieldPaths } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { get } from "lodash"
 import { Calculator, Mail, Save, Wallet } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { FieldErrors, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { newCustomerAccountingSchema, newCustomerContactSchema, newCustomerFiscalSchema, newCustomerSchema } from "../../schema/customers"
-import ContactForm from "./components/contact-form"
-import GeneralForm from "./components/general-form"
-import FiscalForm from "./components/fiscal-form"
 import AccountingForm from "./components/accounting-form"
-import { FormTabs } from "@/components/form-tabs"
+import ContactForm from "./components/contact-form"
+import FiscalForm from "./components/fiscal-form"
+import GeneralForm from "./components/general-form"
 
 const tabs = [
   {
     value: "tab-1",
     label: "Contacto",
-    icon: <Mail className="mr-1.5" size={16} />,
+    icon: <Mail size={16} />,
     content: <ContactForm />,
     schema: newCustomerContactSchema,
   },
   {
     value: "tab-2",
     label: "Fiscal",
-    icon: <Wallet className="mr-1.5" size={16} />,
+    icon: <Wallet size={16} />,
     content: <FiscalForm />,
     schema: newCustomerFiscalSchema,
   },
   {
     value: "tab-3",
     label: "Contabilidad",
-    icon: <Calculator className="mr-1.5" size={16} />,
+    icon: <Calculator size={16} />,
     content: <AccountingForm />,
     schema: newCustomerAccountingSchema,
   }

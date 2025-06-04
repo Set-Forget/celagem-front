@@ -105,7 +105,10 @@ export const billListSchema = z.object({
     id: z.number(),
     name: z.string(),
   }),
-  created_by: z.string(),
+  created_by: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
   created_at: z.string(),
   type: billTypes,
 })
@@ -144,20 +147,20 @@ export const billDetailSchema = z.object({
   tyc_notes: z.union([z.string(), z.boolean()]),
   purchase_orders: z.array(z.object({
     id: z.number(),
-    name: z.string(),
+    sequence_id: z.string(),
   })),
   amount_total: z.number(),
   amount_residual: z.number(),
   credit_notes: z.array(z.object({
     id: z.number(),
-    number: z.string(),
+    sequence_id: z.string(),
     date: z.string(),
     amount_total: z.number(),
     status: billStatus,
   })),
   debit_notes: z.array(z.object({
     id: z.number(),
-    number: z.string(),
+    sequence_id: z.string(),
     date: z.string(),
     amount_total: z.number(),
     status: billStatus,
@@ -168,7 +171,7 @@ export const billDetailSchema = z.object({
   }),
   payments: z.array(z.object({
     id: z.number(),
-    name: z.string(),
+    sequence_id: z.string(),
     state: z.string(),
     amount: z.number(),
     date: z.string(),

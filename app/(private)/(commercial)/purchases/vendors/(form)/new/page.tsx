@@ -1,18 +1,15 @@
 "use client"
 
 import CustomSonner from "@/components/custom-sonner"
-import DataTabs from "@/components/data-tabs"
+import { FormTabs } from "@/components/form-tabs"
 import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useCreateSupplierMutation } from "@/lib/services/suppliers"
-import { getFieldPaths } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { get } from "lodash"
 import { Calculator, Mail, Wallet } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { FieldErrors, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { newSupplierAccountingSchema, newSupplierContactSchema, newSupplierFiscalSchema, newSupplierSchema } from "../../schema/suppliers"
@@ -20,27 +17,26 @@ import AccountingForm from "./components/accounting-form"
 import ContactForm from "./components/contact-form"
 import FiscalForm from "./components/fiscal-form"
 import GeneralForm from "./components/general-form"
-import { FormTabs } from "@/components/form-tabs"
 
 const tabs = [
   {
     value: "tab-1",
     label: "Contacto",
-    icon: <Mail className="mr-1.5" size={16} />,
+    icon: <Mail size={16} />,
     content: <ContactForm />,
     schema: newSupplierContactSchema,
   },
   {
     value: "tab-2",
     label: "Fiscal",
-    icon: <Wallet className="mr-1.5" size={16} />,
+    icon: <Wallet size={16} />,
     content: <FiscalForm />,
     schema: newSupplierFiscalSchema,
   },
   {
     value: "tab-3",
     label: "Contabilidad",
-    icon: <Calculator className="mr-1.5" size={16} />,
+    icon: <Calculator size={16} />,
     content: <AccountingForm />,
     schema: newSupplierAccountingSchema,
   }

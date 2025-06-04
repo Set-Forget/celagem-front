@@ -1,13 +1,12 @@
 import RenderFields from "@/components/render-fields";
 import { Button } from "@/components/ui/button";
+import { AdaptedPurchaseReceiptDetail } from "@/lib/adapters/purchase-receipts";
 import { routes } from "@/lib/routes";
 import { useGetPurchaseReceiptQuery } from "@/lib/services/purchase-receipts";
 import { FieldDefinition } from "@/lib/utils";
 import { FileX2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { PurchaseReceiptDetail } from "../../../schemas/purchase-receipts";
-import { AdaptedPurchaseReceiptDetail } from "@/lib/adapters/purchase-receipts";
 
 const fields: FieldDefinition<AdaptedPurchaseReceiptDetail>[] = [
   {
@@ -26,7 +25,7 @@ const fields: FieldDefinition<AdaptedPurchaseReceiptDetail>[] = [
             href={routes.purchaseOrder.detail(p?.purchase_order?.id!)}
             target="_blank"
           >
-            {p?.purchase_order?.name}
+            {p?.purchase_order?.sequence_id}
           </Link>
         </Button>
       </div>

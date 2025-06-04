@@ -55,7 +55,7 @@ export const columns: ColumnDef<PurchaseRequestList>[] = [
     accessorKey: "created_by",
     header: "Solicitado por",
     cell: ({ row }) => <div className="text-nowrap">
-      {row.getValue("created_by")}
+      {row.original.created_by.name}
     </div>,
   },
 ]

@@ -3,7 +3,9 @@
 import { DataTable } from "@/components/data-table"
 import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
+import RenderFields from "@/components/render-fields"
 import { Badge } from "@/components/ui/badge"
+import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices"
 import { useGetInvoiceQuery, useListInvoicesQuery } from "@/lib/services/invoices"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
@@ -11,16 +13,13 @@ import { es } from "date-fns/locale"
 import { Box, Paperclip, Sticker } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
-import { InvoiceDetail } from "../../schemas/invoices"
-import { getInvoiceStatus, invoiceStatus } from "../../utils"
+import { invoiceStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
 import CustomerTab from "./components/customer-tab"
 import DocumentsTab from "./components/documents-tab"
 import NotesTab from "./components/notes-tab"
 import TableFooter from "./components/table-footer"
-import RenderFields from "@/components/render-fields"
-import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices"
 
 const fields: FieldDefinition<AdaptedInvoiceDetail>[] = [
   {
@@ -54,19 +53,19 @@ const tabs = [
   {
     value: "tab-1",
     label: "Cliente",
-    icon: <Box className="mr-1.5" size={16} />,
+    icon: <Box size={16} />,
     content: <CustomerTab />
   },
   {
     value: "tab-2",
     label: "Documentos",
-    icon: <Paperclip className="mr-1.5" size={16} />,
+    icon: <Paperclip size={16} />,
     content: <DocumentsTab />
   },
   {
     value: "tab-3",
     label: "Notas",
-    icon: <Sticker className="mr-1.5" size={16} />,
+    icon: <Sticker size={16} />,
     content: <NotesTab />
   },
 ]

@@ -63,13 +63,13 @@ export default function Page() {
     {
       value: "tab-1",
       label: "Plantilla",
-      icon: <Puzzle className="mr-1.5" size={16} />,
+      icon: <Puzzle size={16} />,
       content: <TemplateFormTab formRef={formRef} onSubmit={handleSubmit} />
     },
     {
       value: "tab-2",
       label: "Paciente",
-      icon: <User className="mr-1.5" size={16} />,
+      icon: <User size={16} />,
       content: <PatientTab />
     },
   ];

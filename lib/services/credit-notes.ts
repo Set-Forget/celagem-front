@@ -9,7 +9,7 @@ export const creditNotesApi = erpApi.injectEndpoints({
       transformResponse: (response: CreditNoteDetailResponse) => getCreditNoteAdapter(response.data),
       providesTags: ['CreditNote'],
     }),
-    createCreditNote: builder.mutation<NewCreditNoteResponse, Omit<NewCreditNote, 'items' | "accounting_date" | "date"> & { accounting_date: string, date: string }>({
+    createCreditNote: builder.mutation<NewCreditNoteResponse, Omit<NewCreditNote, "accounting_date" | "date"> & { accounting_date: string, date: string }>({
       query: (data) => ({
         url: 'credit_notes',
         method: 'POST',
@@ -17,7 +17,7 @@ export const creditNotesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['CreditNote'],
     }),
-    updateCreditNote: builder.mutation<{ status: string, message: string }, { body: Partial<Omit<NewCreditNote, 'items' | "accounting_date" | "date"> & { accounting_date: string, date: string }>, id: string | number }>({
+    updateCreditNote: builder.mutation<{ status: string, message: string }, { body: Partial<Omit<NewCreditNote, "accounting_date" | "date"> & { accounting_date: string, date: string }>, id: string | number }>({
       query: ({ id, body }) => ({
         url: `/credit_notes/${id}`,
         method: 'PUT',

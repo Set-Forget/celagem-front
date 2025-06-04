@@ -3,22 +3,22 @@
 import { DataTable } from "@/components/data-table"
 import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
+import RenderFields from "@/components/render-fields"
 import { Badge } from "@/components/ui/badge"
+import { useGetCreditNoteQuery } from "@/lib/services/credit-notes"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
-import { Box, Receipt } from "lucide-react"
+import { Box, Paperclip } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
+import { CreditNoteDetail } from "../../schemas/credit-notes"
+import { creditNoteStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
+import DocumentsTab from "./components/documents-tab"
 import PartnerTab from "./components/partner-tab"
-import InvoiceTab from "./components/invoice-tab"
 import TableFooter from "./components/table-footer"
-import { CreditNoteDetail } from "../../schemas/credit-notes"
-import { useGetCreditNoteQuery } from "@/lib/services/credit-notes"
-import { creditNoteStatus } from "../../utils"
-import RenderFields from "@/components/render-fields"
 
 const fields: FieldDefinition<CreditNoteDetail>[] = [
   {
@@ -44,16 +44,16 @@ export default function Page() {
 
   const tabs = [
     {
-      value: "tab-1",
-      label: "Factura",
-      icon: <Receipt className="mr-1.5" size={16} />,
-      content: <InvoiceTab />
-    },
-    {
       value: "tab-2",
       label: scope === "sales" ? "Cliente" : "Proveedor",
-      icon: <Box className="mr-1.5" size={16} />,
+      icon: <Box size={16} />,
       content: <PartnerTab />
+    },
+    {
+      value: "tab-3",
+      label: "Documentos",
+      icon: <Paperclip size={16} />,
+      content: <DocumentsTab />
     }
   ]
 

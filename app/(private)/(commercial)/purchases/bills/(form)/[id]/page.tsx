@@ -59,19 +59,19 @@ const tabs = [
   {
     value: "tab-1",
     label: "Proveedor",
-    icon: <Box className="mr-1.5" size={16} />,
+    icon: <Box size={16} />,
     content: <SupplierTab />
   },
   {
     value: "tab-2",
     label: "Documentos",
-    icon: <Paperclip className="mr-1.5" size={16} />,
+    icon: <Paperclip size={16} />,
     content: <DocumentsTab />
   },
   {
     value: "tab-3",
     label: "Notes",
-    icon: <Sticker className="mr-1.5" size={16} />,
+    icon: <Sticker size={16} />,
     content: <NotesTab />
   },
 ]

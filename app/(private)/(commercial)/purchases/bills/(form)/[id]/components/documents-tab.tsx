@@ -1,13 +1,12 @@
 import RenderFields from "@/components/render-fields";
 import { Button } from "@/components/ui/button";
+import { AdaptedBillDetail } from "@/lib/adapters/bills";
 import { routes } from "@/lib/routes";
 import { useGetBillQuery } from "@/lib/services/bills";
 import { FieldDefinition } from "@/lib/utils";
 import { FileX2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { BillDetail } from "../../../schemas/bills";
-import { AdaptedBillDetail } from "@/lib/adapters/bills";
 
 const fields: FieldDefinition<AdaptedBillDetail>[] = [
   {
@@ -26,7 +25,7 @@ const fields: FieldDefinition<AdaptedBillDetail>[] = [
             href={routes.purchaseOrder.detail(order.id)}
             target="_blank"
           >
-            {order.name}
+            {order.sequence_id}
           </Link>
         </Button>
       </div>
@@ -48,7 +47,7 @@ const fields: FieldDefinition<AdaptedBillDetail>[] = [
             href={routes.purchaseCreditNote.detail(creditNote.id)}
             target="_blank"
           >
-            {creditNote.number}
+            {creditNote.sequence_id}
           </Link>
         </Button>
       </div>
@@ -70,7 +69,7 @@ const fields: FieldDefinition<AdaptedBillDetail>[] = [
             href={routes.purchaseDebitNote.detail(debitNote.id)}
             target="_blank"
           >
-            {debitNote.number}
+            {debitNote.sequence_id}
           </Link>
         </Button>
       </div>
@@ -92,7 +91,7 @@ const fields: FieldDefinition<AdaptedBillDetail>[] = [
             href={routes.payments.detail(payment.id)}
             target="_blank"
           >
-            {payment.name}
+            {payment.sequence_id}
           </Link>
         </Button>
       </div>
