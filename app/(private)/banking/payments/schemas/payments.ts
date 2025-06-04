@@ -1,4 +1,3 @@
-import { billDetailSchema } from "@/app/(private)/(commercial)/purchases/bills/schemas/bills";
 import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 

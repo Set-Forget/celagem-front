@@ -10,9 +10,9 @@ import { paymentStatus } from "../utils"
 
 export const columns: ColumnDef<PaymentList>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "sequence_id",
     header: "Número",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="font-medium">{row.getValue("sequence_id")}</div>,
   },
   {
     accessorKey: "state",

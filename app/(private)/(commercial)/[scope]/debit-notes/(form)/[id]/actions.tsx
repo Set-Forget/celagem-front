@@ -135,7 +135,7 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
           <DropdownMenuItem
             onClick={() => router.push(scope === "purchases" ? routes.payments.new(debitNote?.id) : routes.receipts.new(debitNote?.id))}
           >
-            Registro de pago
+            {scope === "purchases" ? "Registro de pago" : "Registro de cobro"}
           </DropdownMenuItem>
         </Dropdown>
       </div>

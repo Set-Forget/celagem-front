@@ -71,18 +71,34 @@ export default function Actions() {
     } else {
       const purchaseReceipt = purchaseOrder?.receptions?.slice().sort((a, b) => a.id - b.id).at(-1);
       if (!purchaseReceipt) throw new Error("No se encontró una recepción de compra para actualizar")
-
-      try {
-        const response = await updatePurchaseReceipt({
-          id: purchaseReceipt?.id,
-          data: {
-            items: purchaseOrder?.items.map(item => ({
+      console.log(purchaseOrder)
+      console.log(
+        {
+          items: purchaseOrder?.items
+            .filter(item => item.product_qty - item.qty_received > 0)
+            .map(item => ({
               product_id: rest.items.find(poItem => poItem.product_id === item.product_id)?.product_id || item.product_id,
               product_uom: rest.items.find(poItem => poItem.product_id === item.product_id)?.product_uom || item.product_uom.id,
               quantity: rest.items.find(poItem => poItem.product_id === item.product_id)?.quantity || 0,
               expected_quantity: item.product_qty,
               purchase_line_id: item.id,
-            })).filter(item => item.quantity > 0),
+            }))
+        }
+      )
+
+      try {
+        const response = await updatePurchaseReceipt({
+          id: purchaseReceipt?.id,
+          data: {
+            items: purchaseOrder?.items
+              .filter(item => item.product_qty - item.qty_received > 0)
+              .map(item => ({
+                product_id: rest.items.find(poItem => poItem.product_id === item.product_id)?.product_id || item.product_id,
+                product_uom: rest.items.find(poItem => poItem.product_id === item.product_id)?.product_uom || item.product_uom.id,
+                quantity: rest.items.find(poItem => poItem.product_id === item.product_id)?.quantity || 0,
+                expected_quantity: item.product_qty,
+                purchase_line_id: item.id,
+              }))
           }
         }).unwrap()
         if (response.status === "success") {
