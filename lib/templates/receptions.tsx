@@ -191,7 +191,7 @@ const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
   const totalQuantity = data.items.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <Document title={`Recepción ${data.number}`}>
+    <Document title={`Recepción ${data.sequence_id}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.container}>
           {/* Header */}
@@ -200,7 +200,7 @@ const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
               <Text style={styles.title}>RECEPCIÓN</Text>
               <View style={styles.row}>
                 <Text style={styles.label}>Recepción No:</Text>
-                <Text style={styles.value}>{data.number}</Text>
+                <Text style={styles.value}>{data.sequence_id}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Fecha programada:</Text>
@@ -217,7 +217,7 @@ const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
               {data?.purchase_order && (
                 <View style={styles.row}>
                   <Text style={styles.label}>Orden de Compra:</Text>
-                  <Text style={styles.value}>{data.purchase_order.name}</Text>
+                  <Text style={styles.value}>{data.purchase_order.sequence_id}</Text>
                 </View>
               )}
             </View>
