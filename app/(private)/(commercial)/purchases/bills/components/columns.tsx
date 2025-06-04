@@ -62,9 +62,7 @@ export const columns: ColumnDef<AdaptedBillList>[] = [
     accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      const status = row.original.type === "credit_note" ?
-        creditNoteStatus[row.original.status as keyof typeof creditNoteStatus] :
-        billStatus[row.original.status]
+      const status = row.original.type === "credit_note" ? creditNoteStatus[row.original.status as keyof typeof creditNoteStatus] : billStatus[row.original.status]
       return (
         <Badge
           variant="custom"

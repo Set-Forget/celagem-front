@@ -44,6 +44,13 @@ export const billStatus = {
     text_color: "text-green-800",
     pure_bg_color: "bg-green-500",
   },
+  rejected: {
+    label: "Rechazada",
+    key: "rejected",
+    bg_color: "bg-red-100",
+    text_color: "text-red-800",
+    pure_bg_color: "bg-red-500",
+  },
 } as const;
 
 export const billTypes = {
@@ -66,6 +73,7 @@ interface BillLike {
   amount_residual: number
   due_date: string
   type: BillTypes
+  rejection_reason?: string
 }
 
 export function getBillStatus(
@@ -88,5 +96,9 @@ export function getBillStatus(
     return "overdue"
   }
 
-  return "draft"
+  if (bill.status === "cancel" && bill.rejection_reason) {
+    return "rejected"
+  }
+
+  return bill.status
 }

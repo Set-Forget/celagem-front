@@ -47,8 +47,6 @@ export default function Page() {
     defaultValues: defaultValues
   })
 
-  console.log(form.formState.errors)
-
   const onSubmit = async (data: z.infer<typeof newPurchaseReceiptSchema>) => {
     const { purchase_order, ...rest } = data
     try {

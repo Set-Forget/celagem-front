@@ -71,9 +71,10 @@ export const billsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Bill'],
     }),
-    cancelBill: builder.mutation<{ status: string, message: string }, { id: string }>({
-      query: ({ id }) => ({
+    cancelBill: builder.mutation<{ status: string, message: string }, { id: string, rejection_reason: string }>({
+      query: ({ id, rejection_reason }) => ({
         url: `/purchase_invoices/${id}/cancel`,
+        body: { rejection_reason },
         method: 'POST',
       }),
       invalidatesTags: ['Bill'],

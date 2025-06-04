@@ -15,8 +15,6 @@ export function useAccountingAccountSelect({ accountId, limit = 10 }: UseAccount
 
   const isPurchases = pathname.includes("purchases")
 
-  console.log(isPurchases)
-
   const [searchAccount] = useLazyListAccountingAccountsQuery()
 
   const { data: account } = useGetAccountingAccountQuery(accountId!, {

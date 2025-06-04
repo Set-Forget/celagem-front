@@ -1,7 +1,7 @@
 import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
-export const billStatus = z.enum(['draft', 'posted', 'to_approve', 'cancel', 'done', 'overdue']);
+export const billStatus = z.enum(['draft', 'posted', 'to_approve', 'cancel', 'done', 'overdue', 'rejected']);
 export const billTypes = z.enum(['invoice', 'credit_note', 'debit_note']);
 
 export const newBillLineSchema = z.object({
@@ -58,6 +58,7 @@ export const billLineSchema = z.object({
   quantity: z.number(),
   price_unit: z.number(),
   price_subtotal: z.number(),
+  rejection_reason: z.string().nullable(),
   price_tax: z.number(),
   purchase_order_line: z.object({
     id: z.number(),

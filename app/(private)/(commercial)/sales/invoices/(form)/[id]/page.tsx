@@ -79,7 +79,6 @@ export default function Page() {
   const { data: invoices } = useListInvoicesQuery()
 
   const status = invoiceStatus[invoice?.status as keyof typeof invoiceStatus];
-  console.log(invoice)
   return (
     <div>
       <Header title={

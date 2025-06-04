@@ -1,31 +1,29 @@
 "use client"
 
 import { AsyncSelect } from "@/components/async-select"
+import CustomSonner from "@/components/custom-sonner"
 import DatePicker from "@/components/date-picker"
+import FormTable from "@/components/form-table"
 import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
 import { useLazyListCurrenciesQuery } from "@/lib/services/currencies"
+import { useCreateJournalEntryMutation } from "@/lib/services/journal-entries"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { z } from "zod"
 import { newJournalEntrySchema } from "../../schemas/journal-entries"
-import FormTable from "@/components/form-table"
 import { columns } from "../components/columns"
 import TableFooter from "../components/table-footer"
-import CustomSonner from "@/components/custom-sonner"
-import { useRouter } from "next/navigation"
-import { useCreateJournalEntryMutation } from "@/lib/services/journal-entries"
-import { toast } from "sonner"
-import { getLocalTimeZone, parseDate, today } from "@internationalized/date"
-import { useLazyListJournalsQuery } from "@/lib/services/journals"
 
 export default function Page() {
   const router = useRouter()
 
   const [searchCurrencies] = useLazyListCurrenciesQuery()
-  const [searchJournals] = useLazyListJournalsQuery()
 
   const [createJournalEntry, { isLoading: isCreatingJournalEntry }] = useCreateJournalEntryMutation()
 
@@ -51,20 +49,6 @@ export default function Page() {
     }
   }
 
-  const handleSearchJournal = async (query?: string) => {
-    try {
-      const response = await searchJournals({ name: query }).unwrap()
-      return response.data?.map(journal => ({
-        id: journal.id,
-        name: journal.name
-      }))
-        .slice(0, 10)
-    } catch (error) {
-      console.error(error)
-      return []
-    }
-  }
-
   const onSubmit = async (data: z.infer<typeof newJournalEntrySchema>) => {
     const isBalanced = data.items.reduce((acc, item) => {
       const debit = Number(item.debit) || 0
@@ -81,6 +65,7 @@ export default function Page() {
       const response = await createJournalEntry({
         ...data,
         date: data.date.toString(),
+        journal: 3
       }).unwrap()
 
       if (response.status === "success") {
@@ -157,37 +142,6 @@ export default function Page() {
               ) :
                 <FormDescription>
                   Moneda que figura en el asiento contable.
-                </FormDescription>
-              }
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={newJournalEntryForm.control}
-          name="journal"
-          render={({ field }) => (
-            <FormItem className="flex flex-col w-full">
-              <FormLabel className="w-fit">Diario contable</FormLabel>
-              <FormControl>
-                <AsyncSelect<{ id: number, name: string }, number>
-                  label="Diario contable"
-                  triggerClassName="!w-full"
-                  placeholder="Seleccionar diario contable..."
-                  fetcher={handleSearchJournal}
-                  getDisplayValue={(item) => item.name}
-                  getOptionValue={(item) => item.id}
-                  renderOption={(item) => <div>{item.name}</div>}
-                  onChange={field.onChange}
-                  value={field.value}
-                  getOptionKey={(item) => String(item.id)}
-                  noResultsMessage="No se encontraron resultados"
-                />
-              </FormControl>
-              {newJournalEntryForm.formState.errors.journal ? (
-                <FormMessage />
-              ) :
-                <FormDescription>
-                  Diario contable al que pertenece el asiento contable.
                 </FormDescription>
               }
             </FormItem>

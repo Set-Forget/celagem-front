@@ -110,7 +110,6 @@ export default function GeneralForm() {
 
                 apply("payment_method", partner?.payment_method?.id)
                 apply("currency", partner?.currency.id)
-                console.log(partner)
                 apply("payment_term", partner?.property_payment_term?.id)
               }}
               value={field.value}

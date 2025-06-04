@@ -1,7 +1,10 @@
 import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogHeader, DialogTrigger, DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { routes } from "@/lib/routes";
 import { useApproveBillMutation, useCancelBillMutation, useConfirmBillMutation, useGetBillQuery } from "@/lib/services/bills";
 import { generatePDF } from "@/lib/templates/utils";
@@ -51,16 +54,18 @@ export default function Actions() {
     }
   }
 
-  const handleCancelBill = async () => {
+  const handleCancelBill = async ({ rejectionReason }: { rejectionReason?: string } = { rejectionReason: undefined }) => {
     try {
       const response = await cancelBill({
         id: id,
+        rejection_reason: rejectionReason || "",
       }).unwrap()
 
       if (response.status === "success") {
-        toast.custom((t) => <CustomSonner t={t} description="Factura de compra cancelada" variant="success" />)
+        toast.custom((t) => <CustomSonner t={t} description={`Factura de compra ${rejectionReason ? "rechazada" : "cancelada"}`} variant="success" />)
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la factura de compra" variant="error" />)
     }
@@ -106,7 +111,7 @@ export default function Actions() {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onSelect={handleCancelBill}
+            onSelect={() => handleCancelBill()}
             loading={isBillCancelling}
             className="text-destructive focus:text-destructive"
           >
@@ -130,6 +135,7 @@ export default function Actions() {
     return (
       <div className="flex gap-2">
         <Dropdown
+          modal={false}
           trigger={
             <Button size="icon" variant="outline" className="h-8 w-8">
               <Ellipsis />
@@ -145,14 +151,69 @@ export default function Actions() {
             Editar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onSelect={handleCancelBill}
-            loading={isBillCancelling}
-            className="text-destructive focus:text-destructive"
-          >
-            <CircleX className={cn(isBillCancelling && "hidden")} />
-            Rechazar
-          </DropdownMenuItem>
+          <Dialog modal>
+            <DialogTrigger asChild>
+              <DropdownMenuItem
+                onSelect={e => e.preventDefault()}
+                className="text-destructive focus:text-destructive"
+              >
+                <CircleX className={cn(isBillCancelling && "hidden")} />
+                Rechazar
+              </DropdownMenuItem>
+            </DialogTrigger>
+            <DialogContent>
+              <div className="flex flex-col gap-2">
+                <DialogHeader>
+                  <DialogTitle>
+                    Rechazar orden de compra
+                  </DialogTitle>
+                  <DialogDescription>
+                    Una vez que se rechazada la orden de compra, podrá ser reabierta y editada.
+                  </DialogDescription>
+                </DialogHeader>
+              </div>
+              <form className="space-y-5" onSubmit={(e) => {
+                e.preventDefault();
+
+                const data = new FormData(e.currentTarget);
+                const rejectionReason = data.get("rejection_reason") as string;
+                if (!rejectionReason) return toast.custom((t) => <CustomSonner t={t} description="Por favor, ingrese un motivo de rechazo" variant="error" />)
+
+                handleCancelBill({ rejectionReason })
+              }}>
+                <div className="*:not-first:mt-2">
+                  <Label>
+                    Motivo de rechazo
+                  </Label>
+                  <Input
+                    name="rejection_reason"
+                    type="text"
+                    placeholder="Motivo de rechazo..."
+                  />
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button
+                      size="sm"
+                      type="button"
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      Cerrar
+                    </Button>
+                  </DialogClose>
+                  <Button
+                    size="sm"
+                    loading={isBillCancelling}
+                    type="submit"
+                  >
+                    <CircleX className={cn(isBillCancelling && "hidden")} />
+                    Rechazar
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
         </Dropdown>
         <Button
           size="sm"

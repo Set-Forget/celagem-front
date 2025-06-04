@@ -7,8 +7,7 @@ import {
 
 import {
   Avatar,
-  AvatarFallback,
-  AvatarImage,
+  AvatarFallback
 } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -26,9 +25,8 @@ import {
 } from "@/components/ui/sidebar"
 import { UserList } from "@/lib/schemas/users"
 import { cn, placeholder } from "@/lib/utils"
-import { useRouter } from "next/navigation"
 import Cookies from "js-cookie"
-import { useGetUserQuery } from "@/lib/services/users"
+import { useRouter } from "next/navigation"
 
 export function NavUser({
   user,
@@ -37,12 +35,6 @@ export function NavUser({
 }) {
   const router = useRouter()
   const { isMobile } = useSidebar()
-
-  const { data: userProfile } = useGetUserQuery(user?.id!, {
-    skip: !user?.id,
-  })
-
-  console.log(userProfile)
 
   const handleLogout = () => {
     Cookies.remove('sessionToken');

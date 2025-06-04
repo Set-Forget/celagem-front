@@ -208,13 +208,19 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
                 </div>
                 <DialogFooter>
                   <DialogClose asChild>
-                    <Button type="button" variant="outline" className="flex-1">
+                    <Button
+                      size="sm"
+                      type="button"
+                      variant="outline"
+                      className="flex-1"
+                    >
                       Cerrar
                     </Button>
                   </DialogClose>
                   <Button
                     loading={isPurchaseOrderCancelling}
                     type="submit"
+                    size="sm"
                   >
                     <CircleX className={cn(isPurchaseOrderCancelling && "hidden")} />
                     Rechazar

@@ -40,7 +40,7 @@ export const newJournalEntrySchema = z.object({
     return data instanceof CalendarDate;
   }, { message: "La fecha del asiento es requerida" }),
   currency: z.number({ required_error: "La moneda es requerida" }),
-  journal: z.number({ required_error: "El diario contable es requerido" }),
+  journal: z.number({ required_error: "El diario contable es requerido" }).optional(),
   ref: z.string().optional(),
   internal_notes: z.string().optional(), // ! No existe en la API, pero lo agregué para poder usarlo en el formulario.
   items: z.array(newJournalEntryItemSchema).min(1, { message: "Al menos un item es requerido" })
