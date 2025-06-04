@@ -1,7 +1,7 @@
 import type React from "react"
 import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
 import type { PurchaseReceiptDetail } from "@/app/(private)/(commercial)/purchases/purchase-receipts/schemas/purchase-receipts"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 
 const styles = StyleSheet.create({
@@ -184,8 +184,8 @@ const styles = StyleSheet.create({
 })
 
 const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
-  const formattedScheduledDate = format(data.scheduled_date, "PP", { locale: es })
-  const formattedReceptionDate = format(data.reception_date, "PP", { locale: es })
+  const formattedScheduledDate = data.scheduled_date && format(parseISO(data.scheduled_date), "PP", { locale: es })
+  const formattedReceptionDate = data.reception_date && format(parseISO(data.reception_date), "PP", { locale: es })
 
   const totalItems = data.items.length
   const totalQuantity = data.items.reduce((sum, item) => sum + item.quantity, 0)

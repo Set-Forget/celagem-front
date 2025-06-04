@@ -7,7 +7,7 @@ import { useCreateBillMutation } from "@/lib/services/bills";
 import { useGetPurchaseOrderQuery, useLazyGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
 import { setDialogsState } from "@/lib/store/dialogs-store";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { Building2, Calendar, LinkIcon, Save, User } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -54,6 +54,7 @@ export default function Actions() {
         items: data.items.map((items) => ({
           ...items,
           purchase_line_id: purchaseOrder?.items.find((poItem) => poItem.product_id === items.product_id)?.id,
+          cost_center: items.cost_center || undefined
         })),
         purchase_order_id: purchaseOrderId ? parseInt(purchaseOrderId) : undefined,
         company: 1,
@@ -128,7 +129,7 @@ export default function Actions() {
               <span className="flex items-center gap-1 truncate">
                 <Calendar className="!h-3.5 !w-3.5" />
                 <p className="truncate">
-                  {format(r.required_date, "PP", { locale: es })}
+                  {r.required_date && format(parseISO(r.required_date), "PP", { locale: es })}
                 </p>
               </span>
             </div>

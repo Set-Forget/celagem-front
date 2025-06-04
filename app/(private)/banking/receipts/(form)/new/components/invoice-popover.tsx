@@ -1,6 +1,6 @@
 "use client"
 
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import {
   Building2,
@@ -136,7 +136,7 @@ export default function InvoicePopover() {
                   <span className="text-sm">Fecha</span>
                 </div>
                 <span className="text-sm font-medium">
-                  {format(invoices[0].created_at, "PP", { locale: es })}
+                  {invoices[0].created_at && format(parseISO(invoices[0].created_at), "PP", { locale: es })}
                 </span>
               </div>
             </>

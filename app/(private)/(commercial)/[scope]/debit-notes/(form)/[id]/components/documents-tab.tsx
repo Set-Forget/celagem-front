@@ -88,7 +88,7 @@ export default function DocumentsTab() {
 
   return (
     <div className="flex flex-col p-4">
-      {debitNote?.associated_invoice && debitNote?.payments?.length === 0 && debitNote?.charges?.length === 0 ? (
+      {!debitNote?.associated_invoice && debitNote?.payments?.length === 0 && debitNote?.charges?.length === 0 ? (
         <div className="flex flex-col gap-4 items-center col-span-full">
           <div className="bg-secondary p-3 rounded-full shadow-lg shadow-secondary">
             <FileX2 className="w-6 h-6 text-muted-foreground" />

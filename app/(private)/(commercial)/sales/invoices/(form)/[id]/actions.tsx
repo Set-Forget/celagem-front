@@ -9,6 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { InvoiceStatus, InvoiceTypes } from "../../schemas/invoices";
 import { generatePDF } from "@/lib/templates/utils";
+import { routes } from "@/lib/routes";
 
 export default function Actions({ state, type }: { state?: InvoiceStatus, type?: InvoiceTypes }) {
   const router = useRouter()
@@ -148,7 +149,7 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
     )
   }
 
-  if (state === "posted" && type === "invoice") {
+  if (state === "posted") {
     return (
       <div className="flex gap-2">
         <Dropdown
@@ -172,7 +173,7 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
           }
         >
           <DropdownMenuItem
-            onClick={() => router.push(`/purchases/purchase-receipts/new`)}
+            onClick={() => router.push(routes.receipts.new(invoice?.id))}
           >
             Registro de pago
           </DropdownMenuItem>
@@ -196,7 +197,7 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
     )
   }
 
-  if ((state === "posted" && type === "credit_note" || type === "debit_note") || state === "done") {
+  if (state === "done") {
     return (
       <div className="flex gap-2">
         <Dropdown
@@ -213,6 +214,20 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
           {/* 
             // ! Se deberían poder retornar las notas de crédito/débito a borrador, pero no se puede por el momento.
           */}
+        </Dropdown>
+        <Dropdown
+          trigger={
+            <Button size="sm">
+              Crear
+              <ChevronDown />
+            </Button>
+          }
+        >
+          <DropdownMenuItem
+            onClick={() => router.push(`/sales/debit-notes/new?invoiceId=${id}`)}
+          >
+            Nota de débito
+          </DropdownMenuItem>
         </Dropdown>
       </div>
     )

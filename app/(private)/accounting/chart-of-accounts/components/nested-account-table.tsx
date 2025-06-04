@@ -135,7 +135,7 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data, loading }
               {accountTypes.find((type) => type.value === item.account_type)?.label || "No especificado"}
             </TableCell>
             <TableCell className="p-2 text-sm text-right font-medium">
-              USD {item.balance !== undefined ? `${item.balance.toFixed(2)}` : ""}
+              COP {item.balance !== undefined ? `${item.balance.toFixed(2)}` : ""}
             </TableCell>
             <TableCell className="p-2 text-sm"></TableCell>
           </TableRow>

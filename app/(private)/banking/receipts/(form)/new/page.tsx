@@ -15,7 +15,7 @@ export default function Page() {
     resolver: zodResolver(newChargeSchema),
     defaultValues: defaultValues,
   })
-
+  console.log(form.formState.errors)
   return (
     <Form {...form}>
       <Header title="Registrar cobro">

@@ -1,45 +1,41 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
-import Link from "next/link"
-import { useSearchParams, useRouter } from "next/navigation"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import {
-  LinkIcon,
   Building2,
   Calendar,
   DollarSign,
+  FileText,
+  LinkIcon,
   Package,
   Unlink,
-  FileText,
 } from "lucide-react"
-
+import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useMemo, useState } from "react"
 import { billStatus } from "@/app/(private)/(commercial)/purchases/bills/utils"
-import { useLazyGetBillQuery } from "@/lib/services/bills"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
+import { AdaptedBillDetail } from "@/lib/adapters/bills"
+import { useLazyGetBillQuery } from "@/lib/services/bills"
 import { cn } from "@/lib/utils"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newPaymentSchema } from "../../../schemas/payments"
 import { defaultValues } from "../../default-values"
-import { BillDetail } from "@/app/(private)/(commercial)/purchases/bills/schemas/bills"
-import { AdaptedBillDetail } from "@/lib/adapters/bills"
 
 export default function BillPopover() {
   const params = useSearchParams()
   const router = useRouter()
   const { reset } = useFormContext<z.infer<typeof newPaymentSchema>>()
 
-  const billIds = useMemo(
-    () => params.get("bill_ids")?.split(",").filter(Boolean) ?? [],
-    [params]
-  )
+  const billIds = useMemo(() => params.get("bill_ids")?.split(",").filter(Boolean) ?? [], [params])
 
   const [getBill] = useLazyGetBillQuery()
+
   const [bills, setBills] = useState<AdaptedBillDetail[]>([])
   const [isLoadingBills, setLoadingBills] = useState(false)
 
@@ -137,7 +133,7 @@ export default function BillPopover() {
                   <span className="text-sm">Fecha</span>
                 </div>
                 <span className="text-sm font-medium">
-                  {format(bills[0].created_at, "PP", { locale: es })}
+                  {bills[0].created_at && format(parseISO(bills[0].created_at), "PP", { locale: es })}
                 </span>
               </div>
             </>

@@ -8,7 +8,7 @@ import { AdaptedBillList } from "@/lib/adapters/bills"
 import { AdaptedInvoiceList } from "@/lib/adapters/invoices"
 import { useCreateCreditNoteMutation } from "@/lib/services/credit-notes"
 import { cn } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { Building2, CalendarX2, DollarSign, LinkIcon, Save } from "lucide-react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
@@ -60,7 +60,11 @@ export default function Actions() {
       const response = await createCreditNote({
         ...data,
         accounting_date: data.accounting_date.toString(),
-        date: data.date.toString()
+        date: data.date.toString(),
+        items: data.items.map((item) => ({
+          ...item,
+          cost_center: item.cost_center || undefined
+        }))
       }).unwrap()
 
       if (response.status === "success") {
@@ -135,7 +139,7 @@ export default function Actions() {
               <span className="flex items-center gap-1 truncate">
                 <CalendarX2 className="!h-3.5 !w-3.5" />
                 <p className="truncate">
-                  {format(r?.due_date, "PP", { locale: es })}
+                  {r?.due_date && format(parseISO(r?.due_date), "PP", { locale: es })}
                 </p>
               </span>
             </div>

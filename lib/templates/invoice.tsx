@@ -1,7 +1,7 @@
 import type React from "react"
 import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
 import type { InvoiceDetail } from "@/app/(private)/(commercial)/sales/invoices/schemas/invoices"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { toWords } from "../utils"
 import { AdaptedInvoiceDetail } from "../adapters/invoices"
@@ -184,9 +184,9 @@ const styles = StyleSheet.create({
 })
 
 const InvoicePDF: React.FC<{ data: AdaptedInvoiceDetail }> = ({ data }) => {
-  const formattedDate = format(data.date, "PP", { locale: es })
-  const formattedDueDate = format(data.due_date, "PP", { locale: es })
-  const formattedCreatedDate = format(data.created_at, "PP", { locale: es })
+  const formattedDate = data.date && format(parseISO(data.date), "PP", { locale: es })
+  const formattedDueDate = data.due_date && format(parseISO(data.due_date), "PP", { locale: es })
+  const formattedCreatedDate = data.created_at && format(parseISO(data.created_at), "PP", { locale: es })
 
   const subtotal = data.items.reduce((sum, item) => sum + item.price_subtotal, 0)
   const taxes = data.items.reduce((sum, item) => sum + item.price_tax, 0)

@@ -3,6 +3,7 @@ import {
   useLazyListAccountingAccountsQuery,
   useGetAccountingAccountQuery,
 } from "@/lib/services/accounting-accounts"
+import { usePathname } from "next/navigation"
 
 interface UseAccountSelectOpts {
   accountId?: number
@@ -10,7 +11,13 @@ interface UseAccountSelectOpts {
 }
 
 export function useAccountingAccountSelect({ accountId, limit = 10 }: UseAccountSelectOpts) {
-  const [seatchAccount] = useLazyListAccountingAccountsQuery()
+  const pathname = usePathname()
+
+  const isPurchases = pathname.includes("purchases")
+
+  console.log(isPurchases)
+
+  const [searchAccount] = useLazyListAccountingAccountsQuery()
 
   const { data: account } = useGetAccountingAccountQuery(accountId!, {
     skip: !accountId,
@@ -24,8 +31,10 @@ export function useAccountingAccountSelect({ accountId, limit = 10 }: UseAccount
   const fetcher = useCallback(
     async (query?: string) => {
       try {
-        const res = await seatchAccount({
-          account_type: "expense, expense_direct_cost, expense_depreciation, asset_current, asset_non_current, asset_fixed, asset_prepayments",
+        const res = await searchAccount({
+          account_type: isPurchases
+            ? "expense, expense_direct_cost, expense_depreciation, asset_current, asset_non_current, asset_fixed, asset_prepayments"
+            : "income, income_other, asset_current, asset_fixed",
         },
           true,
         ).unwrap()
@@ -45,7 +54,7 @@ export function useAccountingAccountSelect({ accountId, limit = 10 }: UseAccount
         return []
       }
     },
-    [seatchAccount, limit],
+    [searchAccount, limit],
   )
 
   return { initialOptions, fetcher }

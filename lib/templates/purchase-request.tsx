@@ -1,7 +1,7 @@
 import type { PurchaseRequestDetail } from "@/app/(private)/(commercial)/purchases/purchase-requests/schemas/purchase-requests"
 import { purchaseRequestStatus } from "@/app/(private)/(commercial)/purchases/purchase-requests/utils"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import type React from "react"
 
@@ -174,8 +174,8 @@ const styles = StyleSheet.create({
 })
 
 export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ data }) => {
-  const formattedRequestDate = format(data.request_date, "PP", { locale: es })
-  const formattedCreatedDate = format(data.created_at, "PP", { locale: es })
+  const formattedRequestDate = data.request_date && format(parseISO(data.request_date), "PP", { locale: es })
+  const formattedCreatedDate = data.created_at && format(parseISO(data.created_at), "PP", { locale: es })
 
   return (
     <Document title={`Solicitud de Pedido ${data.sequence_id}`}>

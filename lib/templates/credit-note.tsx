@@ -1,6 +1,6 @@
 import type { CreditNoteDetail } from "@/app/(private)/(commercial)/[scope]/credit-notes/schemas/credit-notes";
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import type React from "react";
 import { toWords } from "../utils";
@@ -192,8 +192,8 @@ const styles = StyleSheet.create({
 });
 
 const CreditNotePDF: React.FC<{ data: CreditNoteDetail }> = ({ data }) => {
-	const formattedDate = format(data.date, "PP", { locale: es });
-	const formattedCreatedDate = format(data.created_at, "PP", { locale: es });
+	const formattedDate = data.date && format(parseISO(data.date), "PP", { locale: es });
+	const formattedCreatedDate = data.created_at && format(parseISO(data.created_at), "PP", { locale: es });
 
 	const subtotal = data.items.reduce((sum, item) => sum + item.price_subtotal, 0);
 	const taxes = data.items.reduce((sum, item) => sum + item.price_tax, 0);

@@ -1,6 +1,6 @@
 import type { DeliveryNoteDetail } from "@/app/(private)/(commercial)/sales/delivery-notes/schemas/delivery-notes"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import type React from "react"
 
@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
 })
 
 const DeliveryNotePDF: React.FC<{ data: DeliveryNoteDetail }> = ({ data }) => {
-  const formattedScheduledDate = format(new Date(data.scheduled_date), "PP", { locale: es })
-  const formattedDeliveryDate = format(new Date(data.delivery_date), "PP", { locale: es })
+  const formattedScheduledDate = data.scheduled_date && format(parseISO(data.scheduled_date), "PP", { locale: es })
+  const formattedDeliveryDate = data.delivery_date && format(parseISO(data.delivery_date), "PP", { locale: es })
 
   const totalItems = data.items.length
   const totalQuantity = data.items.reduce((sum, item) => sum + item.quantity, 0)

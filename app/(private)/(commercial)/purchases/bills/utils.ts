@@ -76,16 +76,8 @@ export function getBillStatus(
     return "draft"
   }
 
-  if (bill.status === "cancel") {
-    return "cancel"
-  }
-
   if (bill.status === "draft" && bill.approval_state === "to_approve") {
     return "to_approve"
-  }
-
-  if (bill.type === "credit_note" && bill.status === "posted") {
-    return "done"
   }
 
   if (bill.status === "posted" && bill.amount_residual === 0) {
@@ -94,10 +86,6 @@ export function getBillStatus(
 
   if (bill.status === "posted" && new Date(bill.due_date) < today) {
     return "overdue"
-  }
-
-  if (bill.status === "posted") {
-    return "posted"
   }
 
   return "draft"

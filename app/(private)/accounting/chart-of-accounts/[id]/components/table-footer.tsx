@@ -21,13 +21,13 @@ export default function TableFooter() {
         </TableCell>
         <TableCell colSpan={columns.length - 4} className="h-6" />
         <TableCell className="h-6 text-xs py-0 text-start font-semibold">
-          USD {totalDebit.toFixed(2)}
+          COP {totalDebit.toFixed(2)}
         </TableCell>
         <TableCell className="h-6 text-xs py-0 text-start font-semibold">
-          USD {totalCredit.toFixed(2)}
+          COP {totalCredit.toFixed(2)}
         </TableCell>
         <TableCell className="h-6 text-xs py-0 text-start font-semibold">
-          USD {totalBalance.toFixed(2)}
+          COP {totalBalance.toFixed(2)}
         </TableCell>
       </TableRow>
     </ShadcnTableFooter >

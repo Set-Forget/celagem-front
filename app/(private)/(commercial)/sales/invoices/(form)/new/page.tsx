@@ -57,7 +57,11 @@ export default function Page() {
       const response = await createInvoice({
         ...data,
         accounting_date: data.accounting_date.toString(),
-        date: data.date.toString()
+        date: data.date.toString(),
+        items: data.items.map((item) => ({
+          ...item,
+          cost_center: item.cost_center || undefined
+        }))
       }).unwrap()
 
       if (response.status === "success") {

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { Building2, Calendar, DollarSign, LinkIcon, Package, Unlink, User } from "lucide-react";
 import Link from "next/link";
@@ -102,9 +102,11 @@ export default function DocumentPopover() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">Fecha Creación</span>
+              <span className="text-sm">Fecha de creación</span>
             </div>
-            <span className="text-sm max-w-[100px] text-nowrap truncate font-medium">{document?.created_at && format(document?.created_at, "PP", { locale: es })}</span>
+            <span className="text-sm max-w-[100px] text-nowrap truncate font-medium">
+              {document?.created_at && format(parseISO(document?.created_at), "PP", { locale: es })}
+            </span>
           </div>
 
           <div className="flex items-center justify-between">

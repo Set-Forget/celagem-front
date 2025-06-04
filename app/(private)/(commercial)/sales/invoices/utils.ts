@@ -70,8 +70,6 @@ export function getInvoiceStatus(
   today: Date = new Date()
 ): InvoiceStatus | CreditNoteStatus {
 
-  if (bill?.type === "credit_note" && bill?.status === "posted") return "done"
-
   if (bill?.status === "posted" && bill.amount_residual === 0) return "done"
   if (bill?.status === "posted" && new Date(bill.due_date) < today) return "overdue"
 

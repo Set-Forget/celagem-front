@@ -121,7 +121,11 @@ export const purchaseOrderDetailSchema = z.object({
     sequence_id: z.string(),
   }),
   invoices: z.array(z.object({ id: z.number(), sequence_id: z.string() })),
-  receptions: z.array(z.object({ id: z.number(), sequence_id: z.string() })),
+  receptions: z.array(z.object({
+    id: z.number(),
+    sequence_id: z.string(),
+    hide: z.boolean()
+  })),
   items: z.array(purchaseOrderLineSchema),
 })
 

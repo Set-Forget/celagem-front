@@ -53,23 +53,25 @@ const fields: FieldDefinition<AdaptedPurchaseOrderDetail>[] = [
     label: "Recepciones de compra",
     placeholderLength: 14,
     show: (p) => !!p?.receptions?.length,
-    render: (p) => p?.receptions?.map((reception) => (
-      <div className="grid grid-cols-1 justify-items-start" key={reception.id}>
-        <Button
-          key={reception.id}
-          variant="link"
-          className="p-0 h-auto text-foreground"
-          asChild
-        >
-          <Link
-            href={routes.reception.detail(reception.id)}
-            target="_blank"
+    render: (p) => p?.receptions
+      ?.filter((r) => !r.hide)
+      ?.map((reception) => (
+        <div className="grid grid-cols-1 justify-items-start" key={reception.id}>
+          <Button
+            key={reception.id}
+            variant="link"
+            className="p-0 h-auto text-foreground"
+            asChild
           >
-            {reception.sequence_id}
-          </Link>
-        </Button>
-      </div>
-    ))
+            <Link
+              href={routes.reception.detail(reception.id)}
+              target="_blank"
+            >
+              {reception.sequence_id}
+            </Link>
+          </Button>
+        </div>
+      ))
   }
 ];
 

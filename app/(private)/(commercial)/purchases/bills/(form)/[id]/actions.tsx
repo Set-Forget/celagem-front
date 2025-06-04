@@ -203,7 +203,7 @@ export default function Actions() {
     )
   }
 
-  if ((state === "posted" && type === "credit_note" || type === "debit_note") || state === "done") {
+  if (state === "done") {
     return (
       <div className="flex gap-2">
         <Dropdown
@@ -220,6 +220,18 @@ export default function Actions() {
           {/* 
             // ! Se deberían poder retornar las notas de crédito/débito a borrador, pero no se puede por el momento.
           */}
+        </Dropdown>
+        <Dropdown
+          trigger={
+            <Button size="sm">
+              Crear
+              <ChevronDown />
+            </Button>
+          }
+        >
+          <DropdownMenuItem onSelect={() => router.push(`/purchases/debit-notes/new?billId=${id}`)}>
+            Nota de débito
+          </DropdownMenuItem>
         </Dropdown>
       </div>
     )

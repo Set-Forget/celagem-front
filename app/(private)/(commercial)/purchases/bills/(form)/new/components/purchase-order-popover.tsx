@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Separator } from "@/components/ui/separator";
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { Building2, Calendar, DollarSign, LinkIcon, Package, Unlink, User } from "lucide-react";
 import Link from "next/link";
@@ -84,7 +84,7 @@ export default function PurchaseOrderPopover() {
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">Fecha Solicitud</span>
             </div>
-            <span className="text-sm max-w-[100px] text-nowrap truncate font-medium">{purchaseOrder?.required_date && format(purchaseOrder?.required_date, "PP", { locale: es })}</span>
+            <span className="text-sm max-w-[100px] text-nowrap truncate font-medium">{purchaseOrder?.required_date && format(parseISO(purchaseOrder?.required_date), "PP", { locale: es })}</span>
           </div>
 
           <div className="flex items-center justify-between">

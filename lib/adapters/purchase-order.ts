@@ -12,7 +12,7 @@ export function getPurchaseOrderAdapter(data: PurchaseOrderDetail) {
   return {
     ...data,
     number: data.sequence_id,
-    status: data.receipt_status === "full" ? "done" : data.status
+    status: data.receipt_status === "full" ? "done" : data.status,
   }
 }
 
