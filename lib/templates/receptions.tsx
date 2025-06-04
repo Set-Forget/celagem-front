@@ -222,7 +222,7 @@ const ReceptionPDF: React.FC<{ data: PurchaseReceiptDetail }> = ({ data }) => {
               )}
             </View>
             <View style={styles.headerRight}>
-              <Image src="/celagem-logo.jpg" />
+              <Image src="/celagem-logo.jpg" alt="Celagem logo" />
             </View>
           </View>
 
