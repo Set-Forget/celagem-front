@@ -19,8 +19,15 @@ import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
 import PartnerTab from "./components/partner-tab"
 import TableFooter from "./components/table-footer"
+import { AdaptedCreditNoteDetail } from "@/lib/adapters/credit-notes"
 
-const fields: FieldDefinition<CreditNoteDetail>[] = [
+const fields: FieldDefinition<AdaptedCreditNoteDetail>[] = [
+  {
+    label: "Número",
+    placeholderLength: 14,
+    show: (p) => !!p?.custom_sequence_number,
+    render: (p) => p?.custom_sequence_number,
+  },
   {
     label: "Fecha de emisión",
     placeholderLength: 14,

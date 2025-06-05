@@ -24,7 +24,7 @@ export const chargesApi = erpApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Charge', 'Bill'],
+      invalidatesTags: ['Charge'],
     }),
 
     confirmCharge: builder.mutation<{ status: string, message: string }, { id: string }>({
@@ -32,7 +32,11 @@ export const chargesApi = erpApi.injectEndpoints({
         url: `/charges/${id}/confirm`,
         method: 'POST',
       }),
-      invalidatesTags: ['Charge', 'Bill'],
+      invalidatesTags: [
+        'Charge',
+        'Invoice',
+        'DebitNote',
+      ],
     }),
     cancelCharge: builder.mutation<{ status: string, message: string }, { id: string }>({
       query: ({ id }) => ({

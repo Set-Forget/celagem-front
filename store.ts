@@ -4,6 +4,7 @@ import { erpApi } from './lib/apis/erp-api'
 import { hcApi } from './lib/apis/hc-api'
 import { usersApi } from './lib/apis/users-api'
 import { googleApi } from './lib/apis/google.api'
+import { telegramApi } from './lib/apis/telegram.api'
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     [hcApi.reducerPath]: hcApi.reducer,
     [usersApi.reducerPath]: usersApi.reducer,
     [googleApi.reducerPath]: googleApi.reducer,
+    [telegramApi.reducerPath]: telegramApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
@@ -20,7 +22,8 @@ export const store = configureStore({
       erpApi.middleware,
       hcApi.middleware,
       usersApi.middleware,
-      googleApi.middleware
+      googleApi.middleware,
+      telegramApi.middleware,
     ),
 })
 

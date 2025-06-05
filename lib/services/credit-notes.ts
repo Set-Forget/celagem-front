@@ -31,7 +31,11 @@ export const creditNotesApi = erpApi.injectEndpoints({
         url: `/credit_notes/${id}/post`,
         method: 'POST',
       }),
-      invalidatesTags: ['CreditNote'],
+      invalidatesTags: [
+        'CreditNote',
+        'Invoice',
+        'Bill',
+      ],
     }),
     cancelCreditNote: builder.mutation<{ status: string, message: string }, { id: string }>({
       query: ({ id }) => ({

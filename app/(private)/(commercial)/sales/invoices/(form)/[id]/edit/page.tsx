@@ -52,7 +52,7 @@ export default function Page() {
     resolver: zodResolver(newInvoiceSchema),
     defaultValues: {
       items: [],
-      date: new Date().toISOString(),
+      date: "",
       accounting_date: "",
       internal_notes: "",
       tyc_notes: "",
@@ -64,7 +64,8 @@ export default function Page() {
       const response = await updateInvoice({
         body: {
           ...data,
-          accounting_date: data.accounting_date.toString()
+          accounting_date: data.accounting_date.toString(),
+          date: data.date.toString(),
         },
         id: id!
       }).unwrap()
@@ -80,31 +81,31 @@ export default function Page() {
   }
 
   useEffect(() => {
-    if (invoice) {
-      form.reset({
-        customer: invoice?.customer?.id,
-        date: invoice?.date,
-        accounting_date: invoice?.accounting_date && parseDate(invoice.accounting_date),
-        currency: invoice?.currency?.id,
-        payment_term: invoice?.payment_term?.id,
-        payment_method: invoice?.payment_method?.id,
-        internal_notes: typeof invoice?.internal_notes === "string" ? invoice.internal_notes : "",
-        tyc_notes: typeof invoice?.tyc_notes === "string" ? invoice.tyc_notes : "",
-        items: invoice?.items?.map((item) => ({
-          product_id: item?.product_id,
-          quantity: item?.quantity,
-          price_unit: item?.price_unit,
-          account_id: item?.account.id,
-          cost_center: item?.cost_center?.id,
-          taxes_id: item?.taxes.map((tax) => tax.id),
-        })) || [],
-      })
-    }
+    if (!invoice) return
+    console.log(invoice)
+    form.reset({
+      customer: invoice?.customer?.id,
+      date: invoice?.date && parseDate(invoice.date),
+      accounting_date: invoice?.accounting_date && parseDate(invoice.accounting_date),
+      currency: invoice?.currency?.id,
+      payment_term: invoice?.payment_term?.id,
+      payment_method: invoice?.payment_method?.id,
+      internal_notes: typeof invoice?.internal_notes === "string" ? invoice.internal_notes : "",
+      tyc_notes: typeof invoice?.tyc_notes === "string" ? invoice.tyc_notes : "",
+      items: invoice?.items?.map((item) => ({
+        product_id: item?.product_id,
+        quantity: item?.quantity,
+        price_unit: item?.price_unit,
+        account_id: item?.account.id,
+        cost_center: item?.cost_center?.id,
+        taxes_id: item?.taxes.map((tax) => tax.id),
+      })) || [],
+    })
   }, [invoice])
 
   return (
     <Form {...form}>
-      <Header title="Nueva factura de venta">
+      <Header title="Editar factura de venta">
         <div className="flex gap-2 ml-auto">
           <Button
             type="submit"

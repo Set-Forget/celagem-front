@@ -37,42 +37,16 @@ export default function Page() {
 
   const { data: creditNote, isLoading: isLoadingCreditNote } = useGetCreditNoteQuery(id!, { skip: !id })
 
-  const { data: taxes } = useListTaxesQuery()
-  const [getDocument] = useLazyGetInvoiceQuery();
-
   const [updateCreditNote, { isLoading: isUpdatingCreditNote }] = useUpdateCreditNoteMutation()
 
   const newCreditNoteForm = useForm<z.infer<typeof newCreditNoteSchema>>({
     resolver: zodResolver(newCreditNoteSchema),
+    defaultValues: {
+      custom_sequence_number: scope === "purchases" ? "" : undefined,
+    }
   })
 
   const onSubmit = async (data: z.infer<typeof newCreditNoteSchema>) => {
-    const document = await getDocument(creditNote?.associated_invoice?.id!).unwrap()
-
-    const unitPrices = data.items.map(item => Number(item.price_unit)) || []
-
-    const subtotal = data.items.reduce((acc, item, index) => {
-      const price = unitPrices[index] || 0
-      return acc + (price * item.quantity)
-    }, 0) || 0
-
-    const subtotalTaxes = data.items.reduce((acc, item, index) => {
-      const price = unitPrices[index] || 0
-      const taxesAmount = item.taxes_id?.map(taxId => taxes?.data.find(tax => tax.id === taxId)?.amount || 0) || []
-      return acc + (price * item.quantity * taxesAmount.reduce((acc, tax) => acc + tax, 0) / 100)
-    }, 0) || 0
-
-    const creditNoteAmount = subtotal + subtotalTaxes
-
-    const invoiceAmount = document?.items.reduce((acc, item) => {
-      return acc + (item.quantity * item.price_unit * (1 + (item.taxes.reduce((acc, tx) => {
-        const tax = taxes?.data.find(t => t.id === tx.id)
-        return acc + (tax ? tax.amount : 0)
-      }, 0) / 100)))
-    }, 0) || 0
-
-    if (round(creditNoteAmount) > round(invoiceAmount)) return toast.custom((t) => <CustomSonner t={t} description="El monto de la nota de crédito no puede ser mayor al monto de la factura" variant="error" />)
-
     try {
       const response = await updateCreditNote({
         body: {
@@ -107,6 +81,8 @@ export default function Page() {
           quantity: item?.quantity,
           price_unit: item?.price_unit,
           taxes_id: item?.taxes.map((tax) => tax.id),
+          cost_center: item?.cost_center?.id,
+          account_id: item?.account?.id,
         })) || [],
       })
     }

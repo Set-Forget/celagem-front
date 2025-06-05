@@ -41,7 +41,7 @@ export const invoicesApi = erpApi.injectEndpoints({
         'AccountingAccount'
       ]
     }),
-    updateInvoice: builder.mutation<{ status: string, message: string }, { body: Partial<Overwrite<NewInvoice, { accounting_date: string, payment_method: number, items: { product_id: number, taxes_id?: number[], quantity: number }[] }>>, id: string | number }>({
+    updateInvoice: builder.mutation<{ status: string, message: string }, { body: Partial<Overwrite<NewInvoice, { accounting_date: string, date: string, payment_method: number, items: { product_id: number, taxes_id?: number[], quantity: number }[] }>>, id: string | number }>({
       query: ({ body, id }) => ({
         url: `/sales_invoices/${id}`,
         method: 'PUT',

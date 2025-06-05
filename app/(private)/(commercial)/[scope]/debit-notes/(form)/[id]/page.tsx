@@ -24,6 +24,7 @@ const fields: FieldDefinition<AdaptedDebitNoteDetail>[] = [
   {
     label: "Número",
     placeholderLength: 14,
+    show: (p) => !!p.custom_sequence_number,
     render: (p) => p.custom_sequence_number,
   },
   {

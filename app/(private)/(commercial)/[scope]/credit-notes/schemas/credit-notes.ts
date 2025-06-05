@@ -22,6 +22,14 @@ export const creditNoteLineSchema = z.object({
   price_subtotal: z.number(),
   price_tax: z.number(),
   taxes: z.array(z.object({ id: z.number(), name: z.string(), amount: z.number() })),
+  account: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  cost_center: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
 })
 
 export const creditNoteDetailSchema = z.object({

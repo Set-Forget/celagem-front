@@ -32,7 +32,11 @@ export const debitNotesApi = erpApi.injectEndpoints({
         url: `/debit_notes/${id}/post`,
         method: 'POST',
       }),
-      invalidatesTags: ['DebitNote'],
+      invalidatesTags: [
+        'DebitNote',
+        'Invoice',
+        'Bill',
+      ],
     }),
     cancelDebitNote: builder.mutation<{ status: string, message: string }, { id: string }>({
       query: ({ id }) => ({
