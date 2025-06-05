@@ -2,10 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Bomb } from "lucide-react";
+import { useErrorReport } from "@/hooks/use-report-error";
 import { useRouter } from "next/navigation";
 
 export default function Error({ error }: { error: Error }) {
   const router = useRouter()
+  useErrorReport({ error, fnLocation: 'Error' });
 
   return (
     <div className="flex flex-col gap-4 items-center col-span-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
