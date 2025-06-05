@@ -3,14 +3,13 @@
 import { useEffect } from 'react';
 import { useSendMessageMutation } from '@/lib/services/telegram';
 
-export function useErrorReport(error: Error) {
-  const [sendMessage, { isLoading }] = useSendMessageMutation();
+export function useErrorReport({ error, fnLocation }: { error: Error, fnLocation?: string }) {
+  const [sendMessage] = useSendMessageMutation();
 
   useEffect(() => {
     if (!error) return;
     const location = typeof window !== 'undefined' ? window.location.href : '';
-    const message = `Error en ${location}\n${error.name}: ${error.message}`;
-    sendMessage(message).unwrap().catch((error) => {
+    sendMessage({ location, error, fnLocation }).unwrap().catch((error) => {
       console.error(error);
     });
   }, [error]);
