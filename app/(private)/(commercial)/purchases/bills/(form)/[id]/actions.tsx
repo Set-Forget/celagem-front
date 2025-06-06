@@ -253,7 +253,7 @@ export default function Actions() {
     )
   }
 
-  if (state === "posted" && type === "invoice") {
+  if (state === "posted" || state === "overdue") {
     return (
       <div className="flex gap-2">
         <Dropdown

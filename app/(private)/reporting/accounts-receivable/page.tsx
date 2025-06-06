@@ -84,11 +84,20 @@ export default function AccountsReceivablePage() {
           return voucher_type.includes(String(item.voucher_type));
         })
         .filter(item => {
-          if (!include_paid) return item.outstanding_amount && item.outstanding_amount > 0
+          if (!include_paid) return (item.outstanding_amount ?? 0) > 0
           return true
         })
     )
-  }, [accountsReceivable?.data])
+  }, [
+    accountsReceivable?.data,
+    issueDateStart,
+    issueDateEnd,
+    dueDateStart,
+    dueDateEnd,
+    customers?.join(","),
+    voucher_type?.join(","),
+    include_paid
+  ])
 
   const memoizedColumns = useMemo(() => columns, [columns]);
 
@@ -100,7 +109,7 @@ export default function AccountsReceivablePage() {
     getSortedRowModel: getSortedRowModel(),
     enableSortingRemoval: false,
     enableRowSelection(row) {
-      return row.original.id > 0 && row.original.voucher_type === "out_invoice" || row.original.voucher_type === "out_debit_note"
+      return row.original.id > 0 && (row.original.voucher_type === "out_invoice" || row.original.voucher_type === "out_debit_note") && (row.original.outstanding_amount ?? 0) > 0
     },
   });
 

@@ -73,7 +73,7 @@ export const columns: ColumnDef<VisitList>[] = [
   {
     accessorKey: "clinic",
     header: "Sede",
-    cell: ({ row }) => <div>xxxx</div>
+    cell: ({ row }) => row.original.clinic.name
   },
   {
     accessorKey: "createdAt",

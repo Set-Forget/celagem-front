@@ -33,7 +33,7 @@ export const visitsApi = hcApi.injectEndpoints({
     >({
       query: ({ id, body }) => ({
         url: `visit/${id}`,
-        method: 'PUT',
+        method: 'PATCH',
         body: body,
       }),
       invalidatesTags: ['Visit'],

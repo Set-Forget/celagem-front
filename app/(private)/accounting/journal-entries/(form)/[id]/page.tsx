@@ -22,11 +22,6 @@ const fields: FieldDefinition<JournalEntryDetail>[] = [
     render: (p) => format(parseISO(p.date), "PP", { locale: es })
   },
   {
-    label: "Diario contable",
-    placeholderLength: 10,
-    render: (p) => p.journal.name
-  },
-  {
     label: "Notas",
     placeholderLength: 30,
     render: (p) => p.internal_notes || "No hay notas",

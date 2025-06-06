@@ -43,6 +43,7 @@ export const columns: ColumnDef<AccountsPayableList>[] = [
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
+          disabled={row.original.id < 0 || (row.original.outstanding_amount ?? 0) === 0 || (row.original.voucher_type !== "in_invoice" && row.original.voucher_type !== "in_debit_note")}
         />
       )
     },

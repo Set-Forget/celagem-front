@@ -1,14 +1,14 @@
 import { DataTable } from "@/components/data-table";
-import { usePathname, useRouter } from "next/navigation";
+import { routes } from "@/lib/routes";
+import { SortingState } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
+import React from "react";
 import { AppointmentList } from "../schemas/appointments";
 import { columns } from "./columns";
-import { SortingState } from "@tanstack/react-table";
-import React from "react";
 
 export default function TableView({ appointments, isLoading }: { appointments?: AppointmentList[], isLoading: boolean }) {
   const [sorting, setSorting] = React.useState<SortingState>([{ id: 'start_date', desc: false }])
 
-  const pathname = usePathname()
   const router = useRouter()
 
   return (
@@ -17,7 +17,7 @@ export default function TableView({ appointments, isLoading }: { appointments?: 
         data={appointments || []}
         columns={columns}
         loading={isLoading}
-        onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
+        onRowClick={(row) => router.push(routes.visit.new(row.id))}
         sorting={sorting}
         setSorting={setSorting}
       />

@@ -12,7 +12,6 @@ export default function Page() {
   const router = useRouter()
 
   const { data: visits, isLoading: isVisitsLoading } = useListVisitsQuery();
-
   return (
     <div>
       <Header title="Visitas" />

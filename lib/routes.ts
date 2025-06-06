@@ -15,8 +15,14 @@ const receipts = "/banking/receipts";
 const purchaseReceipts = "/purchases/purchase-receipts";
 const journalEntries = "/accounting/journal-entries";
 const deliveryNote = "/sales/delivery-notes";
+const visit = "/medical-management/visits";
 
 export const routes = {
+  visit: {
+    detail: (id: number | string) => `${visit}/${id}`,
+    new: (id: number | string) => `${visit}/new/${id}`,
+  },
+
   deliveryNote: {
     list: deliveryNote,
     new: `${deliveryNote}/new`,

@@ -58,7 +58,7 @@ export const templatesApi = hcApi.injectEndpoints({
     >({
       query: ({ id, ...newSection }) => ({
         url: `section/${id}`,
-        method: 'PUT',
+        method: 'PATCH',
         body: newSection,
       }),
       invalidatesTags: ['Section'],
@@ -98,7 +98,7 @@ export const templatesApi = hcApi.injectEndpoints({
     >({
       query: ({ id, section_id, ...newField }) => ({
         url: `field/${id}`,
-        method: 'PUT',
+        method: 'PATCH',
         body: newField,
       }),
       invalidatesTags: ['Field'],

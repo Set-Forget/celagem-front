@@ -25,7 +25,7 @@ export const newJournalEntryItemSchema = z.object({
   account_id: z.number({ required_error: "La cuenta es requerida" }),
   debit: z.number({ required_error: "El debe es requerido" }).nonnegative({ message: "El debe es requerido" }),
   credit: z.number({ required_error: "El haber es requerido" }).nonnegative({ message: "El haber es requerido" }),
-  name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
+  name: z.string().optional(),
   taxes_id: z.array(z.number()).optional()
 }).refine(
   (data) => data.debit > 0 || data.credit > 0,

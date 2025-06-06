@@ -58,65 +58,33 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
   const [getAppointment] = useLazyGetAppointmentQuery()
   const [getPatient] = useLazyGetPatientQuery()
 
-  /* const handleGeneratePDF = async (mode: "single" | "merged") => {
-    if (!selectedRows.length) return
-
+  const handleGeneratePDF = async () => {
     setLoading(true)
-    try {
-      if (mode === "single") {
-        for (const row of selectedRows) {
-          const visit = await getVisit((row.original as { id: string }).id).unwrap()
-          const appointment = await getAppointment(visit.appointment_id!).unwrap()
-          const patient = await getPatient(appointment.patient.id!).unwrap()
 
-          const { save } = await generatePDF({
-            templateName: "visitRecord",
-            data: {
-              visit,
-              appointment,
-              patient,
-              data: visit.medical_record || "{}",
-            },
-          })
-          save(`visita-${visit.visit_number}.pdf`)
-        }
-      } else {
-        const base64List: string[] = await Promise.all(
-          selectedRows.map(async row => {
-            const visit = await getVisit((row.original as { id: string }).id).unwrap()
-            const appointment = await getAppointment(visit.appointment_id!).unwrap()
-            const patient = await getPatient(appointment.patient.id!).unwrap()
+    for (const row of selectedRows) {
+      try {
+        const visit = await getVisit((row.original as { id: string }).id).unwrap()
+        const appointment = await getAppointment(visit?.appointment_id!).unwrap()
+        const patient = await getPatient(appointment.patient.id!).unwrap()
 
-            const { base64 } = await generatePDF({
-              templateName: "visitRecord",
-              data: {
-                visit,
-                appointment,
-                patient,
-                data: visit.medical_record || "{}",
-              },
-            })
-            return base64
-          })
-        )
-
-        const merged = await mergePDFs(base64List)
-        merged.view()
+        const pdf = await generatePDF({
+          templateName: 'visitRecord',
+          data: {
+            visit: visit!,
+            appointment: appointment!,
+            patient: patient,
+            data: visit?.medical_record || "{}"
+          },
+        });
+        pdf.view();
+      } catch (error) {
+        toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
+        console.error('Error al generar el PDF:', error);
+      } finally {
+        setLoading(false)
       }
-    } catch (err) {
-      toast.custom(t => (
-        <CustomSonner
-          t={t}
-          description="Error generating PDF(s)"
-          variant="error"
-        />
-      ))
-      console.error("Error generating PDF:", err)
-    } finally {
-      setLoading(false)
-      table.toggleAllRowsSelected(false)
     }
-  } */
+  };
 
   return (
     <div className="flex items-center justify-between">
@@ -136,17 +104,17 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem
-          //onSelect={() => handleGeneratePDF("merged")}
+            onSelect={() => handleGeneratePDF()}
           >
             <File />
             Único documento
           </DropdownMenuItem>
-          <DropdownMenuItem
+          {/*           <DropdownMenuItem
           //onSelect={() => handleGeneratePDF("single")}
           >
             <FileStack />
             Múltiples documentos
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

@@ -65,13 +65,13 @@ export default function AccountingForm() {
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
             <FormLabel className="w-fit">
-              Condición de pago
+              Condición de cobro
             </FormLabel>
             <FormControl>
               <AsyncSelect<{ id: number, name: string }, number>
-                label="Condición de pago"
+                label="Condición de cobro"
                 triggerClassName="!w-full"
-                placeholder="Seleccionar condición de pago..."
+                placeholder="Seleccionar condición de cobro..."
                 fetcher={handleSearchPaymentTerm}
                 getDisplayValue={(item) => item.name}
                 getOptionValue={(item) => item.id}
@@ -98,11 +98,11 @@ export default function AccountingForm() {
         name="payment_method"
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">Metodo de pago</FormLabel>
+            <FormLabel className="w-fit">Método de cobro</FormLabel>
             <AsyncSelect<{ id: number, name: string }, number>
-              label="Método de pago"
+              label="Método de cobro"
               triggerClassName="!w-full"
-              placeholder="Seleccionar método de pago..."
+              placeholder="Seleccionar método de cobro..."
               fetcher={handleSearchPaymentMethod}
               getDisplayValue={(item) => item.name}
               getOptionValue={(item) => item.id}

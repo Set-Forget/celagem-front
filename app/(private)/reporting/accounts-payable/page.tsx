@@ -59,36 +59,46 @@ export default function AccountsReceivablePage() {
 
   const memoizedData = useMemo(() => {
     const list = accountsPayable?.data ?? []
+
     return groupBySupplier(
       list
         .filter(item => {
-          if (!issueDateStart && !issueDateEnd) return true;
-          const recordDate = item.date.split("T")[0];
-          if (issueDateStart && recordDate < issueDateStart) return false;
-          if (issueDateEnd && recordDate > issueDateEnd) return false;
-          return true;
+          if (!issueDateStart && !issueDateEnd) return true
+          const recordDate = item.date.split("T")[0]
+          if (issueDateStart && recordDate < issueDateStart) return false
+          if (issueDateEnd && recordDate > issueDateEnd) return false
+          return true
         })
         .filter(item => {
-          if (!dueDateStart && !dueDateEnd) return true;
-          const recordDate = item.due_date.split("T")[0];
-          if (dueDateStart && recordDate < dueDateStart) return false;
-          if (dueDateEnd && recordDate > dueDateEnd) return false;
-          return true;
+          if (!dueDateStart && !dueDateEnd) return true
+          const recordDate = item.due_date.split("T")[0]
+          if (dueDateStart && recordDate < dueDateStart) return false
+          if (dueDateEnd && recordDate > dueDateEnd) return false
+          return true
         })
         .filter(item => {
-          if (!suppliers) return true;
-          return suppliers.includes(String(item.partner.id));
+          if (!suppliers) return true
+          return suppliers.includes(String(item.partner.id))
         })
         .filter(item => {
-          if (!voucher_type) return true;
-          return voucher_type.includes(String(item.voucher_type));
+          if (!voucher_type) return true
+          return voucher_type.includes(String(item.voucher_type))
         })
         .filter(item => {
-          if (!include_paid) return item.outstanding_amount && item.outstanding_amount > 0
+          if (!include_paid) return (item.outstanding_amount ?? 0) > 0
           return true
         })
     )
-  }, [accountsPayable?.data])
+  }, [
+    accountsPayable?.data,
+    issueDateStart,
+    issueDateEnd,
+    dueDateStart,
+    dueDateEnd,
+    suppliers?.join(","),
+    voucher_type?.join(","),
+    include_paid
+  ])
 
   const memoizedColumns = useMemo(() => columns, [columns]);
 
@@ -100,7 +110,7 @@ export default function AccountsReceivablePage() {
     getSortedRowModel: getSortedRowModel(),
     enableSortingRemoval: false,
     enableRowSelection(row) {
-      return row.original.id > 0 && row.original.voucher_type === "in_invoice" || row.original.voucher_type === "in_debit_note"
+      return row.original.id > 0 && (row.original.voucher_type === "in_invoice" || row.original.voucher_type === "in_debit_note") && (row.original.outstanding_amount ?? 0) > 0
     },
   });
 

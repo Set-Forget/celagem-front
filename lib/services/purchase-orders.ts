@@ -23,13 +23,11 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
         transformResponse: (response: PurchaseOrderListResponse) => response.data.map(listPurchaseOrdersAdapter),
         providesTags: ['PurchaseOrder'],
       }),
-    getPurchaseOrder: builder.query<
-      AdaptedPurchaseOrderDetail,
-      string | number>({
-        query: (id) => `/purchase_orders/${id}`,
-        transformResponse: (response: PurchaseOrderDetailResponse) => getPurchaseOrderAdapter(response.data),
-        providesTags: ["PurchaseOrder"]
-      }),
+    getPurchaseOrder: builder.query<AdaptedPurchaseOrderDetail, string | number>({
+      query: (id) => `/purchase_orders/${id}`,
+      transformResponse: (response: PurchaseOrderDetailResponse) => getPurchaseOrderAdapter(response.data),
+      providesTags: ["PurchaseOrder"]
+    }),
     updatePurchaseOrder: builder.mutation<{ status: string, message: string }, { body: Partial<Overwrite<Omit<NewPurchaseOrder, 'currency' | 'payment_term' | 'required_date'> & { currency: number; payment_term: number; required_date: string }, { company: number }>>, id: string | number }>({
       query: ({ id, body }) => ({
         url: `purchase_orders/${id}`,

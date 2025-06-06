@@ -30,7 +30,7 @@ export const patientsApi = hcApi.injectEndpoints({
     updatePatient: builder.mutation<NewPatientResponse, { id: string, body: Partial<Overwrite<NewPatient, { birth_date: string }>> }>({
       query: ({ id, body }) => ({
         url: `patient/${id}`,
-        method: 'PUT',
+        method: 'PATCH',
         body: body,
       }),
       invalidatesTags: ['Patient'],

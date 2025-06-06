@@ -28,27 +28,34 @@ export function useAccountingAccountSelect({ accountId, limit = 10 }: UseAccount
     return [{ id: account.id, name: account.name, code: account.code }]
   }, [account])
 
+  const accountTypes = isPurchases
+    ? ["expense", "expense_direct_cost", "expense_depreciation", "asset_current", "asset_non_current", "asset_fixed", "asset_prepayments"]
+    : ["income", "income_other", "asset_current", "asset_fixed"];
+
   const fetcher = useCallback(
     async (query?: string) => {
       try {
-        const res = await searchAccount({
-          account_type: isPurchases
-            ? "expense, expense_direct_cost, expense_depreciation, asset_current, asset_non_current, asset_fixed, asset_prepayments"
-            : "income, income_other, asset_current, asset_fixed",
-        },
-          true,
-        ).unwrap()
+        const res = await searchAccount({}, true).unwrap()
 
         const term = query?.toLowerCase() ?? ""
-        return (res.data?.map((account) => ({
-          id: account.id,
-          name: account.name,
-          code: account.code,
-        })) ?? [])
-          .filter((account) =>
-            account.name.toLowerCase().includes(term) ||
-            (account?.code && account?.code?.toLowerCase().includes(term)),
-          ).slice(0, limit)
+        return (
+          res.data?.map(({ id, name, code, account_type }) => ({
+            id,
+            name,
+            code,
+            account_type,
+          })) ?? []
+        )
+          .filter(({ account_type }) => accountTypes.includes(account_type))
+          .filter(({ name, code }) => name.toLowerCase().includes(term) || (code ?? "").toLowerCase().includes(term))
+          .sort((a, b) => {
+            const aExact = a.code?.toLowerCase() === term || a.name.toLowerCase() === term
+            const bExact = b.code?.toLowerCase() === term || b.name.toLowerCase() === term
+            if (aExact && !bExact) return -1
+            if (!aExact && bExact) return 1
+            return (a.code ?? "").localeCompare(b.code ?? "", undefined, { numeric: true })
+          })
+          .slice(0, limit)
       } catch (err) {
         sendMessage({
           location: "app/(private)/(commercial)/hooks/use-account-select.ts",

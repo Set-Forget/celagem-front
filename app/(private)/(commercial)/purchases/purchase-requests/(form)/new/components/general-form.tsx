@@ -4,12 +4,11 @@ import DatePicker from "@/components/date-picker";
 import FormTable from "@/components/form-table";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useLazyListCompaniesQuery } from "@/lib/services/companies";
-import { getLocalTimeZone, today } from "@internationalized/date";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 import { useFormContext } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { NewPurchaseRequest, NewPurchaseRequestLine } from "../../../schemas/purchase-requests";
 import { columns } from "./columns";
-import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function GeneralForm() {
   const { control, formState } = useFormContext<NewPurchaseRequest>()
@@ -50,7 +49,6 @@ export default function GeneralForm() {
               <DatePicker
                 value={field.value || null}
                 onChange={(date) => field.onChange(date)}
-                isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) < 0}
               />
             </FormControl>
             {formState.errors.request_date ? (

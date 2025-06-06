@@ -41,6 +41,7 @@ export const columns: ColumnDef<AccountsReceivableList>[] = [
       return (
         <Checkbox
           checked={row.getIsSelected()}
+          disabled={row.original.id < 0 || (row.original.outstanding_amount ?? 0) === 0 || (row.original.voucher_type !== "out_invoice" && row.original.voucher_type !== "out_debit_note")}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
         />
