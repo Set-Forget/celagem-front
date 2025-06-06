@@ -7,10 +7,12 @@ import { useFormContext } from "react-hook-form"
 import * as RPNInput from "react-phone-number-input"
 import { z } from "zod"
 import { newPatientSchema } from "../../schema/patients"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export default function ContactForm() {
   const { control } = useFormContext<z.infer<typeof newPatientSchema>>()
 
+  const [sendMessage] = useSendMessageMutation()
   const [searchPlace] = useLazyGetAutocompleteQuery();
 
   const handleSearchPlace = async (query?: string) => {
@@ -22,7 +24,13 @@ export default function ContactForm() {
         place_id: prediction.place_id,
       }));
     } catch (error) {
-      console.error("Error al buscar lugar:", error);
+      sendMessage({
+        location: "app/(private)/medical-management/patients/(form)/components/contact-form.tsx",
+        rawError: error,
+        fnLocation: "handleSearchPlace"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return [];
     }
   }

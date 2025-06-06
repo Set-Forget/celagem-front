@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { newSectionSchema } from "@/app/(private)/medical-management/(masters)/schemas/templates";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -15,12 +14,14 @@ import { useRouter } from "next/navigation";
 import NewSectionForm from "../../components/new-section-form";
 import { toast } from "sonner";
 import CustomSonner from "@/components/custom-sonner";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function NewSectionDialog() {
   const router = useRouter();
 
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
 
+  const [sendMessage] = useSendMessageMutation();
   const [createSection, { isLoading: isCreatingSection }] = useCreateSectionMutation()
 
   const form = useForm<z.infer<typeof newSectionSchema>>({
@@ -54,7 +55,13 @@ export default function NewSectionDialog() {
       closeDialogs();
     } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Error creando sección" variant="error" />)
-      console.log(error);
+      sendMessage({
+        location: "app/(private)/medical-management/(masters)/sections/components/new-section-dialog.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

@@ -15,12 +15,14 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import CustomSonner from "@/components/custom-sonner";
 import { toast } from "sonner";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function NewTemplateDialog() {
   const router = useRouter();
 
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
 
+  const [sendMessage] = useSendMessageMutation();
   const [createTemplate, { isLoading: isCreatingTemplate }] = useCreateTemplateMutation()
 
   const form = useForm<z.infer<typeof newTemplateSchema>>({
@@ -58,7 +60,13 @@ export default function NewTemplateDialog() {
       closeDialogs();
     } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Error creando plantilla" variant="error" />)
-      console.log(error);
+      sendMessage({
+        location: "app/(private)/medical-management/(masters)/templates/components/new-template-dialog.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

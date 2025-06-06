@@ -25,14 +25,17 @@ import { ControllerRenderProps, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AppointmentList, newAppointmentSchema } from "../schemas/appointments";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function EditAppointmentDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
 
   const appointmentId = (dialogState.payload?.appointment as AppointmentList)?.id
 
-  const { data: appointment, isFetching: isAppointmentFetching } = useGetAppointmentQuery(appointmentId, { skip: !appointmentId })
+  const [sendMessage] = useSendMessageMutation();
   const [updateAppointment, { isLoading }] = useUpdateAppointmentMutation();
+
+  const { data: appointment, isFetching: isAppointmentFetching } = useGetAppointmentQuery(appointmentId, { skip: !appointmentId })
 
   const [getBusinessUnits] = useLazyListBusinessUnitsQuery()
   const [getPatients] = useLazyListPatientsQuery();
@@ -96,7 +99,13 @@ export default function EditAppointmentDialog() {
         value: template.id,
       }))
     } catch (error) {
-      console.error("Error al obtener plantillas:", error)
+      sendMessage({
+        location: "app/(private)/medical-management/calendar/components/edit-appointment-dialog.tsx",
+        rawError: error,
+        fnLocation: "handleGetTemplates"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }
@@ -109,7 +118,13 @@ export default function EditAppointmentDialog() {
         value: patient.id,
       }));
     } catch (error) {
-      console.error("Error al obtener pacientes:", error);
+      sendMessage({
+        location: "app/(private)/medical-management/calendar/components/edit-appointment-dialog.tsx",
+        rawError: error,
+        fnLocation: "handleGetPatients"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return [];
     }
   };
@@ -122,7 +137,13 @@ export default function EditAppointmentDialog() {
         value: doctor.id,
       }));
     } catch (error) {
-      console.error("Error al obtener doctores:", error);
+      sendMessage({
+        location: "app/(private)/medical-management/calendar/components/edit-appointment-dialog.tsx",
+        rawError: error,
+        fnLocation: "handleGetDoctors"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return [];
     }
   };
@@ -135,7 +156,13 @@ export default function EditAppointmentDialog() {
         value: bu.id,
       }))
     } catch (error) {
-      console.error("Error al obtener unidades de negocio:", error)
+      sendMessage({
+        location: "app/(private)/medical-management/calendar/components/edit-appointment-dialog.tsx",
+        rawError: error,
+        fnLocation: "handleGetBusinessUnits"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }
@@ -157,8 +184,15 @@ export default function EditAppointmentDialog() {
         onOpenChange();
         toast.custom((t) => <CustomSonner t={t} description="Turno actualizado correctamente" />);
       }
-    } catch {
+    } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar el turno" variant="error" />);
+      sendMessage({
+        location: "app/(private)/medical-management/calendar/components/edit-appointment-dialog.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

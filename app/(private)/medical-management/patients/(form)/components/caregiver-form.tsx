@@ -13,10 +13,12 @@ import { z } from "zod"
 import { useLazyGetAutocompleteQuery } from "@/lib/services/google-places"
 import { documentTypes } from "../../utils"
 import { newPatientSchema } from "../../schema/patients"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export default function CaregiverForm() {
   const { setValue, control } = useFormContext<z.infer<typeof newPatientSchema>>()
 
+  const [sendMessage] = useSendMessageMutation()
   const [searchPlace] = useLazyGetAutocompleteQuery();
 
   const handleSearchPlace = async (query?: string) => {
@@ -28,7 +30,13 @@ export default function CaregiverForm() {
         place_id: prediction.place_id,
       }));
     } catch (error) {
-      console.error("Error al buscar lugar:", error);
+      sendMessage({
+        location: "app/(private)/medical-management/patients/(form)/components/caregiver-form.tsx",
+        rawError: error,
+        fnLocation: "handleSearchPlace"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return [];
     }
   }

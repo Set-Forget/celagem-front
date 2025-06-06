@@ -12,6 +12,7 @@ import { EditIcon, Ellipsis, FileDown, FileTextIcon, Loader2, Signature } from "
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions({ state }: { state?: 'DRAFT' | 'SIGNED' }) {
   const router = useRouter()
@@ -21,12 +22,13 @@ export default function Actions({ state }: { state?: 'DRAFT' | 'SIGNED' }) {
 
   const [loading, setLoading] = useState(false)
 
-  const { data: visit } = useGetVisitQuery(visitId)
-  const { data: userProfile } = useGetProfileQuery()
-
+  const [sendMessage] = useSendMessageMutation()
   const [updateVisit, { isLoading: isUpdatingVisit }] = useUpdateVisitMutation();
   const [getAppointment] = useLazyGetAppointmentQuery()
   const [getPatient] = useLazyGetPatientQuery()
+
+  const { data: visit } = useGetVisitQuery(visitId)
+  const { data: userProfile } = useGetProfileQuery()
 
   const handleSignVisit = async () => {
     if (visit?.doctor.id !== userProfile?.data.id) {
@@ -47,7 +49,13 @@ export default function Actions({ state }: { state?: 'DRAFT' | 'SIGNED' }) {
         toast.custom((t) => <CustomSonner t={t} description="Visita firmada exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/medical-management/visits/(form)/[visit_id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleSignVisit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -69,7 +77,13 @@ export default function Actions({ state }: { state?: 'DRAFT' | 'SIGNED' }) {
       pdf.view();
     } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
-      console.error('Error al generar el PDF:', error);
+      sendMessage({
+        location: "app/(private)/medical-management/visits/(form)/[visit_id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleGeneratePDF"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     } finally {
       setLoading(false)
     }

@@ -24,6 +24,7 @@ import CompanionForm from "../../components/companion-form"
 import ContactForm from "../../components/contact-form"
 import FiscalForm from "../../components/fiscal-form"
 import GeneralForm from "../../components/general-form"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 const tabs = [
   {
@@ -76,6 +77,7 @@ export default function Page() {
 
   const patientId = params.patient_id;
 
+  const [sendMessage] = useSendMessageMutation();
   const [updatePatient, { isLoading: isUpdatingPatient }] = useUpdatePatientMutation()
 
   const { data: profile } = useGetProfileQuery()
@@ -101,8 +103,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Paciente actualizado exitosamente" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al actualizar paciente" variant="error" />)
+      sendMessage({
+        location: "app/(private)/medical-management/patients/(form)/[patient_id]/edit/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

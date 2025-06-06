@@ -1,30 +1,28 @@
 "use client"
 
 import CustomSonner from "@/components/custom-sonner"
-import DataTabs from "@/components/data-tabs"
+import { FormTabs } from "@/components/form-tabs"
 import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useGetProfileQuery } from "@/lib/services/auth"
 import { useCreatePatientMutation } from "@/lib/services/patients"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { get } from "lodash"
-import { Building, Hospital, House, Mail, Shield, Users, Wallet } from "lucide-react"
+import { Building, Hospital, Mail, Shield, Users, Wallet } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { FieldErrors, useForm } from "react-hook-form"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
-import { newPatientAffiliationSchema, newPatientCareCompanySchema, newPatientCaregiverSchema, newPatientCompanionSchema, newPatientContactSchema, newPatientFiscalSchema, newPatientGeneralSchema, newPatientSchema } from "../../schema/patients"
-import { getFieldPaths } from "@/lib/utils"
-import GeneralForm from "../components/general-form"
-import CompanionForm from "../components/companion-form"
-import CaregiverForm from "../components/caregiver-form"
-import CareCompanyForm from "../components/care_company-form"
-import FiscalForm from "../components/fiscal-form"
-import ContactForm from "../components/contact-form"
+import { newPatientAffiliationSchema, newPatientCareCompanySchema, newPatientCaregiverSchema, newPatientCompanionSchema, newPatientContactSchema, newPatientFiscalSchema, newPatientSchema } from "../../schema/patients"
 import AffiliationForm from "../components/affiliation-form"
-import { FormTabs } from "@/components/form-tabs"
+import CareCompanyForm from "../components/care_company-form"
+import CaregiverForm from "../components/caregiver-form"
+import CompanionForm from "../components/companion-form"
+import ContactForm from "../components/contact-form"
+import FiscalForm from "../components/fiscal-form"
+import GeneralForm from "../components/general-form"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 const tabs = [
   {
@@ -74,7 +72,9 @@ const tabs = [
 export default function Page() {
   const router = useRouter()
 
+  const [sendMessage] = useSendMessageMutation()
   const [createPatient, { isLoading: isCreatingPatient }] = useCreatePatientMutation()
+
   const { data: profile } = useGetProfileQuery()
 
   const newPatientForm = useForm<z.infer<typeof newPatientSchema>>({
@@ -93,8 +93,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Paciente creado exitosamente" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al crear paciente" variant="error" />)
+      sendMessage({
+        location: "app/(private)/medical-management/patients/(form)/new/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

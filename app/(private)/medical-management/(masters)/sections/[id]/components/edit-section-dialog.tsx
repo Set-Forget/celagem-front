@@ -29,11 +29,13 @@ import {
 import { NormalizedSchema } from "../../../schemas/masters";
 import NewSectionForm from "../../../components/new-section-form";
 import { useUpdateSectionMutation } from "@/lib/services/templates";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function EditSectionDialog() {
   const { getValues } = useFormContext<NormalizedSchema>();
-
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
+
+  const [sendMessage] = useSendMessageMutation();
   const [updateSection, { isLoading: isUpdatingSection }] = useUpdateSectionMutation();
 
   const form = useForm<z.infer<typeof newSectionSchema>>({
@@ -50,7 +52,13 @@ export default function EditSectionDialog() {
       await updateSection(data).unwrap();
       closeDialogs();
     } catch (error) {
-      console.error("Error actualizando plantilla:", error);
+      sendMessage({
+        location: "app/(private)/medical-management/(masters)/sections/[id]/components/edit-section-dialog.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

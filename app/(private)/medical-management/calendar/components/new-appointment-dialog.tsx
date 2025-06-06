@@ -11,9 +11,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateAppointmentMutation } from "@/lib/services/appointments";
-import { useGetProfileQuery } from "@/lib/services/auth";
 import { useLazyListBusinessUnitsQuery } from "@/lib/services/business-units";
 import { useLazyListPatientsQuery } from "@/lib/services/patients";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 import { useLazyListTemplatesQuery } from "@/lib/services/templates";
 import { useLazyListUsersQuery } from "@/lib/services/users";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
@@ -32,9 +32,8 @@ export default function NewAppointmentDialog() {
 
   const selectedDate = dialogState.payload?.date
 
+  const [sendMessage] = useSendMessageMutation()
   const [createAppointment, { isLoading }] = useCreateAppointmentMutation()
-
-  const { data: userProfile } = useGetProfileQuery()
 
   const [getPatients] = useLazyListPatientsQuery()
   const [getDoctors] = useLazyListUsersQuery()
@@ -93,7 +92,13 @@ export default function NewAppointmentDialog() {
         value: template.id,
       }))
     } catch (error) {
-      console.error("Error al obtener plantillas:", error)
+      sendMessage({
+        location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
+        rawError: error,
+        fnLocation: "handleGetTemplates"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }
@@ -106,7 +111,13 @@ export default function NewAppointmentDialog() {
         value: patient.id,
       }))
     } catch (error) {
-      console.error("Error al obtener pacientes:", error)
+      sendMessage({
+        location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
+        rawError: error,
+        fnLocation: "handleGetPatients"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }
@@ -119,7 +130,13 @@ export default function NewAppointmentDialog() {
         value: doctor.id,
       }))
     } catch (error) {
-      console.error("Error al obtener doctores:", error)
+      sendMessage({
+        location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
+        rawError: error,
+        fnLocation: "handleGetDoctors"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }
@@ -132,7 +149,13 @@ export default function NewAppointmentDialog() {
         value: bu.id,
       }))
     } catch (error) {
-      console.error("Error al obtener unidades de negocio:", error)
+      sendMessage({
+        location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
+        rawError: error,
+        fnLocation: "handleGetBusinessUnits"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }

@@ -6,8 +6,10 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useLazyListBusinessUnitsQuery } from "@/lib/services/business-units"
-import { useLazyGetAutocompleteQuery } from "@/lib/services/google-places"
+import { useLazyListClassesQuery } from "@/lib/services/classes"
+import { useLazyListCompaniesQuery } from "@/lib/services/companies"
 import { useGetPatientQuery } from "@/lib/services/patients"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { cn } from "@/lib/utils"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -15,8 +17,6 @@ import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newPatientSchema } from "../../schema/patients"
 import { linkageTypes } from "../../utils"
-import { useLazyListCompaniesQuery } from "@/lib/services/companies"
-import { useLazyListClassesQuery } from "@/lib/services/classes"
 
 export default function AffiliationForm() {
   const params = useParams<{ patient_id: string }>();
@@ -27,9 +27,9 @@ export default function AffiliationForm() {
 
   const { data: patient } = useGetPatientQuery(patientId, { skip: !patientId })
 
+  const [sendMessage] = useSendMessageMutation()
   const [getCompanies] = useLazyListCompaniesQuery()
   const [getClasses] = useLazyListClassesQuery()
-  const [searchPlace] = useLazyGetAutocompleteQuery();
   const [getBusinessUnits] = useLazyListBusinessUnitsQuery()
 
   const handleGetCompanies = async () => {
@@ -40,7 +40,13 @@ export default function AffiliationForm() {
         value: company.id,
       }))
     } catch (error) {
-      console.error("Error al obtener la sede:", error)
+      sendMessage({
+        location: "app/(private)/medical-management/patients/(form)/components/affiliation-form.tsx",
+        rawError: error,
+        fnLocation: "handleGetCompanies"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }
@@ -53,7 +59,13 @@ export default function AffiliationForm() {
         value: company.id,
       }))
     } catch (error) {
-      console.error("Error al obtener la clase:", error)
+      sendMessage({
+        location: "app/(private)/medical-management/patients/(form)/components/affiliation-form.tsx",
+        rawError: error,
+        fnLocation: "handleGetClasses"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }
@@ -66,7 +78,13 @@ export default function AffiliationForm() {
         value: bu.id,
       }))
     } catch (error) {
-      console.error("Error al obtener unidades de negocio:", error)
+      sendMessage({
+        location: "app/(private)/medical-management/patients/(form)/components/affiliation-form.tsx",
+        rawError: error,
+        fnLocation: "handleGetBusinessUnits"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }

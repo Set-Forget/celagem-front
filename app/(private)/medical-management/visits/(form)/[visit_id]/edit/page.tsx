@@ -15,6 +15,7 @@ import { TemplateFormHandle } from "../../new/components/template-form";
 import AppointmentTab from "../components/appointment-tab";
 import PatientTab from "../components/patient-tab";
 import TemplateFormTab from "../components/template-form-tab";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Page() {
   const router = useRouter();
@@ -26,9 +27,10 @@ export default function Page() {
   const params = useParams<{ visit_id: string }>();
   const visitId = params.visit_id;
 
-  const { data: visit, isLoading: isVisitLoading } = useGetVisitQuery(visitId!, { skip: !visitId })
-
+  const [sendMessage] = useSendMessageMutation()
   const [updateVisit, { isLoading: isUpdatingVisit }] = useUpdateVisitMutation();
+
+  const { data: visit, isLoading: isVisitLoading } = useGetVisitQuery(visitId!, { skip: !visitId })
 
   const formRef = useRef<TemplateFormHandle>(null);
 
@@ -56,8 +58,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Visita actualizada exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar la visita" variant="error" />)
+      sendMessage({
+        location: "app/(private)/medical-management/visits/(form)/[visit_id]/edit/page.tsx",
+        rawError: error,
+        fnLocation: "handleSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   };
 

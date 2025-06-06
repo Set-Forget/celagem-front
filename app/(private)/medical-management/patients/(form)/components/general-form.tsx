@@ -12,10 +12,12 @@ import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newPatientSchema } from "../../schema/patients"
 import { biologicalSexTypes, disabilityTypes, documentTypes, genderIdentityTypes, maritalStatusTypes } from "../../utils"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export default function GeneralForm() {
   const { setValue, control } = useFormContext<z.infer<typeof newPatientSchema>>()
 
+  const [sendMessage] = useSendMessageMutation()
   const [searchPlace] = useLazyGetAutocompleteQuery();
 
   const handleSearchPlace = async (query?: string) => {
@@ -27,7 +29,13 @@ export default function GeneralForm() {
         place_id: prediction.place_id,
       }));
     } catch (error) {
-      console.error("Error al buscar lugar:", error);
+      sendMessage({
+        location: "app/(private)/medical-management/patients/(form)/components/general-form.tsx",
+        rawError: error,
+        fnLocation: "handleSearchPlace"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return [];
     }
   }

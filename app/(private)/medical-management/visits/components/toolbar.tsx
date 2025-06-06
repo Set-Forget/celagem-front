@@ -11,6 +11,7 @@ import { Table } from "@tanstack/react-table";
 import { CalendarFold, CircleDashed, File, FileDown, FileStack, Search } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -54,6 +55,7 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
 
   const [loading, setLoading] = useState(false)
 
+  const [sendMessage] = useSendMessageMutation()
   const [getVisit] = useLazyGetVisitQuery()
   const [getAppointment] = useLazyGetAppointmentQuery()
   const [getPatient] = useLazyGetPatientQuery()
@@ -79,7 +81,13 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
         pdf.view();
       } catch (error) {
         toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
-        console.error('Error al generar el PDF:', error);
+        sendMessage({
+          location: "app/(private)/medical-management/visits/components/toolbar.tsx",
+          rawError: error,
+          fnLocation: "handleGeneratePDF"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
       } finally {
         setLoading(false)
       }

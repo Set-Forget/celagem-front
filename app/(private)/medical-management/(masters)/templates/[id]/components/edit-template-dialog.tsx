@@ -29,11 +29,14 @@ import { useUpdateTemplateMutation } from "@/lib/services/templates";
 import { z } from "zod";
 import { Switch } from "@/components/ui/switch";
 import { NormalizedSchema } from "../../../schemas/masters";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function EditTemplateDialog() {
   const { getValues } = useFormContext<NormalizedSchema>();
 
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false });
+
+  const [sendMessage] = useSendMessageMutation();
   const [updateTemplate, { isLoading: isUpdatingTemplate }] = useUpdateTemplateMutation();
 
   const form = useForm<z.infer<typeof newTemplateSchema>>({
@@ -50,7 +53,13 @@ export default function EditTemplateDialog() {
       await updateTemplate(data).unwrap();
       closeDialogs();
     } catch (error) {
-      console.error("Error actualizando plantilla:", error);
+      sendMessage({
+        location: "app/(private)/medical-management/(masters)/templates/[id]/components/edit-template-dialog.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

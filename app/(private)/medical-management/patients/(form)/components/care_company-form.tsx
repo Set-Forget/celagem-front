@@ -6,10 +6,12 @@ import { useLazyListCareCompaniesQuery } from "@/lib/services/patients"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newPatientSchema } from "../../schema/patients"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export default function CareCompanyForm() {
   const { control } = useFormContext<z.infer<typeof newPatientSchema>>()
 
+  const [sendMessage] = useSendMessageMutation()
   const [getCareCompanies] = useLazyListCareCompaniesQuery()
 
   const handleGetCareCompanies = async () => {
@@ -20,7 +22,13 @@ export default function CareCompanyForm() {
         value: company.id,
       }))
     } catch (error) {
-      console.error("Error al obtener la empresa de atención:", error)
+      sendMessage({
+        location: "app/(private)/medical-management/patients/(form)/components/care_company-form.tsx",
+        rawError: error,
+        fnLocation: "handleGetCareCompanies"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }

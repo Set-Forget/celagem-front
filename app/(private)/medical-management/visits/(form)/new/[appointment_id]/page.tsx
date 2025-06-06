@@ -16,6 +16,7 @@ import PatientTab from "../components/patient-tab";
 import { TemplateFormHandle } from "../components/template-form";
 import TemplateFormTab from "../components/template-form-tab";
 import { useGetTemplateQuery } from "@/lib/services/templates";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Page() {
   const router = useRouter();
@@ -26,13 +27,14 @@ export default function Page() {
   const params = useParams<{ appointment_id: string }>();
   const appointmentId = params.appointment_id;
 
+  const [sendMessage] = useSendMessageMutation()
+  const [createVisit, { isLoading: isCreatingVisit }] = useCreateVisitMutation();
+  const [updateAppointment] = useUpdateAppointmentMutation()
+
   const { data: appointment } = useGetAppointmentQuery(appointmentId!, { skip: !appointmentId });
   const { data: template } = useGetTemplateQuery(appointment?.template.id!, {
     skip: !appointment?.template.id,
   });
-
-  const [createVisit, { isLoading: isCreatingVisit }] = useCreateVisitMutation();
-  const [updateAppointment] = useUpdateAppointmentMutation()
 
   const handleSubmit = async (formData: any, templateName: string) => {
     try {
@@ -54,8 +56,14 @@ export default function Page() {
         await updateAppointment({ id: appointment?.id as string, body: { status: "COMPLETED" } }).unwrap()
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la visita" variant="error" />)
+      sendMessage({
+        location: "app/(private)/medical-management/visits/(form)/new/[appointment_id]/page.tsx",
+        rawError: error,
+        fnLocation: "handleSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   };
 

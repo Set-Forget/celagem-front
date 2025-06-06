@@ -32,6 +32,7 @@ import ImportSectionDialog from "./components/import-section-dialog";
 import NewSectionDialog from "./components/new-section-dialog";
 import SectionField from "./components/section-field";
 import { getDiffs } from "./utils";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Page() {
   const params = useParams<{ id: string }>();
@@ -40,6 +41,7 @@ export default function Page() {
 
   const { data: template, isLoading: isTemplateLoading } = useGetTemplateQuery(id)
 
+  const [sendMessage] = useSendMessageMutation();
   const [updateTemplate, { isLoading: isUpdatingTemplate }] = useUpdateTemplateMutation()
   const [createSection, { isLoading: isCreatingSection }] = useCreateSectionMutation()
   const [updateSection, { isLoading: isUpdatingSection }] = useUpdateSectionMutation()
@@ -103,7 +105,13 @@ export default function Page() {
         const created = await createSection(payload).unwrap();
         tmpSecToReal[sec.id] = created.data.id;
       } catch (err) {
-        console.error("Error creando sección:", err);
+        sendMessage({
+          location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
+          rawError: err,
+          fnLocation: "onSubmit"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
       }
     }
 
@@ -113,7 +121,13 @@ export default function Page() {
         const created = await createField(payload).unwrap();
         tmpFldToReal[fld.id] = created.data.id;
       } catch (err) {
-        console.error("Error creando field:", err);
+        sendMessage({
+          location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
+          rawError: err,
+          fnLocation: "onSubmit"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
       }
     }
 
@@ -130,7 +144,13 @@ export default function Page() {
         const secToUpdate = { ...sec, id: realSecId, fields: finalFieldIds };
         await updateSection(secToUpdate).unwrap();
       } catch (err) {
-        console.error("Error actualizando sección:", err);
+        sendMessage({
+          location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
+          rawError: err,
+          fnLocation: "onSubmit"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
       }
     }
 
@@ -140,7 +160,13 @@ export default function Page() {
         const payload = newFieldSchema.parse(fld);
         await updateField({ ...payload, id: realFldId }).unwrap();
       } catch (err) {
-        console.error("Error actualizando field:", err);
+        sendMessage({
+          location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
+          rawError: err,
+          fnLocation: "onSubmit"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
       }
     }
 
@@ -162,7 +188,13 @@ export default function Page() {
       }
     } catch (err) {
       toast.custom(t => <CustomSonner t={t} description="Error al actualizar la plantilla" variant="error" />);
-      console.error("Error actualizando template:", err);
+      sendMessage({
+        location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
+        rawError: err,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   };
 

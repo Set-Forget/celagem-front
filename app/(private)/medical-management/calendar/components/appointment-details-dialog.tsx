@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AppointmentDetail } from "../schemas/appointments";
 import { appointmentStates, modesOfCare } from "../utils";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export type FieldDefinition<T> = {
   label: string;
@@ -78,6 +79,8 @@ export default function AppointmentDetailsDialog() {
 
   const appointmentId = dialogState?.payload?.appointment_id as string
 
+  const [sendMessage] = useSendMessageMutation();
+
   const { data: appointment, isLoading: isAppointmentLoading } = useGetAppointmentQuery(appointmentId, {
     skip: !appointmentId
   });
@@ -96,8 +99,15 @@ export default function AppointmentDetailsDialog() {
       if (response.status === "SUCCESS") {
         toast.custom((t) => <CustomSonner t={t} description="Turno actualizado correctamente" />);
       }
-    } catch {
+    } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar el turno" variant="error" />);
+      sendMessage({
+        location: "app/(private)/medical-management/calendar/components/appointment-details-dialog.tsx",
+        rawError: error,
+        fnLocation: "handleUpdateAppointment"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
