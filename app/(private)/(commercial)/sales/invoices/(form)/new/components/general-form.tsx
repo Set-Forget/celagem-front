@@ -10,8 +10,7 @@ import { getLocalTimeZone, today } from "@internationalized/date"
 import { useMemo } from "react"
 import { useFormContext } from "react-hook-form"
 import { v4 as uuidv4 } from 'uuid'
-import { z } from "zod"
-import { NewInvoice, NewInvoiceLine, newInvoiceSchema } from "../../../schemas/invoices"
+import { NewInvoice, NewInvoiceLine } from "../../../schemas/invoices"
 import { columns } from "./columns"
 
 export default function GeneralForm() {
