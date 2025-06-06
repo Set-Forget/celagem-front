@@ -16,6 +16,7 @@ export const taxesSchema = z.object({
   id: z.number(),
   name: z.string(),
   amount: z.number(),
+  tax_kind: z.enum(['tax', 'withholding']),
   tax_group: taxesTypesSchema,
   active: z.boolean(),
   created_at: z.string().optional(),

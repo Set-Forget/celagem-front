@@ -65,13 +65,20 @@ export function MaterialSelectField<FV extends FieldValues = FieldValues>({
             <AsyncSelect<MaterialOption, number>
               label="Producto o servicio"
               placeholder="Buscar producto o servicio…"
+              className="w-[400px]"
               triggerClassName={cn(
                 "!w-full rounded-none border-none shadow-none bg-transparent pl-4",
                 fieldError && "outline outline-1 outline-offset-[-1px] outline-destructive"
               )}
               fetcher={fetcher}
               getDisplayValue={i => <div className="flex gap-1">{i.code && <><span className="font-medium">{i.code}</span>-</>}{" "}{i.name}</div>}
-              renderOption={i => <div className="flex gap-1">{i.code && <><span className="font-medium">{i.code}</span>-</>}{" "}{i.name}</div>}
+              renderOption={i => <div className="flex gap-1">{i.code && <>
+                <span className="font-medium text-nowrap">
+                  {i.code}
+                </span>-
+              </>}
+                {" "}<p className="truncate">{i.name}</p>
+              </div>}
               getOptionValue={(i) => i.id}
               getOptionKey={(i) => String(i.id)}
               value={field.value}

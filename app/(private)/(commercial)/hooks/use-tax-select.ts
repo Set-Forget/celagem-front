@@ -9,12 +9,14 @@ export interface UseTaxSelectOptions {
   taxIds?: number[]
   limit?: number
   type_tax_use: 'sale' | 'purchase'
+  tax_kind?: 'tax' | 'withholding'
 }
 
 export function useTaxSelect({
   taxIds,
   limit = 10,
   type_tax_use,
+  tax_kind = 'withholding',
 }: UseTaxSelectOptions) {
   const [getTax] = useLazyGetTaxQuery()
   const [sendMessage] = useSendMessageMutation();
@@ -61,8 +63,10 @@ export function useTaxSelect({
         ).unwrap()
 
         return (
-          res.data?.map((t) => ({ id: t.id, name: t.name })) ?? []
-        ).slice(0, limit)
+          res.data?.filter((t) => t.tax_kind === tax_kind)
+            .map((t) => ({ id: t.id, name: t.name })) ?? []
+        )
+          .slice(0, limit)
       } catch (err) {
         console.error(err)
         return []

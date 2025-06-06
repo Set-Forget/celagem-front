@@ -8,15 +8,15 @@ export const newSupplierGeneralSchema = z.object({
 
   country_id: z.number().optional(),
   state_id: z.number().optional(),
-  city: z.string().optional(),
-  zip: z.string().optional(),
-  street: z.string().optional(),
+  city: z.union([z.string(), z.boolean()]).optional(),
+  zip: z.union([z.string(), z.boolean()]).optional(),
+  street: z.union([z.string(), z.boolean()]).optional(),
 })
 
 export const newSupplierContactSchema = z.object({
-  email: z.string({ required_error: "El correo electrónico es requerido" }).email({ message: "El correo electrónico es inválido" }),
+  email: z.string({ required_error: "El correo electrónico es requerido" }).email({ message: "El correo electrónico es inválido" }).optional(),
   contact_address_inline: z.string({ required_error: "La dirección de contacto es requerida" }),
-  website: z.string({ required_error: "El sitio web es requerido" }).min(1, { message: "El sitio web es requerido" }),
+  website: z.string({ required_error: "El sitio web es requerido" }).optional(),
   phone: z.string().optional(),
 })
 

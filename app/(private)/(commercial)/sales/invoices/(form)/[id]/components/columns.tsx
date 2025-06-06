@@ -32,7 +32,7 @@ export const columns: ColumnDef<InvoiceItem & { currency: string }>[] = [
     accessorKey: "price_unit",
     header: "Precio unitario",
     cell: ({ row }) => {
-      return <span className="font-medium">{row.original.currency} {row.original.price_unit.toFixed(2)}</span>
+      return <span className="font-medium text-nowrap">{row.original.currency} {row.original.price_unit.toFixed(2)}</span>
     },
   },
   {

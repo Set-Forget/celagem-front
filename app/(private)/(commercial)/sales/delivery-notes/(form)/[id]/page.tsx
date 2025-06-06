@@ -67,7 +67,7 @@ export default function Page() {
 
   return (
     <div>
-      <Header title="RC-2000342">
+      <Header title={deliveryNote?.sequence_id}>
         <div className="mr-auto">
           <Badge
             variant="custom"

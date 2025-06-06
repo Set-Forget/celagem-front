@@ -25,7 +25,11 @@ export function TaxSelectField<FV extends FieldValues = FieldValues>({
   } = useFormContext<FV>()
 
   const currentIds = control._getWatch(name) as unknown as number[] | undefined
-  const { initialOptions, fetcher } = useTaxSelect({ taxIds: currentIds, type_tax_use })
+  const { initialOptions, fetcher } = useTaxSelect({
+    taxIds: currentIds,
+    type_tax_use,
+    tax_kind: "tax"
+  })
 
   return (
     <FormField

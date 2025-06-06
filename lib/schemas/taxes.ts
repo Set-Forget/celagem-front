@@ -6,6 +6,7 @@ export const taxesListSchema = z.object({
   amount: z.number(),
   tax_group: z.string(),
   active: z.boolean(),
+  tax_kind: z.enum(['tax', 'withholding']),
 })
 
 export const taxesListResponseSchema = z.object({

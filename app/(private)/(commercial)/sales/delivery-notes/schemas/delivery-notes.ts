@@ -12,6 +12,7 @@ export const newDeliveryNoteItemSchema = z.object({
 export const deliveryNoteListSchema = z.object({
   id: z.number(),
   sequence_id: z.string(),
+  state: deliveryNoteStatusSchema,
   customer: z.string(),
   scheduled_date: z.string(),
   delivery_date: z.string(),
@@ -24,10 +25,9 @@ export const newDeliveryNoteSchema = z.object({
   delivery_date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de recepción es requerida" }),
-  state: deliveryNoteStatusSchema,
   scheduled_date: z.string().optional(),
-  delivery_location: z.number({ required_error: "La ubicación de recepción es requerida" }),
-  source_location: z.number({ required_error: "La ubicación de origen es requerida" }),
+  delivery_location: z.number({ required_error: "La ubicación de recepción es requerida" }).optional(),
+  source_location: z.number({ required_error: "La ubicación de origen es requerida" }).optional(),
   move_type: z.enum(["direct"], { required_error: "El tipo de movimiento es requerido" }),
   notes: z.string().optional(),
   items: z.array(newDeliveryNoteItemSchema),

@@ -49,6 +49,7 @@ export default function Page() {
     defaultValues
   });
 
+  console.log(newDeliveryNote.formState.errors)
 
   const onSubmit = async (data: z.infer<typeof newDeliveryNoteSchema>) => {
     try {
@@ -56,6 +57,8 @@ export default function Page() {
         ...data,
         delivery_date: data.delivery_date.toString(),
         scheduled_date: format(new Date(), "yyyy-MM-dd"),
+        delivery_location: 14,
+        source_location: 14,
       }).unwrap()
 
       if (response.status === "success") {

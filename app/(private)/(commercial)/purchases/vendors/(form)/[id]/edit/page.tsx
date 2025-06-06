@@ -71,6 +71,8 @@ export default function Page() {
     }
   })
 
+  console.log(form.formState.errors)
+
   const onSubmit = async (data: z.infer<typeof newSupplierSchema>) => {
     const { contact_address_inline, ...rest } = data
     try {
@@ -112,10 +114,22 @@ export default function Page() {
       property_account_position: supplier.property_account_position || undefined,
       currency: supplier.currency?.id,
       economic_activity: supplier.economic_activity?.id,
+      phone: supplier.phone || "",
       account: supplier.account?.id,
+      website: supplier.website || "",
       payment_method: supplier.payment_method?.id,
       country_id: supplier.country_id,
       withholding_sources: supplier.withholding_source_ids.map((source) => source.id),
+      email: supplier.email || "",
+      tax_id: supplier.tax_id || "",
+      tax_type: supplier.tax_type || "",
+      entity_type: supplier.entity_type || "",
+      nationality_type: supplier.nationality_type || "",
+      tax_regime: supplier.tax_regime || "",
+      tax_category: supplier.tax_category || "",
+      is_resident: supplier.is_resident || false,
+      tax_information: supplier.tax_information || "",
+      fiscal_responsibility: supplier.fiscal_responsibility || "",
     })
   }, [supplier])
 

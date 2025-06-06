@@ -16,7 +16,6 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
 }
 
 const MeasurementCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseReceiptSchema>>; index: number }) => {
-
   const handleSearchMeasurementUnits = async (query?: string) => {
     return [{
       id: 1,

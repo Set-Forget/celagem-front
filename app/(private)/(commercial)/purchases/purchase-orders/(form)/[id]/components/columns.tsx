@@ -43,7 +43,7 @@ export const columns: ColumnDef<PurchaseOrderItem & { currency: string }>[] = [
     accessorKey: "price_unit",
     header: "Precio unitario",
     cell: ({ row }) => {
-      return <span className="font-medium">{row.original.currency} {row.original.price_unit.toFixed(2)}</span>
+      return <span className="font-medium text-nowrap">{row.original.currency} {row.original.price_unit.toFixed(2)}</span>
     },
   },
   {
@@ -66,10 +66,12 @@ export const columns: ColumnDef<PurchaseOrderItem & { currency: string }>[] = [
             <Badge
               key={tax.id || index}
               className={cn(
-                "badge group-hover:bg-background group-hover:shadow-background bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary"
+                "badge group-hover:bg-background group-hover:shadow-background bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary text-nowrap max-w-[100px]"
               )}
             >
-              {tax.name}
+              <p className="truncate">
+                {tax.name}
+              </p>
             </Badge>
           ))}
           {hiddenTaxes.length > 0 && (

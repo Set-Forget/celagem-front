@@ -84,7 +84,7 @@ export default function GeneralForm() {
           </FormItem>
         )}
       />
-      <FormField
+      {/*       <FormField
         control={control}
         name="source_location"
         render={({ field }) => (
@@ -145,7 +145,7 @@ export default function GeneralForm() {
             }
           </FormItem>
         )}
-      />
+      /> */}
       <FormField
         control={control}
         name="delivery_date"
@@ -182,7 +182,7 @@ export default function GeneralForm() {
                 footer={({ append }) =>
                   <FormTableFooter<NewDeliveryNote, NewDeliveryNoteLine>
                     control={control}
-                    onAddRow={() => append({ id: uuidv4(), product_id: null, quantity: 1 })}
+                    onAddRow={() => append({ id: uuidv4(), product_id: null, product_uom: null, quantity: 1 })}
                     colSpan={columns.length}
                     selectors={{
                       items: (values) => values.items,
