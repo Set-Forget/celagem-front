@@ -194,7 +194,7 @@ const DeliveryNotePDF: React.FC<{ data: DeliveryNoteDetail }> = ({ data }) => {
   const totalScheduledQuantity = data.items.reduce((sum, item) => sum + item.product_uom_qty, 0)
 
   return (
-    <Document title={`Remito ${data.number}`}>
+    <Document title={`Remito ${data.sequence_id}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.container}>
           {/* Header */}
@@ -203,7 +203,7 @@ const DeliveryNotePDF: React.FC<{ data: DeliveryNoteDetail }> = ({ data }) => {
               <Text style={styles.title}>REMITO DE ENTREGA</Text>
               <View style={styles.row}>
                 <Text style={styles.label}>Remito No:</Text>
-                <Text style={styles.value}>{data.number}</Text>
+                <Text style={styles.value}>{data.sequence_id}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Fecha programada:</Text>
