@@ -86,11 +86,11 @@ const reportingItems = [
   },
   {
     title: "Cuentas por cobrar",
-    url: "/reporting/accounts-receivable"
+    url: "/reporting/accounts-receivable/filter"
   },
   {
     title: "Cuentas por pagar",
-    url: "/reporting/accounts-payable"
+    url: "/reporting/accounts-payable/filter"
   },
   {
     title: "Cuentas corrientes",

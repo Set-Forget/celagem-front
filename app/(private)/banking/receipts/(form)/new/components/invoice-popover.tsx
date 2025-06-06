@@ -89,7 +89,7 @@ export default function InvoicePopover() {
                 : `${invoices.length} Facturas seleccionadas`}
             </p>
             <p className="text-xs text-muted-foreground">
-              Factura{invoices.length === 1 ? "" : "s"} de compra
+              Factura{invoices.length === 1 ? "" : "s"} de venta
             </p>
           </div>
 
@@ -175,7 +175,7 @@ export default function InvoicePopover() {
             )}
           </div>
         ) : (
-          <div className="p-2 space-y-2">
+          <div className="p-2 space-y-2 max-h-[200px] overflow-y-auto">
             <div className="flex gap-2 items-center mb-2">
               <FileText className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">

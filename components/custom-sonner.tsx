@@ -1,4 +1,4 @@
-import { CircleCheck, CircleX, X } from "lucide-react";
+import { CircleCheck, CircleX, X, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 
@@ -9,7 +9,7 @@ export default function CustomSonner({
 }: {
   t: string | number,
   description: string,
-  variant?: 'success' | 'error'
+  variant?: 'success' | 'error' | 'warning'
 }) {
 
   return (
@@ -24,9 +24,16 @@ export default function CustomSonner({
                 strokeWidth={2}
                 aria-hidden="true"
               />
-            ) : (
+            ) : variant === 'error' ? (
               <CircleX
                 className="mt-0.5 shrink-0 text-red-500"
+                size={16}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+            ) : (
+              <AlertCircle
+                className="mt-0.5 shrink-0 text-sky-500"
                 size={16}
                 strokeWidth={2}
                 aria-hidden="true"

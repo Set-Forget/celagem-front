@@ -6,6 +6,9 @@ import { useListDeliveriesQuery } from '@/lib/services/deliveries';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { columns } from './components/columns';
 import Toolbar from './components/toolbar';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { routes } from '@/lib/routes';
 
 export default function Page() {
   const searchParams = useSearchParams()
@@ -23,7 +26,16 @@ export default function Page() {
 
   return (
     <div>
-      <Header title='Remitos' />
+      <Header title='Remitos' >
+        <Button
+          className="ml-auto"
+          size="sm"
+          onClick={() => router.push(routes.deliveryNote.new)}
+        >
+          <Plus className="w-4 h-4" />
+          Crear remito
+        </Button>
+      </Header>
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
         <DataTable
           data={deliveries?.data ?? []}

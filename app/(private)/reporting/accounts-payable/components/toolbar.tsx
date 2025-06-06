@@ -1,41 +1,30 @@
-import FilterSelector, { FilterConfig } from "@/components/filter-selector";
+import { Button } from "@/components/ui/button";
+import { routes } from "@/lib/routes";
 import { Table } from "@tanstack/react-table";
-import { CalendarFold, Search } from "lucide-react";
+import { BanknoteArrowDown } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { AccountsPayableList } from "../schemas/accounts-payable";
 
-interface DataTableToolbarProps<TData> {
-  table: Table<TData>
-}
+export default function Toolbar({ table }: { table: Table<AccountsPayableList> }) {
+  const router = useRouter()
 
-const filtersConfig: Record<string, FilterConfig> = {
-  date_range: {
-    type: "date_range",
-    options: [
-      { label: "Fecha de emisión", value: "date" },
-      { label: "Fecha de vencimiento", value: "due_date" },
-    ],
-    label: "Rango de fecha",
-    key: "date_range",
-    icon: CalendarFold
-  },
-  search: {
-    type: "search",
-    label: "Buscar",
-    options: [
-      { label: "Proveedor", value: "supplier" },
-      { label: "Centro de costos", value: "cost_center" },
-      { label: "Número de comprobante", value: "voucher_number" },
-    ],
-    key: "search",
-    icon: Search
-  },
-};
+  const selectedRows = table.getSelectedRowModel().rows
 
-export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   return (
     <div className="flex items-center justify-between">
-      <div className="flex gap-4">
-        <FilterSelector filtersConfig={filtersConfig} />
-      </div>
+      <Button
+        variant="secondary"
+        className="h-7"
+        size="sm"
+        disabled={selectedRows.length === 0 || selectedRows.some(row => row.original.outstanding_amount === 0)}
+        onClick={() => {
+          const billIds = selectedRows.map((row) => row.original.id).join(",")
+          router.push(routes.payments.new(billIds))
+        }}
+      >
+        <BanknoteArrowDown />
+        {selectedRows.length > 1 ? "Registrar pagos" : "Registrar pago"}
+      </Button>
     </div>
   )
 }

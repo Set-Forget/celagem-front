@@ -11,7 +11,8 @@ export const accountsPayableApi = erpApi.injectEndpoints({
 });
 
 export const {
-  useListAccountsPayableQuery
+  useListAccountsPayableQuery,
+  useLazyListAccountsPayableQuery
 } = accountsPayableApi;
 
 

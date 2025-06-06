@@ -26,7 +26,7 @@ import {
   SelectValue
 } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { usePathname, useSearchParams } from "next/navigation"
 import { DateRange } from "react-day-picker"
 import { ActiveFilterChip } from "./active-filter-chip"
@@ -183,11 +183,11 @@ const DateRangeFilter = ({
               {localDate?.from ? (
                 localDate?.to ? (
                   <>
-                    {format(localDate.from, "LLL dd, y", { locale: es })} -{" "}
-                    {format(localDate.to, "LLL dd, y", { locale: es })}
+                    {format(parseISO(localDate.from.toISOString()), "LLL dd, y", { locale: es })} -{" "}
+                    {format(parseISO(localDate.to.toISOString()), "LLL dd, y", { locale: es })}
                   </>
                 ) : (
-                  format(localDate.from, "LLL dd, y", { locale: es })
+                  format(parseISO(localDate.from.toISOString()), "LLL dd, y", { locale: es })
                 )
               ) : (
                 <span>Seleccioná un rango</span>
@@ -298,7 +298,7 @@ const DateFilter = ({
               )}
             >
               {localDate ? (
-                format(localDate, "LLL dd, y", { locale: es })
+                format(parseISO(localDate.toISOString()), "LLL dd, y", { locale: es })
               ) : (
                 <span>Selecciona una fecha</span>
               )}
@@ -764,11 +764,11 @@ export default function FilterSelector({
               Array.isArray(val)
                 ? getLabelsFromValues(key, val)
                 : isDateRange(val)
-                  ? `${format(val.from, 'LLL dd, yyyy', { locale: es })} - ${format(val.to, 'LLL dd, yyyy', { locale: es })}`
+                  ? `${format(typeof val.from === 'string' ? parseISO(val.from) : val.from, 'LLL dd, yyyy', { locale: es })} - ${format(typeof val.to === 'string' ? parseISO(val.to) : val.to, 'LLL dd, yyyy', { locale: es })}`
                   : isSearchFilter(val)
                     ? `"${val.query}"`
                     : typeof val === 'object' && 'field' in val && 'value' in val
-                      ? format(new Date(val.value), 'LLL dd, yyyy')
+                      ? format(typeof val.value === 'string' ? parseISO(val.value) : val.value, 'LLL dd, yyyy')
                       : typeof val === 'string'
                         ? filterConfig?.options?.find((opt) => opt.value === val)?.label || val
                         : 'N/A'

@@ -101,7 +101,7 @@ export const newChargeSchema = z.object({
   withholdings: z.array(z.number()).optional(),
   invoices: z.array(z.object({
     id: z.number(),
-    number: z.string(),
+    number: z.union([z.string(), z.boolean()]),
     type: z.enum(["invoice", "credit_note", "debit_note"]),
     amount_residual: z.number(),
     currency: z.object({

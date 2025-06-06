@@ -143,7 +143,7 @@ export default function BillPopover() {
         <Separator />
 
         {bills.length === 1 ? (
-          <div className="p-2 space-y-2">
+          <div className="p-2 space-y-2 max-h-[200px] overflow-y-auto">
             <div className="flex gap-2 items-center mb-2">
               <Package className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">

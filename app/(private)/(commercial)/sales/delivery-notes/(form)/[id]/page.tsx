@@ -5,17 +5,18 @@ import DataTabs from '@/components/data-tabs';
 import Header from '@/components/header';
 import RenderFields from '@/components/render-fields';
 import { useGetDeliveryQuery } from '@/lib/services/deliveries';
-import { FieldDefinition } from '@/lib/utils';
+import { cn, FieldDefinition } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Box, FileText } from 'lucide-react';
+import { Box } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { DeliveryNoteDetail } from '../../schemas/delivery-notes';
 import Actions from './actions';
 import { columns } from './components/columns';
 import CustomerTab from './components/customer-tab';
-import InvoiceTab from './components/invoice-tab';
+import { deliveryNoteStatus } from '../../utils';
+import { Badge } from '@/components/ui/badge';
 
 const fields: FieldDefinition<DeliveryNoteDetail>[] = [
   {
@@ -47,12 +48,12 @@ const tabs = [
     icon: <Box size={16} />,
     content: <CustomerTab />
   },
-  {
-    value: "tab-2",
-    label: "Factura",
-    icon: <FileText size={16} />,
-    content: <InvoiceTab />
-  }
+  /*   {
+      value: "tab-2",
+      label: "Factura",
+      icon: <FileText size={16} />,
+      content: <InvoiceTab />
+    } */
 ]
 
 export default function Page() {
@@ -62,9 +63,19 @@ export default function Page() {
 
   const { data: deliveryNote, isLoading: isDeliveryNoteLoading } = useGetDeliveryQuery(id);
 
+  const status = deliveryNoteStatus[deliveryNote?.state as keyof typeof deliveryNoteStatus]
+
   return (
     <div>
       <Header title="RC-2000342">
+        <div className="mr-auto">
+          <Badge
+            variant="custom"
+            className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
+          >
+            {status?.label}
+          </Badge>
+        </div>
         <div className="ml-auto flex gap-2">
           <Actions />
         </div>

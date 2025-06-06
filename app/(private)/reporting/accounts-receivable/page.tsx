@@ -45,7 +45,9 @@ export default function AccountsReceivablePage() {
   const searchParams = useSearchParams()
 
   const date_range = JSON.parse(searchParams.get('date_range') || '{}') as { field: string, from: string, to: string }
-  const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
+  const customers = searchParams.get('customers')?.split(",")
+  const voucher_type = searchParams.get('voucher_type')?.split(",")
+  const include_paid = searchParams.get('include_paid') === "true"
 
   const { data: accountsReceivable, isLoading: isAccountsReceivableLoading } = useListAccountsReceivableQuery();
 
@@ -74,24 +76,19 @@ export default function AccountsReceivablePage() {
           return true;
         })
         .filter(item => {
-          if (!search.field || !search.query) return true
-          const q = search.query.toLowerCase()
-          switch (search.field) {
-            case "customer": return item.customer?.toLowerCase().includes(q)
-            case "voucher_number": return String(item.voucher_number).includes(q)
-            case "costs_center": return item.costs_center?.toLowerCase().includes(q)
-            default: return false
-          }
+          if (!customers) return true;
+          return customers.includes(String(item.partner.id));
+        })
+        .filter(item => {
+          if (!voucher_type) return true;
+          return voucher_type.includes(String(item.voucher_type));
+        })
+        .filter(item => {
+          if (!include_paid) return item.outstanding_amount && item.outstanding_amount > 0
+          return true
         })
     )
-  }, [
-    accountsReceivable?.data,
-    date_range.field,
-    date_range.from,
-    date_range.to,
-    search.field,
-    search.query,
-  ])
+  }, [accountsReceivable?.data])
 
   const memoizedColumns = useMemo(() => columns, [columns]);
 
@@ -102,6 +99,9 @@ export default function AccountsReceivablePage() {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     enableSortingRemoval: false,
+    enableRowSelection(row) {
+      return row.original.id > 0 && row.original.voucher_type === "out_invoice" || row.original.voucher_type === "out_debit_note"
+    },
   });
 
   const getPinningStyles = (column: Column<AccountsReceivableList>): CSSProperties => {

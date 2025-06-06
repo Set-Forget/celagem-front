@@ -30,32 +30,34 @@ const fields: FieldDefinition<SupplierDetail>[] = [
   {
     label: "Correo electrónico",
     placeholderLength: 9,
+    show: (p) => !!p?.email,
     render: (p) => <Button
       variant="link"
       className="p-0 h-auto text-foreground font-normal"
       asChild
     >
       <Link
-        href={`mailto:${p.email}`}
+        href={p?.email ? `mailto:${p?.email}` : "#"}
         target="_blank"
       >
-        {p.email}
+        {p?.email}
       </Link>
     </Button>
   },
   {
     label: "Página web",
     placeholderLength: 16,
+    show: (p) => !!p?.website,
     render: (p) => <Button
       variant="link"
       className="p-0 h-auto text-foreground font-normal"
       asChild
     >
       <Link
-        href={p.website}
+        href={p?.website ? p.website : "#"}
         target="_blank"
       >
-        {p.website}
+        {p?.website}
       </Link>
     </Button>
   },

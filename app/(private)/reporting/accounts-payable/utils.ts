@@ -1,13 +1,20 @@
 import { AccountsPayableList } from "./schemas/accounts-payable";
 
+export const voucherType = {
+  in_credit_note: "Nota de crédito de compra",
+  in_debit_note: "Nota de débito de compra",
+  in_invoice: "Factura de compra",
+  general: "General"
+}
+
 export function groupBySupplier(accounts?: AccountsPayableList[]): AccountsPayableList[] {
   const groups: { [supplier: string]: AccountsPayableList[] } = {};
   accounts?.forEach((item) => {
-    const supplier = item.customer;
-    if (!groups[supplier]) {
-      groups[supplier] = [];
+    const supplier = item.partner;
+    if (!groups[supplier.id]) {
+      groups[supplier.id] = [];
     }
-    groups[supplier].push(item);
+    groups[supplier.id].push(item);
   });
 
   const result: AccountsPayableList[] = [];
@@ -28,10 +35,10 @@ export function groupBySupplier(accounts?: AccountsPayableList[]): AccountsPayab
     const totalRow: AccountsPayableList = {
       id: -1,
       date: "",
-      customer: supplier,
-      accounting_account: "",
-      costs_center: "",
-      voucher_type: "",
+      partner: { id: 0, name: "" },
+      accounting_account: { id: 0, name: "" },
+      costs_center: { id: 0, name: "" },
+      voucher_type: null,
       voucher_number: "",
       due_date: "",
       invoiced_amount: parseFloat(totalInvoiced.toFixed(2)),
@@ -50,16 +57,16 @@ export function groupBySupplier(accounts?: AccountsPayableList[]): AccountsPayab
     const emptyRow: AccountsPayableList = {
       id: -2,
       date: "",
-      customer: "",
-      accounting_account: "",
-      costs_center: "",
-      voucher_type: "",
+      partner: { id: 0, name: "" },
+      accounting_account: { id: 0, name: "" },
+      costs_center: { id: 0, name: "" },
+      voucher_type: null,
       voucher_number: "",
       due_date: "",
       invoiced_amount: null,
       paid_amount: null,
       outstanding_amount: null,
-      currency: "",
+      currency: { id: 0, name: "" },
       "30_days": null,
       "60_days": null,
       "90_days": null,

@@ -21,6 +21,7 @@ import { z } from "zod";
 import { newDeliveryNoteSchema } from "../../schemas/delivery-notes";
 import GeneralForm from "../components/general-form";
 import NotesForm from "../components/notes-form";
+import { defaultValues } from "../default-values";
 
 const tabs = [
   {
@@ -42,10 +43,9 @@ export default function Page() {
 
   const newDeliveryNote = useForm<z.infer<typeof newDeliveryNoteSchema>>({
     resolver: zodResolver(newDeliveryNoteSchema),
-    defaultValues: {
-      items: [],
-    },
+    defaultValues
   });
+
 
   const onSubmit = async (data: z.infer<typeof newDeliveryNoteSchema>) => {
     try {
@@ -56,7 +56,7 @@ export default function Page() {
       }).unwrap()
 
       if (response.status === "success") {
-        router.push(`/purchases/purchase-receipts/${response.data.id}`)
+        router.push(`/sales/delivery-notes/${response.data.id}`)
         toast.custom((t) => <CustomSonner t={t} description="Remito creado exitosamente" variant="success" />)
       }
     } catch (error) {

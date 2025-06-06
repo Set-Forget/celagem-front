@@ -1,18 +1,25 @@
 import { AccountsReceivableList } from "./schemas/accounts-receivable";
 
+export const voucherType = {
+  out_credit_note: "Nota de crédito de venta",
+  out_debit_note: "Nota de débito de venta",
+  out_invoice: "Factura de venta",
+  general: "General"
+}
+
 export function groupByCustomer(accounts?: AccountsReceivableList[]): AccountsReceivableList[] {
-  const groups: { [customer: string]: AccountsReceivableList[] } = {};
+  const groups: { [partner: string]: AccountsReceivableList[] } = {};
   accounts?.forEach((item) => {
-    const customer = item.customer;
-    if (!groups[customer]) {
-      groups[customer] = [];
+    const partner = item?.partner?.name;
+    if (!groups[partner]) {
+      groups[partner] = [];
     }
-    groups[customer].push(item);
+    groups[partner].push(item);
   });
 
   const result: AccountsReceivableList[] = [];
-  Object.keys(groups).forEach((customer) => {
-    const items = groups[customer];
+  Object.keys(groups).forEach((partner) => {
+    const items = groups[partner];
 
     items.forEach((item) => result.push(item));
 
@@ -28,9 +35,18 @@ export function groupByCustomer(accounts?: AccountsReceivableList[]): AccountsRe
     const totalRow: AccountsReceivableList = {
       id: -1,
       date: "",
-      customer,
-      accounting_account: "",
-      costs_center: "",
+      partner: {
+        id: -1,
+        name: partner,
+      },
+      accounting_account: {
+        id: -1,
+        name: "",
+      },
+      costs_center: {
+        id: -1,
+        name: "",
+      },
       voucher_type: "",
       voucher_number: "",
       due_date: "",
@@ -50,16 +66,25 @@ export function groupByCustomer(accounts?: AccountsReceivableList[]): AccountsRe
     const emptyRow: AccountsReceivableList = {
       id: -2,
       date: "",
-      customer: "",
-      accounting_account: "",
-      costs_center: "",
+      partner: {
+        id: -1,
+        name: "",
+      },
+      accounting_account: {
+        id: -1,
+        name: "",
+      },
+      costs_center: {
+        id: -1,
+        name: "",
+      },
       voucher_type: "",
       voucher_number: "",
       due_date: "",
       invoiced_amount: null,
       paid_amount: null,
       outstanding_amount: null,
-      currency: "",
+      currency: { id: 0, name: "" },
       "30_days": null,
       "60_days": null,
       "90_days": null,

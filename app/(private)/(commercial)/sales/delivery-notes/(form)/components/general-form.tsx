@@ -1,3 +1,5 @@
+import { FormTableFooter } from "@/app/(private)/(commercial)/components/form-table-footer";
+import { useCustomerSelect } from "@/app/(private)/(commercial)/hooks/use-customer-select";
 import { AsyncSelect } from "@/components/async-select";
 import DatePicker from "@/components/date-picker";
 import FormTable from "@/components/form-table";
@@ -11,15 +13,19 @@ import {
 } from "@/components/ui/form";
 import { useLazyListStocksQuery } from "@/lib/services/stocks";
 import { useFormContext } from "react-hook-form";
+import { v4 as uuidv4 } from 'uuid';
 import { z } from "zod";
-import { newDeliveryNoteSchema } from "../../schemas/delivery-notes";
+import { NewDeliveryNote, NewDeliveryNoteLine, newDeliveryNoteSchema } from "../../schemas/delivery-notes";
 import { columns } from "./columns";
-import TableFooter from "./table-footer";
 
 export default function GeneralForm() {
   const { control, formState } = useFormContext<z.infer<typeof newDeliveryNoteSchema>>()
 
   const [searchStocks] = useLazyListStocksQuery()
+
+  const { initialOptions: initialCustomer, fetcher: handleSearchCustomer } = useCustomerSelect({
+    customerId: control._getWatch("customer"),
+  })
 
   const handleSearchStock = async (query?: string) => {
     try {
@@ -38,6 +44,38 @@ export default function GeneralForm() {
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
+      <FormField
+        control={control}
+        name="customer"
+        render={({ field }) => (
+          <FormItem className="flex flex-col w-full">
+            <FormLabel className="w-fit">Cliente</FormLabel>
+            <FormControl>
+              <AsyncSelect<{ id: number, name: string }, number>
+                label="Cliente"
+                triggerClassName="!w-full"
+                placeholder="Seleccionar cliente..."
+                fetcher={handleSearchCustomer}
+                getDisplayValue={(item) => item.name}
+                getOptionValue={(item) => item.id}
+                renderOption={(item) => <div>{item.name}</div>}
+                onChange={field.onChange}
+                value={field.value}
+                getOptionKey={(item) => String(item.id)}
+                noResultsMessage="No se encontraron resultados"
+                initialOptions={initialCustomer}
+              />
+            </FormControl>
+            {formState.errors.customer ? (
+              <FormMessage />
+            ) :
+              <FormDescription>
+                Esta será el cliente al que se le asignará el remito.
+              </FormDescription>
+            }
+          </FormItem>
+        )}
+      />
       <FormField
         control={control}
         name="source_location"
@@ -131,9 +169,18 @@ export default function GeneralForm() {
             <FormControl>
               <FormTable<z.infer<typeof newDeliveryNoteSchema>>
                 columns={columns}
-                footer={({ append }) => <TableFooter append={append} />}
                 name="items"
                 className="col-span-2"
+                footer={({ append }) =>
+                  <FormTableFooter<NewDeliveryNote, NewDeliveryNoteLine>
+                    control={control}
+                    onAddRow={() => append({ id: uuidv4(), product_id: null, quantity: 1 })}
+                    colSpan={columns.length}
+                    selectors={{
+                      items: (values) => values.items,
+                    }}
+                  />
+                }
               />
             </FormControl>
             {formState.errors.items?.message && (

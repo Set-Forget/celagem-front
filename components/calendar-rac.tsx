@@ -61,18 +61,30 @@ function CalendarGridComponent({ isRange = false }: { isRange?: boolean }) {
           <CalendarCellRac
             date={date}
             className={cn(
-              "text-foreground data-hovered:bg-accent data-selected:bg-primary data-hovered:text-foreground data-selected:text-primary-foreground data-focus-visible:ring-ring/50 relative flex size-9 items-center justify-center rounded-md p-0 text-sm font-normal whitespace-nowrap [transition-property:color,background-color,border-radius,box-shadow] duration-150 outline-none data-disabled:pointer-events-none data-disabled:opacity-30 data-focus-visible:z-10 data-focus-visible:ring-[3px] data-unavailable:pointer-events-none data-unavailable:line-through data-unavailable:opacity-30",
-              // Range-specific styles
+              "relative flex h-9 w-9 items-center justify-center rounded-md p-0 text-sm font-normal whitespace-nowrap",
+              "transition-colors duration-150 outline-none",
+              "data-[hovered]:bg-accent data-[hovered]:text-foreground",
+              "data-[selected]:bg-primary data-[selected]:text-primary-foreground",
+              "data-[disabled]:pointer-events-none data-[disabled]:opacity-30",
+              "data-[focus-visible]:z-10 data-[focus-visible]:ring-[3px] data-[focus-visible]:ring-ring/50",
+              "data-[unavailable]:pointer-events-none data-[unavailable]:line-through data-[unavailable]:opacity-30",
               isRange &&
-              "data-selected:bg-accent data-selected:text-foreground data-invalid:data-selection-end:bg-destructive data-invalid:data-selection-start:bg-destructive data-selection-end:bg-primary data-selection-start:bg-primary data-selection-end:text-primary-foreground data-selection-start:text-primary-foreground data-invalid:bg-red-100 data-selected:rounded-none data-selection-end:rounded-e-md data-invalid:data-selection-end:text-white data-selection-start:rounded-s-md data-invalid:data-selection-start:text-white",
-              // Today indicator styles
+              cn(
+                "data-[selected]:bg-accent data-[selected]:text-foreground",
+                "data-[selection-start]:bg-primary data-[selection-start]:text-primary-foreground data-[selection-start]:rounded-s-md",
+                "data-[selection-end]:bg-primary data-[selection-end]:text-primary-foreground data-[selection-end]:rounded-e-md",
+                "data-[invalid][data-selection-start]:bg-destructive data-[invalid][data-selection-end]:bg-destructive",
+                "data-[invalid][data-selection-start]:text-white data-[invalid][data-selection-end]:text-white",
+                "data-[selected]:rounded-none"
+              ),
               date.compare(now) === 0 &&
               cn(
-                "after:bg-primary after:pointer-events-none after:absolute after:start-1/2 after:bottom-1 after:z-10 after:size-[3px] after:-translate-x-1/2 after:rounded-full",
+                "after:absolute after:left-1/2 after:bottom-1 after:z-10",
+                "after:h-[3px] after:w-[3px] after:-translate-x-1/2 after:rounded-full after:pointer-events-none after:bg-primary",
                 isRange
-                  ? "data-selection-end:after:bg-background data-selection-start:after:bg-background"
-                  : "data-selected:after:bg-background",
-              ),
+                  ? "data-[selection-start]:after:bg-background data-[selection-end]:after:bg-background"
+                  : "data-[selected]:after:bg-background"
+              )
             )}
           />
         )}

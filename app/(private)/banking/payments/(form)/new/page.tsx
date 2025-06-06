@@ -15,7 +15,6 @@ export default function Page() {
     resolver: zodResolver(newPaymentSchema),
     defaultValues: defaultValues
   })
-
   return (
     <Form {...form}>
       <Header title="Registrar pago">

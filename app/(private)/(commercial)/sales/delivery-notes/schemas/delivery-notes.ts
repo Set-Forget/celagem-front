@@ -1,6 +1,8 @@
 import { CalendarDate } from '@internationalized/date';
 import { z } from 'zod';
 
+export const deliveryNoteStatusSchema = z.enum(["draft", "waiting", "confirmed", "assigned", "done", "cancel"])
+
 export const newDeliveryNoteItemSchema = z.object({
   product_id: z.number({ required_error: "El producto es requerido" }),
   product_uom: z.number({ required_error: "La unidad de medida es requerida" }),
@@ -9,7 +11,7 @@ export const newDeliveryNoteItemSchema = z.object({
 
 export const deliveryNoteListSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string(),
   customer: z.string(),
   scheduled_date: z.string(),
   delivery_date: z.string(),
@@ -18,10 +20,11 @@ export const deliveryNoteListSchema = z.object({
 })
 
 export const newDeliveryNoteSchema = z.object({
-  customer: z.number({ required_error: "El proveedor es requerido" }),
+  customer: z.number({ required_error: "El cliente es requerido" }),
   delivery_date: z.custom<CalendarDate>((data) => {
     return data instanceof CalendarDate;
   }, { message: "La fecha de recepción es requerida" }),
+  state: deliveryNoteStatusSchema,
   scheduled_date: z.string().optional(),
   delivery_location: z.number({ required_error: "La ubicación de recepción es requerida" }),
   source_location: z.number({ required_error: "La ubicación de origen es requerida" }),
@@ -57,7 +60,8 @@ export const deliveryNoteItemSchema = z.object({
 
 export const deliveryNoteDetailSchema = z.object({
   id: z.number(),
-  number: z.string(),
+  sequence_id: z.string(),
+  state: deliveryNoteStatusSchema,
   customer: z.object({
     id: z.number(),
     name: z.string(),
@@ -83,7 +87,7 @@ export type DeliveryNoteListResponse = z.infer<typeof deliveryNoteListResponseSc
 
 export type NewDeliveryNote = z.infer<typeof newDeliveryNoteSchema>;
 export type NewDeliveryNoteResponse = z.infer<typeof newDeliveryNoteResponseSchema>;
-
+export type NewDeliveryNoteLine = z.infer<typeof newDeliveryNoteItemSchema>;
 
 export type DeliveryNoteDetail = z.infer<typeof deliveryNoteDetailSchema>;
 export type DeliveryNoteItem = z.infer<typeof deliveryNoteItemSchema>;

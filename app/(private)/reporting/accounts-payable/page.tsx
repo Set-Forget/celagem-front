@@ -17,24 +17,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useListAccountsPayableQuery } from "@/lib/services/accounts-payable";
 import { cn } from "@/lib/utils";
+import '@tanstack/react-table';
 import {
   Column,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable
 } from "@tanstack/react-table";
 import { ArrowLeftToLineIcon, ArrowRightToLineIcon, EllipsisIcon, Loader2, PinOffIcon } from "lucide-react";
-import { CSSProperties, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { CSSProperties, useMemo } from "react";
 import { columns } from "./components/columns";
 import Toolbar from "./components/toolbar";
 import { AccountsPayableList } from "./schemas/accounts-payable";
-import '@tanstack/react-table';
-import { useListAccountsPayableQuery } from "@/lib/services/accounts-payable";
 import { groupBySupplier } from "./utils";
-import { useSearchParams } from "next/navigation";
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {
@@ -46,7 +45,9 @@ export default function AccountsReceivablePage() {
   const searchParams = useSearchParams()
 
   const date_range = JSON.parse(searchParams.get('date_range') || '{}') as { field: string, from: string, to: string }
-  const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
+  const suppliers = searchParams.get('suppliers')?.split(",")
+  const voucher_type = searchParams.get('voucher_type')?.split(",")
+  const include_paid = searchParams.get('include_paid') === "true"
 
   const { data: accountsPayable, isLoading: isAccountsPayableLoading } = useListAccountsPayableQuery();
 
@@ -75,24 +76,19 @@ export default function AccountsReceivablePage() {
           return true;
         })
         .filter(item => {
-          if (!search.field || !search.query) return true
-          const q = search.query.toLowerCase()
-          switch (search.field) {
-            case "customer": return item.customer?.toLowerCase().includes(q)
-            case "voucher_number": return String(item.voucher_number).includes(q)
-            case "costs_center": return item.costs_center?.toLowerCase().includes(q)
-            default: return false
-          }
+          if (!suppliers) return true;
+          return suppliers.includes(String(item.partner.id));
+        })
+        .filter(item => {
+          if (!voucher_type) return true;
+          return voucher_type.includes(String(item.voucher_type));
+        })
+        .filter(item => {
+          if (!include_paid) return item.outstanding_amount && item.outstanding_amount > 0
+          return true
         })
     )
-  }, [
-    accountsPayable?.data,
-    date_range.field,
-    date_range.from,
-    date_range.to,
-    search.field,
-    search.query,
-  ])
+  }, [accountsPayable?.data])
 
   const memoizedColumns = useMemo(() => columns, [columns]);
 
@@ -103,6 +99,9 @@ export default function AccountsReceivablePage() {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     enableSortingRemoval: false,
+    enableRowSelection(row) {
+      return row.original.id > 0 && row.original.voucher_type === "in_invoice" || row.original.voucher_type === "in_debit_note"
+    },
   });
 
   const getPinningStyles = (column: Column<AccountsPayableList>): CSSProperties => {
@@ -119,7 +118,7 @@ export default function AccountsReceivablePage() {
   return (
     <div>
       <Header title="Cuentas por pagar" />
-      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-197px)] [&_*[data-table='true']]:w-[calc(100svw-306px)]">
+      <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-193px)] [&_*[data-table='true']]:w-[calc(100svw-306px)]">
         <div className="space-y-4 flex flex-col justify-between">
           <Toolbar table={table} />
           <div className="overflow-hidden rounded-sm border border-border bg-background shadow-sm">
@@ -223,7 +222,7 @@ export default function AccountsReceivablePage() {
                   <TableRow className="border-none">
                     <TableCell
                       colSpan={columns.length}
-                      className="text-xs text-center h-10 border-b"
+                      className="text-xs text-center !h-10 border-b"
                     >
                       <div className="flex items-center justify-center gap-2 text-muted-foreground">
                         <Loader2 className="animate-spin" size={14} />
@@ -236,7 +235,7 @@ export default function AccountsReceivablePage() {
                   <TableRow className="border-none">
                     <TableCell
                       colSpan={columns.length}
-                      className="text-xs text-center h-10 border-b text-muted-foreground"
+                      className="text-xs text-center !h-10 border-b text-muted-foreground"
                     >
                       No hay items
                     </TableCell>
@@ -253,7 +252,7 @@ export default function AccountsReceivablePage() {
                       return (
                         <TableCell
                           key={cell.id}
-                          className={cn("[&[data-pinned][data-last-col]]:border-border [&[data-pinned]]:bg-background/90 truncate [&[data-pinned]]:backdrop-blur-sm [&[data-pinned=left][data-last-col=left]]:border-r [&[data-pinned=right][data-last-col=right]]:border-l", row.original.id === -1 && "bg-accent")}
+                          className={cn("!h-10 [&[data-pinned][data-last-col]]:border-border [&[data-pinned]]:bg-background/90 truncate [&[data-pinned]]:backdrop-blur-sm [&[data-pinned=left][data-last-col=left]]:border-r [&[data-pinned=right][data-last-col=right]]:border-l", row.original.id === -1 && "bg-accent")}
                           style={{ ...getPinningStyles(column) }}
                           data-pinned={isPinned || undefined}
                           data-last-col={
