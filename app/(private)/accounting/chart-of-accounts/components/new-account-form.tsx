@@ -7,10 +7,12 @@ import { z } from "zod";
 import { accountTypes } from "../data";
 import { newAccountSchema } from "../schemas/account";
 import { useLazyListAccountingAccountsQuery } from "@/lib/services/accounting-accounts";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function NewAccountForm() {
   const { control, formState } = useFormContext<z.infer<typeof newAccountSchema>>()
 
+  const [sendMessage] = useSendMessageMutation();
   const [searchAccountingAccounts] = useLazyListAccountingAccountsQuery()
 
   const handleSearchAccountingAccount = async (query?: string) => {
@@ -25,7 +27,13 @@ export default function NewAccountForm() {
         .slice(0, 10)
     }
     catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/accounting/chart-of-accounts/components/new-account-form.tsx",
+        rawError: error,
+        fnLocation: "handleSearchAccountingAccount"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }

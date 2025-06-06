@@ -3,6 +3,7 @@ import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useCancelChargeMutation, useConfirmChargeMutation, useGetChargeQuery } from "@/lib/services/receipts";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 import { cn } from "@/lib/utils";
 import { Check, CircleX, Ellipsis } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -11,10 +12,11 @@ import { toast } from "sonner";
 export default function Actions() {
   const { id } = useParams<{ id: string }>()
 
-  const { data: payment } = useGetChargeQuery(id);
-
+  const [sendMessage] = useSendMessageMutation();
   const [confirmCharge, { isLoading: isChargeConfirming }] = useConfirmChargeMutation();
   const [cancelCharge, { isLoading: isChargeCancelling }] = useCancelChargeMutation();
+
+  const { data: payment } = useGetChargeQuery(id);
 
   const handleConfirmCharge = async () => {
     try {
@@ -26,8 +28,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Registro de cobro confirmado" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar el registro de cobro" variant="error" />)
+      sendMessage({
+        location: "app/(private)/banking/receipts/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleConfirmCharge"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -41,8 +49,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Registro de cobro cancelado" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al cancelar el registro de cobro" variant="error" />)
+      sendMessage({
+        location: "app/(private)/banking/receipts/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleCancelCharge"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

@@ -55,7 +55,22 @@ const fields: FieldDefinition<SupplierDetail>[] = [
     label: "Responsabilidad fiscal",
     placeholderLength: 16,
     render: (p) => fiscal_responsibility.find((responsibility) => responsibility.value === p.fiscal_responsibility)?.label || "No especificado",
-  }
+  },
+  {
+    label: "Retención sobre ICA",
+    placeholderLength: 16,
+    render: (p) => p?.withholding_ica ? "Sí" : "No",
+  },
+  {
+    label: "Retención sobre IVA",
+    placeholderLength: 16,
+    render: (p) => p?.withholding_iva ? "Sí" : "No",
+  },
+  {
+    label: "Fuente de retención",
+    placeholderLength: 16,
+    render: (p) => p?.withholding_source_ids?.map((source) => source.name).join(", ") || "No especificado",
+  },
 ];
 
 export default function FiscalTab() {

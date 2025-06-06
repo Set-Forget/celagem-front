@@ -12,6 +12,7 @@ import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCc
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PurchaseOrderState } from "../../schemas/purchase-orders";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions({ state }: { state?: PurchaseOrderState }) {
   const router = useRouter()
@@ -20,6 +21,7 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
 
   const { data: purchaseOrder } = useGetPurchaseOrderQuery(id)
 
+  const [sendMessage] = useSendMessageMutation();
   const [confirmPurchaseOrder, { isLoading: isPurchaseOrderConfirming }] = useConfirmPurchaseOrderMutation();
   const [cancelPurchaseOrder, { isLoading: isPurchaseOrderCancelling }] = useCancelPurchaseOrderMutation()
   const [approvePurchaseOrder, { isLoading: isPurchaseOrderApproving }] = useApprovePurchaseOrderMutation()
@@ -36,8 +38,14 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
         toast.custom((t) => <CustomSonner t={t} description="Orden de compra confirmada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la orden de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-orders/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleConfirmPurchaseOrder"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -53,8 +61,14 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
       }
     }
     catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la orden de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-orders/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleCancelPurchaseOrder"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -68,8 +82,14 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
         toast.custom((t) => <CustomSonner t={t} description="Orden de compra aprobada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al aprobar la orden de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-orders/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleApprovePurchaseOrder"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -83,8 +103,14 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
         toast.custom((t) => <CustomSonner t={t} description="Orden de compra restablecida a borrador" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al restablecer la orden de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-orders/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleResetPurchaseOrder"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -97,8 +123,14 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
       });
       pdf.view();
     } catch (error) {
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-orders/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleGeneratePDF"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />);
-      console.error('Error al generar el PDF:', error);
     }
   };
 

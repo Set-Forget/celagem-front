@@ -18,6 +18,7 @@ import { voucherType } from "../utils";
 import { useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 const formSchema = z.object({
   suppliers: z.array(z.number()).optional(),
@@ -43,6 +44,7 @@ export default function Page() {
 
   const { fetcher: handleSearchSupplier } = useSupplierSelect()
 
+  const [sendMessage] = useSendMessageMutation();
   const [listAccountsPayable, { isFetching: isListAccountsPayableFetching }] = useLazyListAccountsPayableQuery()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -109,7 +111,13 @@ export default function Page() {
         return
       }
     } catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/reporting/accounts-payable/filter/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
 
     router.push(`/reporting/accounts-payable?${params.toString()}`);

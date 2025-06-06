@@ -1,3 +1,5 @@
+import { useTaxSelect } from "@/app/(private)/(commercial)/hooks/use-tax-select"
+import { AsyncMultiSelect } from "@/components/async-multi-select"
 import { AsyncSelect } from "@/components/async-select"
 import SearchSelect from "@/components/search-select"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -8,11 +10,18 @@ import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newSupplierSchema } from "../../../schema/suppliers"
 import { entity_type, fiscal_responsibility, nationality_type, tax_category, tax_information, tax_regime, tax_type } from "../data"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export default function FiscalForm() {
   const { control, formState } = useFormContext<z.infer<typeof newSupplierSchema>>()
 
+  const [sendMessage] = useSendMessageMutation();
   const [searchEconomicActivities] = useLazyListEconomicActivitiesQuery()
+
+  const { initialOptions: initialTaxes, fetcher } = useTaxSelect({
+    taxIds: control._getWatch("withholding_sources"),
+    type_tax_use: "purchase"
+  })
 
   const handleEconomicActivity = async (query?: string) => {
     try {
@@ -24,7 +33,13 @@ export default function FiscalForm() {
       }))
     }
     catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/vendors/(form)/new/components/fiscal-form.tsx",
+        rawError: error,
+        fnLocation: "handleEconomicActivity"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }
@@ -287,9 +302,77 @@ export default function FiscalForm() {
                 />
               </FormControl>
             </div>
-            <FormDescription>
-              Este campo indica si el proveedor es residente.
-            </FormDescription>
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="withholding_ica"
+        render={({ field }) => (
+          <FormItem className="flex flex-col space-y-2 col-start-1">
+            <div className="flex flex-row rounded-sm border h-9 px-3 shadow-sm items-center justify-between">
+              <div className="space-y-0.5">
+                <FormLabel>¿Retiene ICA?</FormLabel>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </div>
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="withholding_iva"
+        render={({ field }) => (
+          <FormItem className="flex flex-col space-y-2 col-start-2">
+            <div className="flex flex-row rounded-sm border h-9 px-3 shadow-sm items-center justify-between">
+              <div className="space-y-0.5">
+                <FormLabel>¿Retiene IVA?</FormLabel>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </div>
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="withholding_sources"
+        render={({ field }) => (
+          <FormItem className="flex flex-col">
+            <FormLabel className="w-fit">Fuente de retención</FormLabel>
+            <FormControl>
+              <AsyncMultiSelect<{ id: number, name: string }, number>
+                placeholder="Buscar fuente de retención…"
+                fetcher={fetcher}
+                initialOptions={initialTaxes}
+                defaultValue={field.value}
+                value={field.value}
+                getOptionValue={(o) => o.id}
+                getOptionKey={(o) => String(o.id)}
+                renderOption={(o) => <>{o.name}</>}
+                getDisplayValue={(o) => <>{o.name}</>}
+                noResultsMessage="No se encontraron resultados"
+                onValueChange={(vals) => {
+                  field.onChange(vals)
+                }}
+              />
+            </FormControl>
+            {formState.errors.withholding_sources ? (
+              <FormMessage />
+            ) :
+              <FormDescription>
+                Impuestos que se retendrán al proveedor.
+              </FormDescription>
+            }
           </FormItem>
         )}
       />

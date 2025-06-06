@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { DebitNoteStatus } from "../../schemas/debit-notes";
 import { generatePDF } from "@/lib/templates/utils";
 import { routes } from "@/lib/routes";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions({ state }: { state?: DebitNoteStatus }) {
   const { id, scope } = useParams<{ id: string, scope: "sales" | "purchases" }>()
@@ -20,6 +21,7 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
 
   const [confirmDebitNote, { isLoading: isDebitNoteConfirming }] = useConfirmDebitNoteMutation();
   const [cancelDebitNote, { isLoading: isDebitNoteCancelling }] = useCancelDebitNoteMutation();
+  const [sendMessage] = useSendMessageMutation();
 
   const handleConfirmDebitNote = async () => {
     try {
@@ -31,8 +33,14 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
         toast.custom((t) => <CustomSonner t={t} description="Nota de débito confirmada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la nota de débito" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/[scope]/debit-notes/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleConfirmDebitNote"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -46,8 +54,14 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
         toast.custom((t) => <CustomSonner t={t} description="Factura de compra cancelada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la factura de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/[scope]/debit-notes/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleCancelDebitNote"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -61,7 +75,13 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
       pdf.view();
     } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
-      console.error('Error al generar el PDF:', error);
+      sendMessage({
+        location: "app/(private)/(commercial)/[scope]/debit-notes/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleGeneratePDF"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   };
 

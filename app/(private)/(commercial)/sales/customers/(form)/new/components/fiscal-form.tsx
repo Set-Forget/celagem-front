@@ -8,10 +8,12 @@ import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { entity_type, fiscal_responsibility, nationality_type, tax_category, tax_information, tax_regime, tax_type } from "../data"
 import { newCustomerSchema } from "../../../schema/customers"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export default function FiscalForm() {
   const { control, formState } = useFormContext<z.infer<typeof newCustomerSchema>>()
 
+  const [sendMessage] = useSendMessageMutation();
   const [searchEconomicActivities] = useLazyListEconomicActivitiesQuery()
 
   const handleEconomicActivity = async (query?: string) => {
@@ -24,7 +26,13 @@ export default function FiscalForm() {
       }))
     }
     catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/customers/(form)/new/components/fiscal-form.tsx",
+        rawError: error,
+        fnLocation: "handleEconomicActivity"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }

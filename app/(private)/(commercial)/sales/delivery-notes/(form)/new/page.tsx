@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/form";
 import { useCreateDeliveryMutation } from "@/lib/services/deliveries";
 import { useGetInvoiceQuery } from "@/lib/services/invoices";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -38,8 +39,10 @@ export default function Page() {
 
   const invoiceId = searchParams.get("invoiceId")
 
-  const { data: invoice } = useGetInvoiceQuery(invoiceId!, { skip: !invoiceId })
+  const [sendMessage] = useSendMessageMutation();
   const [createPurchaseDelivery, { isLoading: isCreatingDeliveryNote }] = useCreateDeliveryMutation()
+
+  const { data: invoice } = useGetInvoiceQuery(invoiceId!, { skip: !invoiceId })
 
   const newDeliveryNote = useForm<z.infer<typeof newDeliveryNoteSchema>>({
     resolver: zodResolver(newDeliveryNoteSchema),
@@ -60,8 +63,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Remito creado exitosamente" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear el remito" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/delivery-notes/(form)/new/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

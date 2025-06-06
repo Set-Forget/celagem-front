@@ -1,16 +1,19 @@
 import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
-import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useCancelJournalEntryMutation, useConfirmJournalEntryMutation } from "@/lib/services/journal-entries";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 import { cn } from "@/lib/utils";
-import { Ban, Check, EditIcon, Ellipsis } from "lucide-react";
+import { Ban, Check, Ellipsis } from "lucide-react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { JournalEntryStatus } from "../../schemas/journal-entries";
 
 export default function Actions({ state }: { state?: JournalEntryStatus }) {
   const { id } = useParams<{ id: string }>()
+
+  const [sendMessage] = useSendMessageMutation();
 
   const [confirmJournalEntry, { isLoading: isJournalEntryConfirming }] = useConfirmJournalEntryMutation();
   const [cancelJournalEntry, { isLoading: isJournalEntryCancelling }] = useCancelJournalEntryMutation();
@@ -23,8 +26,14 @@ export default function Actions({ state }: { state?: JournalEntryStatus }) {
         toast.custom((t) => <CustomSonner t={t} description="Asiento confirmado" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar el asiento" variant="error" />)
+      sendMessage({
+        location: "app/(private)/accounting/journal-entries/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleConfirmJournalEntry"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -36,8 +45,14 @@ export default function Actions({ state }: { state?: JournalEntryStatus }) {
         toast.custom((t) => <CustomSonner t={t} description="Asiento cancelado" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al cancelar el asiento" variant="error" />)
+      sendMessage({
+        location: "app/(private)/accounting/journal-entries/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleCancelJournalEntry"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

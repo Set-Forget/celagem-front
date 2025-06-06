@@ -1,8 +1,9 @@
-import { useCallback, useMemo } from "react"
 import {
   useGetSupplierQuery,
   useLazyListSuppliersQuery,
-} from "@/lib/services/suppliers"
+} from "@/lib/services/suppliers";
+import { useSendMessageMutation } from "@/lib/services/telegram";
+import { useCallback, useMemo } from "react";
 import { SupplierList } from "../purchases/vendors/schema/suppliers";
 
 interface UseSupplierSelectOptions<O = { id: number; name: string }> {
@@ -23,6 +24,8 @@ export function useSupplierSelect<
   map,
 }: UseSupplierSelectOptions<O> = {}) {
   const [searchSuppliers] = useLazyListSuppliersQuery()
+  const [sendMessage] = useSendMessageMutation();
+
   const { data: selectedSupplier } = useGetSupplierQuery(supplierId!, {
     skip: !supplierId || skip,
   })
@@ -47,7 +50,13 @@ export function useSupplierSelect<
           .slice(0, limit)
           .map(mapFn)
       } catch (err) {
-        console.error("useSupplierSelect:", err)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-supplier-select.ts",
+          rawError: err,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     },

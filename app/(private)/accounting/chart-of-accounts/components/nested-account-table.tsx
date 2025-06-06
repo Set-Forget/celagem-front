@@ -10,6 +10,7 @@ import Toolbar from "./toolbar"
 import { AccountList } from "../schemas/account"
 import { useLazyGetAccountingAccountQuery } from "@/lib/services/accounting-accounts"
 import { accountTypes } from "../data"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 interface NestedAccountTableProps {
   data?: AccountList[]
@@ -36,6 +37,8 @@ const getVisibleRowCount = (
 
 const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data, loading }) => {
   const router = useRouter()
+
+  const [sendMessage] = useSendMessageMutation();
 
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set())
   const [loadedChildren, setLoadedChildren] = useState<Record<number, AccountList[]>>({})
@@ -73,7 +76,13 @@ const NestedAccountTable: React.FC<NestedAccountTableProps> = ({ data, loading }
           return next
         })
       } catch (error) {
-        console.error("Error al cargar los hijos:", error)
+        sendMessage({
+          location: "app/(private)/accounting/chart-of-accounts/components/nested-account-table.tsx",
+          rawError: error,
+          fnLocation: "toggleRow"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
       } finally {
         setLoadingRows((prev) => {
           const next = new Set(prev)

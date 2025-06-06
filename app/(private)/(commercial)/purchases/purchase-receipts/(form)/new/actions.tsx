@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
 import { useCreatePurchaseReceiptMutation, useUpdatePurchaseReceiptMutation, useValidatePurchaseReceiptMutation } from "@/lib/services/purchase-receipts"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { cn } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
@@ -31,6 +32,7 @@ export default function Actions() {
     skip: !purchaseOrderId,
   })
 
+  const [sendMessage] = useSendMessageMutation();
   const [validatePurchaseReceipt] = useValidatePurchaseReceiptMutation();
   const [createPurchaseReceipt, { isLoading: isCreatingPurchaseReceipt }] = useCreatePurchaseReceiptMutation()
   const [updatePurchaseReceipt, { isLoading: isUpdatingPurchaseReceipt }] = useUpdatePurchaseReceiptMutation()
@@ -65,8 +67,14 @@ export default function Actions() {
           toast.custom((t) => <CustomSonner t={t} description="Recepción de compra creada exitosamente" variant="success" />)
         }
       } catch (error) {
-        console.error(error)
         toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la recepción de compra" variant="error" />)
+        sendMessage({
+          location: "app/(private)/(commercial)/purchases/purchase-receipts/(form)/new/actions.tsx",
+          rawError: error,
+          fnLocation: "onSubmit"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
       }
     } else {
       const purchaseReceipt = purchaseOrder?.receptions?.slice().sort((a, b) => a.id - b.id).at(-1);
@@ -93,8 +101,14 @@ export default function Actions() {
           toast.custom((t) => <CustomSonner t={t} description="Recepción de compra creada exitosamente" variant="success" />)
         }
       } catch (error) {
-        console.error(error)
         toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la recepción de compra" variant="error" />)
+        sendMessage({
+          location: "app/(private)/(commercial)/purchases/purchase-receipts/(form)/new/actions.tsx",
+          rawError: error,
+          fnLocation: "onSubmit"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
       }
     }
   }

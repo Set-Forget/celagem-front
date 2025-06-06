@@ -1,5 +1,6 @@
 import { AdaptedInvoiceList } from "@/lib/adapters/invoices"
 import { useGetInvoiceQuery, useLazyListInvoicesQuery } from "@/lib/services/invoices"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { useCallback, useMemo } from "react"
 
 interface UseInvoiceSelectOptions<O> {
@@ -18,6 +19,8 @@ export function useInvoiceSelect<
   map,
 }: UseInvoiceSelectOptions<O> = {}) {
   const [searchInvoices] = useLazyListInvoicesQuery()
+  const [sendMessage] = useSendMessageMutation();
+
   const { data: selectedInvoice } = useGetInvoiceQuery(invoiceId!, { skip: !invoiceId })
 
   const mapFn = useCallback(
@@ -42,7 +45,13 @@ export function useInvoiceSelect<
           .slice(0, limit)
           .map(mapFn)
       } catch (e) {
-        console.error("useInvoiceSelect:", e)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-invoice-select.ts",
+          rawError: e,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     },

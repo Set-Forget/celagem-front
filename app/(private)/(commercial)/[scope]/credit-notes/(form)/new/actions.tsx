@@ -18,6 +18,7 @@ import { toast } from "sonner"
 import { z } from "zod"
 import DocumentPopover from "../../../components/document-popover"
 import { newCreditNoteSchema } from "../../schemas/credit-notes"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export default function Actions() {
   const { handleSubmit } = useFormContext<z.infer<typeof newCreditNoteSchema>>();
@@ -32,6 +33,7 @@ export default function Actions() {
   const [openCommand, setOpenCommand] = useState(false)
 
   const [createCreditNote, { isLoading: isCreatingCreditNote }] = useCreateCreditNoteMutation()
+  const [sendMessage] = useSendMessageMutation();
 
   const { fetcher: handleSearchBill } = useBillSelect({
     map: (b) => ({
@@ -72,8 +74,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Nota de crédito creada exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la nota de crédito" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/[scope]/credit-notes/(form)/new/actions.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

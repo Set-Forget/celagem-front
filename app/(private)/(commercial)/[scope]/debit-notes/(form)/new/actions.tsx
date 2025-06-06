@@ -18,6 +18,7 @@ import { toast } from "sonner"
 import { z } from "zod"
 import DocumentPopover from "../../../components/document-popover"
 import { newDebitNoteSchema } from "../../schemas/debit-notes"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export default function Actions() {
   const { handleSubmit } = useFormContext<z.infer<typeof newDebitNoteSchema>>();
@@ -32,6 +33,7 @@ export default function Actions() {
   const [openCommand, setOpenCommand] = useState(false)
 
   const [createDebitNote, { isLoading: isCreatingDebitNote }] = useCreateDebitNoteMutation()
+  const [sendMessage] = useSendMessageMutation();
 
   const { fetcher: handleSearchBill } = useBillSelect({
     map: (b) => ({
@@ -72,8 +74,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Nota de débito creada con éxito" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la nota de débito" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/[scope]/debit-notes/(form)/new/actions.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

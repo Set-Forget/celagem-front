@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useCreateBillMutation } from "@/lib/services/bills";
 import { useGetPurchaseOrderQuery, useLazyGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 import { setDialogsState } from "@/lib/store/dialogs-store";
 import { cn } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
@@ -26,6 +27,7 @@ export default function Actions() {
 
   const { handleSubmit } = useFormContext<z.infer<typeof newBillSchema>>();
 
+  const [sendMessage] = useSendMessageMutation();
   const [createBill, { isLoading: isCreatingBill }] = useCreateBillMutation()
 
   const purchaseOrderId = searchParams.get("purchase_order_id")
@@ -65,8 +67,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Factura de compra creada exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la factura de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/bills/(form)/new/actions.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

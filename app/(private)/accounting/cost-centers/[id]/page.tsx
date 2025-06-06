@@ -1,19 +1,20 @@
 'use client'
 
+import Dropdown from "@/components/dropdown"
 import Header from "@/components/header"
+import RenderFields from "@/components/render-fields"
+import StatusDot from "@/components/status-dot"
+import { StatusIndicator } from "@/components/status-indicator"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useGetCostCenterQuery, useUpdateCostCenterMutation } from "@/lib/services/cost-centers"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
+import { ChevronDown, EditIcon, Ellipsis } from "lucide-react"
 import { useParams } from "next/navigation"
 import { CostCenterDetail } from "../schemas/cost-centers"
 import { costCenters } from "../utils"
-import { StatusIndicator } from "@/components/status-indicator"
-import Dropdown from "@/components/dropdown"
-import { Button } from "@/components/ui/button"
-import { ChevronDown, EditIcon, Ellipsis } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import StatusDot from "@/components/status-dot"
-import RenderFields from "@/components/render-fields"
 
 const fields: FieldDefinition<CostCenterDetail>[] = [
   {
@@ -36,8 +37,10 @@ const fields: FieldDefinition<CostCenterDetail>[] = [
 export default function Page() {
   const { id } = useParams<{ id: string }>()
 
-  const { data: costCenter, isLoading: isCostCenterLoading } = useGetCostCenterQuery(id);
+  const [sendMessage] = useSendMessageMutation();
   const [updateCostCenter] = useUpdateCostCenterMutation()
+
+  const { data: costCenter, isLoading: isCostCenterLoading } = useGetCostCenterQuery(id);
 
   const status = costCenters[String(costCenter?.active) as keyof typeof costCenters];
 
@@ -48,7 +51,13 @@ export default function Page() {
         body: { active: status === "active" ? true : false }
       }).unwrap()
     } catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/accounting/cost-centers/[id]/page.tsx",
+        rawError: error,
+        fnLocation: "handleUpdateAppointment"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

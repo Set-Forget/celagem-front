@@ -24,6 +24,7 @@ import {
   useGetAttributeQuery,
   useUpdateAttributeMutation,
 } from '@/lib/services/attributes';
+import { useSendMessageMutation } from '@/lib/services/telegram';
 
 const tabs = [
   {
@@ -41,8 +42,8 @@ export default function Page() {
 
   const attributeId = params.attribute_id;
 
-  const [updateMaterial, { isLoading: isUpdatingAttribute }] =
-    useUpdateAttributeMutation();
+  const [sendMessage] = useSendMessageMutation();
+  const [updateMaterial, { isLoading: isUpdatingAttribute }] = useUpdateAttributeMutation();
 
   const { data: attributeData } = useGetAttributeQuery(attributeId, {
     skip: !attributeId,
@@ -70,14 +71,14 @@ export default function Page() {
         ));
       }
     } catch (error) {
-      console.error(error);
-      toast.custom((t) => (
-        <CustomSonner
-          t={t}
-          description="Error al actualizar el atributo"
-          variant="error"
-        />
-      ));
+      toast.custom((t) => <CustomSonner t={t} description="Error al actualizar el atributo" variant="error" />)
+      sendMessage({
+        location: "app/(private)/inventory/attributes/(form)/edit/[attribute_id]/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   };
 

@@ -19,9 +19,12 @@ import { z } from "zod"
 import { newJournalEntrySchema } from "../../schemas/journal-entries"
 import { columns } from "../components/columns"
 import TableFooter from "../components/table-footer"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export default function Page() {
   const router = useRouter()
+
+  const [sendMessage] = useSendMessageMutation();
 
   const [searchCurrencies] = useLazyListCurrenciesQuery()
 
@@ -44,7 +47,13 @@ export default function Page() {
       }))
         .slice(0, 10)
     } catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/accounting/journal-entries/(form)/new/page.tsx",
+        rawError: error,
+        fnLocation: "handleSearchCurrency"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }
@@ -73,8 +82,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Asiento creado exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear el asiento" variant="error" />)
+      sendMessage({
+        location: "app/(private)/accounting/journal-entries/(form)/new/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

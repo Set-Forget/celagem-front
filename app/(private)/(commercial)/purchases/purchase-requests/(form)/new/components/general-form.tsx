@@ -9,10 +9,12 @@ import { useFormContext } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { NewPurchaseRequest, NewPurchaseRequestLine } from "../../../schemas/purchase-requests";
 import { columns } from "./columns";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function GeneralForm() {
   const { control, formState } = useFormContext<NewPurchaseRequest>()
 
+  const [sendMessage] = useSendMessageMutation();
   const [searchCompanies] = useLazyListCompaniesQuery()
 
   const handleSearchCompany = async (query?: string) => {
@@ -25,7 +27,13 @@ export default function GeneralForm() {
         .slice(0, 10)
     }
     catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-requests/(form)/new/components/general-form.tsx",
+        rawError: error,
+        fnLocation: "handleSearchCompany"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }

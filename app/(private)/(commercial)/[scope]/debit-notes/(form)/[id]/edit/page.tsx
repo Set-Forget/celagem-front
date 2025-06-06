@@ -19,6 +19,7 @@ import { newDebitNoteFiscalSchema, newDebitNoteNotesSchema, newDebitNoteSchema }
 import FiscalForm from "../../components/fiscal-form"
 import GeneralForm from "../../components/general-form"
 import NotesForm from "../../components/notes-form"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 const tabs = [
   {
@@ -45,6 +46,7 @@ export default function Page() {
   const { data: debitNote, isLoading: isLoadingDebitNote } = useGetDebitNoteQuery(id!, { skip: !id })
 
   const [createDebitNote, { isLoading: isCreatingDebitNote }] = useUpdateDebitNoteMutation()
+  const [sendMessage] = useSendMessageMutation();
 
   const form = useForm<z.infer<typeof newDebitNoteSchema>>({
     resolver: zodResolver(newDebitNoteSchema),
@@ -69,8 +71,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Nota de débito actualizada con éxito" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar la nota de débito" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/[scope]/debit-notes/(form)/[id]/edit/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

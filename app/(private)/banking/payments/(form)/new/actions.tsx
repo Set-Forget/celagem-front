@@ -19,6 +19,7 @@ import { newPaymentSchema } from "../../schemas/payments";
 import BillPopover from "./components/bill-popover";
 import { AdaptedBillList } from "@/lib/adapters/bills";
 import { useBillSelect } from "@/app/(private)/(commercial)/hooks/use-bill-select";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions() {
   const router = useRouter()
@@ -28,6 +29,7 @@ export default function Actions() {
 
   const { handleSubmit } = useFormContext<z.infer<typeof newPaymentSchema>>();
 
+  const [sendMessage] = useSendMessageMutation();
   const [createPayment, { isLoading: isCreatingPayment }] = useCreatePaymentMutation()
 
   const billIds = searchParams.get("bill_ids")
@@ -61,8 +63,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Pago registrado exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al registrar el pago" variant="error" />)
+      sendMessage({
+        location: "app/(private)/banking/payments/(form)/new/actions.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

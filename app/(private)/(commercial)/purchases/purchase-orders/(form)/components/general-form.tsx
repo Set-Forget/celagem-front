@@ -14,12 +14,14 @@ import { v4 as uuidv4 } from "uuid"
 import { z } from "zod"
 import { NewPurchaseOrder, NewPurchaseOrderLine, newPurchaseOrderSchema } from "../../schemas/purchase-orders"
 import { columns } from "./columns"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export default function GeneralForm() {
   const { control, formState, setValue, resetField } = useFormContext<z.infer<typeof newPurchaseOrderSchema>>()
 
   const [getSupplier] = useLazyGetSupplierQuery()
   const [searchCompanies] = useLazyListCompaniesQuery()
+  const [sendMessage] = useSendMessageMutation();
 
   const { initialOptions: initialSupplier, fetcher: handleSearchSupplier } = useSupplierSelect({
     supplierId: control._getWatch("supplier"),
@@ -35,7 +37,13 @@ export default function GeneralForm() {
         .slice(0, 10)
     }
     catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-orders/(form)/components/general-form.tsx",
+        rawError: error,
+        fnLocation: "handleSearchCompany"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }

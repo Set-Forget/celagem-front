@@ -17,10 +17,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { z } from "zod";
 import { NewDeliveryNote, NewDeliveryNoteLine, newDeliveryNoteSchema } from "../../schemas/delivery-notes";
 import { columns } from "./columns";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function GeneralForm() {
   const { control, formState } = useFormContext<z.infer<typeof newDeliveryNoteSchema>>()
 
+  const [sendMessage] = useSendMessageMutation();
   const [searchStocks] = useLazyListStocksQuery()
 
   const { initialOptions: initialCustomer, fetcher: handleSearchCustomer } = useCustomerSelect({
@@ -37,7 +39,13 @@ export default function GeneralForm() {
         .slice(0, 10)
     }
     catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/delivery-notes/(form)/components/general-form.tsx",
+        rawError: error,
+        fnLocation: "handleSearchStock"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }

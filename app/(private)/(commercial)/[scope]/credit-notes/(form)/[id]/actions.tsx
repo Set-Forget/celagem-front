@@ -9,6 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { CreditNoteStatus } from "../../schemas/credit-notes";
 import { generatePDF } from "@/lib/templates/utils";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions({ state }: { state?: CreditNoteStatus }) {
   const { id, scope } = useParams<{ id: string, scope: "sales" | "purchases" }>()
@@ -21,6 +22,7 @@ export default function Actions({ state }: { state?: CreditNoteStatus }) {
 
   const [confirmCreditNote, { isLoading: isCreditNoteConfirming }] = useConfirmCreditNoteMutation();
   const [cancelCreditNote, { isLoading: isCreditNoteCancelling }] = useCancelCreditNoteMutation();
+  const [sendMessage] = useSendMessageMutation();
 
   const handleConfirmCreditNote = async () => {
     try {
@@ -32,8 +34,14 @@ export default function Actions({ state }: { state?: CreditNoteStatus }) {
         toast.custom((t) => <CustomSonner t={t} description="Nota de crédito confirmada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la nota de crédito" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/customers/(form)/new/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -47,8 +55,14 @@ export default function Actions({ state }: { state?: CreditNoteStatus }) {
         toast.custom((t) => <CustomSonner t={t} description="Factura de compra cancelada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la factura de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/customers/(form)/new/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -62,7 +76,13 @@ export default function Actions({ state }: { state?: CreditNoteStatus }) {
       pdf.view();
     } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
-      console.error('Error al generar el PDF:', error);
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/customers/(form)/new/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   };
 

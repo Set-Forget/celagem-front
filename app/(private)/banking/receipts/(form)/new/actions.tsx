@@ -19,6 +19,7 @@ import { newChargeSchema } from "../../schemas/receipts";
 import InvoicePopover from "./components/invoice-popover";
 import { AdaptedInvoiceList } from "@/lib/adapters/invoices";
 import { useInvoiceSelect } from "@/app/(private)/(commercial)/hooks/use-invoice-select";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions() {
   const router = useRouter()
@@ -28,6 +29,7 @@ export default function Actions() {
 
   const { handleSubmit } = useFormContext<z.infer<typeof newChargeSchema>>();
 
+  const [sendMessage] = useSendMessageMutation();
   const [createCharge, { isLoading: isCreatingCharge }] = useCreateChargeMutation()
 
   const invoiceIds = searchParams.get("invoice_ids")
@@ -61,8 +63,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Cobro registrado exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al registrar el cobro" variant="error" />)
+      sendMessage({
+        location: "app/(private)/banking/receipts/(form)/new/actions.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

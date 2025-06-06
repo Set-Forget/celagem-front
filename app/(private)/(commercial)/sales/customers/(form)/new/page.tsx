@@ -18,6 +18,7 @@ import AccountingForm from "./components/accounting-form"
 import ContactForm from "./components/contact-form"
 import FiscalForm from "./components/fiscal-form"
 import GeneralForm from "./components/general-form"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 const tabs = [
   {
@@ -47,6 +48,7 @@ export default function Page() {
   const router = useRouter()
 
   const [createCustomer, { isLoading: isCreatingCustomer }] = useCreateCustomerMutation()
+  const [sendMessage] = useSendMessageMutation()
 
   const newCustomerForm = useForm<z.infer<typeof newCustomerSchema>>({
     resolver: zodResolver(newCustomerSchema),
@@ -82,8 +84,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Cliente creado exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear el cliente" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/customers/(form)/new/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

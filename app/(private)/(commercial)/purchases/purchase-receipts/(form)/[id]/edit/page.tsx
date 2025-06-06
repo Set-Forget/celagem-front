@@ -21,6 +21,7 @@ import { newPurchaseReceiptSchema } from "../../../schemas/purchase-receipts"
 import { defaultValues } from "../../default-values"
 import { useGetPurchaseReceiptQuery, useUpdatePurchaseReceiptMutation } from "@/lib/services/purchase-receipts"
 import { parseDate } from "@internationalized/date"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 const tabs = [
   {
@@ -38,8 +39,9 @@ export default function Page() {
 
   const { data: purchaseReceipt } = useGetPurchaseReceiptQuery(id, {
     skip: !id,
-  })
 
+  })
+  const [sendMessage] = useSendMessageMutation();
   const [updatePurchaseReceipt, { isLoading: isUpdatingPurchaseReceipt }] = useUpdatePurchaseReceiptMutation()
 
   const form = useForm<z.infer<typeof newPurchaseReceiptSchema>>({
@@ -64,8 +66,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Recepción de compra editada exitosamente" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al editar la recepción de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-receipts/(form)/[id]/edit/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

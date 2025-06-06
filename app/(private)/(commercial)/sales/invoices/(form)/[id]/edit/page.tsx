@@ -21,6 +21,7 @@ import { newInvoiceFiscalSchema, newInvoiceNotesSchema, newInvoiceSchema } from 
 import FiscalForm from "../../new/components/fiscal-form"
 import GeneralForm from "../../new/components/general-form"
 import NotesForm from "../../new/components/notes-form"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 const tabs = [
   {
@@ -46,6 +47,7 @@ export default function Page() {
 
   const { data: invoice, isLoading: isLoadingBill } = useGetInvoiceQuery(id!, { skip: !id })
 
+  const [sendMessage] = useSendMessageMutation();
   const [updateInvoice, { isLoading: isUpdatingInvoice }] = useUpdateInvoiceMutation()
 
   const form = useForm<z.infer<typeof newInvoiceSchema>>({
@@ -75,8 +77,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Factura de venta actualizada exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar la factura de venta" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/invoices/(form)/[id]/edit/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

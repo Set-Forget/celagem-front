@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { PurchaseReceiptStatus } from "../../schemas/purchase-receipts";
 import { cn } from "@/lib/utils";
 import { routes } from "@/lib/routes";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions({ state }: { state?: PurchaseReceiptStatus }) {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function Actions({ state }: { state?: PurchaseReceiptStatus }) {
 
   const { data: purchaseReceipt } = useGetPurchaseReceiptQuery(id);
 
+  const [sendMessage] = useSendMessageMutation();
   const [validatePurchaseReceipt, { isLoading: isPurchaseReceiptValidating }] = useValidatePurchaseReceiptMutation();
   const [cancelPurchaseReceipt, { isLoading: isPurchaseReceiptCancelling }] = useCancelPurchaseReceiptMutation();
 
@@ -31,8 +33,14 @@ export default function Actions({ state }: { state?: PurchaseReceiptStatus }) {
         toast.custom((t) => <CustomSonner t={t} description="Recepcion de compra confirmada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la recepcion de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-receipts/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleValidatePurchaseReceipt"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -46,8 +54,14 @@ export default function Actions({ state }: { state?: PurchaseReceiptStatus }) {
         toast.custom((t) => <CustomSonner t={t} description="Recepcion de compra cancelada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la recepcion de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-receipts/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleCancelPurchaseReceipt"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   };
 
@@ -61,7 +75,13 @@ export default function Actions({ state }: { state?: PurchaseReceiptStatus }) {
       pdf.view();
     } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
-      console.error('Error al generar el PDF:', error);
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-receipts/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleGeneratePDF"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   };
 

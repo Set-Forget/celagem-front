@@ -1,4 +1,5 @@
 import { useGetCurrencyQuery, useLazyListCurrenciesQuery } from "@/lib/services/currencies"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { useCallback, useMemo } from "react"
 
 interface Props {
@@ -11,6 +12,7 @@ export function useCurrencySelect({
   limit = 10,
 }: Props) {
   const [searchCurrency] = useLazyListCurrenciesQuery()
+  const [sendMessage] = useSendMessageMutation();
 
   const { data: currency } = useGetCurrencyQuery(currencyId!, {
     skip: !currencyId,
@@ -34,7 +36,13 @@ export function useCurrencySelect({
         })) ?? [])
           .slice(0, limit)
       } catch (err) {
-        console.error(err)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-currency-select.ts",
+          rawError: err,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     },

@@ -1,18 +1,18 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  Ref,
-  forwardRef,
-  useMemo,
-} from "react";
-import type { JSX } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Check, ChevronDown, Loader2, Search, X } from "lucide-react";
+import type { JSX } from "react";
+import React, {
+  Ref,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -20,22 +20,30 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useDebounce } from "@/hooks/use-debounce";
+import { cn } from "@/lib/utils";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export const multiSelectVariants = cva("transition", {
   variants: {
     variant: {
       default: "border-foreground/10 text-foreground bg-card hover:bg-accent",
-      secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary",
-      destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+      secondary:
+        "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-secondary",
+      destructive:
+        "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
       inverted: "inverted",
     },
   },
@@ -45,7 +53,10 @@ export const multiSelectVariants = cva("transition", {
 });
 
 export interface AsyncMultiSelectProps<T, V>
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "defaultValue">,
+  extends Omit<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    "value" | "defaultValue"
+  >,
   VariantProps<typeof multiSelectVariants> {
   fetcher: (query?: string) => Promise<T[]>;
   renderOption: (option: T) => React.ReactNode;
@@ -89,6 +100,8 @@ function AsyncMultiSelectInner<T, V>(
   }: AsyncMultiSelectProps<T, V>,
   ref: Ref<HTMLButtonElement>
 ) {
+  const [sendMessage] = useSendMessageMutation();
+
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [selectedValues, setSelectedValues] = useState<V[]>(defaultValue);
   const [options, setOptions] = useState<T[]>(initialOptions || []);
@@ -110,30 +123,38 @@ function AsyncMultiSelectInner<T, V>(
 
   const [knownItemsMap, setKnownItemsMap] = useState<Map<V, T>>(() => new Map());
 
-  const handleFetch = useCallback(async (query?: string) => {
-    setLoading(true);
-    setError(null);
+  const handleFetch = useCallback(
+    async (query?: string) => {
+      setLoading(true);
+      setError(null);
 
-    try {
-      const fetched = await fetcher(query || "");
+      try {
+        const fetched = await fetcher(query || "");
 
-      setKnownItemsMap((prev) => {
-        const newMap = new Map(prev);
-        for (const item of fetched) {
-          newMap.set(getOptionValue(item), item);
-        }
-        return newMap;
-      });
+        setKnownItemsMap((prev) => {
+          const newMap = new Map(prev);
+          for (const item of fetched) {
+            newMap.set(getOptionValue(item), item);
+          }
+          return newMap;
+        });
 
-      setOptions(fetched);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Error obteniendo opciones"
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [fetcher, getOptionValue]);
+        setOptions(fetched);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Error obteniendo opciones");
+        sendMessage({
+          location: "components/async-multi-select.tsx",
+          rawError: err,
+          fnLocation: "handleFetch"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetcher, getOptionValue]
+  );
 
   useEffect(() => {
     void handleFetch(debouncedSearchTerm);
@@ -157,30 +178,39 @@ function AsyncMultiSelectInner<T, V>(
     });
   }, [initKey]);
 
-  const calculateMaxTags = useCallback(() => {
-    if (userDefinedMaxCount !== undefined) {
-      setDynamicMaxCount(userDefinedMaxCount);
-      return;
+  const measureBadges = useCallback(() => {
+    if (!containerRef.current) return;
+
+    const PADDING = 16;
+    const GAP = 4;
+    const CHEVRON = 100;
+
+    const maxWidth = containerRef.current.clientWidth - PADDING - CHEVRON;
+    const badges = Array.from(containerRef.current.querySelectorAll<HTMLSpanElement>(".badge"));
+
+    let acc = 0;
+    let visible = 0;
+
+    for (const el of badges) {
+      const w = el.offsetWidth + GAP;
+      if (acc + w > maxWidth) break;
+      acc += w;
+      visible += 1;
     }
-    if (containerRef.current) {
-      const containerWidth = containerRef.current.offsetWidth;
-      const tagWidth = 100;
-      const padding = 40;
-      const maxTags = Math.floor((containerWidth - padding) / tagWidth);
-      setDynamicMaxCount(maxTags < 1 ? 1 : maxTags);
-    }
-  }, [userDefinedMaxCount]);
+
+    setDynamicMaxCount(Math.max(0, visible));
+  }, []);
 
   useEffect(() => {
-    calculateMaxTags();
-    const handleResize = () => {
-      calculateMaxTags();
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [calculateMaxTags]);
+    measureBadges()
+  }, [selectedValues, measureBadges]);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const ro = new ResizeObserver(measureBadges);
+    ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, [measureBadges]);
 
   useEffect(() => {
     if (defaultValue.length === 0 || !defaultValue) return;
@@ -197,7 +227,7 @@ function AsyncMultiSelectInner<T, V>(
         next = selectedValues.filter((v) => v !== val);
 
         setOptions((prev) =>
-          prev.some((o) => getOptionValue(o) === val) ? prev : [...prev, opt],
+          prev.some((o) => getOptionValue(o) === val) ? prev : [...prev, opt]
         );
         setKnownItemsMap((prev) => {
           const map = new Map(prev);
@@ -211,7 +241,7 @@ function AsyncMultiSelectInner<T, V>(
       setSelectedValues(next);
       onValueChange(next);
     },
-    [selectedValues, onValueChange, getOptionValue],
+    [selectedValues, onValueChange, getOptionValue]
   );
 
   return (
@@ -232,11 +262,16 @@ function AsyncMultiSelectInner<T, V>(
             className
           )}
         >
-          <div ref={containerRef} className="flex justify-between items-center w-full">
+          <div
+            ref={containerRef}
+            className="flex justify-between items-center w-full"
+          >
             {selectedValues.length > 0 && (
               <div className="flex items-center gap-1">
                 {selectedValues.slice(0, dynamicMaxCount).map((val) => {
-                  const option = options.find((o) => getOptionValue(o) === val) ?? knownItemsMap.get(val);
+                  const option =
+                    options.find((o) => getOptionValue(o) === val) ??
+                    knownItemsMap.get(val);
                   if (!option) return null;
 
                   return (
@@ -249,7 +284,8 @@ function AsyncMultiSelectInner<T, V>(
                       onMouseOver={(e) => e.stopPropagation()}
                       className={cn(
                         "badge group-hover:bg-background group-hover:shadow-background",
-                        multiSelectVariants({ variant }))}
+                        multiSelectVariants({ variant })
+                      )}
                     >
                       {getDisplayValue(option)}
                       <X
@@ -274,12 +310,16 @@ function AsyncMultiSelectInner<T, V>(
                               multiSelectVariants({ variant })
                             )}
                           >
-                            {`+ ${selectedValues.length - dynamicMaxCount} más`}
+                            {`+ ${selectedValues.length - dynamicMaxCount
+                              } más`}
                             <X
                               className="!h-3 !w-3 text-muted-foreground hover:text-foreground transition ml-1"
                               onClick={(event) => {
                                 event.stopPropagation();
-                                const newSelectedValues = selectedValues.slice(0, dynamicMaxCount);
+                                const newSelectedValues = selectedValues.slice(
+                                  0,
+                                  dynamicMaxCount
+                                );
                                 setSelectedValues(newSelectedValues);
                                 onValueChange(newSelectedValues);
                               }}
@@ -289,57 +329,64 @@ function AsyncMultiSelectInner<T, V>(
                       </TooltipTrigger>
                       <TooltipContent className="bg-background shadow-lg border border-border p-1 rounded-sm">
                         <div className="flex flex-col p-0 gap-1">
-                          {selectedValues.slice(dynamicMaxCount).map((val) => {
-                            const option = options.find((o) => getOptionValue(o) === val) ?? knownItemsMap.get(val);
-                            if (!option) {
+                          {selectedValues
+                            .slice(dynamicMaxCount)
+                            .map((val) => {
+                              const option =
+                                options.find(
+                                  (o) => getOptionValue(o) === val
+                                ) ?? knownItemsMap.get(val);
+                              if (!option) {
+                                return (
+                                  <Badge
+                                    key={String(val)}
+                                    onMouseOver={(e) => e.stopPropagation()}
+                                    className={cn(
+                                      "badge group-hover:bg-background group-hover:shadow-background flex items-center justify-between",
+                                      multiSelectVariants({ variant })
+                                    )}
+                                  >
+                                    {String(val)}
+                                    <X
+                                      className="!h-3 !w-3 text-muted-foreground hover:text-foreground transition ml-1"
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        setSelectedValues((prev) => {
+                                          const newVals = prev.filter(
+                                            (x) => x !== val
+                                          );
+                                          onValueChange(newVals);
+                                          return newVals;
+                                        });
+                                      }}
+                                    />
+                                  </Badge>
+                                );
+                              }
                               return (
                                 <Badge
-                                  key={String(val)}
+                                  key={
+                                    getOptionKey
+                                      ? getOptionKey(option)
+                                      : String(getOptionValue(option))
+                                  }
                                   onMouseOver={(e) => e.stopPropagation()}
                                   className={cn(
-                                    "badge group-hover:bg-background group-hover:shadow-background flex items-center justify-between",
+                                    "badge flex items-center justify-between",
                                     multiSelectVariants({ variant })
                                   )}
                                 >
-                                  {String(val)}
+                                  {getDisplayValue(option)}
                                   <X
                                     className="!h-3 !w-3 text-muted-foreground hover:text-foreground transition ml-1"
                                     onClick={(event) => {
                                       event.stopPropagation();
-                                      setSelectedValues((prev) => {
-                                        const newVals = prev.filter((x) => x !== val);
-                                        onValueChange(newVals);
-                                        return newVals;
-                                      });
+                                      toggleOption(option);
                                     }}
                                   />
                                 </Badge>
                               );
-                            }
-                            return (
-                              <Badge
-                                key={
-                                  getOptionKey
-                                    ? getOptionKey(option)
-                                    : String(getOptionValue(option))
-                                }
-                                onMouseOver={(e) => e.stopPropagation()}
-                                className={cn(
-                                  "badge flex items-center justify-between",
-                                  multiSelectVariants({ variant })
-                                )}
-                              >
-                                {getDisplayValue(option)}
-                                <X
-                                  className="!h-3 !w-3 text-muted-foreground hover:text-foreground transition ml-1"
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    toggleOption(option);
-                                  }}
-                                />
-                              </Badge>
-                            );
-                          })}
+                            })}
                         </div>
                       </TooltipContent>
                     </Tooltip>
@@ -385,7 +432,9 @@ function AsyncMultiSelectInner<T, V>(
                 {errorMessage ? errorMessage : error}
               </div>
             )}
-            {loading && options.length === 0 && (loadingSkeleton || <DefaultLoadingSkeleton />)}
+            {loading && options.length === 0 && (
+              loadingSkeleton || <DefaultLoadingSkeleton />
+            )}
             {!loading && !error && options.length === 0 && (
               <CommandEmpty>{noResultsMessage}</CommandEmpty>
             )}

@@ -18,14 +18,16 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { newJournalSchema } from "../schema/journals";
 import { journalReferenceTypes, journalTypes } from "../utils";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function NewJournalDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
-  const [createJournal, { isLoading: isCreatingJournal }] = useCreateJournalMutation()
-
+  const [sendMessage] = useSendMessageMutation();
   const [searchAccountingAccount] = useLazyListAccountingAccountsQuery()
   const [searchCurrencies] = useLazyListCurrenciesQuery()
+
+  const [createJournal, { isLoading: isCreatingJournal }] = useCreateJournalMutation()
 
   const newJournalForm = useForm<z.infer<typeof newJournalSchema>>({
     resolver: zodResolver(newJournalSchema),
@@ -55,8 +57,14 @@ export default function NewJournalDialog() {
         newJournalForm.reset()
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear el diario contable" variant="error" />)
+      sendMessage({
+        location: "app/(private)/accounting/journals/components/new-journal-dialog.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -72,7 +80,13 @@ export default function NewJournalDialog() {
         .slice(0, 10)
     }
     catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/accounting/journals/components/new-journal-dialog.tsx",
+        rawError: error,
+        fnLocation: "handleSearchAccountingAccount"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }
@@ -87,7 +101,13 @@ export default function NewJournalDialog() {
         .slice(0, 10)
     }
     catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/accounting/journals/components/new-journal-dialog.tsx",
+        rawError: error,
+        fnLocation: "handleSearchCurrency"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }

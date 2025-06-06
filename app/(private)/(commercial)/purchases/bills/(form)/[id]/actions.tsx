@@ -1,12 +1,13 @@
 import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogHeader, DialogTrigger, DialogClose, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { routes } from "@/lib/routes";
 import { useApproveBillMutation, useCancelBillMutation, useConfirmBillMutation, useGetBillQuery } from "@/lib/services/bills";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 import { generatePDF } from "@/lib/templates/utils";
 import { cn } from "@/lib/utils";
 import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, Stamp } from "lucide-react";
@@ -20,6 +21,7 @@ export default function Actions() {
 
   const { data: bill } = useGetBillQuery(id);
 
+  const [sendMessage] = useSendMessageMutation();
   const [confirmBill, { isLoading: isBillConfirming }] = useConfirmBillMutation();
   const [approveBill, { isLoading: isBillApproving }] = useApproveBillMutation();
   const [cancelBill, { isLoading: isBillCancelling }] = useCancelBillMutation();
@@ -34,8 +36,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Factura de compra confirmada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la factura de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/bills/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleConfirmBill"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -49,8 +57,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Factura de compra aprobada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al aprobar la factura de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/bills/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleApproveBill"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -66,8 +80,14 @@ export default function Actions() {
       }
     }
     catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la factura de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/bills/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleCancelBill"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -81,7 +101,13 @@ export default function Actions() {
       pdf.view();
     } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
-      console.error('Error al generar el PDF:', error);
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/bills/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleGeneratePDF"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   };
 

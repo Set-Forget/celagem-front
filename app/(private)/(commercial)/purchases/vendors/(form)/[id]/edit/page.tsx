@@ -6,6 +6,7 @@ import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useGetSupplierQuery, useUpdateSupplierMutation } from "@/lib/services/suppliers"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Calculator, Mail, Save, Wallet } from "lucide-react"
@@ -49,10 +50,12 @@ export default function Page() {
 
   const router = useRouter()
 
+  const [sendMessage] = useSendMessageMutation();
+  const [updateSupplier, { isLoading: isUpdatingSupplier }] = useUpdateSupplierMutation()
+
   const { data: supplier } = useGetSupplierQuery(id, {
     skip: !id,
   })
-  const [updateSupplier, { isLoading: isUpdatingSupplier }] = useUpdateSupplierMutation()
 
   const form = useForm<z.infer<typeof newSupplierSchema>>({
     resolver: zodResolver(newSupplierSchema),
@@ -79,6 +82,7 @@ export default function Page() {
           city: "",
           zip: "",
           street: "",
+          except_withholding_source: data?.withholding_sources?.length === 0,
         },
         id,
       }).unwrap()
@@ -88,26 +92,31 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Proveedor actualizado exitosamente" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar el proveedor" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/vendors/(form)/[id]/edit/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
-
   useEffect(() => {
-    if (supplier) {
-      form.reset({
-        ...supplier,
-        legal_name: supplier.legal_name || "",
-        property_payment_term: supplier.property_payment_term?.id,
-        property_account_position: supplier.property_account_position || undefined,
-        currency: supplier.currency?.id,
-        economic_activity: supplier.economic_activity?.id,
-        account: supplier.account?.id,
-        payment_method: supplier.payment_method?.id,
-        country_id: supplier.country_id,
-      })
-    }
+    if (!supplier) return
+    form.reset({
+      ...supplier,
+      legal_name: supplier.legal_name || "",
+      property_payment_term: supplier.property_payment_term?.id,
+      property_account_position: supplier.property_account_position || undefined,
+      currency: supplier.currency?.id,
+      economic_activity: supplier.economic_activity?.id,
+      account: supplier.account?.id,
+      payment_method: supplier.payment_method?.id,
+      country_id: supplier.country_id,
+      withholding_sources: supplier.withholding_source_ids.map((source) => source.id),
+    })
   }, [supplier])
 
   return (

@@ -3,12 +3,13 @@ import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useCancelPurchaseRequestMutation, useConfirmPurchaseRequestMutation, useGetPurchaseRequestQuery } from "@/lib/services/purchase-requests";
+import { useSendMessageMutation } from "@/lib/services/telegram";
+import { generatePDF } from "@/lib/templates/utils";
 import { cn } from "@/lib/utils";
-import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCcw } from "lucide-react";
+import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PurchaseRequestState } from "../../schemas/purchase-requests";
-import { generatePDF } from "@/lib/templates/utils";
 
 export default function Actions({ state }: { state?: PurchaseRequestState }) {
   const router = useRouter()
@@ -19,6 +20,7 @@ export default function Actions({ state }: { state?: PurchaseRequestState }) {
     skip: !id,
   })
 
+  const [sendMessage] = useSendMessageMutation();
   const [confirmPurchaseRequest, { isLoading: isPurchaseRequestConfirming }] = useConfirmPurchaseRequestMutation();
   const [cancelPurchaseRequest, { isLoading: isPurchaseRequestCancelling }] = useCancelPurchaseRequestMutation()
 
@@ -32,8 +34,14 @@ export default function Actions({ state }: { state?: PurchaseRequestState }) {
         toast.custom((t) => <CustomSonner t={t} description="Solicitud de pedido confirmada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la solicitud de pedido" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-requests/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleConfirmPurchaseRequest"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -48,8 +56,14 @@ export default function Actions({ state }: { state?: PurchaseRequestState }) {
       }
     }
     catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la solicitud de pedido" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-requests/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleCancelPurchaseRequest"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -64,10 +78,14 @@ export default function Actions({ state }: { state?: PurchaseRequestState }) {
       })
       pdf.view()
     } catch (error) {
-      toast.custom(t => (
-        <CustomSonner t={t} description="Error al generar el PDF" variant="error" />
-      ))
-      console.error('Error al generar el PDF:', error)
+      toast.custom(t => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-requests/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleGeneratePDF"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

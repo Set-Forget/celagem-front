@@ -38,7 +38,7 @@ export const billsApi = erpApi.injectEndpoints({
         'AccountsPayable',
         'JournalEntry',
         'AccountingAccount',
-        'PurchaseOrder'
+        'PurchaseOrder',
       ]
     }),
     updateBill: builder.mutation<{ status: string, message: string }, { body: Omit<Partial<NewBill>, "accounting_date" | "date"> & { accounting_date: string, date: string }, id: string | number }>({

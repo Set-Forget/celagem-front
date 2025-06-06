@@ -14,12 +14,14 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { newAccountSchema } from "../schemas/account";
 import NewAccountForm from "./new-account-form";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function NewAccountDialog() {
   const router = useRouter()
 
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
+  const [sendMessage] = useSendMessageMutation();
   const [createAccount, { isLoading: isCreatingAccount }] = useCreateAccountingAccountMutation()
 
   const newAccountForm = useForm<z.infer<typeof newAccountSchema>>({
@@ -50,8 +52,14 @@ export default function NewAccountDialog() {
         newAccountForm.reset()
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la cuenta contable" variant="error" />)
+      sendMessage({
+        location: "app/(private)/accounting/chart-of-accounts/components/new-account-dialog.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

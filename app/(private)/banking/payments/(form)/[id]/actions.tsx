@@ -3,6 +3,7 @@ import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useCancelPaymentMutation, useConfirmPaymentMutation, useGetPaymentQuery } from "@/lib/services/payments";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 import { cn } from "@/lib/utils";
 import { Check, CircleX, Ellipsis } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -11,10 +12,11 @@ import { toast } from "sonner";
 export default function Actions() {
   const { id } = useParams<{ id: string }>()
 
-  const { data: payment } = useGetPaymentQuery(id);
-
+  const [sendMessage] = useSendMessageMutation();
   const [confirmPayment, { isLoading: isPaymentConfirming }] = useConfirmPaymentMutation();
   const [cancelPayment, { isLoading: isPaymentCancelling }] = useCancelPaymentMutation();
+
+  const { data: payment } = useGetPaymentQuery(id);
 
   const handleConfirmPayment = async () => {
     try {
@@ -26,8 +28,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Registro de pago confirmado" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar el registro de pago" variant="error" />)
+      sendMessage({
+        location: "app/(private)/banking/payments/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleConfirmPayment"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -41,8 +49,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Registro de pago cancelado" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al cancelar el registro de pago" variant="error" />)
+      sendMessage({
+        location: "app/(private)/banking/payments/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleCancelPayment"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

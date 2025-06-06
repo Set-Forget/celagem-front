@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
 import { useDebounce } from "@/hooks/use-debounce"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export interface AsyncSelectProps<T, V = string> {
   fetcher: (query?: string) => Promise<T[]>
@@ -69,6 +70,8 @@ export function AsyncSelect<T, V>(props: AsyncSelectProps<T, V>) {
     creatable,
   } = props
 
+  const [sendMessage] = useSendMessageMutation();
+
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState<T[]>(initialOptions || [])
   const [loading, setLoading] = useState(false)
@@ -94,6 +97,13 @@ export function AsyncSelect<T, V>(props: AsyncSelectProps<T, V>) {
       setOptions(fetched)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error obteniendo opciones")
+      sendMessage({
+        location: "components/async-select.tsx",
+        rawError: err,
+        fnLocation: "handleFetch"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     } finally {
       setLoading(false)
     }

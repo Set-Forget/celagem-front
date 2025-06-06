@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 import { DialogDescription } from "@radix-ui/react-dialog"
 import { Command as CommandPrimitive } from "cmdk"
 import { DialogTitle } from "./ui/dialog"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export interface AsyncCommandProps<T, V = string> {
   open: boolean
@@ -54,6 +55,8 @@ export function AsyncCommand<T, V>(props: AsyncCommandProps<T, V>) {
     creatable,
   } = props
 
+  const [sendMessage] = useSendMessageMutation();
+
   const [options, setOptions] = useState<T[]>(initialOptions || [])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -69,6 +72,13 @@ export function AsyncCommand<T, V>(props: AsyncCommandProps<T, V>) {
       setOptions(data)
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error obteniendo opciones")
+      sendMessage({
+        location: "components/async-command.tsx",
+        rawError: e,
+        fnLocation: "load"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     } finally {
       setLoading(false)
     }

@@ -8,7 +8,6 @@ export function useErrorReport({ error, fnLocation }: { error: Error, fnLocation
 
   useEffect(() => {
     if (!error) return;
-    if (process.env.NODE_ENV !== 'production') return;
     const location = typeof window !== 'undefined' ? window.location.href : '';
     sendMessage({ location, error, fnLocation }).unwrap().catch((error) => {
       console.error(error);

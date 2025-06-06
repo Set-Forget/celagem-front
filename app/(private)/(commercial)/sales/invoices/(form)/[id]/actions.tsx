@@ -2,24 +2,26 @@ import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { routes } from "@/lib/routes";
 import { useApproveInvoiceMutation, useCancelInvoiceMutation, useGetInvoiceQuery } from "@/lib/services/invoices";
+import { useSendMessageMutation } from "@/lib/services/telegram";
+import { generatePDF } from "@/lib/templates/utils";
 import { cn } from "@/lib/utils";
 import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, Stamp } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { InvoiceStatus, InvoiceTypes } from "../../schemas/invoices";
-import { generatePDF } from "@/lib/templates/utils";
-import { routes } from "@/lib/routes";
 
 export default function Actions({ state, type }: { state?: InvoiceStatus, type?: InvoiceTypes }) {
   const router = useRouter()
 
   const { id } = useParams<{ id: string }>()
 
-  const { data: invoice } = useGetInvoiceQuery(id, { skip: !id });
-
+  const [sendMessage] = useSendMessageMutation();
   const [approveInvoice, { isLoading: isInvoiceApproving }] = useApproveInvoiceMutation();
   const [cancelInvoice, { isLoading: isInvoiceCancelling }] = useCancelInvoiceMutation();
+
+  const { data: invoice } = useGetInvoiceQuery(id, { skip: !id });
 
   const handleApproveInvoice = async () => {
     try {
@@ -31,8 +33,14 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
         toast.custom((t) => <CustomSonner t={t} description="Factura de venta confirmada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al confirmar la factura de venta" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/invoices/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleApproveInvoice"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -46,8 +54,14 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
         toast.custom((t) => <CustomSonner t={t} description="Factura de venta cancelada" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Error al cancelar la factura de venta" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/invoices/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleCancelInvoice"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 
@@ -61,7 +75,13 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
       pdf.view();
     } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
-      console.error('Error al generar el PDF:', error);
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/invoices/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleGeneratePDF"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   };
 

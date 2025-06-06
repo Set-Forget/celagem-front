@@ -1,33 +1,64 @@
-import { useCallback, useMemo } from "react"
 import {
+  useLazyGetTaxQuery,
   useLazyListTaxesQuery,
-  useGetTaxQuery,
-} from "@/lib/services/taxes"
+} from '@/lib/services/taxes'
+import { useSendMessageMutation } from '@/lib/services/telegram'
+import { useCallback, useEffect, useState } from 'react'
 
 export interface UseTaxSelectOptions {
   taxIds?: number[]
   limit?: number
-  type_tax_use: "sale" | "purchase"
+  type_tax_use: 'sale' | 'purchase'
 }
 
-export function useTaxSelect({ taxIds, limit = 10, type_tax_use }: UseTaxSelectOptions) {
+export function useTaxSelect({
+  taxIds,
+  limit = 10,
+  type_tax_use,
+}: UseTaxSelectOptions) {
+  const [getTax] = useLazyGetTaxQuery()
+  const [sendMessage] = useSendMessageMutation();
+
+  const [initialOptions, setInitialOptions] = useState<
+    { id: number; name: string }[]
+  >([])
+
+  useEffect(() => {
+    if (!taxIds?.length) {
+      setInitialOptions([])
+      return
+    }
+    (async () => {
+      try {
+        const taxes = await Promise.all(
+          taxIds.map((id) => getTax(id, true).unwrap())
+        )
+
+        setInitialOptions(
+          taxes.map((t) => ({ id: t.id, name: t.name }))
+        )
+      } catch (err) {
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-tax-select.ts",
+          rawError: err,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
+        setInitialOptions([])
+      }
+    })()
+  }, [taxIds, getTax])
+
   const [searchTaxes] = useLazyListTaxesQuery()
-
-  const firstId = taxIds?.[0]
-  const { data: tax } = useGetTaxQuery(firstId!, { skip: !firstId })
-
-  const initialOptions = useMemo(() => {
-    if (!tax) return []
-    return [{ id: tax.id, name: tax.name }]
-  }, [tax])
 
   const fetcher = useCallback(
     async (query?: string) => {
       try {
-        const res = await searchTaxes({
-          name: query,
-          type_tax_use,
-        }, true).unwrap()
+        const res = await searchTaxes(
+          { name: query, type_tax_use },
+          true
+        ).unwrap()
 
         return (
           res.data?.map((t) => ({ id: t.id, name: t.name })) ?? []
@@ -37,7 +68,7 @@ export function useTaxSelect({ taxIds, limit = 10, type_tax_use }: UseTaxSelectO
         return []
       }
     },
-    [searchTaxes, limit],
+    [searchTaxes, limit, type_tax_use]
   )
 
   return { initialOptions, fetcher }

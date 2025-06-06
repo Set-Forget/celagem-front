@@ -6,6 +6,7 @@ import FormTable from "@/components/form-table"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
 import { useLazyListStocksQuery } from "@/lib/services/stocks"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { useSearchParams } from "next/navigation"
 import { useFormContext } from "react-hook-form"
@@ -23,6 +24,7 @@ export default function GeneralForm() {
 
   const { isLoading: isPurchaseOrderLoading } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
 
+  const [sendMessage] = useSendMessageMutation();
   const [searchStocks] = useLazyListStocksQuery()
 
   const { initialOptions: initialSupplier, fetcher: handleSearchSupplier } = useSupplierSelect({
@@ -41,7 +43,13 @@ export default function GeneralForm() {
         .slice(0, 10)
     }
     catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-receipts/(form)/components/general-form.tsx",
+        rawError: error,
+        fnLocation: "handleSearchStock"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       return []
     }
   }

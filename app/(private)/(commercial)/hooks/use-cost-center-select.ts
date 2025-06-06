@@ -3,6 +3,7 @@ import {
   useLazyListCostCentersQuery,
   useGetCostCenterQuery,
 } from "@/lib/services/cost-centers"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 interface UseCostCenterSelectOpts {
   costCenterId?: number
@@ -13,6 +14,8 @@ export function useCostCenterSelect(
   { costCenterId, limit = 10 }: UseCostCenterSelectOpts,
 ) {
   const [searchCostCenter] = useLazyListCostCentersQuery()
+  const [sendMessage] = useSendMessageMutation();
+
   const { data: costCenter } = useGetCostCenterQuery(costCenterId!, {
     skip: !costCenterId,
   })
@@ -30,7 +33,13 @@ export function useCostCenterSelect(
           res.data?.map((costCenter) => ({ id: costCenter.id, name: costCenter.name })) ?? []
         ).slice(0, limit)
       } catch (err) {
-        console.error(err)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-cost-center-select.ts",
+          rawError: err,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     },

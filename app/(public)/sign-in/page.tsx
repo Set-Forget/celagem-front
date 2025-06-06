@@ -15,12 +15,14 @@ import { toast } from "sonner"
 import { z } from "zod"
 import { signInSchema } from "./schemas/sign-in"
 import { jwtDecode } from "jwt-decode";
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 export default function Page() {
   const router = useRouter()
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
+  const [sendMessage] = useSendMessageMutation();
   const [signIn, { isLoading: isSigningIn }] = useSignInMutation();
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
@@ -50,8 +52,14 @@ export default function Page() {
 
       router.push("/")
     } catch (err: any) {
-      console.error(err)
       toast.custom((t) => <CustomSonner t={t} description="Correo electrónico o contraseña incorrectos" variant="error" />)
+      sendMessage({
+        location: "app/(public)/sign-in/page.tsx",
+        rawError: err,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

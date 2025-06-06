@@ -20,6 +20,11 @@ export const suppliersApi = erpApi.injectEndpoints({
       transformResponse: (response: SupplierDetailResponse) => response.data,
       providesTags: ['Supplier']
     }),
+    getSupplierWithholdings: builder.query<{ id: number, name: string }[], string | number>({
+      query: (id) => `/suppliers/${id}/withholdings`,
+      transformResponse: (response: { status: string, data: { id: number, name: string }[] }) => response.data,
+      providesTags: ['Supplier']
+    }),
     createSupplier: builder.mutation<NewSupplierResponse, Omit<NewSupplier, 'property_payment_term' | 'contact_address_inline'> & { property_payment_term: number }>({
       query: (data) => ({
         url: '/suppliers',
@@ -44,6 +49,8 @@ export const {
   useLazyListSuppliersQuery,
   useLazyGetSupplierQuery,
   useGetSupplierQuery,
+  useGetSupplierWithholdingsQuery,
+  useLazyGetSupplierWithholdingsQuery,
   useCreateSupplierMutation,
   useUpdateSupplierMutation,
 } = suppliersApi;

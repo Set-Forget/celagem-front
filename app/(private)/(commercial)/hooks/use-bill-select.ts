@@ -4,6 +4,7 @@ import {
   useLazyListBillsQuery,
 } from "@/lib/services/bills"
 import { AdaptedBillList } from "@/lib/adapters/bills"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 interface UseBillSelectOptions<O> {
   billId?: number
@@ -21,6 +22,8 @@ export function useBillSelect<
   map,
 }: UseBillSelectOptions<O> = {}) {
   const [searchBills] = useLazyListBillsQuery()
+  const [sendMessage] = useSendMessageMutation();
+
   const { data: selectedBill } = useGetBillQuery(billId!, { skip: !billId })
 
   const mapFn = useCallback(
@@ -45,7 +48,13 @@ export function useBillSelect<
           .slice(0, limit)
           .map(mapFn)
       } catch (e) {
-        console.error("useBillSelect:", e)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-bill-select.ts",
+          rawError: e,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     },

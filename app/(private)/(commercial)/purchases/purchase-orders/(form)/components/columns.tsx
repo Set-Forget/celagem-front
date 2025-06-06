@@ -14,6 +14,7 @@ const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof new
     control={control}
     name={`items.${index}.product_id`}
     onSelect={(value, option) => {
+      console.log(option)
       if (option) {
         setValue(`items.${index}.price_unit`, option?.standard_price || 0, { shouldValidate: true });
       }

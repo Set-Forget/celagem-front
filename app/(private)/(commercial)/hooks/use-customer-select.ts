@@ -2,6 +2,7 @@ import { useGetCustomerQuery } from "@/lib/services/customers";
 import { useLazyListCustomersQuery } from "@/lib/services/customers";
 import { useCallback, useMemo } from "react"
 import { CustomerList } from "../sales/customers/schema/customers";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 interface UseCustomerSelectOptions<O = { id: number; name: string }> {
   customerId?: number
@@ -21,6 +22,8 @@ export function useCustomerSelect<
   map,
 }: UseCustomerSelectOptions<O> = {}) {
   const [searchCustomers] = useLazyListCustomersQuery()
+  const [sendMessage] = useSendMessageMutation();
+
   const { data: selectedCustomer } = useGetCustomerQuery(customerId!, {
     skip: !customerId || skip,
   })
@@ -45,7 +48,13 @@ export function useCustomerSelect<
           .slice(0, limit)
           .map(mapFn)
       } catch (err) {
-        console.error("useCustomerSelect:", err)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-customer-select.ts",
+          rawError: err,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     },

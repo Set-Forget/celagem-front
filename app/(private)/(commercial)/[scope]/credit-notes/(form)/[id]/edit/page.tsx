@@ -20,6 +20,7 @@ import { z } from "zod"
 import { newCreditNoteSchema } from "../../../schemas/credit-notes"
 import GeneralForm from "../../components/general-form"
 import NotesForm from "../../components/notes-form"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 const tabs = [
   {
@@ -38,6 +39,7 @@ export default function Page() {
   const { data: creditNote, isLoading: isLoadingCreditNote } = useGetCreditNoteQuery(id!, { skip: !id })
 
   const [updateCreditNote, { isLoading: isUpdatingCreditNote }] = useUpdateCreditNoteMutation()
+  const [sendMessage] = useSendMessageMutation();
 
   const newCreditNoteForm = useForm<z.infer<typeof newCreditNoteSchema>>({
     resolver: zodResolver(newCreditNoteSchema),
@@ -62,8 +64,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Nota de crédito actualizada exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar la nota de crédito" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/[scope]/credit-notes/(form)/[id]/edit/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

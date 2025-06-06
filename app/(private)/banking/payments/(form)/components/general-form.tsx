@@ -8,7 +8,7 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useLazyGetBillQuery } from "@/lib/services/bills"
-import { useLazyGetSupplierQuery } from "@/lib/services/suppliers"
+import { useLazyGetSupplierQuery, useLazyGetSupplierWithholdingsQuery } from "@/lib/services/suppliers"
 import { cn, createApply } from "@/lib/utils"
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
@@ -33,7 +33,9 @@ export default function GeneralForm() {
   const billIds = searchParams.get("bill_ids")
 
   const [getBill, { isLoading: isLoadingBills }] = useLazyGetBillQuery()
+
   const [getSupplier] = useLazyGetSupplierQuery()
+  const [getSupplierWithholdings] = useLazyGetSupplierWithholdingsQuery()
 
   const { initialOptions: initialPaymentMethod, fetcher: handleSearchPaymentMethod } = usePaymentMethodSelect({
     paymentMethodId: control._getWatch("payment_method"),
@@ -51,22 +53,23 @@ export default function GeneralForm() {
   })
 
   const bills = useWatch({ control, name: "invoices" })
+  const apply = useMemo(
+    () => createApply<z.infer<typeof newPaymentSchema>>(setValue, resetField),
+    [setValue, resetField]
+  );
 
   useEffect(() => {
     if (billIds) {
       (async () => {
         const ids = billIds.split(",").map((id) => Number(id))
         const bills = await Promise.all(ids.map((id) => getBill(id).unwrap()))
+        const withholdings = await getSupplierWithholdings(bills[0]?.supplier.id!).unwrap()
 
         setValue("invoices", bills)
+        apply("withholdings", withholdings?.map((w) => w.id) || [])
       })()
     }
   }, [billIds])
-
-  const apply = useMemo(
-    () => createApply<z.infer<typeof newPaymentSchema>>(setValue, resetField),
-    [setValue, resetField]
-  );
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
@@ -88,9 +91,11 @@ export default function GeneralForm() {
                 onChange={async (id) => {
                   field.onChange(id)
                   const supplier = await getSupplier(id!).unwrap()
+                  const withholdings = await getSupplierWithholdings(id!).unwrap()
 
                   apply("payment_method", supplier?.payment_method?.id || undefined)
                   apply("currency", supplier?.currency?.id || undefined)
+                  apply("withholdings", withholdings?.map((w) => w.id) || [])
 
                   setCurrency({
                     id: supplier?.currency?.id,
@@ -239,6 +244,7 @@ export default function GeneralForm() {
               <AsyncMultiSelect<{ id: number, name: string }, number>
                 placeholder="Buscar retención…"
                 fetcher={fetcher}
+                maxCount={1}
                 initialOptions={initialTaxes}
                 defaultValue={field.value}
                 value={field.value}

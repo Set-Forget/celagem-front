@@ -6,6 +6,7 @@ import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useCreateSupplierMutation } from "@/lib/services/suppliers"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Calculator, Mail, Wallet } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -45,6 +46,7 @@ const tabs = [
 export default function Page() {
   const router = useRouter()
 
+  const [sendMessage] = useSendMessageMutation();
   const [createSupplier, { isLoading: isCreatingSupplier }] = useCreateSupplierMutation()
 
   const newSupplierForm = useForm<z.infer<typeof newSupplierSchema>>({
@@ -71,6 +73,7 @@ export default function Page() {
         city: "",
         zip: "",
         street: "",
+        except_withholding_source: data?.withholding_sources?.length === 0,
       }).unwrap()
 
       if (response.status === "success") {
@@ -78,8 +81,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Proveedor creado exitosamente" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear el proveedor" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/vendors/(form)/new/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

@@ -6,6 +6,7 @@ import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useGetBillQuery, useUpdateBillMutation } from "@/lib/services/bills"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { parseDate } from "@internationalized/date"
@@ -44,6 +45,7 @@ export default function Page() {
 
   const { data: bill, isLoading: isLoadingBill } = useGetBillQuery(id!, { skip: !id })
 
+  const [sendMessage] = useSendMessageMutation();
   const [updateBill, { isLoading: isUpdatingBill }] = useUpdateBillMutation()
 
   const newBillForm = useForm<z.infer<typeof newBillSchema>>({
@@ -75,8 +77,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Factura de compra actualizada exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar la factura de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/bills/(form)/[id]/edit/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

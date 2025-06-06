@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react"
 import { useLazyListMaterialsQuery, useGetMaterialQuery } from "@/lib/services/materials"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 interface UseMaterialSelectOptions {
   productId?: number
@@ -8,6 +9,8 @@ interface UseMaterialSelectOptions {
 
 export function useMaterialSelect({ productId, limit = 10 }: UseMaterialSelectOptions) {
   const [searchMaterials] = useLazyListMaterialsQuery()
+  const [sendMessage] = useSendMessageMutation();
+
   const { data: material } = useGetMaterialQuery(productId!, { skip: !productId })
 
   const initialOptions = useMemo(() => {
@@ -33,7 +36,13 @@ export function useMaterialSelect({ productId, limit = 10 }: UseMaterialSelectOp
           })) || []
         ).slice(0, limit)
       } catch (err) {
-        console.error(err)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-material-select.ts",
+          rawError: err,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     }, [searchMaterials, limit])

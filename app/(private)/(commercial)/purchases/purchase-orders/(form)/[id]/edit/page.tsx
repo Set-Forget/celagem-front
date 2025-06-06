@@ -20,6 +20,7 @@ import { newPurchaseOrderFiscalSchema, newPurchaseOrderNotesSchema, newPurchaseO
 import FiscalForm from "../../components/fiscal-form"
 import GeneralForm from "../../components/general-form"
 import NotesForm from "../../components/notes-form"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 const tabs = [
   {
@@ -45,6 +46,7 @@ export default function Page() {
 
   const { data: purchaseOrder, isLoading: isLoadingPurchaseOrder } = useGetPurchaseOrderQuery(id!, { skip: !id })
 
+  const [sendMessage] = useSendMessageMutation();
   const [updatePurchaseOrder, { isLoading: isUpdatingPurchaseOrder }] = useUpdatePurchaseOrderMutation()
 
   const form = useForm<z.infer<typeof newPurchaseOrderSchema>>({
@@ -70,7 +72,13 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Orden de compra actualizada exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-orders/(form)/[id]/edit/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar la orden de compra" variant="error" />)
     }
   }

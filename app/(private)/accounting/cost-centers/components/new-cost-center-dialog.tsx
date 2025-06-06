@@ -13,10 +13,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { newCostCenterSchema } from "../schemas/cost-centers";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function NewCostCenterDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
+  const [sendMessage] = useSendMessageMutation();
   const [createCostCenter, { isLoading: isCreatingCostCenter }] = useCreateCostCenterMutation()
 
   const newCostCenterForm = useForm<z.infer<typeof newCostCenterSchema>>({
@@ -43,8 +45,14 @@ export default function NewCostCenterDialog() {
         newCostCenterForm.reset()
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear el centro de costos" variant="error" />)
+      sendMessage({
+        location: "app/(private)/accounting/cost-centers/components/new-cost-center-dialog.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

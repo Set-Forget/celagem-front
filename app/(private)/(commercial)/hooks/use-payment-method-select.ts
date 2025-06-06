@@ -1,4 +1,5 @@
 import { useGetPaymentMethodQuery, useLazyListPaymentMethodsQuery } from "@/lib/services/payment-methods"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { useCallback, useMemo } from "react"
 
 interface Props {
@@ -13,6 +14,7 @@ export function usePaymentMethodSelect({
   paymentType
 }: Props) {
   const [searchPaymentMethod] = useLazyListPaymentMethodsQuery()
+  const [sendMessage] = useSendMessageMutation();
 
   const { data: paymentMethod } = useGetPaymentMethodQuery(paymentMethodId!, {
     skip: !paymentMethodId,
@@ -37,7 +39,13 @@ export function usePaymentMethodSelect({
         })) ?? [])
           .slice(0, limit)
       } catch (err) {
-        console.error(err)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-payment-method-select.ts",
+          rawError: err,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     },

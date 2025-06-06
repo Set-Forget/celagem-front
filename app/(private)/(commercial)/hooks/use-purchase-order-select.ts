@@ -2,6 +2,7 @@ import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
 import { useLazyListPurchaseOrdersQuery } from "@/lib/services/purchase-orders"
 import { AdaptedPurchaseOrderList } from "@/lib/adapters/purchase-order"
 import { useCallback, useMemo } from "react"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 interface UsePurchaseOrderSelectOptions<O> {
   purchaseOrderId?: number
@@ -19,6 +20,8 @@ export function usePurchaseOrderSelect<
   map,
 }: UsePurchaseOrderSelectOptions<O> = {}) {
   const [searchPurchaseOrders] = useLazyListPurchaseOrdersQuery()
+  const [sendMessage] = useSendMessageMutation();
+
   const { data: selectedPurchaseOrder } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
 
   const mapFn = useCallback(
@@ -43,7 +46,13 @@ export function usePurchaseOrderSelect<
           .slice(0, limit)
           .map(mapFn)
       } catch (e) {
-        console.error("usePurchaseOrderSelect:", e)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-purchase-order-select.ts",
+          rawError: e,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     },

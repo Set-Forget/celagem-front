@@ -4,6 +4,7 @@ import {
   useGetAccountingAccountQuery,
 } from "@/lib/services/accounting-accounts"
 import { usePathname } from "next/navigation"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 interface UseAccountSelectOpts {
   accountId?: number
@@ -16,6 +17,7 @@ export function useAccountingAccountSelect({ accountId, limit = 10 }: UseAccount
   const isPurchases = pathname.includes("purchases")
 
   const [searchAccount] = useLazyListAccountingAccountsQuery()
+  const [sendMessage] = useSendMessageMutation();
 
   const { data: account } = useGetAccountingAccountQuery(accountId!, {
     skip: !accountId,
@@ -45,10 +47,16 @@ export function useAccountingAccountSelect({ accountId, limit = 10 }: UseAccount
         })) ?? [])
           .filter((account) =>
             account.name.toLowerCase().includes(term) ||
-            account.code.toLowerCase().includes(term),
+            (account?.code && account?.code?.toLowerCase().includes(term)),
           ).slice(0, limit)
       } catch (err) {
-        console.error(err)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-account-select.ts",
+          rawError: err,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     },

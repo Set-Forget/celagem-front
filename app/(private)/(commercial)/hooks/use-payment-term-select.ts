@@ -1,4 +1,5 @@
 import { useGetPaymentTermQuery, useLazyListPaymentTermsQuery } from "@/lib/services/payment-terms"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { useCallback, useMemo } from "react"
 
 interface Props {
@@ -11,6 +12,7 @@ export function usePaymentTermSelect({
   limit = 10,
 }: Props) {
   const [searchPaymentTerm] = useLazyListPaymentTermsQuery()
+  const [sendMessage] = useSendMessageMutation();
 
   const { data: paymentTerm } = useGetPaymentTermQuery(paymentTermId!, {
     skip: !paymentTermId,
@@ -34,7 +36,13 @@ export function usePaymentTermSelect({
         })) ?? [])
           .slice(0, limit)
       } catch (err) {
-        console.error(err)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-payment-term-select.ts",
+          rawError: err,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     },

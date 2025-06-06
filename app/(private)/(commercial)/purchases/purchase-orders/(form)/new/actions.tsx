@@ -16,6 +16,7 @@ import { z } from "zod";
 import { newPurchaseOrderSchema } from "../../schemas/purchase-orders";
 import PurchaseRequestPopover from "./components/purchase-request-popover";
 import { usePurchaseRequestSelect } from "@/app/(private)/(commercial)/hooks/use-purchase-request-select";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions() {
   const router = useRouter()
@@ -27,6 +28,7 @@ export default function Actions() {
 
   const purchaseRequestId = searchParams.get("purchase_request_id")
 
+  const [sendMessage] = useSendMessageMutation();
   const [createPurchaseOrder, { isLoading: isCreatingPurchaseOrder }] = useCreatePurchaseOrderMutation()
 
   const { fetcher: handleSearchPurchaseRequest } = usePurchaseRequestSelect({
@@ -53,8 +55,14 @@ export default function Actions() {
         toast.custom((t) => <CustomSonner t={t} description="Orden de compra creada exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear la orden de compra" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-orders/(form)/new/actions.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

@@ -18,6 +18,7 @@ import { z } from "zod"
 import { newPurchaseRequestNotesSchema, newPurchaseRequestSchema } from "../../../schemas/purchase-requests"
 import GeneralForm from "../../new/components/general-form"
 import NotesForm from "../../new/components/notes-form"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 const tabs = [
   {
@@ -35,6 +36,7 @@ export default function Page() {
 
   const { data: purchaseRequest } = useGetPurchaseRequestQuery(id!, { skip: !id })
 
+  const [sendMessage] = useSendMessageMutation();
   const [updatePurchaseRequest, { isLoading: isUpdatingPurchaseRequest }] = useUpdatePurchaseRequestMutation()
 
   const newPurchaseRequest = useForm<z.infer<typeof newPurchaseRequestSchema>>({
@@ -63,8 +65,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Solicitud de pedido actualizada exitosamente" variant="success" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar la solicitud de pedido" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/purchases/purchase-requests/(form)/[id]/edit/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

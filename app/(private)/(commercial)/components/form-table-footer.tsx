@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/table"
 import { useGetCurrencyQuery } from "@/lib/services/currencies"
 import { useLazyGetTaxQuery } from "@/lib/services/taxes"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 import { cn } from "@/lib/utils"
 import { Plus } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -47,6 +48,7 @@ export function FormTableFooter<
   ).data
 
   const [getTax] = useLazyGetTaxQuery()
+  const [sendMessage] = useSendMessageMutation();
 
   const [taxMap, setTaxMap] = useState<Map<number, number>>(new Map())
 
@@ -76,7 +78,13 @@ export function FormTableFooter<
           const tax = await getTax(id).unwrap()
           if (tax) map.set(id, tax.amount)
         } catch (e) {
-          console.error(`Error fetching tax ${id}:`, e)
+          sendMessage({
+            location: "app/(private)/(commercial)/components/form-table-footer.tsx",
+            rawError: e,
+            fnLocation: "useEffect"
+          }).unwrap().catch((error) => {
+            console.error(error);
+          });
         }
       }
       setTaxMap(map)

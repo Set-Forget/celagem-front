@@ -2,6 +2,7 @@ import { useGetPurchaseRequestQuery } from "@/lib/services/purchase-requests"
 import { useLazyListPurchaseRequestsQuery } from "@/lib/services/purchase-requests"
 import { AdaptedPurchaseRequestList } from "@/lib/adapters/purchase-requests"
 import { useCallback, useMemo } from "react"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 interface UsePurchaseRequestSelectOptions<O> {
   purchaseRequestId?: number
@@ -19,6 +20,8 @@ export function usePurchaseRequestSelect<
   map,
 }: UsePurchaseRequestSelectOptions<O> = {}) {
   const [searchPurchaseRequests] = useLazyListPurchaseRequestsQuery()
+  const [sendMessage] = useSendMessageMutation();
+
   const { data: selectedPurchaseRequest } = useGetPurchaseRequestQuery(purchaseRequestId!, { skip: !purchaseRequestId })
 
   const mapFn = useCallback(
@@ -43,7 +46,13 @@ export function usePurchaseRequestSelect<
           .slice(0, limit)
           .map(mapFn)
       } catch (e) {
-        console.error("usePurchaseRequestSelect:", e)
+        sendMessage({
+          location: "app/(private)/(commercial)/hooks/use-purchase-request-select.ts",
+          rawError: e,
+          fnLocation: "fetcher"
+        }).unwrap().catch((error) => {
+          console.error(error);
+        });
         return []
       }
     },

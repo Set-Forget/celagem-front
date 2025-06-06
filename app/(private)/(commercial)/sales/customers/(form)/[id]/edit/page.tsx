@@ -19,6 +19,7 @@ import AccountingForm from "../../new/components/accounting-form"
 import ContactForm from "../../new/components/contact-form"
 import FiscalForm from "../../new/components/fiscal-form"
 import GeneralForm from "../../new/components/general-form"
+import { useSendMessageMutation } from "@/lib/services/telegram"
 
 const tabs = [
   {
@@ -49,10 +50,12 @@ export default function Page() {
 
   const router = useRouter()
 
+  const [sendMessage] = useSendMessageMutation();
+  const [updateCustomer, { isLoading: isUpdatingCustomer }] = useUpdateCustomerMutation()
+
   const { data: customer, isLoading: isCustomerLoading } = useGetCustomerQuery(id, {
     skip: !id,
   })
-  const [updateCustomer, { isLoading: isUpdatingCustomer }] = useUpdateCustomerMutation()
 
   const form = useForm<z.infer<typeof newCustomerSchema>>({
     resolver: zodResolver(newCustomerSchema),
@@ -89,8 +92,14 @@ export default function Page() {
         toast.custom((t) => <CustomSonner t={t} description="Cliente actualizado exitosamente" />)
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar el cliente" variant="error" />)
+      sendMessage({
+        location: "app/(private)/(commercial)/sales/customers/(form)/[id]/edit/page.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

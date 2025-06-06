@@ -16,6 +16,7 @@ import { newAccountSchema } from "../schemas/account";
 import NewAccountForm from "./new-account-form";
 import { Save } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function EditAccountDialog() {
   const router = useRouter()
@@ -28,6 +29,7 @@ export default function EditAccountDialog() {
     skip: !dialogState.open || dialogState.open !== "edit-account",
   })
 
+  const [sendMessage] = useSendMessageMutation();
   const [updateAccount, { isLoading: isUpdatingAccount }] = useUpdateAccountingAccountMutation()
 
   const newAccountForm = useForm<z.infer<typeof newAccountSchema>>({
@@ -61,8 +63,14 @@ export default function EditAccountDialog() {
         newAccountForm.reset()
       }
     } catch (error) {
-      console.error(error)
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al actualizar la cuenta contable" variant="error" />)
+      sendMessage({
+        location: "app/(private)/accounting/chart-of-accounts/components/edit-account-dialog.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      }).unwrap().catch((error) => {
+        console.error(error);
+      });
     }
   }
 

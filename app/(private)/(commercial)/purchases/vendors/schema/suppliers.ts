@@ -31,6 +31,10 @@ export const newSupplierFiscalSchema = z.object({
   is_resident: z.boolean().default(true),
   tax_information: z.string({ required_error: "La información tributaria es requerida" }),
   fiscal_responsibility: z.string({ required_error: "La responsabilidad fiscal es requerida" }),
+  withholding_ica: z.boolean(),
+  withholding_iva: z.boolean(),
+  except_withholding_source: z.boolean().default(false),
+  withholding_sources: z.array(z.number()),
 })
 
 export const newSupplierAccountingSchema = z.object({
@@ -126,7 +130,13 @@ export const supplierDetailSchema = z.object({
   country_id: z.number(),
 
   purchase_order_count: z.number(), // ? Esto creo que no es muy útil.
-  // ! Falta withholdings o algo por el estilo para representar (Retencion Sobre ICA, No Aplica Ret. Fuente, Retencion Sobre IVA).
+
+  withholding_source_ids: z.array(z.object({
+    id: z.number(),
+    name: z.string(),
+  })),
+  withholding_ica: z.boolean(),
+  withholding_iva: z.boolean(),
 })
 
 export const supplierDetailResponseSchema = z.object({
