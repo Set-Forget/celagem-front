@@ -6,9 +6,9 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { CreditNoteItem } from "../../../schemas/credit-notes"
+import { CreditNoteLine } from "../../../schemas/credit-notes"
 
-export const columns: ColumnDef<CreditNoteItem & { currency: string }>[] = [
+export const columns: ColumnDef<CreditNoteLine & { currency: string }>[] = [
   {
     accessorKey: "product_name",
     header: "Producto / Servicio",

@@ -3,7 +3,7 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { BillItem } from "../../../schemas/bills"
+import { BillLine } from "../../../schemas/bills"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { routes } from "@/lib/routes"
 
-export const columns: ColumnDef<BillItem & { currency: string }>[] = [
+export const columns: ColumnDef<BillLine & { currency: string }>[] = [
   {
     accessorKey: "product_name",
     header: "Producto / Servicio",

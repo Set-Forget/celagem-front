@@ -1,10 +1,12 @@
 'use client'
 
+import { TableFooter } from "@/app/(private)/(commercial)/components/table-footer"
 import { DataTable } from "@/components/data-table"
 import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
 import RenderFields from "@/components/render-fields"
 import { Badge } from "@/components/ui/badge"
+import { AdaptedCreditNoteDetail } from "@/lib/adapters/credit-notes"
 import { useGetCreditNoteQuery } from "@/lib/services/credit-notes"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
@@ -12,14 +14,12 @@ import { es } from "date-fns/locale"
 import { Box, Paperclip } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
-import { CreditNoteDetail } from "../../schemas/credit-notes"
+import { CreditNoteLine } from "../../schemas/credit-notes"
 import { creditNoteStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
 import PartnerTab from "./components/partner-tab"
-import TableFooter from "./components/table-footer"
-import { AdaptedCreditNoteDetail } from "@/lib/adapters/credit-notes"
 
 const fields: FieldDefinition<AdaptedCreditNoteDetail>[] = [
   {
@@ -98,7 +98,18 @@ export default function Page() {
           loading={isCreditNoteLoading}
           columns={columns}
           pagination={false}
-          footer={() => <TableFooter />}
+          footer={() =>
+            <TableFooter<CreditNoteLine>
+              items={creditNote?.items ?? []}
+              colSpan={columns.length}
+              selectors={{
+                unitPrice: (item) => item.price_unit,
+                quantity: (item) => item.quantity,
+                currency: () => creditNote?.currency,
+                taxes: (item) => item.taxes,
+                pendingAmount: () => creditNote?.amount_residual ?? 0
+              }}
+            />}
         />
       </div>
       <DataTabs

@@ -3,15 +3,15 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
-import { DebitNoteItem } from "../../../schemas/debit-notes"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { routes } from "@/lib/routes"
+import { DebitNoteLine } from "../../../schemas/debit-notes"
 
-export const columns: ColumnDef<DebitNoteItem & { currency: string }>[] = [
+export const columns: ColumnDef<DebitNoteLine & { currency: string }>[] = [
   {
     accessorKey: "product_name",
     header: "Producto / Servicio",

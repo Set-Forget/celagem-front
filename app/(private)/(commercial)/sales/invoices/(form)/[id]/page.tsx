@@ -19,7 +19,8 @@ import { columns } from "./components/columns"
 import CustomerTab from "./components/customer-tab"
 import DocumentsTab from "./components/documents-tab"
 import NotesTab from "./components/notes-tab"
-import TableFooter from "./components/table-footer"
+import { InvoiceLine } from "../../schemas/invoices"
+import { TableFooter } from "@/app/(private)/(commercial)/components/table-footer"
 
 const fields: FieldDefinition<AdaptedInvoiceDetail>[] = [
   {
@@ -107,7 +108,18 @@ export default function Page() {
           loading={isInvoiceLoading}
           columns={columns}
           pagination={false}
-          footer={() => <TableFooter />}
+          footer={() =>
+            <TableFooter<InvoiceLine>
+              items={invoice?.items ?? []}
+              colSpan={columns.length}
+              selectors={{
+                unitPrice: (item) => item.price_unit,
+                quantity: (item) => item.quantity,
+                currency: () => invoice?.currency,
+                taxes: (item) => item.taxes,
+                pendingAmount: () => invoice?.amount_residual ?? 0
+              }}
+            />}
         />
       </div>
       <DataTabs

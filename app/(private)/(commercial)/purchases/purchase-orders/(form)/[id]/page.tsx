@@ -20,7 +20,8 @@ import DocumentsTab from "./components/documents-tab"
 import FiscalTab from "./components/fiscal"
 import NotesTab from "./components/notes-tab"
 import SupplierTab from "./components/supplier-tab"
-import TableFooter from "./components/table-footer"
+import { TableFooter } from "@/app/(private)/(commercial)/components/table-footer"
+import { PurchaseOrderLine } from "../../schemas/purchase-orders"
 
 const fields: FieldDefinition<AdaptedPurchaseOrderDetail>[] = [
   {
@@ -112,7 +113,17 @@ export default function Page() {
           loading={isPurchaseOrderLoading}
           columns={columns}
           pagination={false}
-          footer={() => <TableFooter />}
+          footer={() =>
+            <TableFooter<PurchaseOrderLine>
+              items={purchaseOrder?.items ?? []}
+              colSpan={columns.length}
+              selectors={{
+                unitPrice: (item) => item.price_unit,
+                quantity: (item) => item.product_qty,
+                taxes: (item) => item.taxes,
+                currency: () => purchaseOrder?.currency,
+              }}
+            />}
         />
       </div>
       <DataTabs

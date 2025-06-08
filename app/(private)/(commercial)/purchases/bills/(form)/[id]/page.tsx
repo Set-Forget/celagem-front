@@ -19,7 +19,8 @@ import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
 import NotesTab from "./components/notes-tab"
 import SupplierTab from "./components/supplier-tab"
-import TableFooter from "./components/table-footer"
+import { TableFooter } from "@/app/(private)/(commercial)/components/table-footer"
+import { BillLine } from "../../schemas/bills"
 
 const fields: FieldDefinition<AdaptedBillDetail>[] = [
   {
@@ -113,7 +114,19 @@ export default function Page() {
             loading={isBillLoading}
             columns={columns}
             pagination={false}
-            footer={() => <TableFooter />}
+            footer={() =>
+              <TableFooter<BillLine>
+                items={bill?.items ?? []}
+                colSpan={columns.length}
+                selectors={{
+                  unitPrice: (item) => item.price_unit,
+                  quantity: (item) => item.quantity,
+                  taxes: (item) => item.taxes,
+                  currency: () => bill?.currency,
+                  pendingAmount: () => bill?.amount_residual ?? 0
+                }}
+              />
+            }
           />
         </div>
       </div>

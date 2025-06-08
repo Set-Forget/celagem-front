@@ -18,7 +18,8 @@ import { debitNoteStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
-import TableFooter from "./components/table-footer"
+import { TableFooter } from "@/app/(private)/(commercial)/components/table-footer"
+import { DebitNoteLine } from "../../schemas/debit-notes"
 
 const fields: FieldDefinition<AdaptedDebitNoteDetail>[] = [
   {
@@ -111,7 +112,18 @@ export default function Page() {
           loading={isDebitNoteLoading}
           columns={columns}
           pagination={false}
-          footer={() => <TableFooter />}
+          footer={() =>
+            <TableFooter<DebitNoteLine>
+              items={debitNote?.items ?? []}
+              colSpan={columns.length}
+              selectors={{
+                unitPrice: (item) => item.price_unit,
+                quantity: (item) => item.quantity,
+                currency: () => debitNote?.currency,
+                taxes: (item) => item.taxes,
+                pendingAmount: () => debitNote?.amount_residual ?? 0
+              }}
+            />}
         />
       </div>
       <DataTabs
