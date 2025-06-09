@@ -26,9 +26,7 @@ export default function CareCompanyForm() {
         location: "app/(private)/medical-management/patients/(form)/components/care_company-form.tsx",
         rawError: error,
         fnLocation: "handleGetCareCompanies"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }

@@ -83,9 +83,7 @@ export default function Actions({ state }: { state?: PurchaseRequestState }) {
         location: "app/(private)/(commercial)/purchases/purchase-requests/(form)/[id]/actions.tsx",
         rawError: error,
         fnLocation: "handleGeneratePDF"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 

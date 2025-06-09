@@ -39,9 +39,7 @@ export default function Actions({ state }: { state?: CreditNoteStatus }) {
         location: "app/(private)/(commercial)/sales/customers/(form)/new/page.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 
@@ -60,9 +58,7 @@ export default function Actions({ state }: { state?: CreditNoteStatus }) {
         location: "app/(private)/(commercial)/sales/customers/(form)/new/page.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 
@@ -80,9 +76,7 @@ export default function Actions({ state }: { state?: CreditNoteStatus }) {
         location: "app/(private)/(commercial)/sales/customers/(form)/new/page.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   };
 

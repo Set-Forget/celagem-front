@@ -4,6 +4,8 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 import { SectionList } from "../../schemas/templates"
+import { format, parseISO } from "date-fns"
+import { sectionTypes } from "../utils"
 
 export const columns: ColumnDef<SectionList>[] = [
   {
@@ -12,28 +14,18 @@ export const columns: ColumnDef<SectionList>[] = [
     cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
   },
   {
-    accessorKey: "is_active",
-    header: "Estado",
-    cell: ({ row }) => {
-      return 'xxxx'
-      /*       const status = sectionStatus[String(row.getValue("is_active")) as keyof typeof sectionStatus]
-            return <Badge
-              variant="custom"
-              className={cn(`${status.bg_color} ${status.text_color} border-none rounded-sm`)}
-            >
-              {status.label}
-            </Badge> */
-    },
-  },
-  {
     accessorKey: "type",
-    header: "Secciones",
-    cell: ({ row }) => <div>xxxx</div>
+    header: "Tipo",
+    cell: ({ row }) => <div>{sectionTypes?.find((t) => t.value === row.original.type)?.label}</div>
   },
   {
     accessorKey: "description",
     header: "Descripción",
-    cell: ({ row }) => <div>xxxx</div>
+    cell: ({ row }) => <div>{row.original.description}</div>
+  },
+  {
+    accessorKey: "created_at",
+    header: "Fecha de creación",
+    cell: ({ row }) => <div>{format(parseISO(row.original.created_at), "PP")}</div>
   }
-
 ]

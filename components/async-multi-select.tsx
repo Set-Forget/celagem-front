@@ -146,9 +146,7 @@ function AsyncMultiSelectInner<T, V>(
           location: "components/async-multi-select.tsx",
           rawError: err,
           fnLocation: "handleFetch"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
       } finally {
         setLoading(false);
       }

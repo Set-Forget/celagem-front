@@ -7,7 +7,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuLabel, Con
 import { Label } from "@/components/ui/label";
 import { setDialogsState } from "@/lib/store/dialogs-store";
 import { cn } from "@/lib/utils";
-import { ArrowDown, ArrowUp, FormInput, Plus, SquarePen, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Plus, SquarePen, Trash2 } from "lucide-react";
 import { ControllerRenderProps } from "react-hook-form";
 import { useSectionFields } from "../../../hooks/use-section-fields";
 
@@ -67,7 +67,6 @@ export default function SectionField({ isTable = false, sectionId }: { isTable?:
     <div className={cn("w-full", isTable ? "grid grid-cols-2 gap-4" : "flex flex-col gap-4")}>
       {sectionFields?.map((field) => {
         const FieldComponent = field.type.primitive_type !== 'title' ? templateFields[field.type.primitive_type as keyof typeof templateFields] : null;
-
         return <ContextMenu modal={false} key={field.id}>
           <div className={cn("field outline outline-transparent outline-1 outline-offset-2 w-full rounded-sm transition-all hover:outline-primary")}>
             <ContextMenuTrigger className="flex flex-col w-full">

@@ -96,9 +96,7 @@ export default function NewAppointmentDialog() {
         location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
         rawError: error,
         fnLocation: "handleGetTemplates"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }
@@ -115,9 +113,7 @@ export default function NewAppointmentDialog() {
         location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
         rawError: error,
         fnLocation: "handleGetPatients"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }
@@ -134,9 +130,7 @@ export default function NewAppointmentDialog() {
         location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
         rawError: error,
         fnLocation: "handleGetDoctors"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }
@@ -153,9 +147,7 @@ export default function NewAppointmentDialog() {
         location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
         rawError: error,
         fnLocation: "handleGetBusinessUnits"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }
@@ -174,8 +166,13 @@ export default function NewAppointmentDialog() {
         onOpenChange()
         toast.custom((t) => <CustomSonner t={t} description="Turno creado correctamente" />)
       }
-    } catch {
+    } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al crear el turno" variant="error" />)
+      sendMessage({
+        location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
+        rawError: error,
+        fnLocation: "onSubmit"
+      })
     }
   }
 

@@ -1,11 +1,12 @@
 import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useCancelChargeMutation, useConfirmChargeMutation, useGetChargeQuery } from "@/lib/services/receipts";
 import { useSendMessageMutation } from "@/lib/services/telegram";
+import { generatePDF } from "@/lib/templates/utils";
 import { cn } from "@/lib/utils";
-import { Check, CircleX, Ellipsis } from "lucide-react";
+import { Check, CircleX, Ellipsis, FileTextIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
@@ -16,7 +17,7 @@ export default function Actions() {
   const [confirmCharge, { isLoading: isChargeConfirming }] = useConfirmChargeMutation();
   const [cancelCharge, { isLoading: isChargeCancelling }] = useCancelChargeMutation();
 
-  const { data: payment } = useGetChargeQuery(id);
+  const { data: charge } = useGetChargeQuery(id);
 
   const handleConfirmCharge = async () => {
     try {
@@ -60,7 +61,27 @@ export default function Actions() {
     }
   }
 
-  const state = payment?.state
+  const handleGeneratePDF = async () => {
+    if (!charge) {
+      throw new Error('No se ha encontrado el registro de pago')
+    }
+    try {
+      const pdf = await generatePDF({
+        templateName: 'charge',
+        data: charge,
+      })
+      pdf.view()
+    } catch (error) {
+      toast.custom(t => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
+      sendMessage({
+        location: "app/(private)/banking/charges/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleGeneratePDF"
+      })
+    }
+  }
+
+  const state = charge?.state
 
   if (!state) {
     return null
@@ -76,6 +97,11 @@ export default function Actions() {
             </Button>
           }
         >
+          <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
+            <FileTextIcon />
+            Previsualizar
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             onSelect={handleCancelCharge}
             loading={isChargeCancelling}
@@ -97,6 +123,24 @@ export default function Actions() {
     )
   }
 
+  if (state === "paid") {
+    return (
+      <div className="flex gap-2">
+        <Dropdown
+          trigger={
+            <Button size="icon" variant="outline" className="h-8 w-8">
+              <Ellipsis />
+            </Button>
+          }
+        >
+          <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
+            <FileTextIcon />
+            Previsualizar
+          </DropdownMenuItem>
+        </Dropdown>
+      </div>
+    )
+  }
   // // ! No se puede re-abrir por el momento.
   // if (state === "cancel") {
   //   return (

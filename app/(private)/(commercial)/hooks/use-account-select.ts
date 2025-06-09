@@ -1,21 +1,17 @@
-import { useCallback, useMemo } from "react"
 import {
-  useLazyListAccountingAccountsQuery,
   useGetAccountingAccountQuery,
+  useLazyListAccountingAccountsQuery,
 } from "@/lib/services/accounting-accounts"
-import { usePathname } from "next/navigation"
 import { useSendMessageMutation } from "@/lib/services/telegram"
+import { useCallback, useMemo } from "react"
 
 interface UseAccountSelectOpts {
   accountId?: number
   limit?: number
+  accountTypes?: string[]
 }
 
-export function useAccountingAccountSelect({ accountId, limit = 10 }: UseAccountSelectOpts) {
-  const pathname = usePathname()
-
-  const isPurchases = pathname.includes("purchases")
-
+export function useAccountingAccountSelect({ accountId, limit = 10, accountTypes }: UseAccountSelectOpts) {
   const [searchAccount] = useLazyListAccountingAccountsQuery()
   const [sendMessage] = useSendMessageMutation();
 
@@ -28,25 +24,25 @@ export function useAccountingAccountSelect({ accountId, limit = 10 }: UseAccount
     return [{ id: account.id, name: account.name, code: account.code }]
   }, [account])
 
-  const accountTypes = isPurchases
-    ? ["expense", "expense_direct_cost", "expense_depreciation", "asset_current", "asset_non_current", "asset_fixed", "asset_prepayments"]
-    : ["income", "income_other", "asset_current", "asset_fixed"];
-
   const fetcher = useCallback(
     async (query?: string) => {
       try {
         const res = await searchAccount({}, true).unwrap()
 
         const term = query?.toLowerCase() ?? ""
-        return (
+        let accounts =
           res.data?.map(({ id, name, code, account_type }) => ({
             id,
             name,
             code,
             account_type,
           })) ?? []
-        )
-          .filter(({ account_type }) => accountTypes.includes(account_type))
+
+        if (accountTypes && accountTypes.length > 0) {
+          accounts = accounts.filter(({ account_type }) => accountTypes.includes(account_type))
+        }
+
+        return accounts
           .filter(({ name, code }) => name.toLowerCase().includes(term) || (code ?? "").toLowerCase().includes(term))
           .sort((a, b) => {
             const aExact = a.code?.toLowerCase() === term || a.name.toLowerCase() === term
@@ -61,13 +57,11 @@ export function useAccountingAccountSelect({ accountId, limit = 10 }: UseAccount
           location: "app/(private)/(commercial)/hooks/use-account-select.ts",
           rawError: err,
           fnLocation: "fetcher"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
         return []
       }
     },
-    [searchAccount, limit],
+    [searchAccount, limit, accountTypes],
   )
 
   return { initialOptions, fetcher }

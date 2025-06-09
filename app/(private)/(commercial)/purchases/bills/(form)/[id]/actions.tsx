@@ -316,6 +316,9 @@ export default function Actions() {
             </Button>
           }
         >
+          <DropdownMenuItem onSelect={() => router.push(`/purchases/credit-notes/new?billId=${id}`)}>
+            Nota de crédito
+          </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => router.push(`/purchases/debit-notes/new?billId=${id}`)}>
             Nota de débito
           </DropdownMenuItem>

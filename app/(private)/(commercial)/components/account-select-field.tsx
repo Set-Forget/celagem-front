@@ -13,6 +13,7 @@ type Props<TFieldValues extends FieldValues = FieldValues, TName extends FieldPa
   onSelect?: (id: number, option?: AccountOption) => void
   width?: number
   align?: "start" | "center" | "end"
+  accountTypes?: string[]
 }
 
 export function AccountSelectField<FV extends FieldValues = FieldValues>({
@@ -21,11 +22,13 @@ export function AccountSelectField<FV extends FieldValues = FieldValues>({
   onSelect,
   width = 200,
   align = "end",
+  accountTypes,
 }: Props<FV>) {
   const currentId = (control._getWatch(name) as unknown as number | undefined) ?? undefined
 
   const { initialOptions, fetcher } = useAccountingAccountSelect({
     accountId: currentId,
+    accountTypes,
   })
 
   const fieldError = get(control._formState.errors, name);

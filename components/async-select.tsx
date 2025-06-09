@@ -101,9 +101,7 @@ export function AsyncSelect<T, V>(props: AsyncSelectProps<T, V>) {
         location: "components/async-select.tsx",
         rawError: err,
         fnLocation: "handleFetch"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     } finally {
       setLoading(false)
     }

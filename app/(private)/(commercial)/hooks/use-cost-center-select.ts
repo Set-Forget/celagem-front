@@ -37,9 +37,7 @@ export function useCostCenterSelect(
           location: "app/(private)/(commercial)/hooks/use-cost-center-select.ts",
           rawError: err,
           fnLocation: "fetcher"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
         return []
       }
     },

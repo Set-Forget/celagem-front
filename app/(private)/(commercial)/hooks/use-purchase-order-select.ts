@@ -50,9 +50,7 @@ export function usePurchaseOrderSelect<
           location: "app/(private)/(commercial)/hooks/use-purchase-order-select.ts",
           rawError: e,
           fnLocation: "fetcher"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
         return []
       }
     },

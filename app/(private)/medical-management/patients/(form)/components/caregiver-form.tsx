@@ -34,9 +34,7 @@ export default function CaregiverForm() {
         location: "app/(private)/medical-management/patients/(form)/components/caregiver-form.tsx",
         rawError: error,
         fnLocation: "handleSearchPlace"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return [];
     }
   }

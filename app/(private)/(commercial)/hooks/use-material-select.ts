@@ -40,9 +40,7 @@ export function useMaterialSelect({ productId, limit = 10 }: UseMaterialSelectOp
           location: "app/(private)/(commercial)/hooks/use-material-select.ts",
           rawError: err,
           fnLocation: "fetcher"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
         return []
       }
     }, [searchMaterials, limit])

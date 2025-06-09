@@ -227,6 +227,7 @@ const fieldSchema = z.object({
   is_active: z.boolean(),
   section_id: z.number(),
   type: typeSchema,
+  order: z.number(),
 });
 
 export const newFieldSchema = z.object({
@@ -249,6 +250,7 @@ export const newFieldSchema = z.object({
   is_active: z.boolean(),
   section_id: z.number(),
   type: typeSchema,
+  //order: z.number().optional(),
 })
 
 export const newSectionSchema = z.object({
@@ -335,6 +337,9 @@ export const templateListSchema = z.object({
 export const sectionListSchema = z.object({
   id: z.number(),
   name: z.string(),
+  type: z.enum(["form", "table"]),
+  description: z.string(),
+  created_at: z.string(),
 })
 
 export const sectionListResponseSchema = z.object({

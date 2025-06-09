@@ -57,9 +57,7 @@ export default function EditTemplateDialog() {
         location: "app/(private)/medical-management/(masters)/templates/[id]/components/edit-template-dialog.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 

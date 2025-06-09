@@ -73,7 +73,6 @@ export default function Page() {
         ));
       }
     } catch (error) {
-      console.error(error);
       toast.custom((t) => (
         <CustomSonner
           t={t}

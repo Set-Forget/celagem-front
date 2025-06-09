@@ -76,9 +76,7 @@ export function AsyncCommand<T, V>(props: AsyncCommandProps<T, V>) {
         location: "components/async-command.tsx",
         rawError: e,
         fnLocation: "load"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     } finally {
       setLoading(false)
     }

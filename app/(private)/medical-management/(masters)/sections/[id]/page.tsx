@@ -1,9 +1,13 @@
 'use client'
 
 import { newFieldSchema, newSectionSchema, SectionDetail, sectionDetailSchema } from "@/app/(private)/medical-management/(masters)/schemas/templates";
+import CustomSonner from "@/components/custom-sonner";
+import Dropdown from "@/components/dropdown";
 import Header from "@/components/header";
+import RenderFields from "@/components/render-fields";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +19,7 @@ import { CircleX, Ellipsis, FormInput, Loader2, Plus, Save, SquarePen } from "lu
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import EditFieldDialog from "../../components/edit-field-dialog";
 import NewFieldDialog from "../../components/new-field-dialog";
@@ -22,11 +27,7 @@ import { SectionSchema, sectionSchema } from "../../schemas/masters";
 import SectionField from "../../templates/[id]/components/section-field";
 import { sectionStatus, sectionTypes } from "../utils";
 import EditSectionDialog from "./components/edit-section-dialog";
-import Dropdown from "@/components/dropdown";
-import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import CustomSonner from "@/components/custom-sonner";
-import { toast } from "sonner";
-import RenderFields from "@/components/render-fields";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 
 const descriptionFields: FieldDefinition<SectionDetail>[] = [
   {
@@ -38,11 +39,6 @@ const descriptionFields: FieldDefinition<SectionDetail>[] = [
     label: "Tipo",
     placeholderLength: 10,
     render: (p) => sectionTypes.find((t) => t.value === p.type)?.label || "No especificado",
-  },
-  {
-    label: "Fecha de creación",
-    placeholderLength: 10,
-    render: (p) => /* p.created_at || */ "No especificado",
   }
 ];
 
@@ -54,6 +50,7 @@ export default function Page() {
 
   const { data: section, isLoading: isSectionLoading } = useGetSectionQuery(sectionId)
 
+  const [sendMessage] = useSendMessageMutation()
   const [updateSection, { isLoading: isUpdatingSection }] = useUpdateSectionMutation()
   const [createField, { isLoading: isCreatingField }] = useCreateFieldMutation()
   const [updateField, { isLoading: isUpdatingField }] = useUpdateFieldMutation()
@@ -114,7 +111,12 @@ export default function Page() {
         const created = await createField(payload).unwrap();
         localToRealFieldId[f.id] = created.data.id;
       } catch (err) {
-        console.error("Error creando campo:", err);
+        toast.custom((t) => <CustomSonner t={t} description="Error creando campo" variant="error" />)
+        sendMessage({
+          location: "app/(private)/medical-management/(masters)/sections/[id]/page.tsx",
+          rawError: err,
+          fnLocation: "onSubmit"
+        })
       }
     }
 
@@ -124,7 +126,12 @@ export default function Page() {
         const payload = newFieldSchema.parse(f);
         await updateField({ ...payload, id: realId }).unwrap();
       } catch (err) {
-        console.error("Error actualizando campo:", err);
+        toast.custom((t) => <CustomSonner t={t} description="Error actualizando campo" variant="error" />)
+        sendMessage({
+          location: "app/(private)/medical-management/(masters)/sections/[id]/page.tsx",
+          rawError: err,
+          fnLocation: "onSubmit"
+        })
       }
     }
 
@@ -144,7 +151,11 @@ export default function Page() {
       }
     } catch (err) {
       toast.custom((t) => <CustomSonner t={t} description="Error actualizando sección" variant="error" />)
-      console.error("Error actualizando sección:", err);
+      sendMessage({
+        location: "app/(private)/medical-management/(masters)/sections/[id]/page.tsx",
+        rawError: err,
+        fnLocation: "onSubmit"
+      })
     }
   };
 
@@ -157,7 +168,11 @@ export default function Page() {
       router.push("/medical-management/sections")
     } catch (err) {
       toast.custom((t) => <CustomSonner t={t} description="Error eliminando sección" variant="error" />)
-      console.error("Error eliminando sección:", err);
+      sendMessage({
+        location: "app/(private)/medical-management/(masters)/sections/[id]/page.tsx",
+        rawError: err,
+        fnLocation: "handleDeleteSection"
+      })
     }
   };
 
@@ -188,9 +203,6 @@ export default function Page() {
     };
   }, [isDirty]);
 
-  console.log("Section", isSectionLoading, section, normalizedSection)
-  console.log("Fields", fields)
-
   return (
     <div className="flex flex-col h-full">
       <Header title={
@@ -208,6 +220,7 @@ export default function Page() {
         </div>
         <div className="flex items-center gap-2">
           <Dropdown
+            modal={false}
             trigger={
               <Button size="icon" variant="outline" className="h-8 w-8">
                 <Ellipsis />

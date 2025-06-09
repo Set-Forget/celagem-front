@@ -28,9 +28,7 @@ export default function ContactForm() {
         location: "app/(private)/medical-management/patients/(form)/components/contact-form.tsx",
         rawError: error,
         fnLocation: "handleSearchPlace"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return [];
     }
   }

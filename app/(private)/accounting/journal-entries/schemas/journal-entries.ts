@@ -1,4 +1,4 @@
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { z } from "zod";
 
 const journalEntryStatus = z.enum(["draft", "posted", "cancelled"]);
@@ -36,9 +36,13 @@ export const newJournalEntryItemSchema = z.object({
 );
 
 export const newJournalEntrySchema = z.object({
-  date: z.custom<CalendarDate>((data) => {
-    return data instanceof CalendarDate;
-  }, { message: "La fecha del asiento es requerida" }),
+  date: z
+    .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+      message: "La fecha del asiento es requerida",
+    })
+    .refine(d => d.compare(today(getLocalTimeZone())) <= 0, {
+      message: "La fecha del asiento no puede ser posterior al día de hoy",
+    }),
   currency: z.number({ required_error: "La moneda es requerida" }),
   journal: z.number({ required_error: "El diario contable es requerido" }).optional(),
   ref: z.string().optional(),

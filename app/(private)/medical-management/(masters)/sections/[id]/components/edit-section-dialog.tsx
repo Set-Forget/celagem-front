@@ -56,9 +56,7 @@ export default function EditSectionDialog() {
         location: "app/(private)/medical-management/(masters)/sections/[id]/components/edit-section-dialog.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 
@@ -81,7 +79,10 @@ export default function EditSectionDialog() {
   }, [dialogState.open]);
 
   return (
-    <Dialog open={dialogState.open === "edit-section"} onOpenChange={onOpenChange}>
+    <Dialog
+      open={dialogState.open === "edit-section"}
+      onOpenChange={onOpenChange}
+    >
       <DialogContent className="w-[500px] max-w-none">
         <DialogHeader>
           <DialogTitle>Editar sección</DialogTitle>

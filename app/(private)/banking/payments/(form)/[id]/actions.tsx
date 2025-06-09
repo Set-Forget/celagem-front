@@ -1,11 +1,12 @@
 import CustomSonner from "@/components/custom-sonner";
 import Dropdown from "@/components/dropdown";
 import { Button } from "@/components/ui/button";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useCancelPaymentMutation, useConfirmPaymentMutation, useGetPaymentQuery } from "@/lib/services/payments";
 import { useSendMessageMutation } from "@/lib/services/telegram";
+import { generatePDF } from "@/lib/templates/utils";
 import { cn } from "@/lib/utils";
-import { Check, CircleX, Ellipsis } from "lucide-react";
+import { Check, CircleX, Ellipsis, FileTextIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -60,6 +61,26 @@ export default function Actions() {
     }
   }
 
+  const handleGeneratePDF = async () => {
+    if (!payment) {
+      throw new Error('No se ha encontrado el registro de pago')
+    }
+    try {
+      const pdf = await generatePDF({
+        templateName: 'payment',
+        data: payment,
+      })
+      pdf.view()
+    } catch (error) {
+      toast.custom(t => <CustomSonner t={t} description="Error al generar el PDF" variant="error" />)
+      sendMessage({
+        location: "app/(private)/banking/payments/(form)/[id]/actions.tsx",
+        rawError: error,
+        fnLocation: "handleGeneratePDF"
+      })
+    }
+  }
+
   const state = payment?.state
 
   if (!state) {
@@ -76,6 +97,11 @@ export default function Actions() {
             </Button>
           }
         >
+          <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
+            <FileTextIcon />
+            Previsualizar
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             onSelect={handleCancelPayment}
             loading={isPaymentCancelling}
@@ -93,6 +119,25 @@ export default function Actions() {
           <Check className={cn((isPaymentConfirming) && "hidden")} />
           Confirmar
         </Button>
+      </div>
+    )
+  }
+
+  if (state === "paid") {
+    return (
+      <div className="flex gap-2">
+        <Dropdown
+          trigger={
+            <Button size="icon" variant="outline" className="h-8 w-8">
+              <Ellipsis />
+            </Button>
+          }
+        >
+          <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
+            <FileTextIcon />
+            Previsualizar
+          </DropdownMenuItem>
+        </Dropdown>
       </div>
     )
   }

@@ -91,8 +91,6 @@ export function FormTableFooter<
             error: e as Error,
             fnLocation: "useEffect",
           })
-            .unwrap()
-            .catch(console.error)
         }
       }
       setTaxMap(map)

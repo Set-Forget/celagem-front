@@ -16,7 +16,7 @@ export default function TextAreaField({ field, formField }: {
     <Textarea
       {...formField}
       {...safeProperties}
-      className={`resize-none`}
+      className={`resize-none bg-background`}
       maxLength={maxLength}
     />
   );

@@ -38,9 +38,7 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
         location: "app/(private)/(commercial)/[scope]/debit-notes/(form)/[id]/actions.tsx",
         rawError: error,
         fnLocation: "handleConfirmDebitNote"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 
@@ -59,9 +57,7 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
         location: "app/(private)/(commercial)/[scope]/debit-notes/(form)/[id]/actions.tsx",
         rawError: error,
         fnLocation: "handleCancelDebitNote"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 
@@ -79,9 +75,7 @@ export default function Actions({ state }: { state?: DebitNoteStatus }) {
         location: "app/(private)/(commercial)/[scope]/debit-notes/(form)/[id]/actions.tsx",
         rawError: error,
         fnLocation: "handleGeneratePDF"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   };
 

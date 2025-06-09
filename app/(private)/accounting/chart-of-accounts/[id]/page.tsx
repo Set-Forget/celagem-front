@@ -79,7 +79,7 @@ export default function Page() {
           <div className="flex flex-col gap-4 [&_*[data-table='true']]:h-[calc(100svh-358px)] [&_*[data-table='true']]:w-[calc(100svw-306px)]">
             <DataTable
               data={accountMoves?.data
-                ?.toSorted((a, b) => b.id - a.id)
+                ?.toSorted((a, b) => a.id - b.id)
                 .filter(move => {
                   if (!dateStart && !dateEnd) return true;
                   const d = new Date(move.date);

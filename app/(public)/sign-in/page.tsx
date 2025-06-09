@@ -57,9 +57,7 @@ export default function Page() {
         location: "app/(public)/sign-in/page.tsx",
         rawError: err,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 

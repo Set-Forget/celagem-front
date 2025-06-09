@@ -44,9 +44,7 @@ export default function AffiliationForm() {
         location: "app/(private)/medical-management/patients/(form)/components/affiliation-form.tsx",
         rawError: error,
         fnLocation: "handleGetCompanies"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }
@@ -63,9 +61,7 @@ export default function AffiliationForm() {
         location: "app/(private)/medical-management/patients/(form)/components/affiliation-form.tsx",
         rawError: error,
         fnLocation: "handleGetClasses"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }
@@ -82,9 +78,7 @@ export default function AffiliationForm() {
         location: "app/(private)/medical-management/patients/(form)/components/affiliation-form.tsx",
         rawError: error,
         fnLocation: "handleGetBusinessUnits"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }
