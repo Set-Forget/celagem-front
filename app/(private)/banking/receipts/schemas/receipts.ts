@@ -1,11 +1,13 @@
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { z } from "zod";
+
+export const chargeState = z.enum(["draft", "in_process", "paid", "cancel"])
 
 export const paymentListSchema = z.object({
   id: z.number(),
   sequence_id: z.string(),
   amount: z.number(),
-  state: z.string(),
+  state: chargeState,
   currency: z.string(),
   partner: z.string(),
   journal: z.string(),
@@ -20,7 +22,7 @@ export const paymentDetailSchema = z.object({
   sequence_id: z.string(),
   amount: z.number(),
   date: z.string(),
-  state: z.string(),
+  state: chargeState,
   company: z.object({
     id: z.number(),
     name: z.string(),
@@ -45,30 +47,44 @@ export const paymentDetailSchema = z.object({
     id: z.number(),
     name: z.string(),
   }),
-  payment_reference: z.string(), // ? No sé que es.
-  invoices: z.array(z.object({
+  payment_reference: z.string(),
+  journal_entry_lines: z.array(z.object({
     id: z.number(),
+    name: z.string(),
+    debit: z.number(),
+    credit: z.number(),
+    account: z.object({
+      id: z.number(),
+      name: z.string(),
+    }),
+    partner: z.object({
+      id: z.number(),
+      name: z.string(),
+    }),
+  })),
+  invoices: z.array(z.object({
+    sequence_id: z.string(),
     name: z.string(),
     amount_total: z.number(),
     payment_state: z.string(),
   })),
   credit_notes: z.array(z.object({
-    id: z.number(),
+    sequence_id: z.string(),
     name: z.string(),
     amount_total: z.number(),
   })),
   debit_notes: z.array(z.object({
-    id: z.number(),
+    sequence_id: z.string(),
     name: z.string(),
     amount_total: z.number(),
   })),
   reconciled_invoices: z.array(z.object({
-    id: z.number(),
+    sequence_id: z.string(),
     name: z.string(),
     amount_total: z.number(),
   })),
   reconciled_bills: z.array(z.object({
-    id: z.number(),
+    sequence_id: z.string(),
     name: z.string(),
     amount_total: z.number(),
   })),
@@ -91,10 +107,15 @@ export const paymentDetailSchema = z.object({
 
 export const newChargeSchema = z.object({
   amount: z.number().optional(),
-  date: z.custom<CalendarDate>((data) => {
-    return data instanceof CalendarDate;
-  }, { message: "La fecha de pago es requerida" }),
-  currency: z.number({ required_error: "La moneda es requerida" }), journal: z.number().optional(),
+  date: z
+    .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+      message: "La fecha de pago es requerida",
+    })
+    .refine(d => d.compare(today(getLocalTimeZone())) <= 0, {
+      message: "La fecha de pago no puede ser posterior al día de hoy",
+    }),
+  currency: z.number({ required_error: "La moneda es requerida" }),
+  journal: z.number().optional(),
   partner: z.number().optional(),
   payment_method: z.number({ required_error: "El método de pago es requerido" }),
   payment_reference: z.string().optional(),

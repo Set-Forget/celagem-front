@@ -53,9 +53,7 @@ export default function Actions({ state }: { state?: 'DRAFT' | 'SIGNED' }) {
         location: "app/(private)/medical-management/visits/(form)/[visit_id]/actions.tsx",
         rawError: error,
         fnLocation: "handleSignVisit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 
@@ -81,9 +79,7 @@ export default function Actions({ state }: { state?: 'DRAFT' | 'SIGNED' }) {
         location: "app/(private)/medical-management/visits/(form)/[visit_id]/actions.tsx",
         rawError: error,
         fnLocation: "handleGeneratePDF"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     } finally {
       setLoading(false)
     }

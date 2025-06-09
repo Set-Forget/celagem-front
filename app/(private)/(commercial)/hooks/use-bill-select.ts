@@ -52,9 +52,7 @@ export function useBillSelect<
           location: "app/(private)/(commercial)/hooks/use-bill-select.ts",
           rawError: e,
           fnLocation: "fetcher"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
         return []
       }
     },

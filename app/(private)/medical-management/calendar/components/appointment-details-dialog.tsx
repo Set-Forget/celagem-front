@@ -105,9 +105,7 @@ export default function AppointmentDetailsDialog() {
         location: "app/(private)/medical-management/calendar/components/appointment-details-dialog.tsx",
         rawError: error,
         fnLocation: "handleUpdateAppointment"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 

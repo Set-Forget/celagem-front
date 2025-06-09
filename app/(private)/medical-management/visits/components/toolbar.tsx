@@ -85,9 +85,7 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
           location: "app/(private)/medical-management/visits/components/toolbar.tsx",
           rawError: error,
           fnLocation: "handleGeneratePDF"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
       } finally {
         setLoading(false)
       }

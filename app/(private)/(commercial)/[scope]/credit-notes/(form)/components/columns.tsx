@@ -35,6 +35,16 @@ const TaxesCell = ({ control, index }: { control: Control<z.infer<typeof newCred
   />
 }
 
+const AccountCell = ({ control, index }: { control: Control<z.infer<typeof newCreditNoteSchema>>; index: number }) => {
+  const { scope } = useParams<{ scope: "sales" | "purchases" }>()
+
+  return <AccountSelectField
+    control={control}
+    name={`items.${index}.account_id`}
+    accountTypes={scope === "sales" ? ["income", "income_other", "asset_current", "asset_fixed"] : ["expense", "expense_direct_cost", "expense_depreciation", "asset_current", "asset_non_current", "asset_fixed", "asset_prepayments"]}
+  />
+}
+
 export const columns: FormTableColumn<z.infer<typeof newCreditNoteSchema>>[] = [
   {
     header: "Producto / Servicio",
@@ -86,10 +96,7 @@ export const columns: FormTableColumn<z.infer<typeof newCreditNoteSchema>>[] = [
     header: "Cuenta contable",
     width: 200,
     headerClassName: "text-nowrap",
-    renderCell: (control, index) => <AccountSelectField
-      control={control}
-      name={`items.${index}.account_id`}
-    />,
+    renderCell: (control, index) => <AccountCell control={control} index={index} />,
   },
   {
     header: "Subtotal (Sin imp.)",

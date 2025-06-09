@@ -115,9 +115,7 @@ export default function Page() {
         location: "app/(private)/reporting/accounts-payable/filter/page.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
 
     router.push(`/reporting/accounts-payable?${params.toString()}`);

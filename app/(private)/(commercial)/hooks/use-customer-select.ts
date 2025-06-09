@@ -52,9 +52,7 @@ export function useCustomerSelect<
           location: "app/(private)/(commercial)/hooks/use-customer-select.ts",
           rawError: err,
           fnLocation: "fetcher"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
         return []
       }
     },

@@ -28,9 +28,7 @@ export default function CompanionForm() {
         location: "app/(private)/medical-management/patients/(form)/components/companion-form.tsx",
         rawError: error,
         fnLocation: "handleSearchPlace"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return [];
     }
   }

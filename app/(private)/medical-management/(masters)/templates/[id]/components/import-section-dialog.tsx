@@ -46,9 +46,7 @@ export default function ImportSectionDialog() {
         location: "app/(private)/medical-management/(masters)/templates/[id]/components/import-section-dialog.tsx",
         rawError: error,
         fnLocation: "handleGetSections"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }
@@ -87,9 +85,7 @@ export default function ImportSectionDialog() {
         location: "app/(private)/medical-management/(masters)/templates/[id]/components/import-section-dialog.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 

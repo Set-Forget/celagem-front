@@ -49,9 +49,7 @@ export function useInvoiceSelect<
           location: "app/(private)/(commercial)/hooks/use-invoice-select.ts",
           rawError: e,
           fnLocation: "fetcher"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
         return []
       }
     },

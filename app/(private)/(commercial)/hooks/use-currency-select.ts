@@ -40,9 +40,7 @@ export function useCurrencySelect({
           location: "app/(private)/(commercial)/hooks/use-currency-select.ts",
           rawError: err,
           fnLocation: "fetcher"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
         return []
       }
     },

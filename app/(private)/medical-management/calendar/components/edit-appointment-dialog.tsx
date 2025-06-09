@@ -103,9 +103,7 @@ export default function EditAppointmentDialog() {
         location: "app/(private)/medical-management/calendar/components/edit-appointment-dialog.tsx",
         rawError: error,
         fnLocation: "handleGetTemplates"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }
@@ -122,9 +120,7 @@ export default function EditAppointmentDialog() {
         location: "app/(private)/medical-management/calendar/components/edit-appointment-dialog.tsx",
         rawError: error,
         fnLocation: "handleGetPatients"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return [];
     }
   };
@@ -141,9 +137,7 @@ export default function EditAppointmentDialog() {
         location: "app/(private)/medical-management/calendar/components/edit-appointment-dialog.tsx",
         rawError: error,
         fnLocation: "handleGetDoctors"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return [];
     }
   };
@@ -160,9 +154,7 @@ export default function EditAppointmentDialog() {
         location: "app/(private)/medical-management/calendar/components/edit-appointment-dialog.tsx",
         rawError: error,
         fnLocation: "handleGetBusinessUnits"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }
@@ -190,9 +182,7 @@ export default function EditAppointmentDialog() {
         location: "app/(private)/medical-management/calendar/components/edit-appointment-dialog.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 

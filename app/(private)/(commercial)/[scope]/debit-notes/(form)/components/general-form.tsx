@@ -16,8 +16,7 @@ import { useParams, useSearchParams } from "next/navigation"
 import { useMemo } from "react"
 import { useFormContext } from "react-hook-form"
 import { v4 as uuidv4 } from 'uuid'
-import { z } from "zod"
-import { NewDebitNote, NewDebitNoteLine, newDebitNoteSchema } from "../../schemas/debit-notes"
+import { NewDebitNote, NewDebitNoteLine } from "../../schemas/debit-notes"
 import { columns } from "./columns"
 
 export default function GeneralForm() {

@@ -244,6 +244,11 @@ export default function Actions({ state, type }: { state?: InvoiceStatus, type?:
           }
         >
           <DropdownMenuItem
+            onClick={() => router.push(`/sales/credit-notes/new?invoiceId=${id}`)}
+          >
+            Nota de crédito
+          </DropdownMenuItem>
+          <DropdownMenuItem
             onClick={() => router.push(`/sales/debit-notes/new?invoiceId=${id}`)}
           >
             Nota de débito

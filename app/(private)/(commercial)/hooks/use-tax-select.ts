@@ -44,9 +44,7 @@ export function useTaxSelect({
           location: "app/(private)/(commercial)/hooks/use-tax-select.ts",
           rawError: err,
           fnLocation: "fetcher"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
         setInitialOptions([])
       }
     })()

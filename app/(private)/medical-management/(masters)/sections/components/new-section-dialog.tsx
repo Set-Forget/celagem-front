@@ -59,9 +59,7 @@ export default function NewSectionDialog() {
         location: "app/(private)/medical-management/(masters)/sections/components/new-section-dialog.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 

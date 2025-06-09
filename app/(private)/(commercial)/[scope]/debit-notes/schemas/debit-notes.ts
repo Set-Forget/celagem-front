@@ -1,4 +1,4 @@
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { z } from "zod";
 
 export const debitNoteStatus = z.enum(["draft", "posted", "cancel", "done", "overdue"]);
@@ -114,31 +114,35 @@ export const debitNoteDetailSchema = z.object({
 export const newDebitNoteFiscalSchema = z.object({
     payment_term: z.number({ required_error: "La condición de pago es requerida" }),
     payment_method: z.number({ required_error: "El método de pago es requerido" }),
-    currency: z.number(),
-});
+    currency: z.number({ required_error: "La moneda es requerida" }),
+})
 
 export const newDebitNoteNotesSchema = z.object({
     internal_notes: z.string().optional(),
     tyc_notes: z.string().optional(),
 });
 
-const newDebitNoteGeneralSchema = z
-    .object({
-        partner: z.number(),
-        date: z.custom<CalendarDate>(
-            (data) => {
-                return data instanceof CalendarDate;
-            },
-            { message: "La fecha de emisión es requerida" }
-        ),
-        custom_sequence_number: z.string().optional(),
-        accounting_date: z.custom<CalendarDate>((data) => data instanceof CalendarDate, {
-            message: "La fecha de contabilización es requerida",
+const newDebitNoteGeneralSchema = z.object({
+    partner: z.number({ required_error: "El campo es requerido" }),
+    date: z
+        .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+            message: "La fecha de emisión es requerida",
+        })
+        .refine(d => d.compare(today(getLocalTimeZone())) <= 0, {
+            message: "La fecha de emisión no puede ser posterior al día de hoy",
         }),
-        move_type: debitNoteMoveType.optional(),
-        associated_invoice: z.number().optional(),
-        items: z.array(newDebitNoteLineSchema).min(1, { message: "Debe agregar al menos un item" }),
-    })
+    custom_sequence_number: z.string().optional(),
+    accounting_date: z
+        .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+            message: "La fecha de contabilización es requerida",
+        })
+        .refine(d => d.compare(today(getLocalTimeZone())) <= 0, {
+            message: "La fecha de contabilización no puede ser posterior al día de hoy",
+        }),
+    move_type: debitNoteMoveType.optional(),
+    associated_invoice: z.number().optional(),
+    items: z.array(newDebitNoteLineSchema).min(1, { message: "Debe agregar al menos un item" }),
+})
     .merge(newDebitNoteFiscalSchema)
     .merge(newDebitNoteNotesSchema);
 

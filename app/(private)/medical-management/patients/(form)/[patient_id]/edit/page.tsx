@@ -108,9 +108,7 @@ export default function Page() {
         location: "app/(private)/medical-management/patients/(form)/[patient_id]/edit/page.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 

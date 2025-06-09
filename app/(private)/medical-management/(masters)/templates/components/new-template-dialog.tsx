@@ -64,9 +64,7 @@ export default function NewTemplateDialog() {
         location: "app/(private)/medical-management/(masters)/templates/components/new-template-dialog.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 

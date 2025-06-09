@@ -60,7 +60,9 @@ export default function Page() {
           loading={isJournalEntryLoading}
         />
         <DataTable
-          data={journalEntry?.items || []}
+          data={journalEntry?.items
+            ?.toSorted((a, b) => (a.debit > 0 ? 0 : 1) - (b.debit > 0 ? 0 : 1))
+            || []}
           footer={() => <TableFooter />}
           loading={isJournalEntryLoading}
           columns={columns}

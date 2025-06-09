@@ -13,13 +13,13 @@ export const paymentStatus = {
     pure_bg_color: "bg-yellow-500",
   },
   cancel: {
-    label: "Cancelada",
+    label: "Cancelado",
     bg_color: "bg-stone-100",
     text_color: "text-stone-800",
     pure_bg_color: "bg-stone-500",
   },
   paid: {
-    label: "Completada",
+    label: "Completado",
     bg_color: "bg-green-100",
     text_color: "text-green-800",
     pure_bg_color: "bg-green-500",

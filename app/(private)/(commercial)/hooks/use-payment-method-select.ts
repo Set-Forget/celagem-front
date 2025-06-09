@@ -43,9 +43,7 @@ export function usePaymentMethodSelect({
           location: "app/(private)/(commercial)/hooks/use-payment-method-select.ts",
           rawError: err,
           fnLocation: "fetcher"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
         return []
       }
     },

@@ -69,9 +69,7 @@ export default function Page() {
         location: "app/(private)/(commercial)/[scope]/credit-notes/(form)/[id]/edit/page.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 

@@ -79,6 +79,7 @@ export const columns: FormTableColumn<z.infer<typeof newBillSchema>>[] = [
     renderCell: (control, index) => <AccountSelectField
       control={control}
       name={`items.${index}.account_id`}
+      accountTypes={["expense", "expense_direct_cost", "expense_depreciation", "asset_current", "asset_non_current", "asset_fixed", "asset_prepayments"]}
     />
   },
   {

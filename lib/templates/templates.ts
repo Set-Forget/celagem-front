@@ -15,6 +15,10 @@ import { InvoiceDetail } from "@/app/(private)/(commercial)/sales/invoices/schem
 import InvoicePDF from "./invoice";
 import { DeliveryNoteDetail } from "@/app/(private)/(commercial)/sales/delivery-notes/schemas/delivery-notes";
 import DeliveryNotePDF from "./delivery-note";
+import { PaymentDetail } from "@/app/(private)/banking/payments/schemas/payments";
+import PaymentPDF from "./payment";
+import { ChargeDetail } from "@/app/(private)/banking/receipts/schemas/receipts";
+import ChargePDF from "./charge";
 
 export type TemplateMap = {
   purchaseRequest: PurchaseRequestDetail;
@@ -26,6 +30,8 @@ export type TemplateMap = {
   invoice: InvoiceDetail
   visitRecord: VisitRecordData
   deliveryNote: DeliveryNoteDetail
+  payment: PaymentDetail
+  charge: ChargeDetail
 };
 
 export const templates = {
@@ -37,5 +43,7 @@ export const templates = {
   debitNote: DebitNotePDF,
   invoice: InvoicePDF,
   deliveryNote: DeliveryNotePDF,
+  payment: PaymentPDF,
+  charge: ChargePDF,
   visitRecord: VisitRecordPDF,
 };

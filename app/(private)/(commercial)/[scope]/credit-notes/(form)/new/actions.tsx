@@ -41,9 +41,8 @@ export default function Actions() {
       partner: b.supplier,
     }),
     filter: (b) =>
-      b.amount_residual > 0 &&
       b.type === "invoice" &&
-      b.status === "posted"
+      (b.status === "posted" || b.status === "done")
   })
 
   const { fetcher: handleSearchInvoice } = useInvoiceSelect({
@@ -52,9 +51,8 @@ export default function Actions() {
       partner: i.customer,
     }),
     filter: (i) =>
-      i.amount_residual > 0 &&
       i.type === "invoice" &&
-      i.status === "posted"
+      (i.status === "posted" || i.status === "done")
   })
 
   const onSubmit = async (data: z.infer<typeof newCreditNoteSchema>) => {
@@ -79,9 +77,7 @@ export default function Actions() {
         location: "app/(private)/(commercial)/[scope]/credit-notes/(form)/new/actions.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 

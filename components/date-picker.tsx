@@ -9,11 +9,15 @@ import { DatePicker as AriaDatePicker, Button, DateValue, Dialog, Group, I18nPro
 export default function DatePicker({
   value,
   onChange,
-  isDateUnavailable
+  isDateUnavailable,
+  minValue,
+  maxValue,
 }: {
   value: CalendarDate | null,
   onChange: (value: CalendarDate | null) => void,
-  isDateUnavailable?: (date: DateValue) => boolean
+  isDateUnavailable?: (date: DateValue) => boolean,
+  minValue?: DateValue,
+  maxValue?: DateValue,
 }) {
   return (
     <I18nProvider locale="es-419">
@@ -21,6 +25,8 @@ export default function DatePicker({
         value={value}
         onChange={(date) => onChange(date)}
         className="*:not-first:mt-2"
+        minValue={minValue}
+        maxValue={maxValue}
       >
         <Label className="sr-only">Date picker</Label>
         <div className="flex group">

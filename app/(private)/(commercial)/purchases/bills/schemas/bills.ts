@@ -1,4 +1,4 @@
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { z } from "zod";
 
 export const billStatus = z.enum(["draft", "posted", "to_approve", "cancel", "done", "overdue", "rejected"]);
@@ -16,24 +16,24 @@ export const newBillLineSchema = z.object({
 
 export const newBillGeneralSchema = z.object({
     supplier: z.number({ required_error: "El proveedor es requerido" }),
-    custom_sequence_number: z
-        .string({ required_error: "El número de factura es requerido" })
-        .min(1, { message: "El número de factura es requerido" }),
-    date: z.custom<CalendarDate>(
-        (data) => {
-            return data instanceof CalendarDate;
-        },
-        { message: "La fecha de factura es requerida" }
-    ),
+    custom_sequence_number: z.string({ required_error: "El número de factura es requerido" }).min(1, { message: "El número de factura es requerido" }),
+    date: z
+        .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+            message: "La fecha de factura es requerida",
+        })
+        .refine(d => d.compare(today(getLocalTimeZone())) <= 0, {
+            message: "La fecha de factura no puede ser posterior al día de hoy",
+        }),
+    accounting_date: z
+        .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+            message: "La fecha de contabilización es requerida",
+        })
+        .refine(d => d.compare(today(getLocalTimeZone())) <= 0, {
+            message: "La fecha de contabilización no puede ser posterior al día de hoy",
+        }),
     company: z.number({ required_error: "La empresa es requerida" }).optional(),
-    accounting_date: z.custom<CalendarDate>(
-        (data) => {
-            return data instanceof CalendarDate;
-        },
-        { message: "La fecha de contabilización es requerida" }
-    ),
     items: z.array(newBillLineSchema).min(1, { message: "Debe agregar al menos un item" }),
-});
+})
 
 export const newBillFiscalSchema = z.object({
     currency: z.number({ required_error: "La moneda es requerida" }),

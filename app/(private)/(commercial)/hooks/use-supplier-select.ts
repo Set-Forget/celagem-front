@@ -54,9 +54,7 @@ export function useSupplierSelect<
           location: "app/(private)/(commercial)/hooks/use-supplier-select.ts",
           rawError: err,
           fnLocation: "fetcher"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
         return []
       }
     },

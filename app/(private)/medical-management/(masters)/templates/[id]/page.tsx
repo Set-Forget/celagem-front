@@ -109,9 +109,7 @@ export default function Page() {
           location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
           rawError: err,
           fnLocation: "onSubmit"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
       }
     }
 
@@ -125,9 +123,7 @@ export default function Page() {
           location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
           rawError: err,
           fnLocation: "onSubmit"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
       }
     }
 
@@ -148,9 +144,7 @@ export default function Page() {
           location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
           rawError: err,
           fnLocation: "onSubmit"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
       }
     }
 
@@ -164,9 +158,7 @@ export default function Page() {
           location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
           rawError: err,
           fnLocation: "onSubmit"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
       }
     }
 
@@ -192,9 +184,7 @@ export default function Page() {
         location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
         rawError: err,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   };
 

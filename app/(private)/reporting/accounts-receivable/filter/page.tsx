@@ -116,9 +116,7 @@ export default function Page() {
         location: "app/(private)/reporting/accounts-receivable/filter/page.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
 
     router.push(`/reporting/accounts-receivable?${params.toString()}`);

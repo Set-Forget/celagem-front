@@ -1,4 +1,4 @@
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { z } from "zod";
 
 export const purchaseReceiptStatusSchema = z.enum(["draft", "waiting", "confirmed", "assigned", "done", "cancel"])
@@ -52,9 +52,13 @@ export const purchaseReceiptListSchema = z.object({
 
 export const newPurchaseReceiptSchema = z.object({
   supplier: z.number({ required_error: "El proveedor es requerido" }),
-  reception_date: z.custom<CalendarDate>((data) => {
-    return data instanceof CalendarDate;
-  }, { message: "La fecha de recepción es requerida" }),
+  reception_date: z
+    .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+      message: "La fecha de recepción es requerida",
+    })
+    .refine(d => d.compare(today(getLocalTimeZone())) <= 0, {
+      message: "La fecha de recepción no puede ser posterior al día de hoy",
+    }),
   reception_location: z.number({ required_error: "La ubicación de recepción es requerida" }),
   move_type: z.enum(["direct"], { required_error: "El tipo de movimiento es requerido" }),
   notes: z.string().optional(),

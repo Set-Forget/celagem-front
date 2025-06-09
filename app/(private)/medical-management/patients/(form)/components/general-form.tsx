@@ -33,9 +33,7 @@ export default function GeneralForm() {
         location: "app/(private)/medical-management/patients/(form)/components/general-form.tsx",
         rawError: error,
         fnLocation: "handleSearchPlace"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return [];
     }
   }

@@ -1,4 +1,4 @@
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { z } from "zod";
 
 const creditNoteStatus = z.enum(["draft", "posted", "cancel", "done", "overdue"]);
@@ -73,40 +73,37 @@ export const creditNoteDetailSchema = z.object({
     items: z.array(creditNoteLineSchema),
 });
 
-export const newCreditNoteSchema = z
-    .object({
-        partner: z.number(),
-        date: z.custom<CalendarDate>(
-            (data) => {
-                return data instanceof CalendarDate;
-            },
-            { message: "La fecha de emisión es requerida" }
-        ),
-        custom_sequence_number: z.string().optional(),
-        accounting_date: z.custom<CalendarDate>(
-            (data) => {
-                return data instanceof CalendarDate;
-            },
-            { message: "La fecha de contabilización es requerida" }
-        ),
-        currency: z.number(),
-        move_type: creditNoteMoveType.optional(),
-        internal_notes: z.string().optional(),
-        associated_invoice: z.number().optional(),
-        items: z.array(newCreditNoteLineSchema).min(1, { message: "Debe agregar al menos un item" }),
-    })
-    .superRefine((data, ctx) => {
-        if (
-            data.move_type === "in_refund" &&
-            (!data.custom_sequence_number || data.custom_sequence_number.trim() === "")
-        ) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                path: ["custom_sequence_number"],
-                message: "El número es obligatorio para notas de crédito entrantes",
-            });
-        }
-    });
+export const newCreditNoteSchema = z.object({
+    partner: z.number({ required_error: "El campo es requerido" }),
+    date: z
+        .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+            message: "La fecha de emisión es requerida",
+        })
+        .refine(d => d.compare(today(getLocalTimeZone())) <= 0, {
+            message: "La fecha de emisión no puede ser posterior al día de hoy",
+        }),
+    custom_sequence_number: z.string().optional(),
+    accounting_date: z
+        .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+            message: "La fecha de contabilización es requerida",
+        })
+        .refine(d => d.compare(today(getLocalTimeZone())) <= 0, {
+            message: "La fecha de contabilización no puede ser posterior al día de hoy",
+        }),
+    currency: z.number({ required_error: "La moneda es requerida" }),
+    move_type: creditNoteMoveType.optional(),
+    internal_notes: z.string().optional(),
+    associated_invoice: z.number().optional(),
+    items: z.array(newCreditNoteLineSchema).min(1, { message: "Debe agregar al menos un item" }),
+}).superRefine((data, ctx) => {
+    if (data.move_type === 'in_refund' && (!data.custom_sequence_number || data.custom_sequence_number.trim() === '')) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['custom_sequence_number'],
+            message: 'El número es obligatorio para notas de crédito entrantes',
+        });
+    }
+})
 
 export const creditNoteDetailResponseSchema = z.object({
     status: z.string(),

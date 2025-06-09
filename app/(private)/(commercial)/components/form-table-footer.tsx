@@ -83,8 +83,6 @@ export function FormTableFooter<FV extends FieldValues = FieldValues, I = unknow
             error: e as Error,
             fnLocation: "useEffect",
           })
-            .unwrap()
-            .catch(console.error);
         }
       }
       setTaxMap(map);

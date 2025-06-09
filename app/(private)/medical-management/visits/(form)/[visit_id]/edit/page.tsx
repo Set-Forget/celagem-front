@@ -63,9 +63,7 @@ export default function Page() {
         location: "app/(private)/medical-management/visits/(form)/[visit_id]/edit/page.tsx",
         rawError: error,
         fnLocation: "handleSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   };
 

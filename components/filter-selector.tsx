@@ -183,11 +183,29 @@ const DateRangeFilter = ({
               {localDate?.from ? (
                 localDate?.to ? (
                   <>
-                    {format(parseISO(localDate.from.toISOString()), "LLL dd, y", { locale: es })} -{" "}
-                    {format(parseISO(localDate.to.toISOString()), "LLL dd, y", { locale: es })}
+                    {format(
+                      typeof localDate.from === "string"
+                        ? parseISO(localDate.from)
+                        : localDate.from,
+                      "LLL dd, y",
+                      { locale: es }
+                    )} -{" "}
+                    {format(
+                      typeof localDate.to === "string"
+                        ? parseISO(localDate.to)
+                        : localDate.to,
+                      "LLL dd, y",
+                      { locale: es }
+                    )}
                   </>
                 ) : (
-                  format(parseISO(localDate.from.toISOString()), "LLL dd, y", { locale: es })
+                  format(
+                    typeof localDate.from === "string"
+                      ? parseISO(localDate.from)
+                      : localDate.from,
+                    "LLL dd, y",
+                    { locale: es }
+                  )
                 )
               ) : (
                 <span>Seleccioná un rango</span>

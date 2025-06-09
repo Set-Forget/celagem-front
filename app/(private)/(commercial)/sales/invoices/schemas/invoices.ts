@@ -1,4 +1,4 @@
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { z } from "zod";
 
 export const invoiceStatus = z.enum(["draft", "posted", "cancel", "to_approve", "done", "overdue"]);
@@ -15,21 +15,23 @@ export const newInvoiceLineSchema = z.object({
 
 export const newInvoiceGeneralSchema = z.object({
     customer: z.number({ required_error: "El cliente es requerido" }),
-    accounting_date: z.custom<CalendarDate>(
-        (data) => {
-            return data instanceof CalendarDate;
-        },
-        { message: "La fecha de contabilización es requerida" }
-    ),
+    date: z
+        .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+            message: "La fecha de factura es requerida",
+        })
+        .refine(d => d.compare(today(getLocalTimeZone())) <= 0, {
+            message: "La fecha de factura no puede ser posterior al día de hoy",
+        }),
+    accounting_date: z
+        .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+            message: "La fecha de contabilización es requerida",
+        })
+        .refine(d => d.compare(today(getLocalTimeZone())) <= 0, {
+            message: "La fecha de contabilización no puede ser posterior al día de hoy",
+        }),
     number: z.string().optional(),
-    date: z.custom<CalendarDate>(
-        (data) => {
-            return data instanceof CalendarDate;
-        },
-        { message: "La fecha de factura es requerida" }
-    ),
     items: z.array(newInvoiceLineSchema).min(1, { message: "Debe agregar al menos un item" }),
-});
+})
 
 export const newInvoiceFiscalSchema = z.object({
     currency: z.number({ required_error: "La moneda es requerida" }),
