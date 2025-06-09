@@ -80,7 +80,7 @@ export default function Page() {
   const { data: charge, isLoading: isChargeLoading } = useGetChargeQuery(id);
 
   const status = chargeStatus[charge?.state as keyof typeof chargeStatus];
-  const chargeInvoices = charge?.reconciled_invoices?.map((invoice) => invoice.id) ?? [];
+  const chargeInvoices = charge?.reconciled_invoices?.map((invoice) => invoice.sequence_id) ?? [];
 
   useEffect(() => {
     if (chargeInvoices.length === 0) return
@@ -88,7 +88,7 @@ export default function Page() {
       const invoices = await Promise.all(chargeInvoices.map((id) => getInvoice(id).unwrap()))
       setInvoices(invoices.map((invoice) => ({
         ...invoice,
-        payed_amount: charge?.reconciled_invoices?.find((i) => i.id === invoice.id)?.amount_total || 0,
+        payed_amount: charge?.reconciled_invoices?.find((i) => i.sequence_id === invoice.sequence_id)?.amount_total || 0,
       })))
     })()
   }, [charge])

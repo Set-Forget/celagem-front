@@ -79,7 +79,7 @@ export default function Page() {
 
   const status = paymentStatus[payment?.state as keyof typeof paymentStatus];
 
-  const paymentBills = payment?.reconciled_bills?.map((bill) => bill.id) ?? [];
+  const paymentBills = payment?.reconciled_bills?.map((bill) => bill.sequence_id) ?? [];
 
   useEffect(() => {
     if (paymentBills.length === 0) return
