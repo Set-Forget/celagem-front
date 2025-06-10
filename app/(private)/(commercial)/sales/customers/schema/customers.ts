@@ -3,7 +3,6 @@ import { z } from "zod";
 export const newCustomerGeneralSchema = z.object({
   name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
   commercial_company_name: z.string().optional(),
-  legal_name: z.string().optional(),
 
   // ! Debe eliminarse.
   country_id: z.any().optional(),
@@ -16,7 +15,6 @@ export const newCustomerGeneralSchema = z.object({
 export const newCustomerContactSchema = z.object({
   email: z.string({ required_error: "El correo electrónico es requerido" }).email({ message: "El correo electrónico es inválido" }),
   contact_address_inline: z.string({ required_error: "La dirección de contacto es requerida" }),
-  website: z.string().optional(),
   phone: z.string().optional(),
 })
 

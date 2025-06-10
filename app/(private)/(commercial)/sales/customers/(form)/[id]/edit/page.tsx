@@ -63,13 +63,14 @@ export default function Page() {
       name: "",
       phone: "",
       email: "",
-      website: "",
       contact_address_inline: "",
       property_account_position: false,
       tax_id: "",
       is_resident: true,
     }
   })
+
+  console.log(form.formState.errors)
 
   const onSubmit = async (data: z.infer<typeof newCustomerSchema>) => {
     const { contact_address_inline, commercial_company_name, ...rest } = data
@@ -115,6 +116,7 @@ export default function Page() {
         account: customer.account?.id,
         payment_method: customer.payment_method?.id,
         country_id: customer.country_id,
+        tax_id: customer.tax_id || undefined,
       })
     }
   }, [customer])
