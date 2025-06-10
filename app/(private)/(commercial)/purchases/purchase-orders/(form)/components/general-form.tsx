@@ -1,5 +1,5 @@
 import { FormTableFooter } from "@/app/(private)/(commercial)/components/form-table-footer"
-import { useSupplierSelect } from "@/app/(private)/(commercial)/hooks/use-supplier-select"
+import { useSupplierSelect } from "@/hooks/use-supplier-select"
 import { AsyncSelect } from "@/components/async-select"
 import DatePicker from "@/components/date-picker"
 import FormTable from "@/components/form-table"

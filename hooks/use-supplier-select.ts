@@ -4,7 +4,7 @@ import {
 } from "@/lib/services/suppliers";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 import { useCallback, useMemo } from "react";
-import { SupplierList } from "../purchases/vendors/schema/suppliers";
+import { SupplierList } from "../app/(private)/(commercial)/purchases/vendors/schema/suppliers";
 
 interface UseSupplierSelectOptions<O = { id: number; name: string }> {
   supplierId?: number

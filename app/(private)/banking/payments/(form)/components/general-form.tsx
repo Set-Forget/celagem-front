@@ -1,6 +1,6 @@
-import { useCurrencySelect } from "@/app/(private)/(commercial)/hooks/use-currency-select"
-import { usePaymentMethodSelect } from "@/app/(private)/(commercial)/hooks/use-payment-method-select"
-import { useSupplierSelect } from "@/app/(private)/(commercial)/hooks/use-supplier-select"
+import { useCurrencySelect } from "@/hooks/use-currency-select"
+import { usePaymentMethodSelect } from "@/hooks/use-payment-method-select"
+import { useSupplierSelect } from "@/hooks/use-supplier-select"
 import { AsyncSelect } from "@/components/async-select"
 import { DataTable } from "@/components/data-table"
 import DatePicker from "@/components/date-picker"
@@ -21,7 +21,7 @@ import { newPaymentSchema } from "../../schemas/payments"
 import { columns } from "./columns"
 import TableFooter from "./table-footer"
 import { AsyncMultiSelect } from "@/components/async-multi-select"
-import { useTaxSelect } from "@/app/(private)/(commercial)/hooks/use-tax-select"
+import { useTaxSelect } from "@/hooks/use-tax-select"
 
 export default function GeneralForm() {
   const searchParams = useSearchParams()

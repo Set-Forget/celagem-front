@@ -37,6 +37,9 @@ export type DialogsState = {
   | "new-account-type"
   | "edit-account"
   | "confirm-billed-po"
+  | "new-user"
+  | "edit-user"
+  | "user-details"
   | false;
   payload?: any;
 };

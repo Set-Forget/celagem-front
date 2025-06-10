@@ -71,8 +71,6 @@ export default function Page() {
     }
   })
 
-  console.log(form.formState.errors)
-
   const onSubmit = async (data: z.infer<typeof newSupplierSchema>) => {
     const { contact_address_inline, ...rest } = data
     try {

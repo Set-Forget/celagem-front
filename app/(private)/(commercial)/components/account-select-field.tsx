@@ -2,7 +2,7 @@ import { Control, FieldPath, FieldValues } from "react-hook-form"
 import { cn } from "@/lib/utils"
 import { FormField, FormItem, FormControl } from "@/components/ui/form"
 import { AsyncSelect } from "@/components/async-select"
-import { useAccountingAccountSelect } from "../hooks/use-account-select"
+import { useAccountingAccountSelect } from "../../../../hooks/use-account-select"
 import { get } from "lodash"
 
 type AccountOption = { id: number; name: string; code: string }

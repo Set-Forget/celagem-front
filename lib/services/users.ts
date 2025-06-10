@@ -1,13 +1,6 @@
+import { NewUser, NewUserResponse, UserDetail, UserDetailResponse } from '@/app/(private)/management/users/schema/users';
 import { usersApi } from '../apis/users-api';
-import {
-  UserCreateBody,
-  UserListResponse,
-  UserOperationResponse,
-  UserResponse,
-  Users,
-  UserUpdateBody,
-  UserUpdateRoleBody,
-} from '@/app/(private)/management/users/schema/users';
+import { UserListResponse } from '../schemas/users';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const userApi = usersApi.injectEndpoints({
@@ -19,7 +12,7 @@ export const userApi = usersApi.injectEndpoints({
       }),
       providesTags: ['User'],
     }),
-    createUser: builder.mutation<UserResponse, Partial<UserCreateBody>>({
+    createUser: builder.mutation<NewUserResponse, Partial<NewUser>>({
       query: (body) => ({
         url: 'users',
         method: 'POST',
@@ -27,18 +20,15 @@ export const userApi = usersApi.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
-    getUser: builder.query<Users, string>({
+    getUser: builder.query<UserDetail, string>({
       query: (id) => ({
         url: `users/${id}`,
         method: 'GET',
       }),
-      transformResponse: (response: UserResponse) => response.data,
+      transformResponse: (response: UserDetailResponse) => response.data,
       providesTags: ['User'],
     }),
-    updateUser: builder.mutation<
-      UserResponse,
-      { id: string; body: UserUpdateBody }
-    >({
+    updateUser: builder.mutation<NewUserResponse, { id: string; body: Partial<NewUser> }>({
       query: ({ id, body }) => ({
         url: `users/${id}`,
         method: 'PUT',
@@ -46,17 +36,7 @@ export const userApi = usersApi.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
-    deleteUser: builder.mutation<UserOperationResponse, { id: string }>({
-      query: ({ id }) => ({
-        url: `users/${id}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['User'],
-    }),
-    updateUserRole: builder.mutation<
-      UserResponse,
-      { id: string; body: UserUpdateRoleBody }
-    >({
+    updateUserRole: builder.mutation<NewUserResponse, { id: string; body: { role_id: string } }>({
       query: ({ id, body }) => ({
         url: `users/${id}/update-role`,
         method: 'POST',
@@ -73,6 +53,5 @@ export const {
   useCreateUserMutation,
   useGetUserQuery,
   useUpdateUserMutation,
-  useDeleteUserMutation,
   useUpdateUserRoleMutation,
 } = userApi;

@@ -1,7 +1,7 @@
 import { useGetCustomerQuery } from "@/lib/services/customers";
 import { useLazyListCustomersQuery } from "@/lib/services/customers";
 import { useCallback, useMemo } from "react"
-import { CustomerList } from "../sales/customers/schema/customers";
+import { CustomerList } from "../app/(private)/(commercial)/sales/customers/schema/customers";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 
 interface UseCustomerSelectOptions<O = { id: number; name: string }> {

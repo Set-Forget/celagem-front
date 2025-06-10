@@ -1,33 +1,9 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Users } from '../schema/users';
+import { UserList } from '../schema/users';
 
-export const usersColumns: ColumnDef<Partial<Users>>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-    size: 10,
-  },
+export const usersColumns: ColumnDef<Partial<UserList>>[] = [
   {
     accessorKey: 'first_name',
     header: 'Nombre',
@@ -50,10 +26,10 @@ export const usersColumns: ColumnDef<Partial<Users>>[] = [
     cell: ({ row }) => <div>{row.original.email}</div>,
   },
   {
-    accessorKey: 'is_email_confirmed',
-    header: 'Email confirmado',
+    accessorKey: 'role_name',
+    header: 'Rol',
     cell: ({ row }) => (
-      <div>{row.original.is_email_confirmed ? 'Si' : 'No'}</div>
+      <div>{row.original.role_name}</div>
     ),
   },
 ];

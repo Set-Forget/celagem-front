@@ -90,7 +90,6 @@ export default function Page() {
 
   useEffect(() => {
     if (!invoice) return
-    console.log(invoice)
     form.reset({
       customer: invoice?.customer?.id,
       date: invoice?.date && parseDate(invoice.date),

@@ -18,7 +18,7 @@ import { z } from "zod";
 import { newChargeSchema } from "../../schemas/receipts";
 import InvoicePopover from "./components/invoice-popover";
 import { AdaptedInvoiceList } from "@/lib/adapters/invoices";
-import { useInvoiceSelect } from "@/app/(private)/(commercial)/hooks/use-invoice-select";
+import { useInvoiceSelect } from "@/hooks/use-invoice-select";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions() {

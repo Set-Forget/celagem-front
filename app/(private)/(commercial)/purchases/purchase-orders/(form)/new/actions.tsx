@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { newPurchaseOrderSchema } from "../../schemas/purchase-orders";
 import PurchaseRequestPopover from "./components/purchase-request-popover";
-import { usePurchaseRequestSelect } from "@/app/(private)/(commercial)/hooks/use-purchase-request-select";
+import { usePurchaseRequestSelect } from "@/hooks/use-purchase-request-select";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions() {

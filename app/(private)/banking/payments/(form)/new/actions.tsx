@@ -18,7 +18,7 @@ import { z } from "zod";
 import { newPaymentSchema } from "../../schemas/payments";
 import BillPopover from "./components/bill-popover";
 import { AdaptedBillList } from "@/lib/adapters/bills";
-import { useBillSelect } from "@/app/(private)/(commercial)/hooks/use-bill-select";
+import { useBillSelect } from "@/hooks/use-bill-select";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions() {

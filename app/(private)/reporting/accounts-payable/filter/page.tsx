@@ -1,6 +1,6 @@
 'use client'
 
-import { useSupplierSelect } from "@/app/(private)/(commercial)/hooks/use-supplier-select";
+import { useSupplierSelect } from "@/hooks/use-supplier-select";
 import { AsyncMultiSelect } from "@/components/async-multi-select";
 import CustomSonner from "@/components/custom-sonner";
 import DateRangePicker from "@/components/date-range-picker";

@@ -1,4 +1,4 @@
-import { usePaymentMethodSelect } from "@/app/(private)/(commercial)/hooks/use-payment-method-select"
+import { usePaymentMethodSelect } from "@/hooks/use-payment-method-select"
 import { AsyncSelect } from "@/components/async-select"
 import { DataTable } from "@/components/data-table"
 import DatePicker from "@/components/date-picker"
@@ -19,9 +19,9 @@ import { z } from "zod"
 import { newChargeSchema } from "../../schemas/receipts"
 import { columns } from "./columns"
 import TableFooter from "./table-footer"
-import { useTaxSelect } from "@/app/(private)/(commercial)/hooks/use-tax-select"
-import { useCustomerSelect } from "@/app/(private)/(commercial)/hooks/use-customer-select"
-import { useCurrencySelect } from "@/app/(private)/(commercial)/hooks/use-currency-select"
+import { useTaxSelect } from "@/hooks/use-tax-select"
+import { useCustomerSelect } from "@/hooks/use-customer-select"
+import { useCurrencySelect } from "@/hooks/use-currency-select"
 import { AsyncMultiSelect } from "@/components/async-multi-select"
 
 export default function GeneralForm() {

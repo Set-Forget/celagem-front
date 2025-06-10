@@ -1,67 +1,33 @@
+import { CompanyDetail, CompanyDetailResponse, CompanyListResponse, NewCompany, NewCompanyResponse } from '@/app/(private)/management/companies/schema/companies';
 import { usersApi } from '../apis/users-api';
-import {
-  Companies,
-  CompaniesListResponse,
-  CompanyCreateBody,
-  CompanyOperationResponse,
-  CompanyResponse,
-  CompanyUpdateBody,
-} from '@/app/(private)/management/companies/schema/companies';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const companiesApi = usersApi.injectEndpoints({
   endpoints: (builder) => ({
-    listCompanies: builder.query<CompaniesListResponse, { name?: string } | void>({
+    listCompanies: builder.query<CompanyListResponse, { name?: string } | void>({
       query: (data) => ({
-        url: 'companies',
+        url: '/companies',
         params: data || {},
       }),
     }),
-    createCompany: builder.mutation<CompanyResponse, CompanyCreateBody>({
+    createCompany: builder.mutation<NewCompanyResponse, NewCompany>({
       query: (body) => ({
-        url: 'companies',
+        url: '/companies',
         method: 'POST',
         body: body,
       }),
       invalidatesTags: ['Company'],
     }),
-    getCompany: builder.query<Companies, string>({
-      query: (id) => `companies/${id}`,
-      transformResponse: (response: CompanyResponse) => response.data,
+    getCompany: builder.query<CompanyDetail, string>({
+      query: (id) => `/companies/${id}`,
+      transformResponse: (response: CompanyDetailResponse) => response.data,
       providesTags: ['Company'],
     }),
-    updateCompany: builder.mutation<
-      CompanyResponse,
-      { id: string; body: CompanyUpdateBody }
-    >({
+    updateCompany: builder.mutation<NewCompanyResponse, { id: string; body: Partial<NewCompany> }>({
       query: ({ id, body }) => ({
-        url: `companies/${id}`,
+        url: `/companies/${id}`,
         method: 'PUT',
         body: body,
-      }),
-      invalidatesTags: ['Company'],
-    }),
-    deleteCompany: builder.mutation<CompanyOperationResponse, { id: string }>({
-      query: ({ id }) => ({
-        url: `companies/${id}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Company'],
-    }),
-    companyAddUser: builder.mutation<CompanyOperationResponse, { id: string }>({
-      query: ({ id }) => ({
-        url: `companies/${id}/users`,
-        method: 'POST',
-      }),
-      invalidatesTags: ['Company'],
-    }),
-    companyDeleteUser: builder.mutation<
-      CompanyOperationResponse,
-      { id: string; userId: string }
-    >({
-      query: ({ id, userId }) => ({
-        url: `companies/${id}/users/${userId}`,
-        method: 'DELETE',
       }),
       invalidatesTags: ['Company'],
     }),
@@ -74,7 +40,4 @@ export const {
   useCreateCompanyMutation,
   useGetCompanyQuery,
   useUpdateCompanyMutation,
-  useDeleteCompanyMutation,
-  useCompanyAddUserMutation,
-  useCompanyDeleteUserMutation,
 } = companiesApi;

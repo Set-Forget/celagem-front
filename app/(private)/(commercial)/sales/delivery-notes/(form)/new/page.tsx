@@ -49,8 +49,6 @@ export default function Page() {
     defaultValues
   });
 
-  console.log(newDeliveryNote.formState.errors)
-
   const onSubmit = async (data: z.infer<typeof newDeliveryNoteSchema>) => {
     try {
       const response = await createPurchaseDelivery({
