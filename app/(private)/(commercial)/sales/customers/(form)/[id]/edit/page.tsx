@@ -70,8 +70,6 @@ export default function Page() {
     }
   })
 
-  console.log(form.formState.errors)
-
   const onSubmit = async (data: z.infer<typeof newCustomerSchema>) => {
     const { contact_address_inline, commercial_company_name, ...rest } = data
 
@@ -123,7 +121,7 @@ export default function Page() {
 
   return (
     <Form {...form}>
-      <Header title="Editar cliente" >
+      <Header title={`Editar cliente ${customer?.name}`}>
         <Button
           type="submit"
           onClick={form.handleSubmit(onSubmit)}

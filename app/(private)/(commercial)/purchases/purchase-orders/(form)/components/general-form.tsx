@@ -104,6 +104,7 @@ export default function GeneralForm() {
                 <DatePicker
                   value={field.value || null}
                   onChange={(date) => field.onChange(date)}
+                  minValue={today(getLocalTimeZone())}
                 />
               </FormControl>
               {formState.errors.required_date ? (

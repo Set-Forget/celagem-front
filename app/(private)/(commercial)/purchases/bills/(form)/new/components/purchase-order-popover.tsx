@@ -14,6 +14,7 @@ import { z } from "zod";
 import { purchaseOrderStatus } from "@/app/(private)/(commercial)/purchases/purchase-orders/utils";
 import { newBillSchema } from "../../../schemas/bills";
 import { defaultValues } from "../../default-values";
+import { formatNumber } from "@/lib/utils";
 
 export default function PurchaseOrderPopover() {
   const searchParams = useSearchParams()
@@ -67,7 +68,7 @@ export default function PurchaseOrderPopover() {
               <span className="text-sm">Total</span>
             </div>
             <span className="font-medium">
-              {purchaseOrder?.price.toFixed(2)} {purchaseOrder?.currency.name}
+              {purchaseOrder?.price ? `${formatNumber(purchaseOrder.price)} ${purchaseOrder?.currency.name}` : "-"}
             </span>
           </div>
 

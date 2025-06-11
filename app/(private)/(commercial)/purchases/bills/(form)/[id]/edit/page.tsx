@@ -114,7 +114,7 @@ export default function Page() {
 
   return (
     <Form {...newBillForm}>
-      <Header title="Editar factura de compra">
+      <Header title={`Editar factura de compra ${bill?.sequence_id}`}>
         <div className="flex gap-2 ml-auto">
           <Button
             type="submit"

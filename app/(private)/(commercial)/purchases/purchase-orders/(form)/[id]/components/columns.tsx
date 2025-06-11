@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-table"
 import { PurchaseOrderItem } from "../../../schemas/purchase-orders"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { cn, formatNumber } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export const columns: ColumnDef<PurchaseOrderItem & { currency: string }>[] = [
@@ -43,7 +43,7 @@ export const columns: ColumnDef<PurchaseOrderItem & { currency: string }>[] = [
     accessorKey: "price_unit",
     header: "Precio unitario",
     cell: ({ row }) => {
-      return <span className="font-medium text-nowrap">{row.original.currency} {row.original.price_unit.toFixed(2)}</span>
+      return <span className="font-medium text-nowrap">{row.original.currency} {formatNumber(row.original.price_unit)}</span>
     },
   },
   {
@@ -112,6 +112,6 @@ export const columns: ColumnDef<PurchaseOrderItem & { currency: string }>[] = [
   {
     accessorKey: "price_subtotal",
     header: "Subtotal (sin imp.)",
-    cell: ({ row }) => <span className="font-medium">{row.original.currency} {row.original.price_subtotal.toFixed(2)}</span>,
+    cell: ({ row }) => <span className="font-medium">{row.original.currency} {formatNumber(row.original.price_subtotal)}</span>,
   },
 ]

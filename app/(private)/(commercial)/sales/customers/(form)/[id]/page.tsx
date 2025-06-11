@@ -78,7 +78,7 @@ export default function Page() {
           Editar
         </Button>
       </Header>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
+      {/*       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-sm">Saldo pendiente</label>
           <div className="flex gap-1.5 items-center">
@@ -106,7 +106,7 @@ export default function Page() {
             </span>
           </div>
         </div>
-      </div>
+      </div> */}
       <DataTabs
         tabs={tabs}
         activeTab={tab}

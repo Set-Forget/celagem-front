@@ -17,6 +17,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useMemo, useState } from "react";
 import { newChargeSchema } from "../../schemas/receipts";
+import { formatNumber } from "@/lib/utils";
 
 type ChargeForm = z.infer<typeof newChargeSchema>;
 
@@ -102,7 +103,7 @@ export default function TableFooter() {
           Subtotal (Sin retenciones)
         </TableCell>
         <TableCell className="h-6 text-xs font-medium py-0 text-left pr-5">
-          {currencyName} {subtotal.toFixed(2)}
+          {currencyName} {formatNumber(subtotal)}
         </TableCell>
       </TableRow>
 
@@ -130,7 +131,7 @@ export default function TableFooter() {
               </TooltipProvider>
             </TableCell>
             <TableCell className="h-6 text-xs py-0 text-left pr-5">
-              {currencyName} {retenido.toFixed(2)}
+              {currencyName} {formatNumber(retenido)}
             </TableCell>
           </TableRow>
         );
@@ -144,7 +145,7 @@ export default function TableFooter() {
           Total a Cobrar
         </TableCell>
         <TableCell className={cn("h-6 text-xs py-0 text-left pr-5 font-semibold")}>
-          {currencyName} {totalReceivable.toFixed(2)}
+          {currencyName} {formatNumber(totalReceivable)}
         </TableCell>
       </TableRow>
     </ShadFooter>

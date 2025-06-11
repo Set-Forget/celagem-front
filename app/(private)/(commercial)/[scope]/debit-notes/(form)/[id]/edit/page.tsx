@@ -105,7 +105,7 @@ export default function Page() {
 
   return (
     <Form {...form}>
-      <Header title="Editar nota de débito">
+      <Header title={`Editar nota de débito ${debitNote?.sequence_id}`}>
         <div className="flex gap-2 ml-auto">
           <Button
             type="submit"

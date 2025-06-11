@@ -3,6 +3,7 @@ import { z } from "zod";
 export const newCustomerGeneralSchema = z.object({
   name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
   commercial_company_name: z.string().optional(),
+  legal_name: z.string().optional(),
 
   // ! Debe eliminarse.
   country_id: z.any().optional(),

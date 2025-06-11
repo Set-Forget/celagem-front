@@ -26,15 +26,16 @@ export function useMaterialSelect({ productId, limit = 10 }: UseMaterialSelectOp
   const fetcher = useCallback(
     async (query?: string) => {
       try {
-        const resp = await searchMaterials({ name: query }, true).unwrap()
-        return (
-          resp.data?.map((m) => ({
-            id: m.id,
-            name: m.name,
-            standard_price: m.standard_price,
-            code: m.default_code,
-          })) || []
-        ).slice(0, limit)
+        const resp = await searchMaterials({}, true).unwrap()
+        const list = (resp.data ?? []).map(m => ({
+          id: m.id,
+          name: m.name || "",
+          standard_price: m.standard_price,
+          code: m.default_code || "",
+        }));
+        return list
+          .filter(({ name, code }) => name.toLowerCase().includes(query?.toLowerCase() ?? "") || code.toLowerCase().includes(query?.toLowerCase() ?? ""))
+          .slice(0, limit);
       } catch (err) {
         sendMessage({
           location: "app/(private)/(commercial)/hooks/use-material-select.ts",

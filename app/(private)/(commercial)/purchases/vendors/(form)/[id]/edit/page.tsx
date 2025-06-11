@@ -133,7 +133,7 @@ export default function Page() {
 
   return (
     <Form {...form}>
-      <Header title="Editar proveedor" >
+      <Header title={`Editar proveedor ${supplier?.name}`}>
         <Button
           type="submit"
           onClick={form.handleSubmit(onSubmit)}

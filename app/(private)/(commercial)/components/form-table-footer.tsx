@@ -4,6 +4,7 @@ import { useGetCurrencyQuery } from "@/lib/services/currencies";
 import { useLazyGetTaxQuery } from "@/lib/services/taxes";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 import { cn } from "@/lib/utils";
+import { formatNumber } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Control, FieldValues, useWatch } from "react-hook-form";
@@ -99,7 +100,7 @@ export function FormTableFooter<FV extends FieldValues = FieldValues, I = unknow
             Subtotal&nbsp;(sin impuestos)
           </TableCell>
           <TableCell className="h-6 text-xs py-0 pr-5">
-            {currency?.name} {subtotal.toFixed(2)}
+            {currency?.name} {formatNumber(subtotal)}
           </TableCell>
           <TableCell className="h-6 text-xs py-0 pr-5" />
         </TableRow>
@@ -113,7 +114,7 @@ export function FormTableFooter<FV extends FieldValues = FieldValues, I = unknow
               {taxInfo ? `${taxInfo.name} (${taxInfo.amount.toFixed(2)}%)` : "Impuesto"}
             </TableCell>
             <TableCell className="h-6 text-xs py-0 pr-5">
-              {currency?.name} {amount.toFixed(2)}
+              {currency?.name} {formatNumber(amount)}
             </TableCell>
             <TableCell className="h-6 text-xs py-0 pr-5" />
           </TableRow>
@@ -126,7 +127,7 @@ export function FormTableFooter<FV extends FieldValues = FieldValues, I = unknow
             Total
           </TableCell>
           <TableCell className="h-6 text-xs py-0 pr-5 font-semibold">
-            {currency?.name} {total.toFixed(2)}
+            {currency?.name} {formatNumber(total)}
           </TableCell>
           <TableCell className="h-6 text-xs py-0 pr-5" />
         </TableRow>

@@ -84,6 +84,7 @@ export const paymentDetailSchema = z.object({
     amount_total: z.number(),
   })),
   reconciled_bills: z.array(z.object({
+    id: z.number(),
     sequence_id: z.string(),
     name: z.string(),
     amount_total: z.number(),

@@ -7,7 +7,7 @@ import {
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { AccountsReceivableList } from "../schemas/accounts-receivable"
-import { cn } from "@/lib/utils"
+import { cn, formatNumber } from "@/lib/utils"
 import { Checkbox } from "@/components/ui/checkbox"
 import { routes } from "@/lib/routes"
 import { Button } from "@/components/ui/button"
@@ -147,7 +147,7 @@ export const columns: ColumnDef<AccountsReceivableList>[] = [
     header: "Monto facturado",
     cell: ({ row }) => <div className={cn("truncate", row?.original?.id === -1 ? "font-semibold" : "")}>
       {row?.original?.currency?.name}{" "}
-      {row?.original?.invoiced_amount}
+      {row?.original?.invoiced_amount === null ? "" : formatNumber(row?.original?.invoiced_amount)}
     </div>,
     footer: ({ table }) => {
       const total = table.getRowModel().rows.reduce(
@@ -165,7 +165,7 @@ export const columns: ColumnDef<AccountsReceivableList>[] = [
     header: "Monto pagado",
     cell: ({ row }) => <div className={cn("truncate", row?.original?.id === -1 ? "font-semibold" : "")}>
       {row?.original?.currency?.name}{" "}
-      {row?.original?.paid_amount}
+      {row?.original?.paid_amount === null ? "" : formatNumber(row?.original?.paid_amount)}
     </div>,
     footer: ({ table }) => {
       const total = table.getRowModel().rows.reduce(
@@ -174,7 +174,7 @@ export const columns: ColumnDef<AccountsReceivableList>[] = [
       );
       return <span className="font-semibold">
         COP{" "}
-        {total.toFixed(2)}
+        {formatNumber(total)}
       </span>
     }
   },
@@ -183,7 +183,7 @@ export const columns: ColumnDef<AccountsReceivableList>[] = [
     header: "Monto pendiente",
     cell: ({ row }) => <div className={cn("truncate", row?.original?.id === -1 ? "font-semibold" : "")}>
       {row?.original?.currency?.name}{" "}
-      {row?.original?.outstanding_amount}
+      {row?.original?.outstanding_amount === null ? "" : formatNumber(row?.original?.outstanding_amount)}
     </div>,
     footer: ({ table }) => {
       const total = table.getRowModel().rows.reduce(
@@ -192,7 +192,7 @@ export const columns: ColumnDef<AccountsReceivableList>[] = [
       );
       return <span className="font-semibold">
         COP{" "}
-        {total.toFixed(2)}
+        {formatNumber(total)}
       </span>
     }
   },
@@ -228,7 +228,7 @@ export const columns: ColumnDef<AccountsReceivableList>[] = [
       );
       return <span className="font-semibold">
         COP{" "}
-        {total.toFixed(2)}
+        {formatNumber(total)}
       </span>
     }
   },
@@ -264,7 +264,7 @@ export const columns: ColumnDef<AccountsReceivableList>[] = [
       );
       return <span className="font-semibold">
         COP{" "}
-        {total.toFixed(2)}
+        {formatNumber(total)}
       </span>
     }
   },
@@ -282,7 +282,7 @@ export const columns: ColumnDef<AccountsReceivableList>[] = [
       );
       return <span className="font-semibold">
         COP{" "}
-        {total.toFixed(2)}
+        {formatNumber(total)}
       </span>
     }
   },

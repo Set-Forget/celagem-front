@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { AdaptedBillList } from "@/lib/adapters/bills"
 import { AdaptedInvoiceList } from "@/lib/adapters/invoices"
 import { useCreateDebitNoteMutation } from "@/lib/services/debit-notes"
-import { cn } from "@/lib/utils"
+import { cn, formatNumber } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { Building2, CalendarX2, DollarSign, LinkIcon, Save } from "lucide-react"
@@ -134,10 +134,8 @@ export default function Actions() {
               <span className="flex items-center gap-1 truncate">
                 <DollarSign className="!h-3.5 !w-3.5" />
                 <p className="truncate">
-                  {r?.amount_residual?.toLocaleString("es-ES", {
-                    style: "currency",
-                    currency: r?.currency?.name,
-                  })}
+                  {r?.currency?.name}
+                  {formatNumber(r?.amount_residual)}
                 </p>
               </span>
               <span className="flex items-center gap-1 truncate">

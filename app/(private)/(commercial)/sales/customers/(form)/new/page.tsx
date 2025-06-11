@@ -56,10 +56,8 @@ export default function Page() {
       name: "",
       phone: "",
       email: "",
-      website: "",
       contact_address_inline: "",
       property_account_position: false,
-      legal_name: "",
       tax_id: "",
       is_resident: true,
     }

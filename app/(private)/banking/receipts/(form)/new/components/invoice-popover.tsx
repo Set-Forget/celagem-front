@@ -22,7 +22,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Separator } from "@/components/ui/separator"
 import { AdaptedInvoiceDetail } from "@/lib/adapters/invoices"
 import { useLazyGetInvoiceQuery } from "@/lib/services/invoices"
-import { cn } from "@/lib/utils"
+import { cn, formatNumber } from "@/lib/utils"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { newChargeSchema } from "../../../schemas/receipts"
@@ -199,7 +199,7 @@ export default function InvoicePopover() {
                   </p>
                 </div>
                 <span className="text-xs">
-                  {b.amount_residual.toFixed(2)} {b.currency.name}
+                  {formatNumber(b.amount_residual)} {b.currency.name}
                 </span>
               </div>
             ))}

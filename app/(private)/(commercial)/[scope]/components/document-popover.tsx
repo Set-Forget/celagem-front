@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+import { cn, formatNumber } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { Building2, Calendar, DollarSign, LinkIcon, Package, Unlink, User } from "lucide-react";
@@ -85,7 +85,7 @@ export default function DocumentPopover() {
               <span className="text-sm">Total</span>
             </div>
             <span className="font-medium">
-              {document?.amount_residual.toFixed(2)} {document?.currency.name}
+              {formatNumber(document?.amount_residual)} {document?.currency.name}
             </span>
           </div>
 
