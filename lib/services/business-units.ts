@@ -4,7 +4,7 @@ import { usersApi } from '@/lib/apis/users-api';
 
 export const businessUnitsApi = usersApi.injectEndpoints({
   endpoints: (builder) => ({
-    listBusinessUnits: builder.query<BusinessUnitListResponse, { name?: string, company_id?: string }>({
+    listBusinessUnits: builder.query<BusinessUnitListResponse, { name?: string, company_id?: string } | void>({
       query: (params) => ({
         url: '/businessunits',
         params: params || {}

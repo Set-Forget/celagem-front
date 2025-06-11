@@ -29,7 +29,7 @@ export const companyDetailResponseSchema = z.object({
 })
 
 export const newCompanySchema = z.object({
-  name: z.string(),
+  name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
   description: z.string().optional(),
 })
 

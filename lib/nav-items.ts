@@ -119,7 +119,7 @@ const administrationItems = [
     url: '/management/roles',
   },
   {
-    title: 'Sedes',
+    title: 'Compañias',
     url: '/management/companies',
   },
   {

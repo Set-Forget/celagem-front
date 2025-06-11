@@ -5,21 +5,27 @@ import Header from '@/components/header';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-import { businessUnitsColumns } from './components/columns';
-// import Toolbar from './components/toolbar';
+import { columns } from './components/columns';
 import { useListBusinessUnitsQuery } from '@/lib/services/business-units';
 import Toolbar from './components/toolbar';
-import NewBusinessUnit from './components/new-business-unit';
 import { setDialogsState } from '@/lib/store/dialogs-store';
+import NewBusinessUnitDialog from './components/new-business-unit-dialog';
+import EditBusinessUnitDialog from './components/edit-business-unit-dialog';
+import ViewBusinessUnitDialog from './components/view-business-unit-dialog';
+import { useSearchParams } from 'next/navigation';
 
 export default function BusinessUnitsPage() {
-  const pathname = usePathname();
-  const router = useRouter();
+  const searchParams = useSearchParams()
 
-  const { data: businessUnits, isLoading } = useListBusinessUnitsQuery();
+  const { data: businessUnits, isLoading: isBusinessUnitsLoading } = useListBusinessUnitsQuery();
+
+  const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
+
+  const searchName = search.field === "name" ? search?.query : undefined
+  const searchCompany = search.field === "company_name" ? search?.query : undefined
 
   return (
-    <>
+    <div>
       <Header title="Unidades de negocio">
         <Button
           className="ml-auto"
@@ -37,14 +43,32 @@ export default function BusinessUnitsPage() {
 
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
         <DataTable
-          data={businessUnits?.data || []}
-          loading={isLoading}
-          columns={businessUnitsColumns}
-          onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
+          data={businessUnits?.data
+            .filter((businessUnit) => {
+              if (searchName) {
+                return businessUnit.name.toLowerCase().includes(searchName.toLowerCase())
+              }
+              if (searchCompany) {
+                return businessUnit.company_name.toLowerCase().includes(searchCompany.toLowerCase())
+              }
+              return true
+            }) || []}
+          loading={isBusinessUnitsLoading}
+          columns={columns}
+          onRowClick={(row) => {
+            setDialogsState({
+              open: 'business-unit-details',
+              payload: { business_unit_id: row.id }
+            });
+          }}
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-      <NewBusinessUnit />
-    </>
+
+      {/* Dialogs */}
+      <NewBusinessUnitDialog />
+      <EditBusinessUnitDialog />
+      <ViewBusinessUnitDialog />
+    </div>
   );
 }

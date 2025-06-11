@@ -40,6 +40,10 @@ export type DialogsState = {
   | "new-user"
   | "edit-user"
   | "user-details"
+  | "role-details"
+  | "edit-role"
+  | "company-details"
+  | "business-unit-details"
   | false;
   payload?: any;
 };

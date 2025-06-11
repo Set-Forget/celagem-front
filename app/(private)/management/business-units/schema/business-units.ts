@@ -5,6 +5,7 @@ export const businessUnitListSchema = z.object({
   name: z.string(),
   description: z.string(),
   company_id: z.string(),
+  company_name: z.string(),
   created_at: z.string(),
   modified_at: z.string(),
 })

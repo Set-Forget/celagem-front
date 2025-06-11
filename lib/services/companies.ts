@@ -1,7 +1,6 @@
 import { CompanyDetail, CompanyDetailResponse, CompanyListResponse, NewCompany, NewCompanyResponse } from '@/app/(private)/management/companies/schema/companies';
 import { usersApi } from '../apis/users-api';
 
-// actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const companiesApi = usersApi.injectEndpoints({
   endpoints: (builder) => ({
     listCompanies: builder.query<CompanyListResponse, { name?: string } | void>({
@@ -9,6 +8,7 @@ export const companiesApi = usersApi.injectEndpoints({
         url: '/companies',
         params: data || {},
       }),
+      providesTags: ['Company'],
     }),
     createCompany: builder.mutation<NewCompanyResponse, NewCompany>({
       query: (body) => ({

@@ -16,6 +16,7 @@ import NewUserForm from "./new-user-form";
 export default function NewUserDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
+  const [sendMessage] = useSendMessageMutation();
   const [createUser, { isLoading: isCreatingUser }] = useCreateUserMutation();
 
   const form = useForm<z.infer<typeof newUserSchema>>({
@@ -30,8 +31,6 @@ export default function NewUserDialog() {
       business_units: [],
     },
   });
-
-  const [sendMessage] = useSendMessageMutation();
 
   const onOpenChange = () => {
     closeDialogs()

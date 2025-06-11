@@ -17,7 +17,10 @@ export const roleListResponseSchema = z.object({
 export const roleDetailSchema = z.object({
   id: z.string(),
   name: z.string(),
-  permissions: z.array(z.string()),
+  permissions: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+  })),
   company_id: z.string(),
   company_name: z.string(),
   created_at: z.string(),
@@ -32,8 +35,8 @@ export const roleDetailResponseSchema = z.object({
 })
 
 export const newRoleSchema = z.object({
-  name: z.string({ required_error: 'El nombre es requerido' }).min(1, { message: 'El nombre es requerido' }),
-  permissions: z.array(z.string()).min(1, { message: 'Debes seleccionar al menos un permiso' }),
+  name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
+  permissions: z.array(z.string(), { required_error: "Debes seleccionar al menos un permiso" }).min(1, { message: "Debes seleccionar al menos un permiso" }),
   company_id: z.string({ required_error: 'La compañía es requerida' }).min(1, { message: 'La compañía es requerida' }),
 })
 
@@ -66,5 +69,5 @@ export type RoleDetailResponse = z.infer<typeof roleDetailResponseSchema>;
 export type NewRole = z.infer<typeof newRoleSchema>;
 export type NewRoleResponse = z.infer<typeof newRoleResponseSchema>;
 
-export type ListPermissions = z.infer<typeof listPermissionsSchema>;
-export type ListPermissionsResponse = z.infer<typeof listPermissionsResponseSchema>;
+export type PermissionList = z.infer<typeof listPermissionsSchema>;
+export type PermissionListResponse = z.infer<typeof listPermissionsResponseSchema>;

@@ -1,4 +1,4 @@
-import { NewRole, NewRoleResponse, RoleDetail, RoleDetailResponse, RoleListResponse } from '@/app/(private)/management/roles/schema/roles';
+import { NewRole, NewRoleResponse, PermissionListResponse, RoleDetail, RoleDetailResponse, RoleListResponse } from '@/app/(private)/management/roles/schema/roles';
 import { usersApi } from '../apis/users-api';
 
 // actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
@@ -12,7 +12,7 @@ export const userApi = usersApi.injectEndpoints({
       }),
       providesTags: ['Role'],
     }),
-    createRole: builder.mutation<NewRoleResponse, NewRole>({
+    createRole: builder.mutation<NewRoleResponse, Omit<NewRole, 'permissions'>>({
       query: (body) => ({
         url: 'roles',
         method: 'POST',
@@ -33,6 +33,32 @@ export const userApi = usersApi.injectEndpoints({
       }),
       invalidatesTags: ['Role'],
     }),
+
+    listPermissions: builder.query<PermissionListResponse, { name?: string } | void>({
+      query: (params) => ({
+        url: `permissions`,
+        method: 'GET',
+        params: params ?? {},
+      }),
+      providesTags: ['Role'],
+    }),
+
+    addPermissionToRole: builder.mutation<NewRoleResponse, { role_id: string, permission_ids: string[] }>({
+      query: (body) => ({
+        url: `roles/${body.role_id}/permissions`,
+        method: 'POST',
+        body: body,
+      }),
+      invalidatesTags: ['Role'],
+    }),
+
+    removePermissionFromRole: builder.mutation<NewRoleResponse, { role_id: string, permission_id: string }>({
+      query: (body) => ({
+        url: `roles/${body.role_id}/permissions/${body.permission_id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Role'],
+    }),
   }),
 });
 
@@ -42,4 +68,8 @@ export const {
   useCreateRoleMutation,
   useGetRoleQuery,
   useUpdateRoleMutation,
+  useListPermissionsQuery,
+  useAddPermissionToRoleMutation,
+  useRemovePermissionFromRoleMutation,
+  useLazyListPermissionsQuery,
 } = userApi;
