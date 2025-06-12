@@ -14,7 +14,7 @@ import EditBusinessUnitDialog from './components/edit-business-unit-dialog';
 import ViewBusinessUnitDialog from './components/view-business-unit-dialog';
 import { useSearchParams } from 'next/navigation';
 
-export default function BusinessUnitsPage() {
+export default function Page() {
   const searchParams = useSearchParams()
 
   const { data: businessUnits, isLoading: isBusinessUnitsLoading } = useListBusinessUnitsQuery();

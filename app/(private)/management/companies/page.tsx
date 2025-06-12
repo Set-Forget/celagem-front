@@ -24,7 +24,7 @@ export default function Page() {
   const searchDescription = search.field === "description" ? search?.query : undefined
 
   return (
-    <>
+    <div>
       <Header title="Compañias">
         <Button
           className="ml-auto"
@@ -61,6 +61,6 @@ export default function Page() {
       <NewCompanyDialog />
       <ViewCompanyDialog />
       <EditCompanyDialog />
-    </>
+    </div>
   );
 }

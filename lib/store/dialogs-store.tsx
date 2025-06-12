@@ -44,6 +44,9 @@ export type DialogsState = {
   | "edit-role"
   | "company-details"
   | "business-unit-details"
+  | "class-details"
+  | "new-class"
+  | "edit-class"
   | false;
   payload?: any;
 };

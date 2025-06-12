@@ -13,7 +13,7 @@ import ViewRoleDialog from './components/view-role-dialog';
 import EditRoleDialog from './components/edit-role-dialog';
 import { useSearchParams } from 'next/navigation';
 
-export default function RolesPage() {
+export default function Page() {
   const searchParams = useSearchParams()
 
   const { data: roles, isLoading } = useListRolesQuery({ company_id: '' });
@@ -24,7 +24,7 @@ export default function RolesPage() {
   const searchCompany = search.field === "company_name" ? search?.query : undefined
 
   return (
-    <>
+    <div>
       <Header title="Roles">
         <Button
           className="ml-auto"
@@ -61,6 +61,6 @@ export default function RolesPage() {
       <NewRole />
       <ViewRoleDialog />
       <EditRoleDialog />
-    </>
+    </div>
   );
 }

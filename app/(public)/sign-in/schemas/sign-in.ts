@@ -1,4 +1,4 @@
-import { userListSchema } from "@/lib/schemas/users";
+import { userListSchema } from "@/app/(private)/management/users/schema/users";
 import { z } from "zod";
 
 export const signInSchema = z.object({

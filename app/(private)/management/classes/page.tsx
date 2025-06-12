@@ -4,28 +4,29 @@ import { DataTable } from '@/components/data-table';
 import Header from '@/components/header';
 import { Button } from '@/components/ui/button';
 import {
-  useLazyListClassesQuery
+  useListClassesQuery
 } from '@/lib/services/classes';
 import { setDialogsState } from '@/lib/store/dialogs-store';
 import { Plus } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { classesColumns } from './components/columns';
-import NewClass from './components/new-class';
+import { columns } from './components/columns';
+import NewClassDialog from './components/new-class-dialog';
 import Toolbar from './components/toolbar';
+import ViewClassDialog from './components/view-class-dialog';
+import EditClassDialog from './components/edit-class-dialog';
+import { useSearchParams } from 'next/navigation';
 
-export default function CompaniesPage() {
-  const pathname = usePathname();
-  const router = useRouter();
+export default function Page() {
+  const searchParams = useSearchParams()
 
-  const [handleGetClasses, { data, isLoading }] = useLazyListClassesQuery();
+  const { data: classes, isLoading: isLoadingClasses } = useListClassesQuery();
 
-  useEffect(() => {
-    handleGetClasses();
-  }, []);
+  const search = JSON.parse(searchParams.get('search') || '{}') as { field: string, query: string }
+
+  const searchName = search.field === "name" ? search?.query : undefined
+  const searchCompany = search.field === "company_name" ? search?.query : undefined
 
   return (
-    <>
+    <div>
       <Header title="Clases">
         <Button
           className="ml-auto"
@@ -42,14 +43,25 @@ export default function CompaniesPage() {
       </Header>
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-225px)]">
         <DataTable
-          data={data?.data || []}
-          columns={classesColumns}
-          loading={isLoading}
-          onRowClick={(row) => router.push(`${pathname}/${row.id}`)}
+          data={classes?.data
+            .filter((c) => {
+              if (searchName) {
+                return c.name.toLowerCase().includes(searchName.toLowerCase())
+              }
+              if (searchCompany) {
+                return c.company_name.toLowerCase().includes(searchCompany.toLowerCase())
+              }
+              return true
+            }) || []}
+          columns={columns}
+          loading={isLoadingClasses}
+          onRowClick={(row) => setDialogsState({ open: 'class-details', payload: { class_id: row.id } })}
           toolbar={({ table }) => <Toolbar table={table} />}
         />
       </div>
-      <NewClass />
-    </>
+      <NewClassDialog />
+      <EditClassDialog />
+      <ViewClassDialog />
+    </div>
   );
 }

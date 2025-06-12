@@ -23,10 +23,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { UserList } from "@/lib/schemas/users"
 import { cn, placeholder } from "@/lib/utils"
 import Cookies from "js-cookie"
 import { useRouter } from "next/navigation"
+import { UserList } from "@/app/(private)/management/users/schema/users"
 
 export function NavUser({
   user,

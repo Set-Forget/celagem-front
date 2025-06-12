@@ -129,11 +129,7 @@ const administrationItems = [
   {
     title: 'Clases',
     url: '/management/classes',
-  },
-  {
-    title: "Extras",
-    url: "/management/extras",
-  },
+  }
 ]
 
 const registerItems = [

@@ -1,8 +1,6 @@
-import { NewUser, NewUserResponse, UserDetail, UserDetailResponse } from '@/app/(private)/management/users/schema/users';
+import { NewUser, NewUserResponse, UserDetail, UserDetailResponse, UserListResponse } from '@/app/(private)/management/users/schema/users';
 import { usersApi } from '../apis/users-api';
-import { UserListResponse } from '../schemas/users';
 
-// actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const userApi = usersApi.injectEndpoints({
   endpoints: (builder) => ({
     listUsers: builder.query<UserListResponse, { company_id?: string, name?: string } | void>({
