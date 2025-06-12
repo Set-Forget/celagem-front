@@ -312,6 +312,23 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
     )
   }
 
+  if (state === "done") {
+    return (
+      <Dropdown
+        trigger={
+          <Button size="icon" variant="outline" className="h-8 w-8">
+            <Ellipsis />
+          </Button>
+        }
+      >
+        <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
+          <FileTextIcon />
+          Previsualizar
+        </DropdownMenuItem>
+      </Dropdown>
+    )
+  }
+
   if (state === "cancel") {
     return (
       <Button

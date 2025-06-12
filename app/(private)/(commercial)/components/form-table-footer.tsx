@@ -99,7 +99,7 @@ export function FormTableFooter<FV extends FieldValues = FieldValues, I = unknow
           <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end">
             Subtotal&nbsp;(sin impuestos)
           </TableCell>
-          <TableCell className="h-6 text-xs py-0 pr-5">
+          <TableCell className="h-6 text-xs py-0 pr-5 text-nowrap">
             {currency?.name} {formatNumber(subtotal)}
           </TableCell>
           <TableCell className="h-6 text-xs py-0 pr-5" />
@@ -113,7 +113,7 @@ export function FormTableFooter<FV extends FieldValues = FieldValues, I = unknow
             <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end">
               {taxInfo ? `${taxInfo.name} (${taxInfo.amount.toFixed(2)}%)` : "Impuesto"}
             </TableCell>
-            <TableCell className="h-6 text-xs py-0 pr-5">
+            <TableCell className="h-6 text-xs py-0 pr-5 text-nowrap">
               {currency?.name} {formatNumber(amount)}
             </TableCell>
             <TableCell className="h-6 text-xs py-0 pr-5" />
@@ -126,7 +126,7 @@ export function FormTableFooter<FV extends FieldValues = FieldValues, I = unknow
           <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end font-semibold">
             Total
           </TableCell>
-          <TableCell className="h-6 text-xs py-0 pr-5 font-semibold">
+          <TableCell className="h-6 text-xs py-0 pr-5 font-semibold text-nowrap">
             {currency?.name} {formatNumber(total)}
           </TableCell>
           <TableCell className="h-6 text-xs py-0 pr-5" />

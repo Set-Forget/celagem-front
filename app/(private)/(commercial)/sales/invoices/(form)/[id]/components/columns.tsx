@@ -117,7 +117,7 @@ export const columns: ColumnDef<InvoiceLine & { currency: string }>[] = [
   },
   {
     accessorKey: "price_subtotal",
-    header: "Subtotal (sin imp.)",
+    header: () => <span className="text-nowrap">Subtotal (sin imp.)</span>,
     cell: ({ row }) => <span className="font-medium">{row.original.currency} {formatNumber(row.original.price_subtotal)}</span>,
   },
 ]

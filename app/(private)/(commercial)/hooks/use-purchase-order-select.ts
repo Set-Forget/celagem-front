@@ -12,7 +12,7 @@ interface UsePurchaseOrderSelectOptions<O> {
 }
 
 export function usePurchaseOrderSelect<
-  O = { id: number; number: string },
+  O = { id: number; sequence_id: string },
 >({
   purchaseOrderId,
   limit = 10,
@@ -26,13 +26,13 @@ export function usePurchaseOrderSelect<
 
   const mapFn = useCallback(
     (b: AdaptedPurchaseOrderList): O =>
-      map ? map(b) : { id: b.id, number: b.number } as O,
+      map ? map(b) : { id: b.id, sequence_id: b.sequence_id } as O,
     [map],
   )
 
   const initialOptions = useMemo(() => {
     if (!selectedPurchaseOrder) return []
-    return { id: selectedPurchaseOrder.id, number: selectedPurchaseOrder.number }
+    return { id: selectedPurchaseOrder.id, sequence_id: selectedPurchaseOrder.sequence_id }
   }, [selectedPurchaseOrder])
 
   const fetcher = useCallback(
@@ -41,8 +41,7 @@ export function usePurchaseOrderSelect<
         const bills = await searchPurchaseOrders({}, true).unwrap()
         return bills
           .filter((b) => (filter ? filter(b) : true))
-          .filter((b) => b.number.toString().toLowerCase().includes(query?.toLowerCase() ?? ""))
-          .sort((a, b) => b.id - a.id)
+          .filter((b) => b?.number?.toString().toLowerCase().includes(query?.toLowerCase() ?? ""))
           .slice(0, limit)
           .map(mapFn)
       } catch (e) {

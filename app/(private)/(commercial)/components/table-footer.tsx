@@ -85,7 +85,6 @@ export function TableFooter<I>({
         <TableCell className="h-6 text-xs py-0 pr-5">
           {currency?.name} {formatNumber(subtotal)}
         </TableCell>
-        <TableCell className="h-6 text-xs py-0 pr-5" />
       </TableRow>
 
       {Array.from(taxSummary.values()).map(({ name, rate, total }) => (
@@ -99,7 +98,6 @@ export function TableFooter<I>({
           <TableCell className="h-6 text-xs py-0 pr-5">
             {currency?.name} {formatNumber(total)}
           </TableCell>
-          <TableCell className="h-6 text-xs py-0 pr-5" />
         </TableRow>
       ))}
 
@@ -127,7 +125,6 @@ export function TableFooter<I>({
         <TableCell className="h-6 text-xs py-0 pr-5 font-semibold">
           {currency?.name} {formatNumber(total)}
         </TableCell>
-        <TableCell className="h-6 text-xs py-0 pr-5" />
       </TableRow>
 
       {selectors.pendingAmount && (
@@ -141,7 +138,6 @@ export function TableFooter<I>({
           <TableCell className="h-6 text-xs py-0 pr-5 font-semibold">
             {currency?.name} {formatNumber(selectors.pendingAmount())}
           </TableCell>
-          <TableCell className="h-6 text-xs py-0 pr-5" />
         </TableRow>
       )}
     </ShadFooter>

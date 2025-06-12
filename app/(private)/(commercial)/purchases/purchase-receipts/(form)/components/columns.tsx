@@ -4,9 +4,11 @@ import { AsyncSelect } from "@/components/async-select";
 import { FormTableColumn } from "@/components/form-table";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { Control } from "react-hook-form";
+import { Control, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { newPurchaseReceiptSchema } from "../../schemas/purchase-receipts";
+import { useSearchParams } from "next/navigation";
+import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
 
 const MaterialsCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseReceiptSchema>>; index: number }) => {
   return <MaterialSelectField
@@ -52,6 +54,40 @@ const MeasurementCell = ({ control, index }: { control: Control<z.infer<typeof n
   />
 }
 
+const PendingQuantityCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseReceiptSchema>>; index: number }) => {
+  const searchParams = useSearchParams()
+
+  const purchaseOrderId = searchParams.get("purchase_order_id")
+
+  const { data: purchaseOrder } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
+
+  const productId = useWatch({ control, name: `items.${index}.product_id` })
+
+  const purchaseOrderLine = purchaseOrder?.items?.find(item => item.product_id === productId)
+  const pendingQuantity = purchaseOrderLine?.product_qty ? purchaseOrderLine.product_qty - purchaseOrderLine.qty_received : 0
+
+  return <div>{pendingQuantity}</div>
+}
+
+const ReceivedQuantityCell = ({ control, index }: { control: Control<z.infer<typeof newPurchaseReceiptSchema>>; index: number }) => {
+  const searchParams = useSearchParams()
+
+  const purchaseOrderId = searchParams.get("purchase_order_id")
+
+  const { data: purchaseOrder } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
+
+  const productId = useWatch({ control, name: `items.${index}.product_id` })
+
+  const purchaseOrderLine = purchaseOrder?.items?.find(item => item.product_id === productId)
+  const pendingQuantity = purchaseOrderLine?.product_qty ? purchaseOrderLine.product_qty - purchaseOrderLine.qty_received : 0
+
+  return <QuantityField
+    control={control}
+    name={`items.${index}.quantity`}
+    max={pendingQuantity}
+  />
+}
+
 export const columns: FormTableColumn<z.infer<typeof newPurchaseReceiptSchema>>[] = [
   {
     header: "Producto / Servicio",
@@ -74,13 +110,18 @@ export const columns: FormTableColumn<z.infer<typeof newPurchaseReceiptSchema>>[
     ) => <MeasurementCell control={control} index={index} />,
   },
   {
-    header: "Cantidad",
+    header: "Cantidad recibida",
     width: 100,
     align: "right",
     headerClassName: "px-0 pr-9",
-    renderCell: (control, index) => <QuantityField
-      control={control}
-      name={`items.${index}.quantity`}
-    />
+    renderCell: (control, index) => <ReceivedQuantityCell control={control} index={index} />,
+  },
+  {
+    header: "Cantidad pendiente",
+    width: 100,
+    align: "right",
+    headerClassName: "px-0 pr-9",
+    cellClassName: "px-3 border-r border-l-0",
+    renderCell: (control, index) => <PendingQuantityCell control={control} index={index} />,
   },
 ];
