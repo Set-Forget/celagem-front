@@ -9,6 +9,7 @@ import { useFormContext } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { NewPurchaseRequest, NewPurchaseRequestLine } from "../../../schemas/purchase-requests";
 import { columns } from "./columns";
+import { getLocalTimeZone, today } from "@internationalized/date";
 
 export default function GeneralForm() {
   const { control, formState } = useFormContext<NewPurchaseRequest>()
@@ -30,9 +31,7 @@ export default function GeneralForm() {
         location: "app/(private)/(commercial)/purchases/purchase-requests/(form)/new/components/general-form.tsx",
         rawError: error,
         fnLocation: "handleSearchCompany"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
       return []
     }
   }
@@ -49,6 +48,7 @@ export default function GeneralForm() {
               <DatePicker
                 value={field.value || null}
                 onChange={(date) => field.onChange(date)}
+                isDateUnavailable={(date) => date.compare(today(getLocalTimeZone())) < 0}
               />
             </FormControl>
             {formState.errors.request_date ? (

@@ -65,7 +65,6 @@ export default function BusinessUnitsPage() {
         />
       </div>
 
-      {/* Dialogs */}
       <NewBusinessUnitDialog />
       <EditBusinessUnitDialog />
       <ViewBusinessUnitDialog />
