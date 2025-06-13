@@ -47,6 +47,21 @@ export type DialogsState = {
   | "class-details"
   | "new-class"
   | "edit-class"
+  | "currency-details"
+  | "new-currency"
+  | "edit-currency"
+  | "tax-details"
+  | "edit-tax"
+  | "new-tax"
+  | "view-payment-term"
+  | "edit-payment-term"
+  | "new-payment-term"
+  | "view-payment-method"
+  | "edit-payment-method"
+  | "new-payment-method"
+  | "new-economic-activity"
+  | "edit-economic-activity"
+  | "view-economic-activity"
   | false;
   payload?: any;
 };

@@ -1,5 +1,5 @@
+import { NewPaymentMethod, NewPaymentMethodResponse, PaymentMethodDetail, PaymentMethodDetailResponse, PaymentMethodListResponse } from '@/app/(private)/accounting/payment-methods/schema/payment-methods';
 import { erpApi } from '@/lib/apis/erp-api';
-import { PaymentMethodDetail, PaymentMethodDetailResponse, PaymentMethodListResponse } from '../schemas/payment-methods';
 
 export const paymentMethodsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -15,6 +15,22 @@ export const paymentMethodsApi = erpApi.injectEndpoints({
       transformResponse: (response: PaymentMethodDetailResponse) => response.data,
       providesTags: ['PaymentMethod'],
     }),
+    createPaymentMethod: builder.mutation<NewPaymentMethodResponse, NewPaymentMethod>({
+      query: (data) => ({
+        url: '/custom_payment_methods',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['PaymentMethod'],
+    }),
+    updatePaymentMethod: builder.mutation<PaymentMethodDetailResponse, { id: string | number, body: Partial<NewPaymentMethod> }>({
+      query: ({ id, body }) => ({
+        url: `/custom_payment_methods/${id}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['PaymentMethod'],
+    }),
   }),
 });
 
@@ -23,6 +39,8 @@ export const {
   useLazyListPaymentMethodsQuery,
   useGetPaymentMethodQuery,
   useLazyGetPaymentMethodQuery,
+  useCreatePaymentMethodMutation,
+  useUpdatePaymentMethodMutation,
 } = paymentMethodsApi;
 
 

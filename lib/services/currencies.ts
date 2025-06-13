@@ -1,15 +1,6 @@
 import { erpApi } from '../apis/erp-api';
-import {
-  CurrencyCreateBody,
-  CurrenciesListResponse,
-  CurrencyDeleteResponse,
-  CurrencyResponse,
-  CurrencyUpdateBody,
-  Currencies,
-} from '@/app/(private)/management/extras/currencies/schema/currencies';
-import { CurrencyListResponse } from '../schemas/currencies';
+import { CurrencyDetail, CurrencyDetailResponse, CurrencyListResponse, NewCurrency, NewCurrencyResponse } from '@/app/(private)/accounting/currencies/schema/currencies';
 
-// actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const currenciesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
     listCurrencies: builder.query<CurrencyListResponse, { name?: string } | void>({
@@ -19,7 +10,7 @@ export const currenciesApi = erpApi.injectEndpoints({
       }),
       providesTags: ['Currency'],
     }),
-    createCurrency: builder.mutation<CurrencyResponse, CurrencyCreateBody>({
+    createCurrency: builder.mutation<NewCurrencyResponse, NewCurrency>({
       query: (body) => ({
         url: 'currencies',
         method: 'POST',
@@ -27,26 +18,16 @@ export const currenciesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Currency'],
     }),
-    getCurrency: builder.query<Currencies, string | number>({
+    getCurrency: builder.query<CurrencyDetail, string | number>({
       query: (id) => `currencies/${id}`,
-      transformResponse: (response: CurrencyResponse) => response.data,
+      transformResponse: (response: CurrencyDetailResponse) => response.data,
       providesTags: ['Currency'],
     }),
-    updateCurrency: builder.mutation<
-      CurrencyResponse,
-      { id: string; body: CurrencyUpdateBody }
-    >({
+    updateCurrency: builder.mutation<NewCurrencyResponse, { id: string; body: Partial<NewCurrency> }>({
       query: ({ id, body }) => ({
         url: `currencies/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
-      }),
-      invalidatesTags: ['Currency'],
-    }),
-    deleteCurrency: builder.mutation<CurrencyDeleteResponse, { id: string }>({
-      query: ({ id }) => ({
-        url: `currencies/${id}`,
-        method: 'DELETE',
       }),
       invalidatesTags: ['Currency'],
     }),
@@ -60,5 +41,4 @@ export const {
   useGetCurrencyQuery,
   useLazyGetCurrencyQuery,
   useUpdateCurrencyMutation,
-  useDeleteCurrencyMutation,
 } = currenciesApi;

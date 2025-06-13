@@ -86,6 +86,7 @@ export default function Page() {
       const response = await createPatient({
         ...data,
         birthdate: data.birthdate.toString(),
+        created_by: undefined,
       }).unwrap()
 
       if (response.status === "SUCCESS") {
@@ -109,20 +110,22 @@ export default function Page() {
   }, [profile])
 
   return (
-    <Form {...newPatientForm}>
-      <Header title="Nuevo paciente">
-        <Button
-          type="submit"
-          onClick={newPatientForm.handleSubmit(onSubmit)}
-          size="sm"
-          className="ml-auto"
-          loading={isCreatingPatient}
-        >
-          Crear paciente
-        </Button>
-      </Header>
-      <GeneralForm />
-      <FormTabs tabs={tabs} />
-    </Form>
+    <div>
+      <Form {...newPatientForm}>
+        <Header title="Nuevo paciente">
+          <Button
+            type="submit"
+            onClick={newPatientForm.handleSubmit(onSubmit)}
+            size="sm"
+            className="ml-auto"
+            loading={isCreatingPatient}
+          >
+            Crear paciente
+          </Button>
+        </Header>
+        <GeneralForm />
+        <FormTabs tabs={tabs} />
+      </Form>
+    </div>
   )
 }

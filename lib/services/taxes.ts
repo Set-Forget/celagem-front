@@ -1,14 +1,6 @@
+import { NewTax, NewTaxResponse, TaxDetail, TaxDetailResponse, TaxesListResponse } from '@/app/(private)/accounting/taxes/schema/taxes';
 import { erpApi } from '../apis/erp-api';
-import {
-  TaxCreateBody,
-  TaxDeleteResponse,
-  TaxResponse,
-  TaxUpdateBody,
-  Taxes,
-} from '@/app/(private)/management/extras/taxes/schema/taxes';
-import { TaxesListResponse } from '../schemas/taxes';
 
-// actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const taxesApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
     listTaxes: builder.query<TaxesListResponse, { name?: string, type_tax_use: 'sale' | 'purchase' | 'both' } | void>({
@@ -16,8 +8,9 @@ export const taxesApi = erpApi.injectEndpoints({
         url: 'taxes',
         params: data || {},
       }),
+      providesTags: ['Tax'],
     }),
-    createTax: builder.mutation<TaxResponse, TaxCreateBody>({
+    createTax: builder.mutation<NewTaxResponse, NewTax>({
       query: (body) => ({
         url: 'taxes',
         method: 'POST',
@@ -25,26 +18,16 @@ export const taxesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Tax'],
     }),
-    getTax: builder.query<Taxes, string | number>({
+    getTax: builder.query<TaxDetail, string | number>({
       query: (id) => `taxes/${id}`,
-      transformResponse: (response: TaxResponse) => response.data,
+      transformResponse: (response: TaxDetailResponse) => response.data,
       providesTags: ['Tax'],
     }),
-    updateTax: builder.mutation<
-      TaxResponse,
-      { id: string; body: TaxUpdateBody }
-    >({
+    updateTax: builder.mutation<TaxDetailResponse, { id: string; body: Partial<NewTax> }>({
       query: ({ id, body }) => ({
         url: `taxes/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
-      }),
-      invalidatesTags: ['Tax'],
-    }),
-    deleteTax: builder.mutation<TaxDeleteResponse, { id: string }>({
-      query: ({ id }) => ({
-        url: `taxes/${id}`,
-        method: 'DELETE',
       }),
       invalidatesTags: ['Tax'],
     }),
@@ -58,5 +41,4 @@ export const {
   useGetTaxQuery,
   useLazyGetTaxQuery,
   useUpdateTaxMutation,
-  useDeleteTaxMutation,
 } = taxesApi;

@@ -103,8 +103,8 @@ export default function Page() {
           return true
         })
         .filter(item => {
-          if (includePaid) return item.outstanding_amount === 0
-          return item.outstanding_amount && item.outstanding_amount > 0
+          if (includePaid) return true;
+          return item.outstanding_amount && item.outstanding_amount > 0;
         })
 
       if (filteredAccountsPayable.length === 0) {
