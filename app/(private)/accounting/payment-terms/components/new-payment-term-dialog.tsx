@@ -2,7 +2,7 @@ import CustomSonner from "@/components/custom-sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { useCreateTaxMutation } from "@/lib/services/taxes";
+import { useCreatePaymentTermMutation } from "@/lib/services/payment-terms";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,17 +10,17 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { newTaxSchema } from "../schema/taxes";
-import NewTaxForm from "./new-payment-term-form";
+import { newPaymentTermSchema } from "../schema/payment-terms";
+import NewPaymentTermForm from "./new-payment-term-form";
 
-export default function NewTaxDialog() {
+export default function NewPaymentTermDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
   const [sendMessage] = useSendMessageMutation();
-  const [createTax, { isLoading: isCreatingTax }] = useCreateTaxMutation();
+  const [createPaymentTerm, { isLoading: isCreatingPaymentTerm }] = useCreatePaymentTermMutation();
 
-  const form = useForm<z.infer<typeof newTaxSchema>>({
-    resolver: zodResolver(newTaxSchema),
+  const form = useForm<z.infer<typeof newPaymentTermSchema>>({
+    resolver: zodResolver(newPaymentTermSchema),
     defaultValues: {
       name: '',
     },
@@ -31,26 +31,26 @@ export default function NewTaxDialog() {
     form.reset()
   }
 
-  console.log(form.formState.errors)
-
-  const onSubmit = async (data: z.infer<typeof newTaxSchema>) => {
+  const onSubmit = async (data: z.infer<typeof newPaymentTermSchema>) => {
     try {
-      const response = await createTax({
+      const response = await createPaymentTerm({
         ...data,
-        company: 1,
-        sequence: 1,
-        tax_group: 1,
-        amount_type: 'percent'
+        sequence: 10,
+        items: data.items.map((item) => ({
+          ...item,
+          value: 'percent',
+          value_amount: 100,
+        })),
       }).unwrap();
 
       if (response.status === 'success') {
         onOpenChange()
-        toast.custom((t) => <CustomSonner t={t} description="Impuesto creado exitosamente" variant="success" />);
+        toast.custom((t) => <CustomSonner t={t} description="Término de pago creado exitosamente" variant="success" />);
       }
     } catch (error) {
-      toast.custom((t) => <CustomSonner t={t} description="Error al crear impuesto" variant="error" />);
+      toast.custom((t) => <CustomSonner t={t} description="Error al crear término de pago" variant="error" />);
       sendMessage({
-        location: "app/(private)/accounting/taxes/(form)/components/new-tax-dialog.tsx",
+        location: "app/(private)/accounting/payment-terms/(form)/components/new-payment-term-dialog.tsx",
         rawError: error,
         fnLocation: "onSubmit"
       })
@@ -66,23 +66,23 @@ export default function NewTaxDialog() {
 
   return (
     <Dialog
-      open={dialogState.open === "new-tax"}
+      open={dialogState.open === "new-payment-term"}
       onOpenChange={onOpenChange}
     >
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Nuevo impuesto</DialogTitle>
+          <DialogTitle>Nuevo término de pago</DialogTitle>
           <DialogDescription>
-            Crea un nuevo impuesto para tu compañía.
+            Crea un nuevo término de pago para tu compañía.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <NewTaxForm />
+          <NewPaymentTermForm />
           <DialogFooter>
             <Button
               onClick={() => form.handleSubmit(onSubmit)()}
               size="sm"
-              loading={isCreatingTax}
+              loading={isCreatingPaymentTerm}
               type="button">
               Crear
             </Button>

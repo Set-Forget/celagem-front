@@ -2,7 +2,6 @@ import CustomSonner from "@/components/custom-sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { useGetTaxQuery, useUpdateTaxMutation } from "@/lib/services/taxes";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,20 +10,25 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import NewPaymentMethodForm from "./new-payment-method-form";
-import { useGetPaymentMethodQuery, useUpdatePaymentMethodMutation } from "@/lib/services/payment-methods";
+import { useGetPaymentMethodLineQuery, useGetPaymentMethodQuery, useUpdatePaymentMethodLineMutation, useUpdatePaymentMethodMutation } from "@/lib/services/payment-methods";
 import { newPaymentMethodSchema } from "../schema/payment-methods";
 
 export default function EditPaymentMethodDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
-  const paymentMethodId = dialogState?.payload?.payment_method_id as string
+  const paymentMethodLineId = dialogState?.payload?.payment_method_id as string
 
-  const { data: paymentMethod } = useGetPaymentMethodQuery(paymentMethodId, {
-    skip: !paymentMethodId
+  const { data: paymentMethodLine } = useGetPaymentMethodLineQuery(paymentMethodLineId, {
+    skip: !paymentMethodLineId
+  })
+
+  const { data: paymentMethod } = useGetPaymentMethodQuery(paymentMethodLine?.payment_method.id!, {
+    skip: !paymentMethodLine?.payment_method.id
   })
 
   const [sendMessage] = useSendMessageMutation();
   const [updatePaymentMethod, { isLoading: isUpdatingPaymentMethod }] = useUpdatePaymentMethodMutation();
+  const [updatePaymentMethodLine, { isLoading: isUpdatingPaymentMethodLine }] = useUpdatePaymentMethodLineMutation();
 
   const form = useForm<z.infer<typeof newPaymentMethodSchema>>({
     resolver: zodResolver(newPaymentMethodSchema),
@@ -37,9 +41,18 @@ export default function EditPaymentMethodDialog() {
 
   const onSubmit = async (data: z.infer<typeof newPaymentMethodSchema>) => {
     try {
+      const { company, payment_account, ...rest } = data
+
       const response = await updatePaymentMethod({
-        id: paymentMethodId,
-        body: data,
+        id: paymentMethod?.id!,
+        body: rest,
+      }).unwrap();
+
+      await updatePaymentMethodLine({
+        id: paymentMethodLineId,
+        body: {
+          payment_account: payment_account
+        },
       }).unwrap();
 
       if (response.status === 'success') {
@@ -63,14 +76,17 @@ export default function EditPaymentMethodDialog() {
     }
   }, [])
 
+  console.log(paymentMethodLine)
+
   useEffect(() => {
-    if (paymentMethod) {
+    if (paymentMethodLine && paymentMethod) {
       form.reset({
-        name: paymentMethod.name,
+        name: paymentMethodLine.payment_method.name,
         payment_type: paymentMethod.payment_type,
+        payment_account: paymentMethodLine.payment_account.id,
       })
     }
-  }, [paymentMethod])
+  }, [paymentMethodLine, paymentMethod])
 
   return (
     <Dialog
@@ -90,7 +106,7 @@ export default function EditPaymentMethodDialog() {
             <Button
               onClick={() => form.handleSubmit(onSubmit)()}
               size="sm"
-              loading={isUpdatingPaymentMethod}
+              loading={isUpdatingPaymentMethod || isUpdatingPaymentMethodLine}
               type="button">
               Guardar
             </Button>

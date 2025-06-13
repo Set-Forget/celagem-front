@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { UserList } from '../schema/users';
 
-export const usersColumns: ColumnDef<Partial<UserList>>[] = [
+export const columns: ColumnDef<UserList>[] = [
   {
     accessorKey: 'first_name',
     header: 'Nombre',

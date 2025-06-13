@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useListUsersQuery } from '@/lib/services/users';
 import { setDialogsState } from '@/lib/store/dialogs-store';
 import { Plus } from 'lucide-react';
-import { usersColumns } from './components/columns';
+import { columns } from './components/columns';
 import EditUserDialog from './components/edit-user-dialog';
 import NewUserDialog from './components/new-user-dialog';
 import Toolbar from './components/toolbar';
@@ -50,7 +50,7 @@ export default function Page() {
               return true
             })
             || []}
-          columns={usersColumns}
+          columns={columns}
           loading={isUsersLoading}
           onRowClick={(row) => setDialogsState({ open: 'user-details', payload: { user_id: row.id } })}
           toolbar={({ table }) => <Toolbar table={table} />}

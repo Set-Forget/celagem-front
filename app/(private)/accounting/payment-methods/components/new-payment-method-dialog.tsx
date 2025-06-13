@@ -2,7 +2,7 @@ import CustomSonner from "@/components/custom-sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { useCreatePaymentMethodMutation } from "@/lib/services/payment-methods";
+import { useCreatePaymentMethodLineMutation, useCreatePaymentMethodMutation } from "@/lib/services/payment-methods";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,11 +19,13 @@ export default function NewPaymentMethodDialog() {
 
   const [sendMessage] = useSendMessageMutation();
   const [createPaymentMethod, { isLoading: isCreatingPaymentMethod }] = useCreatePaymentMethodMutation();
+  const [createPaymentMethodLine, { isLoading: isCreatingPaymentMethodLine }] = useCreatePaymentMethodLineMutation();
 
   const form = useForm<z.infer<typeof newPaymentMethodSchema>>({
     resolver: zodResolver(newPaymentMethodSchema),
     defaultValues: {
       name: '',
+      company: 1,
     },
   });
 
@@ -33,10 +35,20 @@ export default function NewPaymentMethodDialog() {
   }
 
   const onSubmit = async (data: z.infer<typeof newPaymentMethodSchema>) => {
+    const { company, payment_account, ...rest } = data
+
     try {
       const response = await createPaymentMethod({
-        ...data,
+        ...rest,
         code: uuidv4()
+      }).unwrap();
+
+      const paymentMethodId = response.data.id
+
+      await createPaymentMethodLine({
+        payment_method: paymentMethodId,
+        company: 1,
+        payment_account: payment_account
       }).unwrap();
 
       if (response.status === 'success') {
@@ -78,7 +90,7 @@ export default function NewPaymentMethodDialog() {
             <Button
               onClick={() => form.handleSubmit(onSubmit)()}
               size="sm"
-              loading={isCreatingPaymentMethod}
+              loading={isCreatingPaymentMethod || isCreatingPaymentMethodLine}
               type="button">
               Crear
             </Button>

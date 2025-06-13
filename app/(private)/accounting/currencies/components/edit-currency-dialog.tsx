@@ -2,7 +2,7 @@ import CustomSonner from "@/components/custom-sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { useGetCurrencyQuery, useUpdateCurrencyMutation } from "@/lib/services/currencies";
+import { useGetCurrencyQuery, useUpdateCurrencyMutation, useUpdateCurrencyRateMutation } from "@/lib/services/currencies";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 import { useGetUserQuery, useUpdateUserMutation, useUpdateUserRoleMutation } from "@/lib/services/users";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
@@ -25,6 +25,7 @@ export default function EditCurrencyDialog() {
 
   const [sendMessage] = useSendMessageMutation();
   const [updateCurrency, { isLoading: isUpdatingCurrency }] = useUpdateCurrencyMutation();
+  const [updateCurrencyRate, { isLoading: isUpdatingCurrencyRate }] = useUpdateCurrencyRateMutation();
 
   const form = useForm<z.infer<typeof newCurrencySchema>>({
     resolver: zodResolver(newCurrencySchema),
@@ -36,10 +37,20 @@ export default function EditCurrencyDialog() {
   }
 
   const onSubmit = async (data: z.infer<typeof newCurrencySchema>) => {
+    const { rate, ...rest } = data
+
     try {
       const response = await updateCurrency({
         id: currencyId,
-        body: data,
+        body: rest,
+      }).unwrap();
+
+      await updateCurrencyRate({
+        id: currencyId,
+        body: {
+          rate,
+          date: new Date().toISOString(),
+        },
       }).unwrap();
 
       if (response.status === 'success') {
@@ -69,7 +80,7 @@ export default function EditCurrencyDialog() {
         name: currency.name,
         symbol: currency.symbol,
         rate: currency.rate,
-        active: currency.active,
+        position: currency.position as "before" | "after",
       })
     }
   }, [currency])
@@ -92,7 +103,7 @@ export default function EditCurrencyDialog() {
             <Button
               onClick={() => form.handleSubmit(onSubmit)()}
               size="sm"
-              loading={isUpdatingCurrency}
+              loading={isUpdatingCurrency || isUpdatingCurrencyRate}
               type="button">
               Guardar
             </Button>

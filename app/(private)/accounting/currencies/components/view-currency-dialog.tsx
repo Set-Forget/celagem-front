@@ -1,13 +1,12 @@
 import RenderFields from "@/components/render-fields"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { useGetUserQuery } from "@/lib/services/users"
+import { useGetCurrencyQuery } from "@/lib/services/currencies"
 import { closeDialogs, DialogsState, dialogsStateObservable, setDialogsState } from "@/lib/store/dialogs-store"
-import { FieldDefinition } from "@/lib/utils"
+import { FieldDefinition, formatNumber } from "@/lib/utils"
 import { SquarePen } from "lucide-react"
 import { useEffect, useState } from "react"
 import { CurrencyDetail } from "../schema/currencies"
-import { useGetCurrencyQuery } from "@/lib/services/currencies"
 
 const fields: FieldDefinition<CurrencyDetail>[] = [
   {
@@ -23,7 +22,7 @@ const fields: FieldDefinition<CurrencyDetail>[] = [
   {
     label: "Unidad por USD",
     placeholderLength: 10,
-    render: (p) => p?.rate || "No especificado",
+    render: (p) => formatNumber(p?.rate || 0) || "No especificado",
   },
 ];
 

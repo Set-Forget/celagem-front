@@ -2,6 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { CurrencyList } from '../schema/currencies';
+import { formatNumber } from '@/lib/utils';
 
 export const columns: ColumnDef<CurrencyList>[] = [
   {
@@ -19,6 +20,6 @@ export const columns: ColumnDef<CurrencyList>[] = [
   {
     accessorKey: 'rate',
     header: 'Unidad por USD',
-    cell: ({ row }) => <div className="truncate">{row.original.rate}</div>,
+    cell: ({ row }) => <div className="truncate">{formatNumber(row.original.rate)}</div>,
   },
 ];

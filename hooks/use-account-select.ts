@@ -11,7 +11,7 @@ interface UseAccountSelectOpts {
   accountTypes?: string[]
 }
 
-export function useAccountingAccountSelect({ accountId, limit = 10, accountTypes }: UseAccountSelectOpts) {
+export function useAccountingAccountSelect({ accountId, limit = 10, accountTypes }: UseAccountSelectOpts = {}) {
   const [searchAccount] = useLazyListAccountingAccountsQuery()
   const [sendMessage] = useSendMessageMutation();
 

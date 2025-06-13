@@ -2,7 +2,7 @@ import CustomSonner from "@/components/custom-sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { useGetTaxQuery, useUpdateTaxMutation } from "@/lib/services/taxes";
+import { useGetPaymentTermQuery, useUpdatePaymentTermMutation } from "@/lib/services/payment-terms";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,23 +10,23 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { newTaxSchema } from "../schema/taxes";
-import NewTaxForm from "./new-payment-term-form";
+import { newPaymentTermSchema } from "../schema/payment-terms";
+import NewPaymentTermForm from "./new-payment-term-form";
 
-export default function EditTaxDialog() {
+export default function EditPaymentTermDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
-  const taxId = dialogState?.payload?.tax_id as string
+  const paymentTermId = dialogState?.payload?.payment_term_id as string
 
-  const { data: tax } = useGetTaxQuery(taxId, {
-    skip: !taxId
+  const { data: paymentTerm } = useGetPaymentTermQuery(paymentTermId, {
+    skip: !paymentTermId
   })
 
   const [sendMessage] = useSendMessageMutation();
-  const [updateTax, { isLoading: isUpdatingTax }] = useUpdateTaxMutation();
+  const [updatePaymentTerm, { isLoading: isUpdatingPaymentTerm }] = useUpdatePaymentTermMutation();
 
-  const form = useForm<z.infer<typeof newTaxSchema>>({
-    resolver: zodResolver(newTaxSchema),
+  const form = useForm<z.infer<typeof newPaymentTermSchema>>({
+    resolver: zodResolver(newPaymentTermSchema),
   });
 
   const onOpenChange = () => {
@@ -34,21 +34,21 @@ export default function EditTaxDialog() {
     form.reset()
   }
 
-  const onSubmit = async (data: z.infer<typeof newTaxSchema>) => {
+  const onSubmit = async (data: z.infer<typeof newPaymentTermSchema>) => {
     try {
-      const response = await updateTax({
-        id: taxId,
+      const response = await updatePaymentTerm({
+        id: paymentTermId,
         body: data,
       }).unwrap();
 
       if (response.status === 'success') {
         onOpenChange()
-        toast.custom((t) => <CustomSonner t={t} description="Impuesto actualizado exitosamente" variant="success" />);
+        toast.custom((t) => <CustomSonner t={t} description="Término de pago actualizado exitosamente" variant="success" />);
       }
     } catch (error) {
-      toast.custom((t) => <CustomSonner t={t} description="Error al actualizar impuesto" variant="error" />);
+      toast.custom((t) => <CustomSonner t={t} description="Error al actualizar término de pago" variant="error" />);
       sendMessage({
-        location: "app/(private)/accounting/taxes/(form)/components/edit-tax-dialog.tsx",
+        location: "app/(private)/accounting/payment-terms/(form)/components/edit-payment-term-dialog.tsx",
         rawError: error,
         fnLocation: "onSubmit"
       })
@@ -63,35 +63,38 @@ export default function EditTaxDialog() {
   }, [])
 
   useEffect(() => {
-    if (tax) {
+    if (paymentTerm) {
       form.reset({
-        name: tax.name,
-        amount: tax.amount,
-        type_tax_use: tax.type_tax_use,
-        tax_kind: tax.tax_kind,
+        name: paymentTerm.name,
+        items: paymentTerm.items.map((item) => ({
+          nb_days: item.nb_days,
+          delay_type: item.delay_type,
+          value: 'percent',
+          value_amount: item.value_amount,
+        })),
       })
     }
-  }, [tax])
+  }, [paymentTerm])
 
   return (
     <Dialog
-      open={dialogState.open === "edit-tax"}
+      open={dialogState.open === "edit-payment-term"}
       onOpenChange={onOpenChange}
     >
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Editar moneda</DialogTitle>
+          <DialogTitle>Editar término de pago</DialogTitle>
           <DialogDescription>
-            Edita los datos de la moneda.
+            Edita los datos del término de pago.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <NewTaxForm />
+          <NewPaymentTermForm />
           <DialogFooter>
             <Button
               onClick={() => form.handleSubmit(onSubmit)()}
               size="sm"
-              loading={isUpdatingTax}
+              loading={isUpdatingPaymentTerm}
               type="button">
               Guardar
             </Button>

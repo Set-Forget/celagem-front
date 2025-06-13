@@ -162,3 +162,10 @@ export function toWords(input: number | string): string {
 
   return result;
 }
+
+export function formatNumber(value?: number, options?: Intl.NumberFormatOptions, locale: string = 'es-AR') {
+  if (typeof value !== 'number' || isNaN(value)) {
+    return '';
+  }
+  return new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2, ...options }).format(value);
+}

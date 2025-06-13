@@ -1,4 +1,4 @@
-import { useGetPaymentMethodQuery, useLazyListPaymentMethodsQuery } from "@/lib/services/payment-methods"
+import { useGetPaymentMethodQuery, useLazyListPaymentMethodLinesQuery } from "@/lib/services/payment-methods"
 import { useSendMessageMutation } from "@/lib/services/telegram"
 import { useCallback, useMemo } from "react"
 
@@ -13,7 +13,7 @@ export function usePaymentMethodSelect({
   limit = 10,
   paymentType
 }: Props) {
-  const [searchPaymentMethod] = useLazyListPaymentMethodsQuery()
+  const [searchPaymentMethod] = useLazyListPaymentMethodLinesQuery()
   const [sendMessage] = useSendMessageMutation();
 
   const { data: paymentMethod } = useGetPaymentMethodQuery(paymentMethodId!, {
@@ -28,15 +28,16 @@ export function usePaymentMethodSelect({
   const fetcher = useCallback(
     async (query?: string) => {
       try {
-        const res = await searchPaymentMethod({
-          name: query,
-          payment_type: paymentType,
-        }, true).unwrap()
-
+        const res = await searchPaymentMethod(undefined, true).unwrap()
         return (res.data?.map((paymentMethod) => ({
           id: paymentMethod.id,
-          name: paymentMethod.name,
+          name: paymentMethod.payment_method,
         })) ?? [])
+          .filter((paymentMethod) => {
+            if ((paymentMethod.name || "").toLowerCase().includes(query?.toLowerCase() || "")) {
+              return true
+            }
+          })
           .slice(0, limit)
       } catch (err) {
         sendMessage({

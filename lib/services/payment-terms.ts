@@ -1,4 +1,4 @@
-import { PaymentTermDetailsResponse, PaymentTermDetails, PaymentTermListResponse } from "@/app/(private)/accounting/payment-terms/schema/payment-terms";
+import { PaymentTermDetailsResponse, PaymentTermDetails, PaymentTermListResponse, NewPaymentTerm, NewPaymentTermResponse } from "@/app/(private)/accounting/payment-terms/schema/payment-terms";
 import { erpApi } from "../apis/erp-api";
 
 export const paymentTermsApi = erpApi.injectEndpoints({
@@ -10,7 +10,7 @@ export const paymentTermsApi = erpApi.injectEndpoints({
       }),
       providesTags: ['PaymentTerm'],
     }),
-    createPaymentTerm: builder.mutation<any, any>({
+    createPaymentTerm: builder.mutation<NewPaymentTermResponse, NewPaymentTerm>({
       query: (body) => ({
         url: 'payment_terms',
         method: 'POST',
@@ -23,7 +23,7 @@ export const paymentTermsApi = erpApi.injectEndpoints({
       transformResponse: (response: PaymentTermDetailsResponse) => response.data,
       providesTags: ['PaymentTerm'],
     }),
-    updatePaymentTerm: builder.mutation<any, { id: string; body: any }>({
+    updatePaymentTerm: builder.mutation<PaymentTermDetailsResponse, { id: string; body: Partial<NewPaymentTerm> }>({
       query: ({ id, body }) => ({
         url: `payment_terms/${id}`,
         method: 'PUT',

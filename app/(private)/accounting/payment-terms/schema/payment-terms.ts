@@ -36,6 +36,23 @@ export const paymentTermDetailsSchema = z.object({
   })),
 })
 
+export const newPaymentTermSchema = z.object({
+  name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
+  note: z.string().optional(),
+  sequence: z.number({ required_error: "El número de secuencia es requerido" }).min(1, { message: "El número de secuencia es requerido" }).optional(),
+  items: z.array(z.object({
+    value: z.enum(['percent']).optional(),
+    value_amount: z.number().optional(),
+    nb_days: z.number({ required_error: "El número de días es requerido" }).min(1, { message: "El número de días es requerido" }),
+    delay_type: z.enum(['days_after', 'days_after_end_of_month', 'days_after_end_of_next_month', 'days_end_of_month_on_the'], { required_error: "El tipo de retraso es requerido" }),
+  })),
+})
+
+export const newPaymentTermResponseSchema = z.object({
+  status: z.string(),
+  data: paymentTermDetailsSchema,
+})
+
 export const paymentTermDetailsResponseSchema = z.object({
   status: z.string(),
   data: paymentTermDetailsSchema,
@@ -46,3 +63,6 @@ export type PaymentTermListResponse = z.infer<typeof paymentTermListResponseSche
 
 export type PaymentTermDetails = z.infer<typeof paymentTermDetailsSchema>;
 export type PaymentTermDetailsResponse = z.infer<typeof paymentTermDetailsResponseSchema>;
+
+export type NewPaymentTerm = z.infer<typeof newPaymentTermSchema>;
+export type NewPaymentTermResponse = z.infer<typeof newPaymentTermResponseSchema>;

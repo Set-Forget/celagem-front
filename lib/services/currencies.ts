@@ -31,6 +31,15 @@ export const currenciesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Currency'],
     }),
+
+    updateCurrencyRate: builder.mutation<NewCurrencyResponse, { id: string; body: { rate: number, date: string } }>({
+      query: ({ id, body }) => ({
+        url: `currencies/${id}/rate`,
+        method: 'POST',
+        body: body,
+      }),
+      invalidatesTags: ['Currency'],
+    }),
   }),
 });
 
@@ -41,4 +50,5 @@ export const {
   useGetCurrencyQuery,
   useLazyGetCurrencyQuery,
   useUpdateCurrencyMutation,
+  useUpdateCurrencyRateMutation,
 } = currenciesApi;

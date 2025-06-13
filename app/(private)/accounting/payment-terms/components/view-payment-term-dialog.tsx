@@ -1,13 +1,12 @@
 import RenderFields from "@/components/render-fields"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { useGetTaxQuery } from "@/lib/services/taxes"
+import { useGetPaymentTermQuery } from "@/lib/services/payment-terms"
 import { closeDialogs, DialogsState, dialogsStateObservable, setDialogsState } from "@/lib/store/dialogs-store"
 import { FieldDefinition } from "@/lib/utils"
 import { SquarePen } from "lucide-react"
 import { useEffect, useState } from "react"
 import { PaymentTermDetails } from "../schema/payment-terms"
-import { useGetPaymentTermQuery } from "@/lib/services/payment-terms"
 import { delayTypes } from "../utils"
 
 const fields: FieldDefinition<PaymentTermDetails>[] = [
@@ -19,7 +18,6 @@ const fields: FieldDefinition<PaymentTermDetails>[] = [
   {
     label: "Vencimiento",
     placeholderLength: 14,
-    className: "col-span-2",
     render: (p) => p?.items.map((item) => `${item.nb_days} ${delayTypes[item.delay_type]}`).join(", ") || "No especificado",
   }
 ];
