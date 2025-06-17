@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { routes } from "@/lib/routes";
 import { useLazyListBillsQuery } from "@/lib/services/bills";
-import { useCreatePaymentMutation } from "@/lib/services/payments";
+import { useCreatePaymentMutation, useCreateBulkPaymentMutation } from "@/lib/services/payments";
 import { cn } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
@@ -31,6 +31,7 @@ export default function Actions() {
 
   const [sendMessage] = useSendMessageMutation();
   const [createPayment, { isLoading: isCreatingPayment }] = useCreatePaymentMutation()
+  const [createBulkPayment, { isLoading: isCreatingBulkPayment }] = useCreateBulkPaymentMutation()
 
   const billIds = searchParams.get("bill_ids")
 
@@ -42,25 +43,42 @@ export default function Actions() {
     filter: (b) =>
       b.amount_residual > 0 &&
       b.type === "invoice" &&
-      b.status === "posted"
+      (b.status === "posted" || b.status === "overdue")
   })
 
   const onSubmit = async (data: z.infer<typeof newPaymentSchema>) => {
     const { invoices, ...rest } = data
 
-    try {
-      const response = await createPayment({
-        ...rest,
-        date: rest.date.toString(),
-        amount: rest.amount || invoices?.reduce((acc, b) => acc + b.amount_residual, 0),
-        partner: rest.partner || invoices?.[0]?.supplier.id,
-        journal: 6,
-        invoices: invoices?.map((b) => b.id) || undefined,
-      }).unwrap()
+    const hasMultiplePartners = invoices && new Set(invoices.map((i) => i.supplier.id)).size > 1;
 
-      if (response.status === "success") {
-        router.push(routes.payments.detail(response.data.id))
-        toast.custom((t) => <CustomSonner t={t} description="Pago registrado exitosamente" />)
+    try {
+      if (hasMultiplePartners) {
+        const response = await createBulkPayment({
+          ...rest,
+          date: rest.date.toString(),
+          amount: rest.amount || invoices?.reduce((acc, b) => acc + b.amount_residual, 0),
+          journal: 6,
+          invoices: invoices?.map((b) => b.id),
+        }).unwrap();
+
+        if (response.status === "success") {
+          router.push(routes.payments.list);
+          toast.custom((t) => <CustomSonner t={t} description="Pagos registrados exitosamente" />);
+        }
+      } else {
+        const response = await createPayment({
+          ...rest,
+          date: rest.date.toString(),
+          amount: rest.amount || invoices?.reduce((acc, b) => acc + b.amount_residual, 0),
+          partner: rest.partner || invoices?.[0]?.supplier.id,
+          journal: 6,
+          invoices: invoices?.map((b) => b.id) || undefined,
+        }).unwrap();
+
+        if (response.status === "success") {
+          router.push(routes.payments.detail(response.data.id));
+          toast.custom((t) => <CustomSonner t={t} description="Pago registrado exitosamente" />);
+        }
       }
     } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al registrar el pago" variant="error" />)
@@ -68,9 +86,7 @@ export default function Actions() {
         location: "app/(private)/banking/payments/(form)/new/actions.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 
@@ -103,9 +119,9 @@ export default function Actions() {
           type="submit"
           onClick={handleSubmit(onSubmit)}
           size="sm"
-          loading={isCreatingPayment}
+          loading={isCreatingPayment || isCreatingBulkPayment}
         >
-          <Save className={cn(isCreatingPayment && "hidden")} />
+          <Save className={cn((isCreatingPayment || isCreatingBulkPayment) && "hidden")} />
           Guardar
         </Button>
       </div>

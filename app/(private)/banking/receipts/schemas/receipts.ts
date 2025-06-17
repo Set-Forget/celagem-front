@@ -63,27 +63,32 @@ export const paymentDetailSchema = z.object({
     }),
   })),
   invoices: z.array(z.object({
+    id: z.number(),
     sequence_id: z.string(),
     name: z.string(),
     amount_total: z.number(),
     payment_state: z.string(),
   })),
   credit_notes: z.array(z.object({
+    id: z.number(),
     sequence_id: z.string(),
     name: z.string(),
     amount_total: z.number(),
   })),
   debit_notes: z.array(z.object({
+    id: z.number(),
     sequence_id: z.string(),
     name: z.string(),
     amount_total: z.number(),
   })),
   reconciled_invoices: z.array(z.object({
+    id: z.number(),
     sequence_id: z.string(),
     name: z.string(),
     amount_total: z.number(),
   })),
   reconciled_bills: z.array(z.object({
+    id: z.number(),
     sequence_id: z.string(),
     name: z.string(),
     amount_total: z.number(),

@@ -65,7 +65,12 @@ export default function Toolbar({ table }: { table: Table<AdaptedBillList> }) {
         variant="secondary"
         className="h-7"
         size="sm"
-        disabled={selectedRows.length === 0 || selectedRows.some(row => row.original.type === 'credit_note') || selectedRows.some(row => row.original.status !== 'posted') || selectedRows.some(row => row.original.amount_residual <= 0)}
+        disabled={
+          selectedRows.length === 0 ||
+          selectedRows.some(row => row.original.type === 'credit_note') ||
+          selectedRows.some(row => !(row.original.status === 'posted' || row.original.status === 'overdue')) ||
+          selectedRows.some(row => row.original.amount_residual <= 0)
+        }
         onClick={() => {
           const billIds = selectedRows.map((row) => row.original.id).join(",")
           router.push(routes.payments.new(billIds))

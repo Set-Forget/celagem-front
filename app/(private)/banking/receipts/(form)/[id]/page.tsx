@@ -80,7 +80,7 @@ export default function Page() {
   const { data: charge, isLoading: isChargeLoading } = useGetChargeQuery(id);
 
   const status = chargeStatus[charge?.state as keyof typeof chargeStatus];
-  const chargeInvoices = charge?.reconciled_invoices?.map((invoice) => invoice.sequence_id) ?? [];
+  const chargeInvoices = charge?.reconciled_invoices?.map((invoice) => invoice.id) ?? [];
 
   useEffect(() => {
     if (chargeInvoices.length === 0) return

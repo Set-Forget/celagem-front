@@ -53,6 +53,14 @@ export default function GeneralForm() {
   })
 
   const bills = useWatch({ control, name: "invoices" })
+
+  const showWithholdings = useMemo(() => {
+    if (!billIds) return true
+    if (!bills || bills.length === 0) return false
+    const supplierIds = bills.map((b) => b.supplier.id)
+    return new Set(supplierIds).size === 1
+  }, [billIds, bills])
+
   const apply = useMemo(
     () => createApply<z.infer<typeof newPaymentSchema>>(setValue, resetField),
     [setValue, resetField]
@@ -63,10 +71,18 @@ export default function GeneralForm() {
       (async () => {
         const ids = billIds.split(",").map((id) => Number(id))
         const bills = await Promise.all(ids.map((id) => getBill(id).unwrap()))
-        const withholdings = await getSupplierWithholdings(bills[0]?.supplier.id!).unwrap()
 
         setValue("invoices", bills)
-        apply("withholdings", withholdings?.map((w) => w.id) || [])
+
+        const supplierIds = bills.map((b) => b.supplier.id)
+        const uniqueSuppliers = [...new Set(supplierIds)]
+
+        if (uniqueSuppliers.length === 1) {
+          const withholdings = await getSupplierWithholdings(uniqueSuppliers[0]).unwrap()
+          apply("withholdings", withholdings?.map((w) => w.id) || undefined)
+        } else {
+          apply("withholdings", undefined)
+        }
       })()
     }
   }, [billIds])
@@ -234,40 +250,42 @@ export default function GeneralForm() {
           )}
         />
       )}
-      <FormField
-        control={control}
-        name="withholdings"
-        render={({ field }) => (
-          <FormItem className="flex flex-col">
-            <FormLabel className="w-fit">Retenciones</FormLabel>
-            <FormControl>
-              <AsyncMultiSelect<{ id: number, name: string }, number>
-                placeholder="Buscar retención…"
-                fetcher={fetcher}
-                maxCount={1}
-                initialOptions={initialTaxes}
-                defaultValue={field.value}
-                value={field.value}
-                getOptionValue={(o) => o.id}
-                getOptionKey={(o) => String(o.id)}
-                renderOption={(o) => <>{o.name}</>}
-                getDisplayValue={(o) => <>{o.name}</>}
-                noResultsMessage="No se encontraron resultados"
-                onValueChange={(vals) => {
-                  field.onChange(vals)
-                }}
-              />
-            </FormControl>
-            {formState.errors.withholdings ? (
-              <FormMessage />
-            ) :
-              <FormDescription>
-                Impuestos que se retendrán al proveedor.
-              </FormDescription>
-            }
-          </FormItem>
-        )}
-      />
+      {showWithholdings && (
+        <FormField
+          control={control}
+          name="withholdings"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel className="w-fit">Retenciones</FormLabel>
+              <FormControl>
+                <AsyncMultiSelect<{ id: number, name: string }, number>
+                  placeholder="Buscar retención…"
+                  fetcher={fetcher}
+                  maxCount={1}
+                  initialOptions={initialTaxes}
+                  defaultValue={field.value}
+                  value={field.value}
+                  getOptionValue={(o) => o.id}
+                  getOptionKey={(o) => String(o.id)}
+                  renderOption={(o) => <>{o.name}</>}
+                  getDisplayValue={(o) => <>{o.name}</>}
+                  noResultsMessage="No se encontraron resultados"
+                  onValueChange={(vals) => {
+                    field.onChange(vals)
+                  }}
+                />
+              </FormControl>
+              {formState.errors.withholdings ? (
+                <FormMessage />
+              ) :
+                <FormDescription>
+                  Impuestos que se retendrán al proveedor.
+                </FormDescription>
+              }
+            </FormItem>
+          )}
+        />
+      )}
       <FormField
         control={control}
         name="payment_method"

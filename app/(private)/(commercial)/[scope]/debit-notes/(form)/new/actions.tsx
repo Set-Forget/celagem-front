@@ -42,7 +42,7 @@ export default function Actions() {
     }),
     filter: (b) =>
       b.type === "invoice" &&
-      (b.status === "posted" || b.status === "done")
+      (b.status === "posted" || b.status === "done" || b.status === "overdue")
   })
 
   const { fetcher: handleSearchInvoice } = useInvoiceSelect({
@@ -52,7 +52,7 @@ export default function Actions() {
     }),
     filter: (i) =>
       i.type === "invoice" &&
-      (i.status === "posted" || i.status === "done")
+      (i.status === "posted" || i.status === "done" || i.status === "overdue")
   })
 
   const onSubmit = async (data: z.infer<typeof newDebitNoteSchema>) => {

@@ -26,6 +26,14 @@ export const chargesApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Charge'],
     }),
+    createBulkCharge: builder.mutation<NewChargeResponse, Overwrite<NewCharge, { date: string, invoices?: number[] }>>({
+      query: (data) => ({
+        url: '/charges/bulk',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Charge'],
+    }),
 
     confirmCharge: builder.mutation<{ status: string, message: string }, { id: string }>({
       query: ({ id }) => ({
@@ -53,7 +61,7 @@ export const {
   useLazyListChargesQuery,
   useCreateChargeMutation,
   useGetChargeQuery,
-
+  useCreateBulkChargeMutation,
   useConfirmChargeMutation,
   useCancelChargeMutation,
 } = chargesApi;
