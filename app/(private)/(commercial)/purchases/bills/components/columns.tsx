@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { AdaptedBillList } from "@/lib/adapters/bills"
-import { cn } from "@/lib/utils"
+import { cn, formatNumber } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { billStatus, billTypes } from "../utils"
@@ -89,7 +89,7 @@ export const columns: ColumnDef<AdaptedBillList>[] = [
     cell: ({ row }) => {
       return <div className="text-right font-medium pr-4 text-nowrap">
         {row.original.currency.name}{" "}
-        {row.original.amount_total}
+        {formatNumber(row.original.amount_total)}
       </div>
     },
   },
@@ -99,7 +99,7 @@ export const columns: ColumnDef<AdaptedBillList>[] = [
     cell: ({ row }) => {
       return <div className="text-right font-medium pr-4 text-nowrap">
         {row.original.currency.name}{" "}
-        {row.original.amount_residual}
+        {formatNumber(row.original.amount_residual)}
       </div>
     },
   },

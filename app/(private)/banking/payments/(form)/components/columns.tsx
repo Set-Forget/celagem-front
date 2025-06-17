@@ -12,6 +12,7 @@ import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import Link from "next/link"
 import { NewPayment } from "../../schemas/payments"
+import { formatNumber } from "@/lib/utils"
 
 export const columns: ColumnDef<NonNullable<NewPayment['invoices']>[number]>[] = [
   {
@@ -73,7 +74,7 @@ export const columns: ColumnDef<NonNullable<NewPayment['invoices']>[number]>[] =
       if (row.original.type === 'credit_note') return
       return <div className="text-left font-medium pr-4 text-nowrap">
         {row.original.currency.name}{" "}
-        {row.original.amount_residual}
+        {formatNumber(row.original.amount_residual)}
       </div>
     },
   },

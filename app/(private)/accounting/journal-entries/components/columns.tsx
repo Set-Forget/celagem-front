@@ -11,6 +11,7 @@ import { es } from "date-fns/locale"
 import { Badge } from "@/components/ui/badge"
 import { journalEntryStatus } from "../utils"
 import { cn } from "@/lib/utils"
+import { formatNumber } from "@/lib/utils"
 
 export const columns: ColumnDef<JournalEntryList>[] = [
   {
@@ -73,11 +74,7 @@ export const columns: ColumnDef<JournalEntryList>[] = [
       const amount = parseFloat(row.getValue("amount_total"))
       const currency = row.original.currency.name
 
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        currencyDisplay: "code",
-      }).format(amount)
+      const formatted = `${currency} ${formatNumber(amount)}`
 
       return <div className="font-medium">{formatted}</div>
     },

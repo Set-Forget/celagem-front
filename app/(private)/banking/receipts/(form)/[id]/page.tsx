@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { AdaptedBillDetail } from "@/lib/adapters/bills";
 import { routes } from "@/lib/routes";
 import { useLazyGetBillQuery } from "@/lib/services/bills";
-import { cn, FieldDefinition, placeholder } from "@/lib/utils";
+import { cn, FieldDefinition, formatNumber, placeholder } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
@@ -37,7 +37,7 @@ const fields: FieldDefinition<ChargeDetail>[] = [
   {
     label: "Monto",
     placeholderLength: 10,
-    render: (p) => `${p.currency.name} ${p.amount}`
+    render: (p) => `${p.currency.name} ${formatNumber(p.amount)}`
   },
   {
     label: "Retenciones",

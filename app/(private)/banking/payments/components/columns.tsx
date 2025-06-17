@@ -4,7 +4,7 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { cn, formatNumber } from "@/lib/utils"
 import { PaymentList } from "../schemas/payments"
 import { paymentStatus } from "../utils"
 
@@ -19,7 +19,6 @@ export const columns: ColumnDef<PaymentList>[] = [
     header: "Estado",
     cell: ({ row }) => {
       const status = paymentStatus[row.getValue("state") as keyof typeof paymentStatus];
-
       return (
         <Badge
           variant="custom"
@@ -44,7 +43,7 @@ export const columns: ColumnDef<PaymentList>[] = [
     accessorKey: "amount",
     header: "Monto",
     cell: ({ row }) => <div className="font-medium">
-      {row.original.currency} {row.getValue("amount")}
+      {row.original.currency} {formatNumber(row.getValue("amount"))}
     </div>,
   },
 ]

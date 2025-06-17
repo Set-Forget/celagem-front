@@ -11,7 +11,7 @@ export const columns: ColumnDef<PurchaseRequestItem>[] = [
     header: "Producto / Servicio",
     cell: ({ row }) => <div className="flex gap-1">
       <span className="font-medium text-nowrap">
-        {row.original.id}
+        {row.original.product_code}
       </span>
       -{" "}
       {row.original.product_name}

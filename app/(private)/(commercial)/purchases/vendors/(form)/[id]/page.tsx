@@ -6,7 +6,7 @@ import { StatusIndicator } from "@/components/status-indicator"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useGetSupplierQuery } from "@/lib/services/suppliers"
-import { cn, FieldDefinition, placeholder } from "@/lib/utils"
+import { cn, FieldDefinition, formatNumber, placeholder } from "@/lib/utils"
 import { Calculator, Edit, FileSearch, Mail, Router, Wallet } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
@@ -94,12 +94,12 @@ export default function Page() {
           data={supplier}
           loading={isSupplierLoading}
         />
-        <div className="flex flex-col gap-1">
+        {/* <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-sm">Saldo pendiente</label>
           <div className="flex gap-1.5 items-center">
             <StatusIndicator status="away" size="sm" />
             <span className={cn("text-sm font-medium transition-all duration-300", isSupplierLoading ? "blur-[4px]" : "blur-none")}>
-              {isSupplierLoading ? placeholder(4) : supplier?.payment_amount_due.toFixed(2)}
+              {isSupplierLoading ? placeholder(4) : formatNumber(supplier?.payment_amount_due)}
             </span>
           </div>
         </div>
@@ -108,7 +108,7 @@ export default function Page() {
           <div className="flex gap-1.5 items-center">
             <StatusIndicator status="busy" size="sm" />
             <span className={cn("text-sm font-medium transition-all duration-300", isSupplierLoading ? "blur-[4px]" : "blur-none")}>
-              {isSupplierLoading ? placeholder(4) : supplier?.payment_amount_overdue.toFixed(2)}
+              {isSupplierLoading ? placeholder(4) : formatNumber(supplier?.payment_amount_overdue)}
             </span>
           </div>
         </div>
@@ -117,10 +117,10 @@ export default function Page() {
           <div className="flex gap-1.5 items-center">
             <StatusIndicator status="online" size="sm" />
             <span className={cn("text-sm font-medium transition-all duration-300", isSupplierLoading ? "blur-[4px]" : "blur-none")}>
-              {isSupplierLoading ? placeholder(4) : supplier?.total_invoiced.toFixed(2)}
+              {isSupplierLoading ? placeholder(4) : formatNumber(supplier?.total_invoiced)}
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
       <DataTabs
         tabs={tabs}

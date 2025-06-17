@@ -7,7 +7,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { AdaptedInvoiceList } from "@/lib/adapters/invoices"
-import { cn } from "@/lib/utils"
+import { cn, formatNumber } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
 import { creditNoteStatus } from "../../../[scope]/credit-notes/utils"
@@ -87,7 +87,7 @@ export const columns: ColumnDef<AdaptedInvoiceList>[] = [
     cell: ({ row }) => {
       return <div className="text-right font-medium pr-4 text-nowrap">
         {row.original.currency.name}{" "}
-        {row.original.amount_total}
+        {formatNumber(row.original.amount_total)}
       </div>
     },
   },
@@ -97,7 +97,7 @@ export const columns: ColumnDef<AdaptedInvoiceList>[] = [
     cell: ({ row }) => {
       return <div className="text-right font-medium pr-4 text-nowrap">
         {row.original.currency.name}{" "}
-        {row.original.amount_residual}
+        {formatNumber(row.original.amount_residual)}
       </div>
     },
   },

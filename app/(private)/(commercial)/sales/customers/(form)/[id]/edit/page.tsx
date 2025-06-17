@@ -63,7 +63,6 @@ export default function Page() {
       name: "",
       phone: "",
       email: "",
-      website: "",
       contact_address_inline: "",
       property_account_position: false,
       tax_id: "",
@@ -115,13 +114,14 @@ export default function Page() {
         account: customer.account?.id,
         payment_method: customer.payment_method?.id,
         country_id: customer.country_id,
+        tax_id: customer.tax_id || undefined,
       })
     }
   }, [customer])
 
   return (
     <Form {...form}>
-      <Header title="Editar cliente" >
+      <Header title={`Editar cliente ${customer?.name}`}>
         <Button
           type="submit"
           onClick={form.handleSubmit(onSubmit)}

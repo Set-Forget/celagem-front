@@ -1,5 +1,5 @@
 import { Control, FieldPath, FieldValues, useWatch } from "react-hook-form"
-import { cn } from "@/lib/utils"
+import { cn, formatNumber } from "@/lib/utils"
 import { useGetCurrencyQuery } from "@/lib/services/currencies"
 
 type Props<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>> = {
@@ -31,8 +31,8 @@ export function SubtotalField<TFieldValues extends FieldValues = FieldValues>({
 
   return (
     <span className={cn("inline-flex gap-1", className)}>
-      {isLoading ? "…" : currency?.name ?? "—"}{" "}
-      <span>{subtotal.toFixed(precision)}</span>
+      {isLoading ? "…" : currency?.name ?? ""}{" "}
+      <span>{formatNumber(subtotal, { minimumFractionDigits: precision, maximumFractionDigits: precision })}</span>
     </span>
   )
 }

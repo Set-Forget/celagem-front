@@ -112,7 +112,7 @@ export default function Page() {
 
   return (
     <Form {...form}>
-      <Header title="Editar factura de venta">
+      <Header title={`Editar factura de venta ${invoice?.sequence_id}`}>
         <div className="flex gap-2 ml-auto">
           <Button
             type="submit"

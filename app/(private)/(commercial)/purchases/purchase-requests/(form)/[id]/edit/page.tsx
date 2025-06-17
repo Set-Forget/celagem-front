@@ -93,7 +93,7 @@ export default function Page() {
 
   return (
     <Form {...newPurchaseRequest}>
-      <Header title="Editar solicitud de compra">
+      <Header title={`Editar solicitud de compra ${purchaseRequest?.sequence_id}`}>
         <div className="flex gap-2 ml-auto">
           <Button
             type="submit"

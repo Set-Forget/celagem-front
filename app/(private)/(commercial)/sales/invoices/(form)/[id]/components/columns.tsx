@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { routes } from "@/lib/routes"
+import { formatNumber } from "@/lib/utils"
 
 export const columns: ColumnDef<InvoiceLine & { currency: string }>[] = [
   {
@@ -32,7 +33,7 @@ export const columns: ColumnDef<InvoiceLine & { currency: string }>[] = [
     accessorKey: "price_unit",
     header: "Precio unitario",
     cell: ({ row }) => {
-      return <span className="font-medium text-nowrap">{row.original.currency} {row.original.price_unit.toFixed(2)}</span>
+      return <span className="font-medium text-nowrap">{row.original.currency} {formatNumber(row.original.price_unit)}</span>
     },
   },
   {
@@ -116,7 +117,7 @@ export const columns: ColumnDef<InvoiceLine & { currency: string }>[] = [
   },
   {
     accessorKey: "price_subtotal",
-    header: "Subtotal (sin imp.)",
-    cell: ({ row }) => <span className="font-medium">{row.original.currency} {row.original.price_subtotal.toFixed(2)}</span>,
+    header: () => <span className="text-nowrap">Subtotal (sin imp.)</span>,
+    cell: ({ row }) => <span className="font-medium">{row.original.currency} {formatNumber(row.original.price_subtotal)}</span>,
   },
 ]

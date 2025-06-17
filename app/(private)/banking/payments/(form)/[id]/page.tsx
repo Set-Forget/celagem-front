@@ -9,7 +9,7 @@ import { AdaptedBillDetail } from "@/lib/adapters/bills";
 import { routes } from "@/lib/routes";
 import { useLazyGetBillQuery } from "@/lib/services/bills";
 import { useGetPaymentQuery } from "@/lib/services/payments";
-import { cn, FieldDefinition, placeholder } from "@/lib/utils";
+import { cn, FieldDefinition, formatNumber, placeholder } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
@@ -35,7 +35,7 @@ const fields: FieldDefinition<PaymentDetail>[] = [
   {
     label: "Monto",
     placeholderLength: 10,
-    render: (p) => `${p?.currency?.name} ${p?.amount}`
+    render: (p) => `${p?.currency?.name} ${formatNumber(p?.amount)}`
   },
   {
     label: "Retenciones",
@@ -80,7 +80,6 @@ export default function Page() {
   const status = paymentStatus[payment?.state as keyof typeof paymentStatus];
 
   const paymentBills = payment?.reconciled_bills?.map((bill) => bill.id) ?? [];
-
   useEffect(() => {
     if (paymentBills.length === 0) return
     (async () => {

@@ -40,7 +40,7 @@ export default function Actions() {
   const { fetcher: handleSearchPurchaseOrder } = usePurchaseOrderSelect({
     map: (purchaseOrder) => ({
       id: purchaseOrder.id,
-      number: purchaseOrder.number,
+      sequence_id: purchaseOrder.sequence_id,
       supplier: purchaseOrder.supplier.name,
       created_by: purchaseOrder.created_by.name,
       required_date: purchaseOrder.required_date,
@@ -84,6 +84,7 @@ export default function Actions() {
         const response = await updatePurchaseReceipt({
           id: purchaseReceipt?.id,
           data: {
+            reception_date: rest.reception_date.toString(),
             items: purchaseOrder?.items
               .filter(item => item.product_qty - item.qty_received > 0)
               .map(item => ({
@@ -106,9 +107,7 @@ export default function Actions() {
           location: "app/(private)/(commercial)/purchases/purchase-receipts/(form)/new/actions.tsx",
           rawError: error,
           fnLocation: "onSubmit"
-        }).unwrap().catch((error) => {
-          console.error(error);
-        });
+        })
       }
     }
   }
@@ -148,14 +147,14 @@ export default function Actions() {
           Guardar
         </Button>
       </div>
-      <AsyncCommand<{ id: number, number: string, supplier: string, created_by: string, required_date: string }, number>
+      <AsyncCommand<{ id: number, sequence_id: string, supplier: string, created_by: string, required_date: string }, number>
         open={openCommand}
         onOpenChange={setOpenCommand}
-        label="Solicitudes de pedido"
+        label="Ordenes de compra"
         fetcher={handleSearchPurchaseOrder}
         renderOption={(r) => (
           <div className="flex flex-col gap-1">
-            <span className="font-medium">{r.number}</span>
+            <span className="font-medium">{r.sequence_id}</span>
             <div className="grid grid-cols-4 items-center gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Building2 className="!h-3.5 !w-3.5" />

@@ -7,6 +7,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { newJournalEntrySchema } from "../../schemas/journal-entries";
 import { columns } from "./columns";
+import { formatNumber } from "@/lib/utils";
 
 export default function TableFooter({ append }: { append: (value: any) => void }) {
   const { control } = useFormContext<z.infer<typeof newJournalEntrySchema>>()
@@ -70,7 +71,7 @@ export default function TableFooter({ append }: { append: (value: any) => void }
             {currencies?.data.find(c => c.id === Number(currency))?.name}{" "}
           </span>
           <span className="font-semibold">
-            {debitTotal.toFixed(2)}
+            {formatNumber(debitTotal)}
           </span>
         </TableCell>
         <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5">
@@ -78,7 +79,7 @@ export default function TableFooter({ append }: { append: (value: any) => void }
             {currencies?.data.find(c => c.id === Number(currency))?.name}{" "}
           </span>
           <span className="font-semibold">
-            {creditTotal.toFixed(2)}
+            {formatNumber(creditTotal)}
           </span>
         </TableCell>
         <TableCell className="h-6 text-xs font-medium py-0 text-right pr-5"></TableCell>

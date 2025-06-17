@@ -4,7 +4,7 @@ import {
   ColumnDef
 } from "@tanstack/react-table"
 import { BillLine } from "../../../schemas/bills"
-import { cn } from "@/lib/utils"
+import { cn, formatNumber } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
@@ -32,7 +32,7 @@ export const columns: ColumnDef<BillLine & { currency: string }>[] = [
     accessorKey: "price_unit",
     header: "Precio unitario",
     cell: ({ row }) => {
-      return <span className="text-nowrap">{row.original.currency} {row.original.price_unit.toFixed(2)}</span>
+      return <span className="text-nowrap">{row.original.currency} {formatNumber(row.original.price_unit)}</span>
     },
   },
   {
@@ -118,7 +118,7 @@ export const columns: ColumnDef<BillLine & { currency: string }>[] = [
   },
   {
     accessorKey: "price_subtotal",
-    header: "Subtotal (sin imp.)",
-    cell: ({ row }) => <span className="font-medium">{row.original.currency} {row.original.price_subtotal.toFixed(2)}</span>,
+    header: () => <span className="text-nowrap">Subtotal (sin imp.)</span>,
+    cell: ({ row }) => <span className="font-medium">{row.original.currency} {formatNumber(row.original.price_subtotal)}</span>,
   },
 ]

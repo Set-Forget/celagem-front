@@ -1,7 +1,7 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { cn, formatNumber } from "@/lib/utils"
 import {
   ColumnDef
 } from "@tanstack/react-table"
@@ -44,7 +44,7 @@ export const columns: ColumnDef<ChargeList>[] = [
     accessorKey: "amount",
     header: "Monto",
     cell: ({ row }) => <div className="font-medium">
-      {row.original.currency} {row.getValue("amount")}
+      {row.original.currency} {formatNumber(row.getValue("amount"))}
     </div>,
   },
 ]

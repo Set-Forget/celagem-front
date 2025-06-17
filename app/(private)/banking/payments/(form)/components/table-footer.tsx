@@ -18,6 +18,7 @@ import { z } from "zod";
 import { newPaymentSchema } from "../../schemas/payments";
 import { useEffect, useMemo, useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { formatNumber } from "@/lib/utils";
 
 type PaymentForm = z.infer<typeof newPaymentSchema>;
 
@@ -101,7 +102,7 @@ export default function TableFooter() {
           Subtotal (Sin retenciones)
         </TableCell>
         <TableCell className="h-6 text-xs font-medium py-0 text-left pr-5">
-          {currencyName} {subtotal.toFixed(2)}
+          {currencyName} {formatNumber(subtotal)}
         </TableCell>
       </TableRow>
 
@@ -130,7 +131,7 @@ export default function TableFooter() {
             </TableCell>
 
             <TableCell className="h-6 text-xs py-0 text-left pr-5">
-              {currencyName} {monto.toFixed(2)}
+              {currencyName} {formatNumber(monto)}
             </TableCell>
           </TableRow>
         );
@@ -145,7 +146,7 @@ export default function TableFooter() {
         <TableCell
           className={cn("h-6 text-xs py-0 text-left pr-5 font-semibold")}
         >
-          {currencyName} {totalPayable.toFixed(2)}
+          {currencyName} {formatNumber(totalPayable)}
         </TableCell>
       </TableRow>
     </ShadFooter>

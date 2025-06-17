@@ -96,7 +96,7 @@ export default function Page() {
 
   return (
     <Form {...newCreditNoteForm}>
-      <Header title="Editar nota de crédito">
+      <Header title={`Editar nota de crédito ${creditNote?.sequence_id}`}>
         <div className="flex gap-2 ml-auto">
           <Button
             type="submit"

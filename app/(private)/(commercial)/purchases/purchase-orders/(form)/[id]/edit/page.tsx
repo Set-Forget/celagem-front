@@ -106,7 +106,7 @@ export default function Page() {
 
   return (
     <Form {...form}>
-      <Header title="Editar orden de compra">
+      <Header title={`Editar orden de compra ${purchaseOrder?.sequence_id}`}>
         <div className="flex justify-end gap-2 ml-auto">
           <Button
             type="submit"

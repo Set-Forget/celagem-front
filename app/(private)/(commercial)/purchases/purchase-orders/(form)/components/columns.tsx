@@ -69,6 +69,7 @@ export const columns: FormTableColumn<z.infer<typeof newPurchaseOrderSchema>>[] 
     width: 200,
     align: "left",
     cellClassName: "pl-4",
+    headerClassName: "text-nowrap",
     renderCell: (control, index) => <SubtotalField
       control={control}
       currencyPath="currency"

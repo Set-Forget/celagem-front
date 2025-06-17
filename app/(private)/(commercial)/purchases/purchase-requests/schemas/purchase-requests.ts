@@ -28,6 +28,7 @@ export const purchaseRequestLineSchema = z.object({
   id: z.number(),
   product_id: z.number(),
   product_name: z.string(),
+  product_code: z.string(),
   quantity: z.number(),
 });
 

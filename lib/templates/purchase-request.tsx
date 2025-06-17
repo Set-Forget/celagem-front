@@ -191,6 +191,10 @@ export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ 
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Fecha de solicitud:</Text>
+                <Text style={styles.value}>{formattedCreatedDate}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Fecha de requerimiento:</Text>
                 <Text style={styles.value}>{formattedRequestDate}</Text>
               </View>
             </View>
@@ -230,15 +234,15 @@ export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ 
           {/* Table */}
           <View style={styles.table}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.tableHeaderCell, styles.col1]}>ID</Text>
-              <Text style={[styles.tableHeaderCell, styles.col2]}>PRODUCTO ID</Text>
+              <Text style={[styles.tableHeaderCell, styles.col1]}>ITEM</Text>
+              <Text style={[styles.tableHeaderCell, styles.col2]}>CÓDIGO</Text>
               <Text style={[styles.tableHeaderCell, styles.col3]}>DESCRIPCIÓN</Text>
               <Text style={[styles.tableHeaderCell, styles.col4, { textAlign: "right" }]}>CANTIDAD</Text>
             </View>
-            {data.items.map((item) => (
+            {data.items.map((item, idx) => (
               <View key={item.id} style={styles.tableRow}>
-                <Text style={[styles.tableCell, styles.col1]}>{item.id}</Text>
-                <Text style={[styles.tableCell, styles.col2]}>{item.product_id}</Text>
+                <Text style={[styles.tableCell, styles.col1]}>{idx + 1}</Text>
+                <Text style={[styles.tableCell, styles.col2]}>{item.product_code}</Text>
                 <Text style={[styles.tableCell, styles.col3]}>{item.product_name}</Text>
                 <Text style={[styles.tableCellRight, styles.col4]}>{item.quantity.toLocaleString("es-ES")}</Text>
               </View>

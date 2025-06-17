@@ -107,33 +107,33 @@ export default function Page() {
     if (!supplier) return
     form.reset({
       ...supplier,
-      legal_name: supplier.legal_name || "",
+      legal_name: supplier.legal_name || undefined,
       property_payment_term: supplier.property_payment_term?.id,
       property_account_position: supplier.property_account_position || undefined,
       currency: supplier.currency?.id,
       economic_activity: supplier.economic_activity?.id,
-      phone: supplier.phone || "",
+      phone: supplier.phone || undefined,
       account: supplier.account?.id,
-      website: supplier.website || "",
+      website: supplier.website || undefined,
       payment_method: supplier.payment_method?.id,
       country_id: supplier.country_id,
       withholding_sources: supplier.withholding_source_ids.map((source) => source.id),
-      email: supplier.email || "",
-      tax_id: supplier.tax_id || "",
-      tax_type: supplier.tax_type || "",
-      entity_type: supplier.entity_type || "",
-      nationality_type: supplier.nationality_type || "",
-      tax_regime: supplier.tax_regime || "",
-      tax_category: supplier.tax_category || "",
+      email: supplier.email || undefined,
+      tax_id: supplier.tax_id || undefined,
+      tax_type: supplier.tax_type || undefined,
+      entity_type: supplier.entity_type || undefined,
+      nationality_type: supplier.nationality_type || undefined,
+      tax_regime: supplier.tax_regime || undefined,
+      tax_category: supplier.tax_category || undefined,
       is_resident: supplier.is_resident || false,
-      tax_information: supplier.tax_information || "",
-      fiscal_responsibility: supplier.fiscal_responsibility || "",
+      tax_information: supplier.tax_information || undefined,
+      fiscal_responsibility: supplier.fiscal_responsibility || undefined,
     })
   }, [supplier])
 
   return (
     <Form {...form}>
-      <Header title="Editar proveedor" >
+      <Header title={`Editar proveedor ${supplier?.name}`}>
         <Button
           type="submit"
           onClick={form.handleSubmit(onSubmit)}

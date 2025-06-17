@@ -9,6 +9,7 @@ export const purchaseReceiptItemSchema = z.object({
   display_name: z.string(),
   expected_quantity: z.number(),
   quantity: z.number(),
+  product_code: z.string(),
   product_uom: z.object({
     id: z.number(),
     name: z.string(),

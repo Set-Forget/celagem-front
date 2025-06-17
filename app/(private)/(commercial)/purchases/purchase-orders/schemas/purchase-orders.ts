@@ -1,4 +1,4 @@
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { z } from "zod";
 
 export const purchaseOrderState = z.enum(["draft", "to approve", "purchase", "done", "cancel"])
@@ -13,8 +13,13 @@ const newPurchaseOrderLineSchema = z.object({
 
 export const newPurchaseOrderGeneralSchema = z.object({
   supplier: z.number({ required_error: "El proveedor es requerido" }),
-  required_date: z.custom<CalendarDate>()
-    .refine(v => v instanceof CalendarDate, { message: "La fecha de requerimiento es requerida" }),
+  required_date: z
+    .custom<CalendarDate>((v) => v instanceof CalendarDate, {
+      message: "La fecha de requerimiento es requerida",
+    })
+    .refine(d => d.compare(today(getLocalTimeZone())) >= 0, {
+      message: "La fecha de requerimiento no puede ser anterior al día de hoy",
+    }),
   purchase_request: z.number().optional(),
   company: z.string().default(""),
   items: z.array(newPurchaseOrderLineSchema)
