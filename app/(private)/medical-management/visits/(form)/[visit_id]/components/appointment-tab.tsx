@@ -48,12 +48,6 @@ export default function AppointmentTab() {
       render: (p) => p?.mode_of_care ? modesOfCare[p.mode_of_care as keyof typeof modesOfCare] : "No especificado",
     },
     {
-      label: "Firmado por",
-      placeholderLength: 10,
-      className: visit?.status === "DRAFT" ? "hidden" : "",
-      render: (p) => "xxxx",
-    },
-    {
       label: "Fecha de firma",
       placeholderLength: 10,
       className: visit?.status === "DRAFT" ? "hidden" : "",

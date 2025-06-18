@@ -46,7 +46,7 @@ export function useRoleSelect<
           .map(mapFn);
       } catch (e) {
         sendMessage({
-          location: "app/(private)/(commercial)/hooks/use-purchase-request-select.ts",
+          location: "app/(private)/hooks/use-role-select.ts",
           rawError: e,
           fnLocation: "fetcher"
         })

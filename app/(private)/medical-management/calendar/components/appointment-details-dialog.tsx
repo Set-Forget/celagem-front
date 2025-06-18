@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { AppointmentDetail } from "../schemas/appointments";
 import { appointmentStates, modesOfCare } from "../utils";
 import { useSendMessageMutation } from "@/lib/services/telegram";
+import { useListVisitsQuery } from "@/lib/services/visits";
 
 export type FieldDefinition<T> = {
   label: string;
@@ -77,14 +78,20 @@ export default function AppointmentDetailsDialog() {
 
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
-  const appointmentId = dialogState?.payload?.appointment_id as string
-
   const [sendMessage] = useSendMessageMutation();
+  const [updateAppointment] = useUpdateAppointmentMutation()
 
+  const appointmentId = dialogState?.payload?.appointment_id as string
   const { data: appointment, isLoading: isAppointmentLoading } = useGetAppointmentQuery(appointmentId, {
     skip: !appointmentId
   });
-  const [updateAppointment] = useUpdateAppointmentMutation()
+
+  const isCompleted = appointment?.status === "COMPLETED";
+  const { data: visitsList, isLoading: isVisitsLoading } = useListVisitsQuery(undefined, {
+    skip: !isCompleted,
+  });
+
+  const visitId = visitsList?.data?.find((v) => v.appointment_id === appointment?.id)?.id;
 
   const onOpenChange = () => {
     closeDialogs()
@@ -127,35 +134,48 @@ export default function AppointmentDetailsDialog() {
             <DialogTitle className={cn("transition-all duration-300", isAppointmentLoading ? "blur-[4px]" : "blur-none")}>
               {isAppointmentLoading ? placeholder(12) : appointment?.patient?.first_name} {appointment?.patient?.last_name}
             </DialogTitle>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Badge
-                  variant="custom"
-                  className={
-                    cn(
-                      appointmentStates[appointment?.status as keyof typeof appointmentStates]?.bg_color,
-                      appointmentStates[appointment?.status as keyof typeof appointmentStates]?.text_color
-                    )}
-                >
-                  {appointmentStates[appointment?.status as keyof typeof appointmentStates]?.label}
-                  <ChevronDown className="h-3.5 w-3.5 ml-1" />
-                </Badge>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="min-w-32">
-                <DropdownMenuItem
-                  onSelect={() => handleUpdateAppointment({ status: "SCHEDULED" })}
-                >
-                  <StatusDot className="text-primary !h-2 !w-2 shadow-md rounded-full shadow-primary/50" />
-                  <span>Pendiente</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onSelect={() => handleUpdateAppointment({ status: "CANCELLED" })}
-                >
-                  <StatusDot className="text-red-500 !h-2 !w-2 shadow-md rounded-full shadow-red-500/50" />
-                  <span>Cancelado</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {isCompleted ? (
+              <Badge
+                variant="custom"
+                className={
+                  cn(
+                    appointmentStates[appointment?.status as keyof typeof appointmentStates]?.bg_color,
+                    appointmentStates[appointment?.status as keyof typeof appointmentStates]?.text_color
+                  )}
+              >
+                {appointmentStates[appointment?.status as keyof typeof appointmentStates]?.label}
+              </Badge>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Badge
+                    variant="custom"
+                    className={
+                      cn(
+                        appointmentStates[appointment?.status as keyof typeof appointmentStates]?.bg_color,
+                        appointmentStates[appointment?.status as keyof typeof appointmentStates]?.text_color
+                      )}
+                  >
+                    {appointmentStates[appointment?.status as keyof typeof appointmentStates]?.label}
+                    <ChevronDown className="h-3.5 w-3.5 ml-1" />
+                  </Badge>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="min-w-32">
+                  <DropdownMenuItem
+                    onSelect={() => handleUpdateAppointment({ status: "SCHEDULED" })}
+                  >
+                    <StatusDot className="text-primary !h-2 !w-2 shadow-md rounded-full shadow-primary/50" />
+                    <span>Pendiente</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => handleUpdateAppointment({ status: "CANCELLED" })}
+                  >
+                    <StatusDot className="text-red-500 !h-2 !w-2 shadow-md rounded-full shadow-red-500/50" />
+                    <span>Cancelado</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </DialogHeader>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -184,25 +204,41 @@ export default function AppointmentDetailsDialog() {
           })}
         </div>
         <div className="flex gap-2 ml-auto">
-          <Button
-            variant="outline"
-            size="icon"
-            className="w-8 h-8"
-            onClick={() => {
-              setMasterDialogsState({ open: "edit-appointment", payload: { appointment } })
-            }}
-          >
-            <Pencil />
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => {
-              closeDialogs()
-              router.push(`/medical-management/visits/new/${appointment?.id}`)
-            }}
-          >
-            Iniciar visita
-          </Button>
+          {isCompleted ? (
+            <Button
+              size="sm"
+              disabled={isVisitsLoading || !visitId}
+              onClick={() => {
+                if (!visitId) return;
+                closeDialogs();
+                router.push(`/medical-management/visits/${visitId}`);
+              }}
+            >
+              Ir a la visita
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                size="icon"
+                className="w-8 h-8"
+                onClick={() => {
+                  setMasterDialogsState({ open: "edit-appointment", payload: { appointment } });
+                }}
+              >
+                <Pencil />
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  closeDialogs();
+                  router.push(`/medical-management/visits/new/${appointment?.id}`);
+                }}
+              >
+                Iniciar visita
+              </Button>
+            </>
+          )}
         </div>
       </DialogContent>
     </Dialog>

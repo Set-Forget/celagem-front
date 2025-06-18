@@ -3,7 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { ArrowRight } from 'lucide-react';
 import { DeliveryNoteList } from '../schemas/delivery-notes';
@@ -40,7 +40,7 @@ export const columns: ColumnDef<DeliveryNoteList>[] = [
     header: 'Fecha de entrega',
     cell: ({ row }) => (
       <div>
-        {format(new Date(row.getValue('delivery_date')), 'PP', { locale: es })}
+        {format(parseISO(row.getValue('delivery_date')), 'PP', { locale: es })}
       </div>
     ),
   },

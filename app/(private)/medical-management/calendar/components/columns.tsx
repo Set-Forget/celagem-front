@@ -77,6 +77,7 @@ export const columns: ColumnDef<AppointmentList>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
+      if (row.original.status === "COMPLETED") return null;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -88,8 +89,8 @@ export const columns: ColumnDef<AppointmentList>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               onClick={e => {
-                e.stopPropagation()
-                setDialogsState({ open: "edit-appointment", payload: { appointment: row.original } })
+                e.stopPropagation();
+                setDialogsState({ open: "edit-appointment", payload: { appointment: row.original } });
               }}
             >
               <SquarePen />

@@ -5,10 +5,9 @@ import { useParams } from "next/navigation";
 import { PatientDetail } from "../../../schema/patients";
 
 export default function CareCompanyTab() {
-  const params = useParams<{ patient_id: string }>();
-  const patientId = params.patient_id;
+  const { id } = useParams<{ id: string }>();
 
-  const { data: patient, isLoading: isPatientLoading } = useGetPatientQuery(patientId);
+  const { data: patient, isLoading: isPatientLoading } = useGetPatientQuery(id);
 
   const fields: FieldDefinition<PatientDetail>[] = [
     {

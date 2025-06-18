@@ -52,31 +52,19 @@ const baseTypeSchema = z.object({
   properties: z.object({
     maxLength: z.preprocess(
       val => (val === null ? undefined : val),
-      z.number({
-        invalid_type_error: 'Campo requerido',
-        required_error: 'Campo requerido',
-      }).optional()
+      z.number({ invalid_type_error: 'Campo requerido', required_error: 'Campo requerido' }).optional()
     ),
     maxValue: z.preprocess(
       val => (val === null ? undefined : val),
-      z.number({
-        invalid_type_error: 'Campo requerido',
-        required_error: 'Campo requerido',
-      }).optional()
+      z.number({ invalid_type_error: 'Campo requerido', required_error: 'Campo requerido' }).optional()
     ),
     minValue: z.preprocess(
       val => (val === null ? undefined : val),
-      z.number({
-        invalid_type_error: 'Campo requerido',
-        required_error: 'Campo requerido',
-      }).optional()
+      z.number({ invalid_type_error: 'Campo requerido', required_error: 'Campo requerido' }).optional()
     ),
     decimalPlaces: z.preprocess(
       val => (val === null ? undefined : val),
-      z.number({
-        invalid_type_error: 'Campo requerido',
-        required_error: 'Campo requerido',
-      }).optional()
+      z.number({ invalid_type_error: 'Campo requerido', required_error: 'Campo requerido' }).optional()
     ),
     isConditionalForNextStep: z.boolean().optional(),
     options: z.array(z.object({ value: z.string(), label: z.string() })).optional(),
@@ -250,7 +238,7 @@ export const newFieldSchema = z.object({
   is_active: z.boolean(),
   section_id: z.number(),
   type: typeSchema,
-  //order: z.number().optional(),
+  order: z.number().optional(),
 })
 
 export const newSectionSchema = z.object({

@@ -61,7 +61,7 @@ export const templatesApi = hcApi.injectEndpoints({
         method: 'PATCH',
         body: newSection,
       }),
-      invalidatesTags: ['Section'],
+      invalidatesTags: [],
     }),
     listSections: builder.query<SectionListResponse, { name?: string } | void>({
       query: (data) => ({
@@ -90,7 +90,7 @@ export const templatesApi = hcApi.injectEndpoints({
         method: 'POST',
         body: newField,
       }),
-      invalidatesTags: ['Field'],
+      invalidatesTags: ['Field', 'Section'],
     }),
     updateField: builder.mutation<
       NewFieldResponse,
@@ -101,7 +101,26 @@ export const templatesApi = hcApi.injectEndpoints({
         method: 'PATCH',
         body: newField,
       }),
-      invalidatesTags: ['Field'],
+      invalidatesTags: ['Field', 'Section'],
+    }),
+
+    //--- Files ---
+    uploadFile: builder.mutation<
+      { status: string; code: number; message: string; data: { id: string; name: string; file: string } },
+      { name: string; file: string; ref_metadata?: Record<string, unknown> }
+    >({
+      query: (body) => ({
+        url: `/file`,
+        method: 'POST',
+        body,
+      }),
+    }),
+    getFile: builder.mutation<{ status: string; code: number; message: string; data: { id: string; name: string; ref_metadata: { file: string } } }, { ids: string[] }>({
+      query: (body) => ({
+        url: `/file/search`,
+        method: 'POST',
+        body,
+      }),
     }),
   }),
 });
@@ -125,4 +144,7 @@ export const {
 
   useUpdateTemplateMutation,
   useCreateTemplateMutation,
+
+  useUploadFileMutation,
+  useGetFileMutation,
 } = templatesApi;

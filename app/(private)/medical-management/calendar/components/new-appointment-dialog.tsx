@@ -108,6 +108,7 @@ export default function NewAppointmentDialog() {
         label: `${patient.first_name} ${patient.first_last_name}`,
         value: patient.id,
       }))
+        .filter((patient) => patient.label.toLowerCase().includes(query?.toLowerCase() ?? ""))
     } catch (error) {
       sendMessage({
         location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
@@ -135,13 +136,14 @@ export default function NewAppointmentDialog() {
     }
   }
 
-  const handleGetBusinessUnits = async () => {
+  const handleGetBusinessUnits = async (query?: string) => {
     try {
       const businessUnits = await getBusinessUnits().unwrap()
       return businessUnits.data.map((bu) => ({
         label: bu.name,
         value: bu.id,
       }))
+        .filter((bu) => bu.label.toLowerCase().includes(query?.toLowerCase() ?? ""))
     } catch (error) {
       sendMessage({
         location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",

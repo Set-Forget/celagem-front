@@ -32,7 +32,9 @@ export function usePaymentMethodSelect({
         return (res.data?.map((paymentMethod) => ({
           id: paymentMethod.id,
           name: paymentMethod.payment_method,
+          type: paymentMethod.payment_type,
         })) ?? [])
+          .filter((paymentMethod) => paymentMethod.type === paymentType)
           .filter((paymentMethod) => {
             if ((paymentMethod.name || "").toLowerCase().includes(query?.toLowerCase() || "")) {
               return true

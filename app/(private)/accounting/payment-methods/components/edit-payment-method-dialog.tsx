@@ -76,8 +76,6 @@ export default function EditPaymentMethodDialog() {
     }
   }, [])
 
-  console.log(paymentMethodLine)
-
   useEffect(() => {
     if (paymentMethodLine && paymentMethod) {
       form.reset({

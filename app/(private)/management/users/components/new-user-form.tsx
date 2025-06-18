@@ -12,15 +12,22 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { newUserSchema } from "../schema/users";
 import { cn } from "@/lib/utils";
+import { useSpecialitySelect } from "@/hooks/use-speciality-select";
+import SignaturePad from "./signature-pad";
 
 export default function NewUserForm({
   isEditing = false,
 }: {
   isEditing?: boolean
 }) {
-  const { control } = useFormContext<z.infer<typeof newUserSchema>>()
+  const { control, setValue } = useFormContext<z.infer<typeof newUserSchema>>()
 
   const [isVisible, setIsVisible] = useState(false);
+
+  const roleIsMedical = useWatch({
+    control: control,
+    name: 'role_is_medical',
+  })
 
   const companyId = useWatch({
     control: control,
@@ -32,11 +39,17 @@ export default function NewUserForm({
     name: 'business_units',
   })
 
-  const { fetcher: handleSearchRole } = useRoleSelect()
+  const { fetcher: handleSearchSpeciality } = useSpecialitySelect()
   const { fetcher: handleSearchCompany } = useCompanySelect()
   const { fetcher: handleSearchBusinessUnit, initialOptions: businessUnitInitialOptions } = useBusinessUnitSelect({
     companyId,
     businessUnitIds,
+  })
+  const { fetcher: handleSearchRole } = useRoleSelect({
+    map: (role) => ({
+      ...role,
+      is_medical: role.is_medical,
+    }),
   })
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
@@ -132,34 +145,6 @@ export default function NewUserForm({
           )}
         />
       )}
-      <FormField
-        control={control}
-        name="role_id"
-        render={({ field }) => (
-          <FormItem className="flex flex-col w-full">
-            <FormLabel className="w-fit">
-              Rol
-            </FormLabel>
-            <FormControl>
-              <AsyncSelect<{ id: string, name: string }, string>
-                label="Rol"
-                triggerClassName="!w-full"
-                placeholder="Seleccionar rol..."
-                fetcher={handleSearchRole}
-                getDisplayValue={(item) => item.name}
-                getOptionValue={(item) => item.id}
-                renderOption={(item) => <div>{item.name}</div>}
-                onChange={field.onChange}
-                value={field.value}
-                getOptionKey={(item) => String(item.id)}
-                noResultsMessage="No se encontraron resultados"
-                modal
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
       {!isEditing && (
         <>
           <FormField
@@ -210,6 +195,83 @@ export default function NewUserForm({
                     disabled={!companyId}
                     initialOptions={businessUnitInitialOptions}
                     modalPopover
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </>
+      )}
+      <FormField
+        control={control}
+        name="role_id"
+        render={({ field }) => (
+          <FormItem className="flex flex-col w-full">
+            <FormLabel className="w-fit">
+              Rol
+            </FormLabel>
+            <FormControl>
+              <AsyncSelect<{ id: string, name: string, is_medical: boolean }, string>
+                label="Rol"
+                triggerClassName="!w-full"
+                placeholder="Seleccionar rol..."
+                fetcher={handleSearchRole}
+                getDisplayValue={(item) => item.name}
+                getOptionValue={(item) => item.id}
+                renderOption={(item) => <div>{item.name}</div>}
+                onChange={(val, option) => {
+                  field.onChange(val)
+                  const medicalFlag = option?.is_medical ?? false;
+                  setValue('role_is_medical', medicalFlag, { shouldValidate: true })
+                }}
+                value={field.value}
+                getOptionKey={(item) => String(item.id)}
+                noResultsMessage="No se encontraron resultados"
+                modal
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      {roleIsMedical && (
+        <>
+          <FormField
+            control={control}
+            name="speciality_id"
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-full">
+                <FormLabel className="w-fit">Especialidad</FormLabel>
+                <FormControl>
+                  <AsyncSelect<{ id: string, title: string }, string | undefined>
+                    label="Especialidad"
+                    triggerClassName="!w-full"
+                    placeholder="Seleccionar especialidad..."
+                    fetcher={handleSearchSpeciality}
+                    getDisplayValue={(item) => item.title}
+                    getOptionValue={(item) => item.id}
+                    renderOption={(item) => <div>{item.title}</div>}
+                    onChange={field.onChange}
+                    value={field.value}
+                    getOptionKey={(item) => String(item.id)}
+                    noResultsMessage="No se encontraron resultados"
+                    modal
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="signature"
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-full col-span-2">
+                <FormLabel className="w-fit">Firma</FormLabel>
+                <FormControl>
+                  <SignaturePad
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />

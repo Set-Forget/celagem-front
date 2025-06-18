@@ -72,16 +72,14 @@ const tabs = [
 ];
 
 export default function Page() {
-  const params = useParams<{ patient_id: string }>();
+  const { id } = useParams<{ id: string }>();
   const router = useRouter()
-
-  const patientId = params.patient_id;
 
   const [sendMessage] = useSendMessageMutation();
   const [updatePatient, { isLoading: isUpdatingPatient }] = useUpdatePatientMutation()
 
   const { data: profile } = useGetProfileQuery()
-  const { data: patient } = useGetPatientQuery(patientId, { skip: !patientId })
+  const { data: patient } = useGetPatientQuery(id, { skip: !id })
 
   const newPatientForm = useForm<z.infer<typeof newPatientSchema>>({
     resolver: zodResolver(newPatientSchema),
@@ -91,10 +89,10 @@ export default function Page() {
     const { created_by, birthdate, ...rest } = data
     try {
       const response = await updatePatient({
-        id: patientId,
+        id,
         body: {
           ...rest,
-          birth_date: data.birthdate.toString(),
+          birthdate: data.birthdate.toString(),
         },
       }).unwrap()
 
@@ -120,28 +118,28 @@ export default function Page() {
 
   useEffect(() => {
     if (patient) {
-      const [year, month, day] = patient.birth_date.split('T')[0].split('-').map(Number);
+      const [year, month, day] = patient?.birth_date?.split('T')[0]?.split('-').map(Number) ?? [];
       newPatientForm.reset({
         ...patient,
-        clinics: patient.clinics.map((clinic) => clinic.id),
-        company_id: patient.company.id,
-        class_id: patient.class.id,
-        created_by: patient.created_by.id,
-        address: patient.address ?? undefined,
+        clinics: patient?.clinics?.map((clinic) => clinic.id),
+        company_id: patient?.company?.id,
+        class_id: patient?.class?.id,
+        created_by: patient?.created_by?.id,
+        address: patient?.address ?? undefined,
         birthdate: new CalendarDate(year, month - 1, day),
         caregiver: {
           ...patient.caregiver,
-          address: !!patient.caregiver.address.place_id ? patient.caregiver.address : undefined,
+          address: !!patient?.caregiver?.address?.place_id ? patient?.caregiver?.address : undefined,
         },
         companion: {
           ...patient.companion,
-          address: !!patient.companion.address.place_id ? patient.companion.address : undefined,
+          address: !!patient?.companion?.address?.place_id ? patient?.companion?.address : undefined,
         },
-        disability_type: patient.disability_type ?? undefined,
+        disability_type: patient?.disability_type ?? undefined,
         care_company_plan: {
-          care_company_id: patient.care_company_plan.care_company.id,
-          contract_number: patient.care_company_plan.contract_number,
-          coverage: patient.care_company_plan.coverage,
+          care_company_id: patient?.care_company_plan?.care_company?.id,
+          contract_number: patient?.care_company_plan?.contract_number,
+          coverage: patient?.care_company_plan?.coverage,
         },
         insurance_provider: patient.insurance_provider ?? undefined,
         referring_entity: patient.referring_entity ?? undefined,

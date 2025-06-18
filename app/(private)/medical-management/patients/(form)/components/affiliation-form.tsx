@@ -19,13 +19,11 @@ import { newPatientSchema } from "../../schema/patients"
 import { linkageTypes } from "../../utils"
 
 export default function AffiliationForm() {
-  const params = useParams<{ patient_id: string }>();
-
-  const patientId = params.patient_id;
+  const { id } = useParams<{ id: string }>();
 
   const { setValue, control } = useFormContext<z.infer<typeof newPatientSchema>>()
 
-  const { data: patient } = useGetPatientQuery(patientId, { skip: !patientId })
+  const { data: patient } = useGetPatientQuery(id, { skip: !id })
 
   const [sendMessage] = useSendMessageMutation()
   const [getCompanies] = useLazyListCompaniesQuery()

@@ -12,12 +12,14 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { newUserSchema } from "../schema/users";
 import NewUserForm from "./new-user-form";
+import { useCreateDoctorMutation } from "@/lib/services/doctors";
 
 export default function NewUserDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
   const [sendMessage] = useSendMessageMutation();
   const [createUser, { isLoading: isCreatingUser }] = useCreateUserMutation();
+  const [createDoctor, { isLoading: isCreatingDoctor }] = useCreateDoctorMutation();
 
   const form = useForm<z.infer<typeof newUserSchema>>({
     resolver: zodResolver(newUserSchema),
@@ -26,6 +28,9 @@ export default function NewUserDialog() {
       last_name: '',
       email: '',
       role_id: '',
+      role_is_medical: false,
+      speciality_id: '',
+      signature: '',
       company_id: '',
       password: '',
       business_units: [],
@@ -38,8 +43,20 @@ export default function NewUserDialog() {
   }
 
   const onSubmit = async (data: Partial<z.infer<typeof newUserSchema>>) => {
+    const { signature, speciality_id, role_is_medical, ...rest } = data;
+
     try {
-      const response = await createUser(data).unwrap();
+      const response = await createUser(rest).unwrap();
+
+      if (role_is_medical) {
+        const userId = response.data.id
+        await createDoctor({
+          id: userId,
+          signature: data.first_name + ' ' + data.last_name,
+          speciality_id: Number(speciality_id),
+          image: signature?.split(',')[1] || '',
+        }).unwrap();
+      }
 
       if (response.status === 'success') {
         onOpenChange()
@@ -80,7 +97,7 @@ export default function NewUserDialog() {
             <Button
               onClick={() => form.handleSubmit(onSubmit)()}
               size="sm"
-              loading={isCreatingUser}
+              loading={isCreatingUser || isCreatingDoctor}
               type="button">
               Crear
             </Button>

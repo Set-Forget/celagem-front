@@ -29,7 +29,7 @@ export const userDetailSchema = z.object({
   modified_at: z.string(),
 })
 
-export const newUserSchema = z.object({
+const baseNewUserSchema = z.object({
   first_name: z.string({ required_error: 'El nombre es requerido' }).min(1, { message: 'El nombre es requerido' }),
   last_name: z.string({ required_error: 'El apellido es requerido' }).min(1, { message: 'El apellido es requerido' }),
   email: z.string({ required_error: 'El correo electrónico es requerido' }).min(1, { message: 'El correo electrónico es requerido' }),
@@ -37,11 +37,40 @@ export const newUserSchema = z.object({
   business_units: z.array(z.string()).min(1, { message: 'Debes seleccionar al menos una unidad de negocio' }),
   company_id: z.string({ required_error: 'La compañía es requerida' }).min(1, { message: 'La compañía es requerida' }),
   role_id: z.string({ required_error: 'El rol es requerido' }).min(1, { message: 'El rol es requerido' }),
-})
+  role_is_medical: z.boolean().default(false),
+  speciality_id: z.string().optional(),
+  signature: z.string().nullable().optional(),
+});
 
-export const editUserSchema = newUserSchema.extend({
+export const newUserSchema = baseNewUserSchema.superRefine(({ role_is_medical, speciality_id, signature }, ctx) => {
+  if (role_is_medical && (!speciality_id || speciality_id.length === 0)) {
+    ctx.addIssue({
+      path: ['speciality_id'],
+      code: z.ZodIssueCode.custom,
+      message: 'La especialidad es requerida cuando el rol es médico',
+    });
+  }
+  if (!signature) {
+    ctx.addIssue({
+      path: ['signature'],
+      code: z.ZodIssueCode.custom,
+      message: 'La firma es requerida',
+    });
+  }
+  if (signature && !signature.startsWith('data:image/png;base64,')) {
+    ctx.addIssue({
+      path: ['signature'],
+      code: z.ZodIssueCode.custom,
+      message: 'La firma debe ser una imagen en formato base64',
+    });
+  }
+});
+
+export const editUserSchema = baseNewUserSchema.extend({
   password: z.string().optional(),
-}).partial({ password: true });
+  company_id: z.string().optional(),
+  business_units: z.array(z.string()).optional(),
+}).partial({ password: true, company_id: true, business_units: true });
 
 export const userListResponseSchema = z.object({
   data: z.array(userListSchema),

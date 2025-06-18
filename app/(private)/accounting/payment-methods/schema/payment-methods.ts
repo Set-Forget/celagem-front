@@ -5,6 +5,7 @@ export const paymentMethodLinesListSchema = z.object({
   payment_method: z.string(),
   company: z.string(),
   payment_account: z.string(),
+  payment_type: z.enum(['inbound', 'outbound']),
   created_by: z.object({
     id: z.number(),
     name: z.string(),
@@ -14,6 +15,7 @@ export const paymentMethodLinesListSchema = z.object({
 
 export const paymentMethodLineDetailSchema = z.object({
   id: z.number(),
+  payment_type: z.enum(['inbound', 'outbound']),
   payment_method: z.object({
     id: z.number(),
     name: z.string(),

@@ -3,6 +3,8 @@ import type { ReactElement } from 'react'
 import type { TemplateMap } from './templates'
 import { templates } from './templates'
 import { PDFDocument } from "pdf-lib";
+import { Provider } from 'react-redux'
+import { store } from '@/store'
 
 export interface GeneratePDFOptions<K extends keyof TemplateMap> {
   templateName: K
@@ -53,7 +55,11 @@ export async function generatePDF<K extends keyof TemplateMap>(
     throw new Error(`Template "${templateName}" no soportado.`)
   }
 
-  const doc: ReactElement = <TemplateComponent data={data} />
+  const doc: ReactElement = (
+    <Provider store={store}>
+      <TemplateComponent data={data} />
+    </Provider>
+  )
 
   const instance = pdf()
   instance.updateContainer(doc)

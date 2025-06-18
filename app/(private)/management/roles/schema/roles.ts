@@ -5,6 +5,7 @@ export const roleListSchema = z.object({
   name: z.string(),
   company_id: z.string(),
   company_name: z.string(),
+  is_medical: z.boolean(),
 })
 
 export const roleListResponseSchema = z.object({

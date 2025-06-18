@@ -31,8 +31,6 @@ export default function NewTaxDialog() {
     form.reset()
   }
 
-  console.log(form.formState.errors)
-
   const onSubmit = async (data: z.infer<typeof newTaxSchema>) => {
     try {
       const response = await createTax({

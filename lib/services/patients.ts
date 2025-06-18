@@ -27,7 +27,7 @@ export const patientsApi = hcApi.injectEndpoints({
       transformResponse: (response: PatientDetailResponse) => response.data,
       providesTags: ['Patient'],
     }),
-    updatePatient: builder.mutation<NewPatientResponse, { id: string, body: Partial<Overwrite<NewPatient, { birth_date: string }>> }>({
+    updatePatient: builder.mutation<NewPatientResponse, { id: string, body: Partial<Overwrite<NewPatient, { birthdate: string }>> }>({
       query: ({ id, body }) => ({
         url: `patient/${id}`,
         method: 'PATCH',

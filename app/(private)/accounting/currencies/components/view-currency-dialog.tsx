@@ -54,7 +54,7 @@ export default function CurrencyDetailsDialog() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Detalles del usuario
+            Detalles de la moneda
           </DialogTitle>
           <DialogDescription className="sr-only" />
         </DialogHeader>

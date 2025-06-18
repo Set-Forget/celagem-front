@@ -65,7 +65,7 @@ export default function TaxDetailsDialog() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Detalles del usuario
+            Detalles del impuesto
           </DialogTitle>
           <DialogDescription className="sr-only" />
         </DialogHeader>

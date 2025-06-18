@@ -7,11 +7,14 @@ import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm, useFormContext } from "react-hook-form";
-import { v4 as uuidv4 } from 'uuid';
 import { z } from "zod";
 import { NormalizedSchema } from "../schemas/masters";
 import NewFieldForm from "./new-field-form";
 import { newFieldSchema } from "../schemas/templates";
+import { toast } from "sonner";
+import { useCreateFieldMutation, useUpdateSectionMutation, useUpdateFieldMutation } from "@/lib/services/templates";
+import CustomSonner from "@/components/custom-sonner";
+import { v4 as uuidv4 } from "uuid";
 
 export default function NewFieldDialog() {
   const { getValues, setValue } = useFormContext<NormalizedSchema>();
@@ -26,56 +29,60 @@ export default function NewFieldDialog() {
     resolver: zodResolver(newFieldSchema),
   });
 
+  const [createField, { isLoading: isCreatingField }] = useCreateFieldMutation();
+  const [updateSection, { isLoading: isUpdatingSection }] = useUpdateSectionMutation();
+  const [updateField, { isLoading: isUpdatingField }] = useUpdateFieldMutation();
+
   const onOpenChange = () => {
     closeDialogs()
     form.reset()
   }
 
   async function onSubmit(data: z.infer<typeof newFieldSchema>) {
-    const currentFields = getValues("fields") || [];
+    try {
+      const currentFields = getValues("fields") || [];
+      const sectionData = getValues("section");
 
-    const numericIds = currentFields
-      .map(f => Number(f.id))
-      .filter(id => Number.isFinite(id));
+      const fieldToSend: z.infer<typeof newFieldSchema> = {
+        ...data,
+        code: data.code || uuidv4(),
+      };
 
-    const negativeIds = numericIds.filter(id => id < 0);
+      const response = await createField(fieldToSend).unwrap();
+      const createdFieldResponse = response.data;
 
-    const nextId = negativeIds.length > 0
-      ? Math.min(...negativeIds) - 1
-      : -1;
+      const createdFieldFull: z.infer<typeof newFieldSchema> = {
+        ...fieldToSend,
+        id: createdFieldResponse.id,
+        order: 0,
+      };
 
-    const newField = {
-      ...data,
-      id: nextId,
-      code: uuidv4(),
-    };
+      const shiftedExistingFields = currentFields.map((f) => ({ ...f, order: (f.order ?? 0) + 1 }));
 
-    setValue("fields", [...currentFields, newField], {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
+      const updatedSectionFields = [createdFieldResponse.id, ...sectionData.fields];
 
-    // @ Se usa kind para determinar si es una plantilla o una sección.
-    // @ Encontré esta forma de hacerlo, pero no estoy seguro si es la mejor.
-    // @ Es necesaria para determinar como setear los valores de los campos.
-    if (getValues("kind") === "template") {
-      const idx = getValues("sections")
-        .findIndex(section => section.id === payload.sectionId);
+      await updateSection({ ...sectionData, id: sectionData.id, fields: updatedSectionFields });
 
-      setValue(
-        `sections.${idx}.fields`,
-        [...(getValues(`sections.${idx}.fields`) ?? []), nextId],
-        { shouldValidate: true, shouldDirty: true },
-      );
-    } else {
-      setValue(
-        "section.fields",
-        [...getValues("section.fields"), nextId],
-        { shouldValidate: true, shouldDirty: true },
-      );
+      const updatePromises: Promise<unknown>[] = [];
+
+      updatePromises.push(updateField({ ...createdFieldFull, id: createdFieldResponse.id }).unwrap());
+
+      shiftedExistingFields.forEach((field) => {
+        updatePromises.push(updateField({ ...field, id: field.id, order: field.order }).unwrap());
+      });
+
+      await Promise.all(updatePromises);
+
+      toast.custom((t) => (
+        <CustomSonner t={t} description="Campo creado exitosamente" />
+      ));
+
+      closeDialogs();
+    } catch (err) {
+      toast.custom((t) => (
+        <CustomSonner t={t} description="Error creando campo" variant="error" />
+      ));
     }
-
-    closeDialogs();
   }
 
   useEffect(() => {
@@ -90,7 +97,7 @@ export default function NewFieldDialog() {
     form.reset({
       section_id: payload.sectionId,
       id: 0,
-      code: "",
+      code: uuidv4(),
       title: "",
       rule: null,
       formula: null,
@@ -128,6 +135,7 @@ export default function NewFieldDialog() {
             <DialogFooter>
               <Button
                 size="sm"
+                loading={isCreatingField || isUpdatingSection || isUpdatingField}
               >
                 Guardar
               </Button>

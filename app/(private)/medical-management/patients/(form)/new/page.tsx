@@ -86,6 +86,10 @@ export default function Page() {
       const response = await createPatient({
         ...data,
         birthdate: data.birthdate.toString(),
+        fiscal: {
+          ...data.fiscal,
+          registered_name: data.fiscal.registered_name || data.first_name + " " + data.first_last_name,
+        },
         created_by: undefined,
       }).unwrap()
 

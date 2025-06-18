@@ -1,4 +1,4 @@
-import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
+import { Document, Page, View, Text, Image, StyleSheet, Font, Link } from "@react-pdf/renderer"
 import type { AppointmentDetail } from "@/app/(private)/medical-management/calendar/schemas/appointments"
 import type { Section, TemplateDetail } from "@/app/(private)/medical-management/(masters)/schemas/templates"
 import { templateDetailSchema } from "@/app/(private)/medical-management/(masters)/schemas/templates"
@@ -9,6 +9,7 @@ import { resolveFieldDisplayValue } from "@/app/(private)/medical-management/vis
 import type { VisitDetail } from "@/app/(private)/medical-management/visits/schemas/visits"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
+import { useGetSignatureQuery } from "../services/doctors"
 
 export type VisitRecordData = {
   visit: VisitDetail
@@ -203,7 +204,62 @@ const styles = StyleSheet.create({
   },
 })
 
+// Helpers to render values inside the PDF (no HTML, only react-pdf primitives)
+const formatCalendarValue = (value: any) => {
+  const { year, month, day, hour, minute } = value
+
+  if (hour === undefined || minute === undefined) {
+    return format(new Date(year, month - 1, day), "PP", { locale: es })
+  }
+
+  return format(new Date(year, month - 1, day, hour, minute), "PP hh:mmaaa", { locale: es })
+}
+
+const formatHourValue = (value: any) => {
+  const { hour, minute } = value
+  return format(new Date(0, 0, 0, hour, minute), "hh:mmaaa", { locale: es })
+}
+
+const renderPdfValue = (value: any): React.ReactNode => {
+  if (!value) return ""
+
+  if (["string", "number", "boolean"].includes(typeof value)) {
+    return String(value)
+  }
+
+  if (Array.isArray(value)) {
+    return value.join(", ")
+  }
+
+  if (typeof value === "object") {
+    if (value.url) {
+      const { url, name } = value
+      return (
+        <Link src={url} style={{ color: "blue", textDecoration: "underline" }}>
+          {name ?? "Ver archivo"}
+        </Link>
+      )
+    }
+
+    // If the object only contains a file "name" (e.g., after upload) just show it as plain text
+    if (value.name) {
+      return String(value.name)
+    }
+
+    if (value.calendar) return formatCalendarValue(value.calendar)
+    if (value.hour !== undefined && value.minute !== undefined) return formatHourValue(value)
+
+    return JSON.stringify(value)
+  }
+
+  return String(value)
+}
+
 const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
+  const { data: signature } = useGetSignatureQuery(data.appointment.doctor.id)
+
+  console.log(signature)
+
   const medicalRecord = JSON.parse(data.data ?? "{}") as {
     template: TemplateDetail
     formData: Record<string, any>
@@ -319,11 +375,15 @@ const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
                 <View style={styles.formGrid}>
                   {section.fields.map((field) => {
                     const rawValue = medicalRecord.formData[field.code]
-                    const displayValue = resolveFieldDisplayValue(field, rawValue)
+                    const displayValue = renderPdfValue(rawValue)
                     return (
                       <View key={field.id} style={styles.formField}>
                         <Text style={styles.fieldLabel}>{field.title}</Text>
-                        <Text style={styles.fieldValue}>{displayValue}</Text>
+                        {typeof displayValue === "string" ? (
+                          <Text style={styles.fieldValue}>{displayValue}</Text>
+                        ) : (
+                          displayValue
+                        )}
                       </View>
                     )
                   })}
@@ -351,11 +411,14 @@ const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
                   {rows.length > 0 ? (
                     rows.map((row, idx) => (
                       <View key={idx} style={styles.tableRow}>
-                        {section.fields.map((col) => (
-                          <Text key={col.id} style={styles.tableCell}>
-                            {resolveFieldDisplayValue(col, row[col.code])}
-                          </Text>
-                        ))}
+                        {section.fields.map((col) => {
+                          const cellValue = renderPdfValue(row[col.code])
+                          return typeof cellValue === "string" ? (
+                            <Text key={col.id} style={styles.tableCell}>{cellValue}</Text>
+                          ) : (
+                            <View key={col.id} style={styles.tableCell}>{cellValue}</View>
+                          )
+                        })}
                       </View>
                     ))
                   ) : (

@@ -1,6 +1,7 @@
+import RenderFields from "@/components/render-fields";
 import { useGetPatientQuery } from "@/lib/services/patients";
-import { cn, FieldDefinition, placeholder } from "@/lib/utils";
-import { format } from "date-fns";
+import { FieldDefinition } from "@/lib/utils";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { useParams } from "next/navigation";
 import { PatientDetail } from "../../../schema/patients";
@@ -9,16 +10,13 @@ import {
   disabilityTypes,
   documentTypes,
   genderIdentityTypes,
-  linkageTypes,
   maritalStatusTypes
 } from "../../../utils";
-import RenderFields from "@/components/render-fields";
 
 export default function GeneralTab() {
-  const params = useParams<{ patient_id: string }>();
-  const patientId = params.patient_id;
+  const { id } = useParams<{ id: string }>();
 
-  const { data: patient, isLoading: isPatientLoading } = useGetPatientQuery(patientId);
+  const { data: patient, isLoading: isPatientLoading } = useGetPatientQuery(id);
 
   const fields: FieldDefinition<PatientDetail>[] = [
     {
@@ -46,7 +44,7 @@ export default function GeneralTab() {
     {
       label: "Fecha de nacimiento",
       placeholderLength: 13,
-      render: (p) => p.birth_date ? format(p.birth_date, "PP", { locale: es }) : 'No especificado',
+      render: (p) => p.birth_date ? format(parseISO(p.birth_date), "PP", { locale: es }) : 'No especificado',
     },
     {
       label: "Lugar de nacimiento",
