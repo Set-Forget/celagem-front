@@ -244,7 +244,7 @@ export default function NewUserForm({
               <FormItem className="flex flex-col w-full">
                 <FormLabel className="w-fit">Especialidad</FormLabel>
                 <FormControl>
-                  <AsyncSelect<{ id: string, title: string }, string | undefined>
+                  <AsyncSelect<{ id: number, title: string }, number | undefined>
                     label="Especialidad"
                     triggerClassName="!w-full"
                     placeholder="Seleccionar especialidad..."
@@ -272,6 +272,7 @@ export default function NewUserForm({
                 <FormControl>
                   <SignaturePad
                     onChange={field.onChange}
+                    value={field.value}
                   />
                 </FormControl>
                 <FormMessage />

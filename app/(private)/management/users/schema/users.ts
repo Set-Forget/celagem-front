@@ -9,6 +9,7 @@ export const userListSchema = z.object({
   email: z.string(),
   role_id: z.number(),
   role_name: z.string(),
+  role_is_medical: z.boolean(),
 })
 
 export const userDetailSchema = z.object({
@@ -18,6 +19,7 @@ export const userDetailSchema = z.object({
   email: z.string(),
   role_id: z.string(),
   role_name: z.string(),
+  role_is_medical: z.boolean(),
   is_email_confirmed: z.boolean(),
   company_id: z.string(),
   company_name: z.string(),
@@ -38,12 +40,12 @@ const baseNewUserSchema = z.object({
   company_id: z.string({ required_error: 'La compañía es requerida' }).min(1, { message: 'La compañía es requerida' }),
   role_id: z.string({ required_error: 'El rol es requerido' }).min(1, { message: 'El rol es requerido' }),
   role_is_medical: z.boolean().default(false),
-  speciality_id: z.string().optional(),
+  speciality_id: z.number().optional(),
   signature: z.string().nullable().optional(),
 });
 
 export const newUserSchema = baseNewUserSchema.superRefine(({ role_is_medical, speciality_id, signature }, ctx) => {
-  if (role_is_medical && (!speciality_id || speciality_id.length === 0)) {
+  if (role_is_medical && !speciality_id) {
     ctx.addIssue({
       path: ['speciality_id'],
       code: z.ZodIssueCode.custom,
@@ -66,11 +68,37 @@ export const newUserSchema = baseNewUserSchema.superRefine(({ role_is_medical, s
   }
 });
 
-export const editUserSchema = baseNewUserSchema.extend({
-  password: z.string().optional(),
-  company_id: z.string().optional(),
-  business_units: z.array(z.string()).optional(),
-}).partial({ password: true, company_id: true, business_units: true });
+export const editUserSchema = baseNewUserSchema
+  .extend({
+    password: z.string().optional(),
+    company_id: z.string().optional(),
+    business_units: z.array(z.string()).optional(),
+  })
+  .partial({ password: true, company_id: true, business_units: true })
+  .superRefine(({ role_is_medical, speciality_id, signature }, ctx) => {
+    if (role_is_medical && !speciality_id) {
+      ctx.addIssue({
+        path: ['speciality_id'],
+        code: z.ZodIssueCode.custom,
+        message: 'La especialidad es requerida cuando el rol es médico',
+      });
+    }
+    if (!signature) {
+      ctx.addIssue({
+        path: ['signature'],
+        code: z.ZodIssueCode.custom,
+        message: 'La firma es requerida',
+      });
+    }
+    if (signature && !signature.startsWith('data:image/png;base64,')) {
+      ctx.addIssue({
+        path: ['signature'],
+        code: z.ZodIssueCode.custom,
+        message: 'La firma debe ser una imagen en formato base64',
+      });
+    }
+  })
+
 
 export const userListResponseSchema = z.object({
   data: z.array(userListSchema),

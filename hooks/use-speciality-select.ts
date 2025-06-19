@@ -9,7 +9,7 @@ interface UseSpecialitySelectOptions<O> {
 }
 
 export function useSpecialitySelect<
-  O = { id: string; title: string },
+  O = { id: number; title: string },
 >({
   limit = 10,
   filter,
@@ -20,7 +20,7 @@ export function useSpecialitySelect<
 
   const mapFn = useCallback(
     (b: { title: string, id: number }): O =>
-      map ? map(b) : { id: b.id.toString(), title: b.title } as O,
+      map ? map(b) : { id: b.id, title: b.title } as O,
     [map],
   )
 

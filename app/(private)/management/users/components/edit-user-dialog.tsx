@@ -12,6 +12,9 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { editUserSchema } from "../schema/users";
 import NewUserForm from "./new-user-form";
+import { useLazyGetDoctorQuery, useUpdateDoctorMutation } from "@/lib/services/doctors";
+import { setDialogsState as _setDialogsState } from "@/lib/store/dialogs-store";
+
 
 export default function EditUserDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
@@ -25,6 +28,8 @@ export default function EditUserDialog() {
   const [sendMessage] = useSendMessageMutation();
   const [updateUserRole, { isLoading: isUpdatingUserRole }] = useUpdateUserRoleMutation();
   const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
+  const [getDoctor] = useLazyGetDoctorQuery();
+  const [updateDoctor, { isLoading: isUpdatingDoctor }] = useUpdateDoctorMutation();
 
   const form = useForm<z.infer<typeof editUserSchema>>({
     resolver: zodResolver(editUserSchema),
@@ -57,8 +62,16 @@ export default function EditUserDialog() {
         }).unwrap();
       }
 
+      if (data.role_is_medical) {
+        await updateDoctor({
+          id: userId,
+          speciality_id: data.speciality_id,
+          signature: data.signature ?? undefined,
+        }).unwrap();
+      }
+
       if (response.status === 'success') {
-        onOpenChange()
+        _setDialogsState({ open: "user-details", payload: { user_id: userId } })
         toast.custom((t) => <CustomSonner t={t} description="Usuario actualizado exitosamente" variant="success" />);
       }
     } catch (error) {
@@ -79,16 +92,26 @@ export default function EditUserDialog() {
   }, [])
 
   useEffect(() => {
-    if (user) {
-      form.reset({
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
-        role_id: user.role_id,
-        company_id: user.company_id,
-        business_units: user.business_units.map((bu) => bu.id),
-      })
-    }
+    if (!user) return;
+
+    (async () => {
+      if (user.role_is_medical) {
+        const doctor = await getDoctor(user.id).unwrap();
+        form.setValue('speciality_id', doctor.specialization_id)
+        form.setValue('signature', doctor.signature)
+      }
+    })()
+
+    form.reset({
+      ...form.getValues(),
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      role_id: user.role_id,
+      company_id: user.company_id,
+      business_units: user.business_units.map((bu) => bu.id),
+      role_is_medical: user.role_is_medical,
+    })
   }, [user])
 
   return (
@@ -109,7 +132,7 @@ export default function EditUserDialog() {
             <Button
               onClick={() => form.handleSubmit(onSubmit)()}
               size="sm"
-              loading={isUpdatingUser || isUpdatingUserRole}
+              loading={isUpdatingUser || isUpdatingUserRole || isUpdatingDoctor}
               type="button">
               Guardar
             </Button>

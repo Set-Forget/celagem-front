@@ -122,10 +122,12 @@ export default function NewAppointmentDialog() {
   const handleGetDoctors = async (query?: string) => {
     try {
       const doctors = await getDoctors({ name: query }).unwrap()
-      return doctors.data.map((doctor) => ({
-        label: `${doctor.first_name} ${doctor.last_name}`,
-        value: doctor.id,
-      }))
+      return doctors.data
+        .filter((doctor) => doctor.role_is_medical)
+        .map((doctor) => ({
+          label: `${doctor.first_name} ${doctor.last_name}`,
+          value: doctor.id,
+        }))
     } catch (error) {
       sendMessage({
         location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",

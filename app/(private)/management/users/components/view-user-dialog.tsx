@@ -7,8 +7,10 @@ import { FieldDefinition } from "@/lib/utils"
 import { SquarePen } from "lucide-react"
 import { useEffect, useState } from "react"
 import { UserDetail } from "../schema/users"
+import { useGetDoctorQuery } from "@/lib/services/doctors"
+import Image from "next/image"
 
-const fields: FieldDefinition<UserDetail>[] = [
+const fields: FieldDefinition<UserDetail & { speciality_name?: string, signature?: string }>[] = [
   {
     label: "Nombre",
     placeholderLength: 14,
@@ -39,6 +41,19 @@ const fields: FieldDefinition<UserDetail>[] = [
     placeholderLength: 10,
     render: (p) => p?.business_units.map((bu) => bu.name).join(", ") || "No especificado",
   },
+  {
+    label: "Especialidad",
+    placeholderLength: 14,
+    show: (p) => p?.role_is_medical,
+    render: (p) => p?.speciality_name || "No especificado",
+  },
+  {
+    label: "Firma",
+    placeholderLength: 14,
+    className: "col-span-2",
+    show: (p) => p?.role_is_medical,
+    render: (p) => p?.signature ? <Image src={p.signature} alt="Firma" width={200} height={200} /> : "No especificado",
+  },
 ];
 
 export default function UserDetailsDialog() {
@@ -48,6 +63,10 @@ export default function UserDetailsDialog() {
 
   const { data: user, isLoading: isUserLoading } = useGetUserQuery(userId, {
     skip: !userId
+  })
+
+  const { data: doctor, isLoading: isDoctorLoading } = useGetDoctorQuery(userId, {
+    skip: (!user?.role_is_medical || !userId)
   })
 
   const onOpenChange = () => {
@@ -75,8 +94,12 @@ export default function UserDetailsDialog() {
         </DialogHeader>
         <RenderFields
           fields={fields}
-          loading={isUserLoading}
-          data={user}
+          loading={isUserLoading || isDoctorLoading}
+          data={{
+            ...user!,
+            speciality_name: doctor?.specialization_name,
+            signature: doctor?.signature,
+          }}
         />
         <DialogFooter>
           <div className="flex gap-2 ml-auto">

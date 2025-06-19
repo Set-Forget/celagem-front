@@ -39,6 +39,13 @@ export const templatesApi = hcApi.injectEndpoints({
       }),
       invalidatesTags: ['Template'],
     }),
+    deleteTemplate: builder.mutation<NewTemplateResponse, number>({
+      query: (id) => ({
+        url: `template/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['Template'],
+    }),
 
     //--- Sections ---
     createSection: builder.mutation<
@@ -144,6 +151,7 @@ export const {
 
   useUpdateTemplateMutation,
   useCreateTemplateMutation,
+  useDeleteTemplateMutation,
 
   useUploadFileMutation,
   useGetFileMutation,

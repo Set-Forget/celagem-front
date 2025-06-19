@@ -67,6 +67,17 @@ export default function SignaturePad({
         ctx.lineJoin = "round"
 
         if (value) {
+          const img = new Image()
+          img.onload = () => {
+            ctx.drawImage(
+              img,
+              0,
+              0,
+              ctx.canvas.width / ratio,
+              ctx.canvas.height / ratio,
+            )
+          }
+          img.src = value
           setHasSigned(true)
         }
       }
