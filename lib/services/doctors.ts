@@ -22,7 +22,7 @@ export const doctorsApi = hcApi.injectEndpoints({
       },
       providesTags: ['Doctor'],
     }),
-    updateDoctor: builder.mutation<{ status: string, code: number, message: string }, { id: string, speciality_id?: number, signature?: string }>({
+    updateDoctor: builder.mutation<{ status: string, code: number, message: string }, { id: string, speciality_id?: number, image?: string }>({
       query: (body) => ({
         url: `/doctor/${body.id}`,
         method: 'PATCH',

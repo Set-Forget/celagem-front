@@ -66,7 +66,7 @@ export default function EditUserDialog() {
         await updateDoctor({
           id: userId,
           speciality_id: data.speciality_id,
-          signature: data.signature ?? undefined,
+          image: data.signature?.split(',')[1] ?? undefined,
         }).unwrap();
       }
 

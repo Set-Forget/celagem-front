@@ -29,7 +29,6 @@ export default function NewUserDialog() {
       email: '',
       role_id: '',
       role_is_medical: false,
-      speciality_id: '',
       signature: '',
       company_id: '',
       password: '',
