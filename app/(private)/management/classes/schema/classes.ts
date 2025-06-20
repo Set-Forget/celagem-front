@@ -1,78 +1,52 @@
 import { z } from 'zod';
 
-export const newClassGeneralSchema = z.object({
-  name: z
-    .string({ required_error: 'El nombre es requerido' })
-    .nonempty({ message: 'El nombre es requerido' })
-    .default(''),
-  company_id: z
-    .string({ required_error: 'La empresa es requerida' })
-    .nonempty({ message: 'La empresa es requerida' })
-    .default(''),
-});
-
-export const newClassSchema = newClassGeneralSchema;
-
-export const classesSchema = z.object({
+export const classListSchema = z.object({
   id: z.string(),
   name: z.string(),
-  status: z.string(), 
   company_id: z.string(),
+  company_name: z.string(),
+})
+
+export const classListResponseSchema = z.object({
+  status: z.string(),
+  code: z.number(),
+  message: z.string(),
+  data: z.array(classListSchema),
+})
+
+export const classDetailSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  company_id: z.string(),
+  company_name: z.string(),
   created_at: z.string(),
-  created_by: z.object({
-    id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-  }),
   modified_at: z.string(),
-  updated_by: z.object({
-    id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-  }),
-});
+})
 
-export const classesListResponseSchema = z.object({
-  // List
+export const classDetailResponseSchema = z.object({
   status: z.string(),
   code: z.number(),
   message: z.string(),
-  details: z.string(),
-  data: z.array(classesSchema),
-});
+  data: classDetailSchema,
+})
 
-export const classResponseSchema = z.object({
-  // Create, Update, Get
+export const newClassSchema = z.object({
+  name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
+  company_id: z.string({ required_error: "La empresa es requerida" }),
+})
+
+export const newClassResponseSchema = z.object({
   status: z.string(),
   code: z.number(),
   message: z.string(),
-  details: z.string(),
-  data: classesSchema,
-});
+  data: classDetailSchema,
+})
 
-export const classDeleteResponseSchema = z.object({
-  // Delete
-  status: z.string(),
-  code: z.number(),
-  message: z.string(),
-  details: z.string(),
-  data: z.string(),
-});
+export type ClassList = z.infer<typeof classListSchema>;
+export type ClassListResponse = z.infer<typeof classListResponseSchema>;
 
-export const classCreateBodySchema = z.object({
-  name: z.string(),
-  company_id: z.string(),
-});
-
-export const classUpdateBodySchema = z.object({
-  name: z.string(),
-});
-
-export type Classes = z.infer<typeof classesSchema>;
-export type ClassesListResponse = z.infer<typeof classesListResponseSchema>;
-export type ClassResponse = z.infer<typeof classResponseSchema>;
-export type ClassDeleteResponse = z.infer<typeof classDeleteResponseSchema>;
-export type ClassCreateBody = z.infer<typeof classCreateBodySchema>;
-export type ClassUpdateBody = z.infer<typeof classUpdateBodySchema>;
+export type ClassDetail = z.infer<typeof classDetailSchema>;
+export type ClassDetailResponse = z.infer<typeof classDetailResponseSchema>;
 
 export type NewClass = z.infer<typeof newClassSchema>;
+export type NewClassResponse = z.infer<typeof newClassResponseSchema>;

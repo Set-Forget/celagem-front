@@ -94,51 +94,67 @@ export default function Page() {
       return;
     }
 
-    const { section: oldSection, fields: oldFields } = normalizedSection;
-    const { section: newSection, fields: newFields } = data;
+    const idToOrder = new Map<number, number>();
+    const { section: newSection } = data;
+    newSection.fields.forEach((fid, idx) => idToOrder.set(fid, idx));
 
-    const newFieldsList = newFields.filter(f => !oldFields.some(of => of.id === f.id));
-    const updatedFieldsList = newFields.filter(f => {
-      const old = oldFields.find(of => of.id === f.id)!;
+    const orderedFields = data.fields.map((field) => ({
+      ...field,
+      order: idToOrder.get(field.id) ?? field.order,
+    }));
+
+    const { section: oldSection, fields: oldFields } = normalizedSection;
+
+    const newFieldsList = orderedFields.filter(
+      (f) => !oldFields.some((of) => of.id === f.id),
+    );
+
+    const updatedFieldsList = orderedFields.filter((f) => {
+      const old = oldFields.find((of) => of.id === f.id);
       return old && JSON.stringify(old) !== JSON.stringify(f);
     });
 
     const localToRealFieldId: Record<number, number> = {};
 
-    for (const f of newFieldsList) {
+    for (const field of newFieldsList) {
       try {
-        const payload = newFieldSchema.parse(f);
+        const payload = newFieldSchema.parse(field);
         const created = await createField(payload).unwrap();
-        localToRealFieldId[f.id] = created.data.id;
+        localToRealFieldId[field.id] = created.data.id;
       } catch (err) {
-        toast.custom((t) => <CustomSonner t={t} description="Error creando campo" variant="error" />)
+        toast.custom((t) => (
+          <CustomSonner t={t} description="Error creando campo" variant="error" />
+        ));
         sendMessage({
           location: "app/(private)/medical-management/(masters)/sections/[id]/page.tsx",
           rawError: err,
-          fnLocation: "onSubmit"
-        })
+          fnLocation: "onSubmit",
+        });
       }
     }
 
-    for (const f of updatedFieldsList) {
+    for (const field of updatedFieldsList) {
       try {
-        const realId = localToRealFieldId[f.id] ?? f.id;
-        const payload = newFieldSchema.parse(f);
+        const realId = localToRealFieldId[field.id] ?? field.id;
+        const payload = newFieldSchema.parse(field);
         await updateField({ ...payload, id: realId }).unwrap();
       } catch (err) {
-        toast.custom((t) => <CustomSonner t={t} description="Error actualizando campo" variant="error" />)
+        toast.custom((t) => (
+          <CustomSonner t={t} description="Error actualizando campo" variant="error" />
+        ));
         sendMessage({
           location: "app/(private)/medical-management/(masters)/sections/[id]/page.tsx",
           rawError: err,
-          fnLocation: "onSubmit"
-        })
+          fnLocation: "onSubmit",
+        });
       }
     }
 
     try {
       const finalFieldIds = newSection.fields.map(
-        fid => localToRealFieldId[fid] ?? fid
+        (fid) => localToRealFieldId[fid] ?? fid,
       );
+
       const sectionToUpdate: z.infer<typeof newSectionSchema> = {
         ...newSection,
         id: oldSection.id,
@@ -147,15 +163,19 @@ export default function Page() {
 
       const response = await updateSection(sectionToUpdate).unwrap();
       if (response.status === "SUCCESS") {
-        toast.custom((t) => <CustomSonner t={t} description="Sección actualizada exitosamente" />)
+        toast.custom((t) => (
+          <CustomSonner t={t} description="Sección actualizada exitosamente" />
+        ));
       }
     } catch (err) {
-      toast.custom((t) => <CustomSonner t={t} description="Error actualizando sección" variant="error" />)
+      toast.custom((t) => (
+        <CustomSonner t={t} description="Error actualizando sección" variant="error" />
+      ));
       sendMessage({
         location: "app/(private)/medical-management/(masters)/sections/[id]/page.tsx",
         rawError: err,
-        fnLocation: "onSubmit"
-      })
+        fnLocation: "onSubmit",
+      });
     }
   };
 
@@ -247,7 +267,7 @@ export default function Page() {
             className="ml-auto"
             size="sm"
             disabled={isSectionLoading || isUpdatingSection || isCreatingField || isUpdatingField}
-            onClick={form.handleSubmit(onSubmit)}
+            onClick={() => form.handleSubmit((data) => onSubmit(data))()}
           >
             {isUpdatingSection || isCreatingField || isUpdatingField ? <Loader2 className="animate-spin" /> : <Save />}
             Guardar sección

@@ -13,6 +13,7 @@ export const hcApi = createApi({
       return headers
     },
   }),
-  tagTypes: ['Template', 'Patient', 'Appointment', 'Visit', 'Section', 'Field'],
+  tagTypes: ['Template', 'Patient', 'Appointment', 'Visit', 'Section', 'Field', 'Speciality', 'Doctor'],
   endpoints: () => ({}),
 });
+

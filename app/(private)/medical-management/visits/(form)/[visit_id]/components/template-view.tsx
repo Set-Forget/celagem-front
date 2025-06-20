@@ -5,6 +5,9 @@ import { CalendarDate, CalendarDateTime } from "@internationalized/date";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import React from "react";
+import { useGetFileMutation } from "@/lib/services/templates";
+import { toast } from "sonner";
+import CustomSonner from "@/components/custom-sonner";
 
 type FieldRenderFunction = (field: Field, rawValue: any) => React.ReactNode;
 
@@ -45,13 +48,89 @@ const formatHourValue = (value: any) => {
   return format(new Date(0, 0, 0, hour, minute), "hh:mmaaa", { locale: es });
 };
 
-const renderFileLink = (value: any) => {
-  const { url, name } = value;
+const FileLink: React.FC<{ id: string; name?: string }> = ({ id, name }) => {
+  const [getFile, { isLoading }] = useGetFileMutation();
+
+  const handleClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      const response = await getFile({ ids: [id] }).unwrap();
+      const fileData = Array.isArray(response.data) ? response.data[0] : response.data;
+      const dataUrl = fileData.ref_metadata?.dataUrl || fileData.ref_metadata?.file;
+      if (!dataUrl) {
+        throw new Error("No dataUrl returned");
+      }
+
+      let urlToOpen = dataUrl as string;
+
+      if (!urlToOpen.startsWith("data:")) {
+        const getMimeTypeFromName = (fileName?: string) => {
+          const extension = fileName?.split(".").pop()?.toLowerCase();
+          switch (extension) {
+            case "pdf":
+              return "application/pdf";
+            case "jpg":
+            case "jpeg":
+              return "image/jpeg";
+            case "png":
+              return "image/png";
+            default:
+              return "application/octet-stream";
+          }
+        };
+        const mimeType = fileData.ref_metadata?.mimeType || getMimeTypeFromName(fileData.name);
+        urlToOpen = `data:${mimeType};base64,${urlToOpen}`;
+      }
+
+      const shouldConvertToBlob = urlToOpen.length > 1_000_000 || urlToOpen.includes("application/pdf");
+      if (shouldConvertToBlob) {
+        try {
+          const blob = await fetch(urlToOpen).then((r) => r.blob());
+          urlToOpen = URL.createObjectURL(blob);
+        } catch (e) {
+          console.error("Failed to convert to blob", e);
+        }
+      }
+
+      window.open(urlToOpen, "_blank");
+    } catch (error) {
+      console.error(error);
+      toast.custom((t) => (
+        <CustomSonner
+          t={t}
+          description="Ocurrió un error al obtener el archivo"
+          variant="error"
+        />
+      ));
+    }
+  };
+
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer">
+    <a
+      href="#"
+      onClick={handleClick}
+      className={cn(isLoading && "opacity-60 pointer-events-none", "text-primary underline")}
+    >
       {name ?? "Ver archivo"}
     </a>
   );
+};
+
+const renderFileLink = (value: any) => {
+  if (value.url) {
+    const { url, name } = value;
+    return (
+      <a href={url} target="_blank" rel="noopener noreferrer">
+        {name ?? "Ver archivo"}
+      </a>
+    );
+  }
+
+  if (value.id) {
+    return <FileLink id={value.id} name={value.name} />;
+  }
+
+  return null;
 };
 
 const renderIMCInfo = (value: any) => (
@@ -74,7 +153,7 @@ export const renderValue = (value: any): React.ReactNode => {
   }
 
   if (typeof value === "object") {
-    if (value.url) return renderFileLink(value);
+    if (value.url || value.id) return renderFileLink(value);
     if (value.calendar) return formatCalendarValue(value);
     if (value.hour !== undefined && value.minute !== undefined) return formatHourValue(value);
     if (value.imc !== undefined) return renderIMCInfo(value);

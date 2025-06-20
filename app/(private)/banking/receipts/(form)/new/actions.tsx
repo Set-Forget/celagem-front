@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { routes } from "@/lib/routes";
 import { useLazyListInvoicesQuery } from "@/lib/services/invoices";
-import { useCreateChargeMutation } from "@/lib/services/receipts";
+import { useCreateBulkChargeMutation, useCreateChargeMutation } from "@/lib/services/receipts";
 import { cn } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
@@ -18,7 +18,7 @@ import { z } from "zod";
 import { newChargeSchema } from "../../schemas/receipts";
 import InvoicePopover from "./components/invoice-popover";
 import { AdaptedInvoiceList } from "@/lib/adapters/invoices";
-import { useInvoiceSelect } from "@/app/(private)/(commercial)/hooks/use-invoice-select";
+import { useInvoiceSelect } from "@/hooks/use-invoice-select";
 import { useSendMessageMutation } from "@/lib/services/telegram";
 
 export default function Actions() {
@@ -31,6 +31,7 @@ export default function Actions() {
 
   const [sendMessage] = useSendMessageMutation();
   const [createCharge, { isLoading: isCreatingCharge }] = useCreateChargeMutation()
+  const [createBulkCharge, { isLoading: isCreatingBulkCharge }] = useCreateBulkChargeMutation()
 
   const invoiceIds = searchParams.get("invoice_ids")
 
@@ -48,19 +49,35 @@ export default function Actions() {
   const onSubmit = async (data: z.infer<typeof newChargeSchema>) => {
     const { invoices, ...rest } = data
 
-    try {
-      const response = await createCharge({
-        ...rest,
-        date: rest.date.toString(),
-        amount: rest.amount || invoices?.reduce((acc, b) => acc + b.amount_residual, 0),
-        partner: rest.partner || invoices?.[0]?.customer.id,
-        journal: 6,
-        invoices: invoices?.map((b) => b.id) || undefined,
-      }).unwrap()
+    const hasMultipleCustomers = invoices && new Set(invoices.map((i) => i.customer.id)).size > 1;
 
-      if (response.status === "success") {
-        router.push(routes.receipts.detail(response.data.id))
-        toast.custom((t) => <CustomSonner t={t} description="Cobro registrado exitosamente" />)
+    try {
+      if (hasMultipleCustomers) {
+        const response = await createBulkCharge({
+          ...rest,
+          date: rest.date.toString(),
+          amount: rest.amount || invoices?.reduce((acc, b) => acc + b.amount_residual, 0),
+          journal: 6,
+          invoices: invoices?.map((b) => b.id),
+        }).unwrap();
+
+        if (response.status === "success") {
+          router.push(routes.receipts.list)
+          toast.custom((t) => <CustomSonner t={t} description="Cobros registrados exitosamente" />)
+        }
+      } else {
+        const response = await createCharge({
+          ...rest,
+          date: rest.date.toString(),
+          amount: rest.amount || invoices?.reduce((acc, b) => acc + b.amount_residual, 0),
+          journal: 6,
+          invoices: invoices?.map((b) => b.id),
+        }).unwrap();
+
+        if (response.status === "success") {
+          router.push(routes.receipts.detail(response.data.id))
+          toast.custom((t) => <CustomSonner t={t} description="Cobro registrado exitosamente" />)
+        }
       }
     } catch (error) {
       toast.custom((t) => <CustomSonner t={t} description="Ocurrió un error al registrar el cobro" variant="error" />)
@@ -68,9 +85,7 @@ export default function Actions() {
         location: "app/(private)/banking/receipts/(form)/new/actions.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      }).unwrap().catch((error) => {
-        console.error(error);
-      });
+      })
     }
   }
 
@@ -103,9 +118,9 @@ export default function Actions() {
           type="submit"
           onClick={handleSubmit(onSubmit)}
           size="sm"
-          loading={isCreatingCharge}
+          loading={isCreatingCharge || isCreatingBulkCharge}
         >
-          <Save className={cn(isCreatingCharge && "hidden")} />
+          <Save className={cn(isCreatingCharge || isCreatingBulkCharge && "hidden")} />
           Guardar
         </Button>
       </div>

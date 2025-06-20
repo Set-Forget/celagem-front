@@ -73,6 +73,28 @@ const accountingItems = [
     title: "Centros de costos",
     url: "/accounting/cost-centers"
   },
+  {
+    title: "Configuración",
+    url: "#",
+    items: [
+      {
+        title: "Monedas",
+        url: "/accounting/currencies"
+      },
+      {
+        title: "Impuestos",
+        url: "/accounting/taxes"
+      },
+      {
+        title: "Términos de pago",
+        url: "/accounting/payment-terms"
+      },
+      {
+        title: "Métodos de pago",
+        url: "/accounting/payment-methods"
+      }
+    ]
+  }
 ]
 
 const reportingItems = [
@@ -119,7 +141,7 @@ const administrationItems = [
     url: '/management/roles',
   },
   {
-    title: 'Sedes',
+    title: 'Compañias',
     url: '/management/companies',
   },
   {
@@ -131,8 +153,8 @@ const administrationItems = [
     url: '/management/classes',
   },
   {
-    title: "Extras",
-    url: "/management/extras",
+    title: "Actividades económicas",
+    url: "/management/economic-activities"
   },
 ]
 

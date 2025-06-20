@@ -1,37 +1,15 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Checkbox } from '@/components/ui/checkbox';
-import { BusinessUnit } from '../schema/business-units';
+import { BusinessUnitList } from '../schema/business-units';
 
-export const businessUnitsColumns: ColumnDef<any>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-    size: 10,
-  },
+export const columns: ColumnDef<BusinessUnitList>[] = [
   {
     accessorKey: 'name',
     header: 'Nombre',
-    cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.name}</div>
+    ),
   },
   {
     accessorKey: 'description',
@@ -39,8 +17,8 @@ export const businessUnitsColumns: ColumnDef<any>[] = [
     cell: ({ row }) => <div>{row.original.description}</div>,
   },
   {
-    accessorKey: 'company_id',
-    header: 'Sede',
-    cell: ({ row }) => <div>{row.original.company_id}</div>,
+    accessorKey: 'company_name',
+    header: 'Compañía',
+    cell: ({ row }) => <div>{row.original.company_name}</div>,
   },
 ];

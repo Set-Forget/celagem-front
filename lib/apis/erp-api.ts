@@ -15,7 +15,6 @@ export const erpApi = createApi({
     'DebitNote',
     'PurchaseRequest',
     'PurchaseReceipt',
-    'Material',
     'Currency',
     'PaymentTerm',
     'PaymentMethod',
@@ -28,7 +27,6 @@ export const erpApi = createApi({
     'Payment',
     'Receipt',
     'Journal',
-    'Product',
     'Service',
     'Material',
     'JobPosition',
@@ -40,6 +38,7 @@ export const erpApi = createApi({
     'Product',
     'Warehouse',
     'Location',
-    'Charge'
+    'Charge',
+    'EconomicActivity',
   ],
 });

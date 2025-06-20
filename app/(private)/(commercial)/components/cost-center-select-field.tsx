@@ -2,7 +2,7 @@ import { Control, FieldPath, FieldValues } from "react-hook-form"
 import { FormField, FormItem, FormControl } from "@/components/ui/form"
 import { AsyncSelect } from "@/components/async-select"
 import { cn } from "@/lib/utils"
-import { useCostCenterSelect } from "../hooks/use-cost-center-select"
+import { useCostCenterSelect } from "../../../../hooks/use-cost-center-select"
 import { get } from "lodash"
 
 type CenterOption = { id: number; name: string }

@@ -11,8 +11,8 @@ const filtersConfig: Record<string, FilterConfig> = {
     type: "search",
     label: "Buscar",
     options: [
-      { label: "Código", value: "code" },
       { label: "Nombre", value: "name" },
+      { label: "Compañía", value: "company_name" },
     ],
     key: "search",
     icon: Search

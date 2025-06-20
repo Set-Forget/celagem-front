@@ -1,4 +1,4 @@
-import { usePaymentMethodSelect } from "@/app/(private)/(commercial)/hooks/use-payment-method-select"
+import { usePaymentMethodSelect } from "@/hooks/use-payment-method-select"
 import { AsyncSelect } from "@/components/async-select"
 import { DataTable } from "@/components/data-table"
 import DatePicker from "@/components/date-picker"
@@ -19,9 +19,9 @@ import { z } from "zod"
 import { newChargeSchema } from "../../schemas/receipts"
 import { columns } from "./columns"
 import TableFooter from "./table-footer"
-import { useTaxSelect } from "@/app/(private)/(commercial)/hooks/use-tax-select"
-import { useCustomerSelect } from "@/app/(private)/(commercial)/hooks/use-customer-select"
-import { useCurrencySelect } from "@/app/(private)/(commercial)/hooks/use-currency-select"
+import { useTaxSelect } from "@/hooks/use-tax-select"
+import { useCustomerSelect } from "@/hooks/use-customer-select"
+import { useCurrencySelect } from "@/hooks/use-currency-select"
 import { AsyncMultiSelect } from "@/components/async-multi-select"
 
 export default function GeneralForm() {
@@ -52,6 +52,13 @@ export default function GeneralForm() {
   })
 
   const invoices = useWatch({ control, name: "invoices" })
+
+  const showWithholdings = useMemo(() => {
+    if (!invoiceIds) return true
+    if (!invoices || invoices.length === 0) return false
+    const customerIds = invoices.map((i) => i.customer.id)
+    return new Set(customerIds).size === 1
+  }, [invoiceIds, invoices])
 
   useEffect(() => {
     if (invoiceIds) {
@@ -230,40 +237,41 @@ export default function GeneralForm() {
           )}
         />
       )}
-      <FormField
-        control={control}
-        name="withholdings"
-        render={({ field }) => (
-          <FormItem className="flex flex-col">
-            <FormLabel className="w-fit">Retenciones</FormLabel>
-            <FormControl>
-              <AsyncMultiSelect<{ id: number, name: string }, number>
-                placeholder="Buscar retención…"
-                fetcher={fetcher}
-                initialOptions={initialTaxes}
-                defaultValue={field.value}
-                value={field.value}
-                getOptionValue={(o) => o.id}
-                getOptionKey={(o) => String(o.id)}
-                renderOption={(o) => <>{o.name}</>}
-                getDisplayValue={(o) => <>{o.name}</>}
-                noResultsMessage="No se encontraron resultados"
-                onValueChange={(vals) => {
-                  field.onChange(vals)
-                }}
-              />
-            </FormControl>
-            {formState.errors.withholdings ? (
-              <FormMessage />
-            ) :
-              <FormDescription>
-                Impuestos que se retendrán al proveedor.
-              </FormDescription>
-            }
-          </FormItem>
-        )}
-      />
-
+      {showWithholdings && (
+        <FormField
+          control={control}
+          name="withholdings"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel className="w-fit">Retenciones</FormLabel>
+              <FormControl>
+                <AsyncMultiSelect<{ id: number, name: string }, number>
+                  placeholder="Buscar retención…"
+                  fetcher={fetcher}
+                  initialOptions={initialTaxes}
+                  defaultValue={field.value}
+                  value={field.value}
+                  getOptionValue={(o) => o.id}
+                  getOptionKey={(o) => String(o.id)}
+                  renderOption={(o) => <>{o.name}</>}
+                  getDisplayValue={(o) => <>{o.name}</>}
+                  noResultsMessage="No se encontraron resultados"
+                  onValueChange={(vals) => {
+                    field.onChange(vals)
+                  }}
+                />
+              </FormControl>
+              {formState.errors.withholdings ? (
+                <FormMessage />
+              ) :
+                <FormDescription>
+                  Impuestos que se retendrán al proveedor.
+                </FormDescription>
+              }
+            </FormItem>
+          )}
+        />
+      )}
       <FormField
         control={control}
         name="payment_method"
@@ -298,7 +306,6 @@ export default function GeneralForm() {
           </FormItem>
         )}
       />
-
       <FormField
         control={control}
         name="payment_reference"

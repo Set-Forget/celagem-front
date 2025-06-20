@@ -60,7 +60,7 @@ export const columns: ColumnDef<AdaptedPurchaseOrderList>[] = [
     accessorKey: "price",
     header: "Total",
     cell: ({ row }) => (
-      <div className="font-medium">
+      <div className="font-medium text-nowrap">
         {row.original.currency.name} {row.original.price}
       </div>
     ),

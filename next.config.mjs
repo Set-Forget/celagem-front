@@ -8,11 +8,6 @@ const nextConfig = {
         destination: '/purchases/purchase-requests',
         permanent: true,
       },
-      {
-        source: '/management',
-        destination: '/dashboard',
-        permanent: true,
-      },
     ];
   },
   async rewrites() {

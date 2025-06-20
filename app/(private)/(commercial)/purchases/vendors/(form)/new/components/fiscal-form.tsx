@@ -1,4 +1,4 @@
-import { useTaxSelect } from "@/app/(private)/(commercial)/hooks/use-tax-select"
+import { useTaxSelect } from "@/hooks/use-tax-select"
 import { AsyncMultiSelect } from "@/components/async-multi-select"
 import { AsyncSelect } from "@/components/async-select"
 import SearchSelect from "@/components/search-select"

@@ -24,65 +24,65 @@ export default function PatientTab() {
     {
       label: "Nombre",
       placeholderLength: 14,
-      render: (p) => p.first_name + " " + p.first_last_name
+      render: (p) => p?.first_name + " " + p?.first_last_name
     },
     {
       label: "Tipo de vinculación",
       placeholderLength: 14,
       render: (p) =>
-        linkageTypes.find((l) => l.value === p.linkage)?.label || "No especificado",
+        linkageTypes.find((l) => l.value === p?.linkage)?.label || "No especificado",
     },
     {
       label: "Clase",
       placeholderLength: 14,
-      render: (p) => p.class?.name || "No especificado",
+      render: (p) => p?.class?.name || "No especificado",
     },
     {
       label: "Sexo biológico",
       placeholderLength: 14,
       render: (p) =>
-        biologicalSexTypes.find((b) => b.value === p.biological_sex)?.label || "No especificado",
+        biologicalSexTypes.find((b) => b.value === p?.biological_sex)?.label || "No especificado",
     },
     {
       label: "Fecha de nacimiento",
       placeholderLength: 13,
-      render: (p) => p.birth_date ? format(p.birth_date, "PP", { locale: es }) : 'No especificado',
+      render: (p) => p?.birth_date ? format(p?.birth_date, "PP", { locale: es }) : 'No especificado',
     },
     {
       label: "Dirección de residencia",
       placeholderLength: 14,
-      render: (p) => p.address?.formatted_address || "No especificado",
+      render: (p) => p?.address?.formatted_address || "No especificado",
     },
     {
       label: "Discapacidad",
       placeholderLength: 14,
       render: (p) =>
-        disabilityTypes.find((d) => d.value === p.disability_type)?.label || "No especificado",
+        disabilityTypes.find((d) => d.value === p?.disability_type)?.label || "No especificado",
     },
     {
       label: "Número de documento",
       placeholderLength: 14,
-      render: (p) => `${documentTypes.find((d) => d.value === p.document_type)?.short || ""} ${p.document_number}`,
+      render: (p) => `${documentTypes.find((d) => d.value === p?.document_type)?.short || ""} ${p?.document_number}`,
     },
     {
       label: "Número de teléfono",
       placeholderLength: 10,
-      render: (p) => p.phone_number || "No especificado",
+      render: (p) => p?.phone_number || "No especificado",
     },
     {
       label: "Email",
       placeholderLength: 14,
-      render: (p) => p.email || "No especificado",
+      render: (p) => p?.email || "No especificado",
     },
     {
       label: "Entidad/IPS remitente",
       placeholderLength: 14,
-      render: (p) => p.referring_entity || "No especificado",
+      render: (p) => p?.referring_entity || "No especificado",
     },
     {
       label: "Aseguradora",
       placeholderLength: 14,
-      render: (p) => p.insurance_provider || "No especificado",
+      render: (p) => p?.insurance_provider || "No especificado",
     },
   ];
 

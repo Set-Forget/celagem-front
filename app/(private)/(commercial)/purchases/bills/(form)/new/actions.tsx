@@ -1,4 +1,4 @@
-import { usePurchaseOrderSelect } from "@/app/(private)/(commercial)/hooks/use-purchase-order-select";
+import { usePurchaseOrderSelect } from "@/hooks/use-purchase-order-select";
 import { AsyncCommand } from "@/components/async-command";
 import CustomSonner from "@/components/custom-sonner";
 import { Button } from "@/components/ui/button";

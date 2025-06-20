@@ -1,40 +1,21 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Classes } from '../schema/classes';
+import { ClassList } from '../schema/classes';
 
-export const classesColumns: ColumnDef<any>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-    size: 10,
-  },
+export const columns: ColumnDef<ClassList>[] = [
   {
     accessorKey: 'name',
     header: 'Nombre',
     cell: ({ row }) => (
-      <div className="capitalize flex gap-1">
-        <div>{row.original.name}</div>
-      </div>
+      <div>{row.original.name}</div>
+    ),
+  },
+  {
+    accessorKey: 'company_name',
+    header: 'Compañía',
+    cell: ({ row }) => (
+      <div>{row.original.company_name}</div>
     ),
   },
 ];

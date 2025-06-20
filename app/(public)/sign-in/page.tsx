@@ -53,6 +53,7 @@ export default function Page() {
       router.push("/")
     } catch (err: any) {
       toast.custom((t) => <CustomSonner t={t} description="Correo electrónico o contraseña incorrectos" variant="error" />)
+      console.error(err)
       sendMessage({
         location: "app/(public)/sign-in/page.tsx",
         rawError: err,

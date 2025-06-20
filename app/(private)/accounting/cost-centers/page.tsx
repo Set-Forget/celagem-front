@@ -3,18 +3,14 @@
 import { DataTable } from "@/components/data-table";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
+import { useListCostCentersQuery } from "@/lib/services/cost-centers";
 import { setDialogsState } from "@/lib/store/dialogs-store";
 import { Plus } from "lucide-react";
 import { columns } from "./components/columns";
 import NewCostCenterDialog from "./components/new-cost-center-dialog";
-import { usePathname, useRouter } from "next/navigation";
 import Toolbar from "./components/toolbar";
-import { useListCostCentersQuery } from "@/lib/services/cost-centers";
 
 export default function Page() {
-  const pathname = usePathname()
-  const router = useRouter()
-
   const { data: costCenters, isLoading: isCostCentersLoading } = useListCostCentersQuery()
 
   return (

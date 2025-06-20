@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { AppointmentList } from "../schemas/appointments";
 import { columns } from "./columns";
+import { setDialogsState } from "@/lib/store/dialogs-store";
 
 export default function TableView({ appointments, isLoading }: { appointments?: AppointmentList[], isLoading: boolean }) {
   const [sorting, setSorting] = React.useState<SortingState>([{ id: 'start_date', desc: false }])
@@ -17,7 +18,13 @@ export default function TableView({ appointments, isLoading }: { appointments?: 
         data={appointments || []}
         columns={columns}
         loading={isLoading}
-        onRowClick={(row) => router.push(routes.visit.new(row.id))}
+        onRowClick={(row: AppointmentList) => {
+          if (row.status === "COMPLETED") {
+            setDialogsState({ open: "appointment-details", payload: { appointment_id: row.id } });
+            return;
+          }
+          router.push(routes.visit.new(row.id));
+        }}
         sorting={sorting}
         setSorting={setSorting}
       />

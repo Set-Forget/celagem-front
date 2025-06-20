@@ -26,6 +26,14 @@ export const paymentsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['Payment'],
     }),
+    createBulkPayment: builder.mutation<NewPaymentResponse, Overwrite<NewPayment, { date: string, invoices?: number[] }>>({
+      query: (data) => ({
+        url: '/payments/bulk',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Payment'],
+    }),
 
     confirmPayment: builder.mutation<{ status: string, message: string }, { id: string }>({
       query: ({ id }) => ({
@@ -53,7 +61,7 @@ export const {
   useLazyListPaymentsQuery,
   useCreatePaymentMutation,
   useGetPaymentQuery,
-
+  useCreateBulkPaymentMutation,
   useConfirmPaymentMutation,
   useCancelPaymentMutation,
 } = paymentsApi;

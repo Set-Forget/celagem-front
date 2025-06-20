@@ -23,16 +23,16 @@ import { toast } from "sonner";
 import { z } from "zod";
 import EditFieldDialog from "../../components/edit-field-dialog";
 import NewFieldDialog from "../../components/new-field-dialog";
-import { TemplateSchema, templateSchema } from "../../schemas/masters";
-import { newFieldSchema, templateDetailSchema } from "../../schemas/templates";
+import { templateSchema } from "../../schemas/masters";
 import EditSectionDialog from "../components/edit-section-dialog";
 import { templateStatus } from "../utils";
 import EditTemplateDialog from "./components/edit-template-dialog";
 import ImportSectionDialog from "./components/import-section-dialog";
 import NewSectionDialog from "./components/new-section-dialog";
 import SectionField from "./components/section-field";
-import { getDiffs } from "./utils";
+import { getDiffs, normalizedTemplateSchema } from "./utils";
 import { useSendMessageMutation } from "@/lib/services/telegram";
+import Actions from "./actions";
 
 export default function Page() {
   const params = useParams<{ id: string }>();
@@ -41,152 +41,11 @@ export default function Page() {
 
   const { data: template, isLoading: isTemplateLoading } = useGetTemplateQuery(id)
 
-  const [sendMessage] = useSendMessageMutation();
-  const [updateTemplate, { isLoading: isUpdatingTemplate }] = useUpdateTemplateMutation()
-  const [createSection, { isLoading: isCreatingSection }] = useCreateSectionMutation()
-  const [updateSection, { isLoading: isUpdatingSection }] = useUpdateSectionMutation()
-  const [createField, { isLoading: isCreatingField }] = useCreateFieldMutation()
-  const [updateField, { isLoading: isUpdatingField }] = useUpdateFieldMutation()
-
-  const normalizedTemplateSchema = templateDetailSchema.transform((template) => {
-    const allFields = template.sections.flatMap((section) => section.fields);
-    const normalizedSections = template.sections.map((section) => ({ ...section, fields: section.fields.map((field) => field.id) }));
-    const normalizedTemplate = { ...template, sections: template.sections.map((section) => section.id) };
-
-    return {
-      kind: "template",
-      template: normalizedTemplate,
-      sections: normalizedSections,
-      fields: allFields
-    };
-  }).pipe(templateSchema)
-
   const normalizedTemplate = template && normalizedTemplateSchema.parse(template)
 
   const form = useForm<z.infer<typeof templateSchema>>({
     resolver: zodResolver(templateSchema),
   });
-
-  const onSubmit = async (data: TemplateSchema) => {
-    if (!normalizedTemplate) {
-      console.warn("No se ha podido obtener la plantilla normalizada");
-      return;
-    }
-
-    const isTempId = (id: number) => id < 0;
-    const tmpSecToReal: Record<number, number> = {};
-    const tmpFldToReal: Record<number, number> = {};
-
-    const { template: oldTemplate, sections: oldSections, fields: oldFields } =
-      normalizedTemplate;
-
-    const diffs = getDiffs(
-      { kind: "template", template: oldTemplate, sections: oldSections, fields: oldFields },
-      data
-    ) ?? {
-      newSections: [],
-      updatedSections: [],
-      deletedSections: [],
-      newFields: [],
-      updatedFields: [],
-    };
-
-    const {
-      newSections,
-      updatedSections,
-      deletedSections,
-      newFields,
-      updatedFields,
-    } = diffs;
-
-    for (const sec of newSections.filter(s => isTempId(s.id))) {
-      try {
-        const { fields, ...payload } = sec;
-        const created = await createSection(payload).unwrap();
-        tmpSecToReal[sec.id] = created.data.id;
-      } catch (err) {
-        sendMessage({
-          location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
-          rawError: err,
-          fnLocation: "onSubmit"
-        })
-      }
-    }
-
-    for (const fld of newFields.filter(f => isTempId(f.id))) {
-      try {
-        const payload = newFieldSchema.parse(fld);
-        const created = await createField(payload).unwrap();
-        tmpFldToReal[fld.id] = created.data.id;
-      } catch (err) {
-        sendMessage({
-          location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
-          rawError: err,
-          fnLocation: "onSubmit"
-        })
-      }
-    }
-
-    for (const sec of updatedSections) {
-      try {
-        const realSecId = isTempId(sec.id)
-          ? tmpSecToReal[sec.id]
-          : sec.id;
-
-        const finalFieldIds = sec.fields.map(fid =>
-          isTempId(fid) ? tmpFldToReal[fid] : fid
-        );
-
-        const secToUpdate = { ...sec, id: realSecId, fields: finalFieldIds };
-        await updateSection(secToUpdate).unwrap();
-      } catch (err) {
-        sendMessage({
-          location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
-          rawError: err,
-          fnLocation: "onSubmit"
-        })
-      }
-    }
-
-    for (const fld of updatedFields) {
-      try {
-        const realFldId = isTempId(fld.id) ? tmpFldToReal[fld.id] : fld.id;
-        const payload = newFieldSchema.parse(fld);
-        await updateField({ ...payload, id: realFldId }).unwrap();
-      } catch (err) {
-        sendMessage({
-          location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
-          rawError: err,
-          fnLocation: "onSubmit"
-        })
-      }
-    }
-
-    try {
-      const deletedSecIds = new Set(deletedSections.map(ds => ds.id));
-
-      const finalSectionIds = data.sections
-        .filter(sec => !deletedSecIds.has(sec.id))
-        .map(sec => (isTempId(sec.id) ? tmpSecToReal[sec.id] : sec.id));
-
-      const templateToUpdate = {
-        ...data.template,
-        sections: finalSectionIds,
-      };
-
-      const res = await updateTemplate(templateToUpdate).unwrap();
-      if (res.status === "SUCCESS") {
-        toast.custom(t => <CustomSonner t={t} description="Plantilla actualizada exitosamente" />);
-      }
-    } catch (err) {
-      toast.custom(t => <CustomSonner t={t} description="Error al actualizar la plantilla" variant="error" />);
-      sendMessage({
-        location: "app/(private)/medical-management/(masters)/templates/[id]/page.tsx",
-        rawError: err,
-        fnLocation: "onSubmit"
-      })
-    }
-  };
 
   const handleRemoveSection = (sectionId?: number) => {
     if (!sectionId) return console.warn("No se ha proporcionado un ID de sección para eliminar");
@@ -201,7 +60,6 @@ export default function Page() {
   }
 
   const sections = useWatch({ control: form.control, name: "sections" })
-  const status = templateStatus[template?.is_active.toString() as keyof typeof templateStatus]
 
   const { isDirty } = form.formState;
 
@@ -231,60 +89,44 @@ export default function Page() {
 
   return (
     <div className="flex flex-col h-full">
-      <Header title={
-        <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isTemplateLoading ? "blur-[4px]" : "blur-none")}>
-          {!template ? placeholder(14, true) : template.name}
-        </h1>
-      }>
-        <div className="mr-auto">
-          <Badge
-            variant="custom"
-            className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
-          >
-            {status?.label}
-          </Badge>
-        </div>
-        <Button
-          className="ml-auto"
-          size="sm"
-          disabled={isTemplateLoading || isCreatingSection || isUpdatingSection || isCreatingField || isUpdatingField || isUpdatingTemplate}
-          onClick={form.handleSubmit(onSubmit)}
-        >
-          {isCreatingSection || isUpdatingSection || isCreatingField || isUpdatingField || isUpdatingTemplate ? <Loader2 className="animate-spin" /> : <Save />}
-          Guardar plantilla
-        </Button>
-      </Header>
-      <div className="grid grid-cols-1 gap-4 p-4">
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-2">
-            <h2 className="text-base font-medium">General</h2>
-            <Button
-              size="icon"
-              variant="outline"
-              className="h-6 w-6"
-              onClick={() => setDialogsState({ open: "edit-template", payload: { templateId: template?.id } })}
-            >
-              <SquarePen />
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="flex flex-col gap-1 grid-cols-2">
-              <label className="text-muted-foreground text-sm">Descripción</label>
-              <span className={cn("text-sm transition-all duration-300", isTemplateLoading ? "blur-[4px]" : "blur-none")}>
-                {!template ? placeholder(10) : template?.description ?? "Sin descripción"}
-              </span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted-foreground text-sm">Fecha de creación</label>
-              <span className={cn("text-sm transition-all duration-300", isTemplateLoading ? "blur-[4px]" : "blur-none")}>
-                {!template ? placeholder(13) : format(parseISO(template?.created_at), "PP", { locale: es })}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <Separator />
       <Form {...form}>
+        <Header title={
+          <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isTemplateLoading ? "blur-[4px]" : "blur-none")}>
+            {!template ? placeholder(14, true) : template.name}
+          </h1>
+        }>
+          <Actions />
+        </Header>
+        <div className="grid grid-cols-1 gap-4 p-4">
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-2">
+              <h2 className="text-base font-medium">General</h2>
+              <Button
+                size="icon"
+                variant="outline"
+                className="h-6 w-6"
+                onClick={() => setDialogsState({ open: "edit-template", payload: { templateId: template?.id } })}
+              >
+                <SquarePen />
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="flex flex-col gap-1 grid-cols-2">
+                <label className="text-muted-foreground text-sm">Descripción</label>
+                <span className={cn("text-sm transition-all duration-300", isTemplateLoading ? "blur-[4px]" : "blur-none")}>
+                  {!template ? placeholder(10) : template?.description ?? "Sin descripción"}
+                </span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-muted-foreground text-sm">Fecha de creación</label>
+                <span className={cn("text-sm transition-all duration-300", isTemplateLoading ? "blur-[4px]" : "blur-none")}>
+                  {!template ? placeholder(13) : format(parseISO(template?.created_at), "PP", { locale: es })}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Separator />
         <TooltipProvider delayDuration={0}>
           <div className="flex flex-col gap-4 p-4 h-full items-start relative">
             <div className="flex items-center gap-2">

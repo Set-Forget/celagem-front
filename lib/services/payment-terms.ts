@@ -1,14 +1,6 @@
-import {
-  PaymentTermCreateBody,
-  PaymentTermDeleteResponse,
-  PaymentTermResponse,
-  PaymentTermUpdateBody,
-  PaymentTerms
-} from '@/app/(private)/management/extras/payment-terms/schema/payment-terms';
-import { erpApi } from '@/lib/apis/erp-api';
-import { PaymentTermListResponse } from '../schemas/payment-terms';
+import { PaymentTermDetailsResponse, PaymentTermDetails, PaymentTermListResponse, NewPaymentTerm, NewPaymentTermResponse } from "@/app/(private)/accounting/payment-terms/schema/payment-terms";
+import { erpApi } from "../apis/erp-api";
 
-// actualmente se está usando un proxy para redirigir las peticiones a la API de backend, el proxy esta en next.config.mjs
 export const paymentTermsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
     listPaymentTerms: builder.query<PaymentTermListResponse, { name?: string } | void>({
@@ -18,7 +10,7 @@ export const paymentTermsApi = erpApi.injectEndpoints({
       }),
       providesTags: ['PaymentTerm'],
     }),
-    createPaymentTerm: builder.mutation<PaymentTermResponse, PaymentTermCreateBody>({
+    createPaymentTerm: builder.mutation<NewPaymentTermResponse, NewPaymentTerm>({
       query: (body) => ({
         url: 'payment_terms',
         method: 'POST',
@@ -26,26 +18,16 @@ export const paymentTermsApi = erpApi.injectEndpoints({
       }),
       invalidatesTags: ['PaymentTerm'],
     }),
-    getPaymentTerm: builder.query<PaymentTerms, string | number>({
+    getPaymentTerm: builder.query<PaymentTermDetails, string | number>({
       query: (id) => `payment_terms/${id}`,
-      transformResponse: (response: PaymentTermResponse) => response.data,
+      transformResponse: (response: PaymentTermDetailsResponse) => response.data,
       providesTags: ['PaymentTerm'],
     }),
-    updatePaymentTerm: builder.mutation<
-      PaymentTermResponse,
-      { id: string; body: PaymentTermUpdateBody }
-    >({
+    updatePaymentTerm: builder.mutation<PaymentTermDetailsResponse, { id: string; body: Partial<NewPaymentTerm> }>({
       query: ({ id, body }) => ({
         url: `payment_terms/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body,
-      }),
-      invalidatesTags: ['PaymentTerm'],
-    }),
-    deletePaymentTerm: builder.mutation<PaymentTermDeleteResponse, { id: string }>({
-      query: ({ id }) => ({
-        url: `payment_terms/${id}`,
-        method: 'DELETE',
       }),
       invalidatesTags: ['PaymentTerm'],
     }),
@@ -58,5 +40,4 @@ export const {
   useCreatePaymentTermMutation,
   useGetPaymentTermQuery,
   useUpdatePaymentTermMutation,
-  useDeletePaymentTermMutation,
 } = paymentTermsApi;

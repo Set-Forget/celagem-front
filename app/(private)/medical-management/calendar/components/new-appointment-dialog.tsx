@@ -36,7 +36,7 @@ export default function NewAppointmentDialog() {
   const [createAppointment, { isLoading }] = useCreateAppointmentMutation()
 
   const [getPatients] = useLazyListPatientsQuery()
-  const [getDoctors] = useLazyListUsersQuery()
+  const [getUsers] = useLazyListUsersQuery()
   const [getTemplates] = useLazyListTemplatesQuery()
   const [getBusinessUnits] = useLazyListBusinessUnitsQuery()
 
@@ -108,6 +108,7 @@ export default function NewAppointmentDialog() {
         label: `${patient.first_name} ${patient.first_last_name}`,
         value: patient.id,
       }))
+        .filter((patient) => patient.label.toLowerCase().includes(query?.toLowerCase() ?? ""))
     } catch (error) {
       sendMessage({
         location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
@@ -120,11 +121,13 @@ export default function NewAppointmentDialog() {
 
   const handleGetDoctors = async (query?: string) => {
     try {
-      const doctors = await getDoctors({ name: query }).unwrap()
-      return doctors.data.map((doctor) => ({
-        label: `${doctor.first_name} ${doctor.last_name}`,
-        value: doctor.id,
-      }))
+      const users = await getUsers({ name: query }).unwrap()
+      return users
+        .filter((user) => user.role.is_medical)
+        .map((user) => ({
+          label: `${user.first_name} ${user.last_name}`,
+          value: user.id,
+        }))
     } catch (error) {
       sendMessage({
         location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",
@@ -135,13 +138,14 @@ export default function NewAppointmentDialog() {
     }
   }
 
-  const handleGetBusinessUnits = async () => {
+  const handleGetBusinessUnits = async (query?: string) => {
     try {
       const businessUnits = await getBusinessUnits().unwrap()
       return businessUnits.data.map((bu) => ({
         label: bu.name,
         value: bu.id,
       }))
+        .filter((bu) => bu.label.toLowerCase().includes(query?.toLowerCase() ?? ""))
     } catch (error) {
       sendMessage({
         location: "app/(private)/medical-management/calendar/components/new-appointment-dialog.tsx",

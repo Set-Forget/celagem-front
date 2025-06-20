@@ -18,6 +18,9 @@ import { z } from "zod";
 import { NormalizedSchema } from "../schemas/masters";
 import NewFieldForm from "./new-field-form";
 import { newFieldSchema, typeSchema } from "../schemas/templates";
+import { toast } from "sonner";
+import CustomSonner from "@/components/custom-sonner";
+import { useUpdateFieldMutation } from "@/lib/services/templates";
 
 export default function EditFieldDialog() {
   const { getValues, setValue } = useFormContext<NormalizedSchema>();
@@ -34,6 +37,8 @@ export default function EditFieldDialog() {
     resolver: zodResolver(newFieldSchema)
   });
 
+  const [updateField, { isLoading: isUpdatingField }] = useUpdateFieldMutation();
+
   const onOpenChange = () => {
     closeDialogs();
     form.reset();
@@ -45,16 +50,29 @@ export default function EditFieldDialog() {
     const fieldIndex = currentGlobalFields.findIndex((f) => f.id === fieldId);
     if (fieldIndex === -1) return console.warn("Field not found. (Auto-generated error)");
 
-    const updatedField = { ...data, id: fieldId };
-    const updatedFields = [...currentGlobalFields];
-    updatedFields[fieldIndex] = updatedField;
+    const updatedField = { ...data, id: fieldId } as z.infer<typeof newFieldSchema> & { id: number };
 
-    setValue("fields", updatedFields, {
-      shouldValidate: true,
-      shouldDirty: true
-    });
+    try {
+      await updateField(updatedField).unwrap();
 
-    closeDialogs();
+      const updatedFields = [...currentGlobalFields];
+      updatedFields[fieldIndex] = { ...updatedField } as any;
+
+      setValue("fields", updatedFields, {
+        shouldValidate: true,
+        shouldDirty: false,
+      });
+
+      toast.custom((t) => (
+        <CustomSonner t={t} description="Campo actualizado exitosamente" />
+      ));
+
+      closeDialogs();
+    } catch (err) {
+      toast.custom((t) => (
+        <CustomSonner t={t} description="Error actualizando campo" variant="error" />
+      ));
+    }
   }
 
   useEffect(() => {
@@ -99,7 +117,7 @@ export default function EditFieldDialog() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
             <NewFieldForm />
             <DialogFooter>
-              <Button size="sm">
+              <Button size="sm" loading={isUpdatingField}>
                 Guardar
               </Button>
             </DialogFooter>

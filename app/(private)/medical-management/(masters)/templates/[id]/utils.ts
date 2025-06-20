@@ -1,6 +1,6 @@
 import { isEqual } from "lodash";
-import { NewField, NewSection } from "../../schemas/templates";
-import { NormalizedSchema } from "../../schemas/masters";
+import { NewField, NewSection, templateDetailSchema } from "../../schemas/templates";
+import { NormalizedSchema, templateSchema } from "../../schemas/masters";
 
 export const propFieldAdapter = {
   "defaultValue": "Valor por defecto",
@@ -36,7 +36,6 @@ export function getDiffs(original: NormalizedSchema, updated: NormalizedSchema) 
     originalFieldsMap.set(f.id, f);
   }
 
-  // --- Acumuladores ---
   const newSections: NewSection[] = [];
   const updatedSections: NewSection[] = [];
   const deletedSections: NewSection[] = [];
@@ -86,3 +85,16 @@ export function getDiffs(original: NormalizedSchema, updated: NormalizedSchema) 
     deletedFields,
   };
 }
+
+export const normalizedTemplateSchema = templateDetailSchema.transform((template) => {
+  const allFields = template.sections.flatMap((section) => section.fields);
+  const normalizedSections = template.sections.map((section) => ({ ...section, fields: section.fields.map((field) => field.id) }));
+  const normalizedTemplate = { ...template, sections: template.sections.map((section) => section.id) };
+
+  return {
+    kind: "template",
+    template: normalizedTemplate,
+    sections: normalizedSections,
+    fields: allFields,
+  };
+}).pipe(templateSchema);

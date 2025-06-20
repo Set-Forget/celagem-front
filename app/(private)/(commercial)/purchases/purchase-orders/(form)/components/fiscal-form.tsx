@@ -1,5 +1,5 @@
-import { useCurrencySelect } from "@/app/(private)/(commercial)/hooks/use-currency-select"
-import { usePaymentTermSelect } from "@/app/(private)/(commercial)/hooks/use-payment-term-select"
+import { useCurrencySelect } from "@/hooks/use-currency-select"
+import { usePaymentTermSelect } from "@/hooks/use-payment-term-select"
 import { AsyncSelect } from "@/components/async-select"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useFormContext } from "react-hook-form"

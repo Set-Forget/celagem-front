@@ -20,7 +20,7 @@ export const purchaseOrdersApi = erpApi.injectEndpoints({
           url: '/purchase_orders',
           params: data || {},
         }),
-        transformResponse: (response: PurchaseOrderListResponse) => response.data.map(listPurchaseOrdersAdapter),
+        transformResponse: (response: PurchaseOrderListResponse) => response?.data?.map(listPurchaseOrdersAdapter) ?? [],
         providesTags: ['PurchaseOrder'],
       }),
     getPurchaseOrder: builder.query<AdaptedPurchaseOrderDetail, string | number>({

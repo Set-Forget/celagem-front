@@ -86,8 +86,9 @@ export default function Page() {
         birthdate: data.birthdate.toString(),
         fiscal: {
           ...data.fiscal,
-          registered_name: data.first_name + " " + data.first_last_name,
-        }
+          registered_name: data.fiscal.registered_name || data.first_name + " " + data.first_last_name,
+        },
+        created_by: undefined,
       }).unwrap()
 
       if (response.status === "SUCCESS") {
@@ -105,20 +106,22 @@ export default function Page() {
   }
 
   return (
-    <Form {...newPatientForm}>
-      <Header title="Nuevo paciente">
-        <Button
-          type="submit"
-          onClick={newPatientForm.handleSubmit(onSubmit)}
-          size="sm"
-          className="ml-auto"
-          loading={isCreatingPatient}
-        >
-          Crear paciente
-        </Button>
-      </Header>
-      <GeneralForm />
-      <FormTabs tabs={tabs} />
-    </Form>
+    <div>
+      <Form {...newPatientForm}>
+        <Header title="Nuevo paciente">
+          <Button
+            type="submit"
+            onClick={newPatientForm.handleSubmit(onSubmit)}
+            size="sm"
+            className="ml-auto"
+            loading={isCreatingPatient}
+          >
+            Crear paciente
+          </Button>
+        </Header>
+        <GeneralForm />
+        <FormTabs tabs={tabs} />
+      </Form>
+    </div>
   )
 }

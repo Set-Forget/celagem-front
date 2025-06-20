@@ -1,74 +1,74 @@
 import { z } from 'zod';
 
-export const newRoleGeneralSchema = z.object({
-  name: z.string(),
-  company_id: z.string(),
-});
-
-export const newRoleSchema = newRoleGeneralSchema;
-
-export const rolesSchema = z.object({
+export const roleListSchema = z.object({
   id: z.string(),
   name: z.string(),
-  status: z.enum(['active', 'inactive']),
-  created_at: z.string(),
-  created_by: z.object({
-    id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-  }),
-  modified_at: z.string(),
-  updated_by: z.object({
-    id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-  }),
-});
-
-export const rolesListResponseSchema = z.object({
-  // List
-  status: z.string(),
-  code: z.number(),
-  message: z.string(),
-  details: z.string(),
-  data: z.array(rolesSchema),
-});
-
-export const roleResponseSchema = z.object({
-  // Create, Update, Get
-  status: z.string(),
-  code: z.number(),
-  message: z.string(),
-  details: z.string(),
-  data: rolesSchema,
-});
-
-export const roleOperationResponseSchema = z.object({
-  // Delete, Add Permission, Delete Permission
-  status: z.string(),
-  code: z.number(),
-  message: z.string(),
-  details: z.string(),
-  data: z.string(),
-});
-
-export const roleCreateBodySchema = z.object({
-  name: z.string(),
   company_id: z.string(),
-});
+  company_name: z.string(),
+  is_medical: z.boolean(),
+})
 
-export const roleUpdateBodySchema = z.object({
+export const roleListResponseSchema = z.object({
+  data: z.array(roleListSchema),
+  status: z.string(),
+  message: z.string(),
+  code: z.number(),
+})
+
+export const roleDetailSchema = z.object({
+  id: z.string(),
   name: z.string(),
-});
+  permissions: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+  })),
+  company_id: z.string(),
+  company_name: z.string(),
+  created_at: z.string(),
+  modified_at: z.string(),
+})
 
-export const roleAddPermissionBodySchema = z.object({
-  permission_id: z.string(),
-});
+export const roleDetailResponseSchema = z.object({
+  data: roleDetailSchema,
+  status: z.string(),
+  message: z.string(),
+  code: z.number(),
+})
 
-export type Roles = z.infer<typeof rolesSchema>;
-export type RolesListResponse = z.infer<typeof rolesListResponseSchema>;
-export type RoleResponse = z.infer<typeof roleResponseSchema>;
-export type RoleOperationResponse = z.infer<typeof roleOperationResponseSchema>;
-export type RoleCreateBody = z.infer<typeof roleCreateBodySchema>;
-export type RoleUpdateBody = z.infer<typeof roleUpdateBodySchema>;
-export type RoleAddPermissionBody = z.infer<typeof roleAddPermissionBodySchema>;
+export const newRoleSchema = z.object({
+  name: z.string({ required_error: "El nombre es requerido" }).min(1, { message: "El nombre es requerido" }),
+  permissions: z.array(z.string(), { required_error: "Debes seleccionar al menos un permiso" }).min(1, { message: "Debes seleccionar al menos un permiso" }),
+  company_id: z.string({ required_error: 'La compañía es requerida' }).min(1, { message: 'La compañía es requerida' }),
+})
+
+export const newRoleResponseSchema = z.object({
+  data: roleDetailSchema,
+  status: z.string(),
+  message: z.string(),
+  code: z.number(),
+})
+
+export const listPermissionsSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(), // TODO: add description
+})
+
+export const listPermissionsResponseSchema = z.object({
+  data: z.array(listPermissionsSchema),
+  status: z.string(),
+  message: z.string(),
+  code: z.number(),
+})
+
+export type RoleList = z.infer<typeof roleListSchema>;
+export type RoleListResponse = z.infer<typeof roleListResponseSchema>;
+
+export type RoleDetail = z.infer<typeof roleDetailSchema>;
+export type RoleDetailResponse = z.infer<typeof roleDetailResponseSchema>;
+
+export type NewRole = z.infer<typeof newRoleSchema>;
+export type NewRoleResponse = z.infer<typeof newRoleResponseSchema>;
+
+export type PermissionList = z.infer<typeof listPermissionsSchema>;
+export type PermissionListResponse = z.infer<typeof listPermissionsResponseSchema>;

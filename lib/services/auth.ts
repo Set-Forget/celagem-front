@@ -10,12 +10,14 @@ export const authApi = usersApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: ['Profile'],
     }),
     getProfile: builder.query<GetProfileResponse, void>({
       query: () => ({
         url: '/auth/profile',
         method: 'GET',
       }),
+      providesTags: ['Profile'],
     }),
   }),
 });
