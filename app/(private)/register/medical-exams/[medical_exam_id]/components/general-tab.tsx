@@ -3,7 +3,7 @@ import { cn, placeholder } from '@/lib/utils';
 import { useParams } from 'next/navigation';
 
 import { useGetClassQuery } from '@/lib/services/classes';
-import { Classes } from '@/app/(private)/management/classes/schema/classes';
+//import { Classes } from '@/app/(private)/management/classes/schema/classes';
 
 export type FieldDefinition<T> = {
   label: string;
@@ -19,7 +19,7 @@ export default function GeneralTab() {
   const { data: classData, isLoading: isClassLoading } =
     useGetClassQuery(classId);
 
-  const fields: FieldDefinition<Classes>[] = [
+  const fields: FieldDefinition<any>[] = [
     {
       label: 'Nombre',
       placeholderLength: 14,
