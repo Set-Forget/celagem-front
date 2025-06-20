@@ -94,7 +94,6 @@ export default function Page() {
         id: patientId,
         body: {
           ...rest,
-          birth_date: data.birthdate.toString(),
         },
       }).unwrap()
 

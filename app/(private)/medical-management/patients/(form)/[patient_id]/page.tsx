@@ -87,20 +87,6 @@ export default function Page() {
     <div className="flex flex-col h-full">
       <Header title="Detalles del paciente">
         <div className="ml-auto flex items-center gap-2">
-          <Dropdown
-            trigger={
-              <Button size="icon" variant="outline" className="h-8 w-8">
-                <Ellipsis />
-              </Button>
-            }
-          >
-            <DropdownMenuItem onSelect={() => router.push(`/medical-management/medical-record/${patientId}`)} >
-              Ver historial
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Crear visita
-            </DropdownMenuItem>
-          </Dropdown>
           <Button
             onClick={() => router.push(`/medical-management/patients/${patientId}/edit`)}
             size="sm"
@@ -110,98 +96,13 @@ export default function Page() {
           </Button>
         </div>
       </Header>
-      <ResizablePanelGroup className="flex !h-full !w-full" direction="horizontal">
-        <ResizablePanel defaultSize={70}>
-          <GeneralTab />
-          <DataTabs
-            tabs={tabs}
-            activeTab={tab}
-            onTabChange={setTab}
-            contentClassName="p-4"
-          />
-        </ResizablePanel>
-        <ResizableHandle disabled />
-        <ResizablePanel className="!flex-none w-[350px]" defaultSize={30}>
-          <div className="p-4 flex flex-col gap-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-base font-medium">Notas</h2>
-              <Button
-                size="icon"
-                variant="outline"
-                className="h-7 w-7"
-              >
-                <Plus />
-              </Button>
-            </div>
-            <ScrollArea className="h-[300px] w-full pr-2 overflow-x-hidden border p-2 bg-muted !rounded-sm">
-              {notes.map((note) => (
-                <div key={note.id} className="flex items-start justify-between py-2 border-b last:border-b-0 group relative">
-                  <p className="text-xs break-words pr-2 flex-1">{note.content}</p>
-                  <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity absolute top-1 right-1">
-                    <Button variant="outline" size="icon" className="h-6 w-6 rounded-tr-none rounded-br-none border-r-0">
-                      <Pencil />
-                    </Button>
-                    <Button variant="outline" size="icon" className="h-6 w-6 rounded-tl-none rounded-bl-none">
-                      <X />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </ScrollArea>
-          </div>
-          <Separator />
-          <div className="p-4 flex flex-col gap-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-base font-medium">Última visita</h2>
-              xxxx
-            </div>
-          </div>
-          <Separator />
-          <div className="p-4 flex flex-col gap-4">
-            <h2 className="text-base font-medium">Actividad</h2>
-            {(!isPatientLoading && patient?.created_by) &&
-              <div className="flex flex-col gap-1">
-                <label className="text-muted-foreground text-sm">
-                  Creado por{" "}
-                  <span className="font-medium">
-                    {isPatientLoading ? placeholder(13) : patient?.created_by?.first_name + " " + patient?.created_by?.last_name}
-                  </span>
-                </label>
-                <span
-                  className={cn(
-                    "text-sm transition-all duration-300",
-                    isPatientLoading ? "blur-[4px]" : "blur-none"
-                  )}
-                >
-                  {isPatientLoading ? placeholder(13) : formatDistanceToNow(patient?.created_at, { addSuffix: true, locale: es })}
-                </span>
-              </div>
-            }
-            {(!isPatientLoading && patient?.updated_by) &&
-              <div className="flex flex-col gap-1">
-                <label className="text-muted-foreground text-sm">
-                  Editado por{" "}
-                  <span className={cn(
-                    "font-medium transition-all duration-300",
-                    isPatientLoading ? "blur-[4px]" : "blur-none"
-                  )}>
-                    {isPatientLoading ? placeholder(13) : patient?.updated_by?.first_name + " " + patient?.updated_by?.last_name}
-                  </span>
-                </label>
-                <span
-                  className={cn(
-                    "text-sm transition-all duration-300",
-                    isPatientLoading ? "blur-[4px]" : "blur-none"
-                  )}
-                >
-                  {isPatientLoading ? placeholder(13) : formatDistanceToNow(patient?.updated_at, { addSuffix: true, locale: es })}
-                </span>
-              </div>
-            }
-            {(!isPatientLoading && !patient?.created_by && !patient?.updated_by) && <span className="text-muted-foreground text-sm">No hay actividad</span>}
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+      <GeneralTab />
+      <DataTabs
+        tabs={tabs}
+        activeTab={tab}
+        onTabChange={setTab}
+        contentClassName="p-4"
+      />
     </div>
   )
 }
