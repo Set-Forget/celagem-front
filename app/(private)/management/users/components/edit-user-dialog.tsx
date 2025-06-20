@@ -3,18 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { useSendMessageMutation } from "@/lib/services/telegram";
-import { useGetUserQuery, useUpdateUserMutation, useUpdateUserRoleMutation } from "@/lib/services/users";
-import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
+import { useGetUserQuery, useUpdateUserMutation } from "@/lib/services/users";
+import { setDialogsState as _setDialogsState, closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { editUserSchema } from "../schema/users";
+import { userBaseSchema, editUserSchema } from "../schema/users";
 import NewUserForm from "./new-user-form";
-import { useLazyGetDoctorQuery, useUpdateDoctorMutation } from "@/lib/services/doctors";
-import { setDialogsState as _setDialogsState } from "@/lib/store/dialogs-store";
-
 
 export default function EditUserDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
@@ -26,12 +23,9 @@ export default function EditUserDialog() {
   })
 
   const [sendMessage] = useSendMessageMutation();
-  const [updateUserRole, { isLoading: isUpdatingUserRole }] = useUpdateUserRoleMutation();
   const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
-  const [getDoctor] = useLazyGetDoctorQuery();
-  const [updateDoctor, { isLoading: isUpdatingDoctor }] = useUpdateDoctorMutation();
 
-  const form = useForm<z.infer<typeof editUserSchema>>({
+  const form = useForm<z.infer<typeof userBaseSchema>>({
     resolver: zodResolver(editUserSchema),
     defaultValues: {
       first_name: '',
@@ -48,27 +42,12 @@ export default function EditUserDialog() {
     form.reset()
   }
 
-  const onSubmit = async (data: Partial<z.infer<typeof editUserSchema>>) => {
+  const onSubmit = async (data: z.infer<typeof userBaseSchema>) => {
     try {
       const response = await updateUser({
         id: userId,
         body: data,
       }).unwrap();
-
-      if (data.role_id) {
-        await updateUserRole({
-          id: userId,
-          body: { role_id: data.role_id },
-        }).unwrap();
-      }
-
-      if (data.role_is_medical) {
-        await updateDoctor({
-          id: userId,
-          speciality_id: data.speciality_id,
-          image: data.signature?.split(',')[1] ?? undefined,
-        }).unwrap();
-      }
 
       if (response.status === 'success') {
         _setDialogsState({ open: "user-details", payload: { user_id: userId } })
@@ -94,23 +73,16 @@ export default function EditUserDialog() {
   useEffect(() => {
     if (!user) return;
 
-    (async () => {
-      if (user.role_is_medical) {
-        const doctor = await getDoctor(user.id).unwrap();
-        form.setValue('speciality_id', doctor.specialization_id)
-        form.setValue('signature', doctor.signature)
-      }
-    })()
-
     form.reset({
-      ...form.getValues(),
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
-      role_id: user.role_id,
-      company_id: user.company_id,
+      role_id: user.role.id,
+      company_id: user.company.id,
       business_units: user.business_units.map((bu) => bu.id),
-      role_is_medical: user.role_is_medical,
+      role_is_medical: user.role.is_medical,
+      speciality_id: user.speciality.id,
+      signature: user.signature,
     })
   }, [user])
 
@@ -132,7 +104,7 @@ export default function EditUserDialog() {
             <Button
               onClick={() => form.handleSubmit(onSubmit)()}
               size="sm"
-              loading={isUpdatingUser || isUpdatingUserRole || isUpdatingDoctor}
+              loading={isUpdatingUser}
               type="button">
               Guardar
             </Button>

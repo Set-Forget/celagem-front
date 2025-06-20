@@ -12,14 +12,12 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { newUserSchema } from "../schema/users";
 import NewUserForm from "./new-user-form";
-import { useCreateDoctorMutation } from "@/lib/services/doctors";
 
 export default function NewUserDialog() {
   const [dialogState, setDialogState] = useState<DialogsState>({ open: false })
 
   const [sendMessage] = useSendMessageMutation();
   const [createUser, { isLoading: isCreatingUser }] = useCreateUserMutation();
-  const [createDoctor, { isLoading: isCreatingDoctor }] = useCreateDoctorMutation();
 
   const form = useForm<z.infer<typeof newUserSchema>>({
     resolver: zodResolver(newUserSchema),
@@ -41,24 +39,12 @@ export default function NewUserDialog() {
     form.reset()
   }
 
-  const onSubmit = async (data: Partial<z.infer<typeof newUserSchema>>) => {
-    const { signature, speciality_id, role_is_medical, ...rest } = data;
-
+  const onSubmit = async (data: z.infer<typeof newUserSchema>) => {
     try {
-      const response = await createUser(rest).unwrap();
-
-      if (role_is_medical) {
-        const userId = response.data.id
-        await createDoctor({
-          id: userId,
-          signature: data.first_name + ' ' + data.last_name,
-          speciality_id: Number(speciality_id),
-          image: signature?.split(',')[1] || '',
-        }).unwrap();
-      }
+      const response = await createUser(data).unwrap();
 
       if (response.status === 'success') {
-        onOpenChange()
+        onOpenChange();
         toast.custom((t) => <CustomSonner t={t} description="Usuario creado exitosamente" variant="success" />);
       }
     } catch (error) {
@@ -67,7 +53,7 @@ export default function NewUserDialog() {
         location: "app/(private)/management/users/(form)/components/new-user-dialog.tsx",
         rawError: error,
         fnLocation: "onSubmit"
-      })
+      });
     }
   };
 
@@ -96,7 +82,7 @@ export default function NewUserDialog() {
             <Button
               onClick={() => form.handleSubmit(onSubmit)()}
               size="sm"
-              loading={isCreatingUser || isCreatingDoctor}
+              loading={isCreatingUser}
               type="button">
               Crear
             </Button>

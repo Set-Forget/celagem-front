@@ -38,7 +38,7 @@ export default function Page() {
       </Header>
       <div className="flex flex-col gap-4 p-4 [&_*[data-table='true']]:h-[calc(100svh-209px)]">
         <DataTable
-          data={users?.data
+          data={users
             ?.filter((user) => {
               if (searchName) {
                 const fullName = `${user.first_name} ${user.last_name}`

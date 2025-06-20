@@ -36,7 +36,7 @@ export default function NewAppointmentDialog() {
   const [createAppointment, { isLoading }] = useCreateAppointmentMutation()
 
   const [getPatients] = useLazyListPatientsQuery()
-  const [getDoctors] = useLazyListUsersQuery()
+  const [getUsers] = useLazyListUsersQuery()
   const [getTemplates] = useLazyListTemplatesQuery()
   const [getBusinessUnits] = useLazyListBusinessUnitsQuery()
 
@@ -121,12 +121,12 @@ export default function NewAppointmentDialog() {
 
   const handleGetDoctors = async (query?: string) => {
     try {
-      const doctors = await getDoctors({ name: query }).unwrap()
-      return doctors.data
-        .filter((doctor) => doctor.role_is_medical)
-        .map((doctor) => ({
-          label: `${doctor.first_name} ${doctor.last_name}`,
-          value: doctor.id,
+      const users = await getUsers({ name: query }).unwrap()
+      return users
+        .filter((user) => user.role.is_medical)
+        .map((user) => ({
+          label: `${user.first_name} ${user.last_name}`,
+          value: user.id,
         }))
     } catch (error) {
       sendMessage({

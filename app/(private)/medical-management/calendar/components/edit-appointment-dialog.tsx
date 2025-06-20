@@ -128,7 +128,7 @@ export default function EditAppointmentDialog() {
   const handleGetDoctors = async () => {
     try {
       const doctors = await getDoctors().unwrap();
-      return doctors.data.map((doctor) => ({
+      return doctors.map((doctor) => ({
         label: `${doctor.first_name} ${doctor.last_name}`,
         value: doctor.id,
       }));

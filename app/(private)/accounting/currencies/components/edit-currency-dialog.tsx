@@ -4,7 +4,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Form } from "@/components/ui/form";
 import { useGetCurrencyQuery, useUpdateCurrencyMutation, useUpdateCurrencyRateMutation } from "@/lib/services/currencies";
 import { useSendMessageMutation } from "@/lib/services/telegram";
-import { useGetUserQuery, useUpdateUserMutation, useUpdateUserRoleMutation } from "@/lib/services/users";
 import { closeDialogs, DialogsState, dialogsStateObservable } from "@/lib/store/dialogs-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";

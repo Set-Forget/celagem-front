@@ -16,3 +16,4 @@ export const hcApi = createApi({
   tagTypes: ['Template', 'Patient', 'Appointment', 'Visit', 'Section', 'Field', 'Speciality', 'Doctor'],
   endpoints: () => ({}),
 });
+

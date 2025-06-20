@@ -1,9 +1,9 @@
 'use client';
 
+import { AdaptedUserList } from '@/lib/adapters/users';
 import { ColumnDef } from '@tanstack/react-table';
-import { UserList } from '../schema/users';
 
-export const columns: ColumnDef<UserList>[] = [
+export const columns: ColumnDef<AdaptedUserList>[] = [
   {
     accessorKey: 'first_name',
     header: 'Nombre',
@@ -26,10 +26,10 @@ export const columns: ColumnDef<UserList>[] = [
     cell: ({ row }) => <div>{row.original.email}</div>,
   },
   {
-    accessorKey: 'role_name',
+    accessorKey: 'role.name',
     header: 'Rol',
     cell: ({ row }) => (
-      <div>{row.original.role_name}</div>
+      <div>{row.original.role.name}</div>
     ),
   },
 ];

@@ -10,7 +10,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { newUserSchema } from "../schema/users";
+import { userBaseSchema } from "../schema/users";
 import { cn } from "@/lib/utils";
 import { useSpecialitySelect } from "@/hooks/use-speciality-select";
 import SignaturePad from "./signature-pad";
@@ -20,7 +20,7 @@ export default function NewUserForm({
 }: {
   isEditing?: boolean
 }) {
-  const { control, setValue } = useFormContext<z.infer<typeof newUserSchema>>()
+  const { control, setValue } = useFormContext<z.infer<typeof userBaseSchema>>()
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -222,8 +222,7 @@ export default function NewUserForm({
                 renderOption={(item) => <div>{item.name}</div>}
                 onChange={(val, option) => {
                   field.onChange(val)
-                  const medicalFlag = option?.is_medical ?? false;
-                  setValue('role_is_medical', medicalFlag, { shouldValidate: true })
+                  setValue('role_is_medical', option?.is_medical ?? false, { shouldValidate: true })
                 }}
                 value={field.value}
                 getOptionKey={(item) => String(item.id)}
