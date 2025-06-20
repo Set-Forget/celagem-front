@@ -75,8 +75,6 @@ export default function Page() {
   const [sendMessage] = useSendMessageMutation()
   const [createPatient, { isLoading: isCreatingPatient }] = useCreatePatientMutation()
 
-  const { data: profile } = useGetProfileQuery()
-
   const newPatientForm = useForm<z.infer<typeof newPatientSchema>>({
     resolver: zodResolver(newPatientSchema),
   })
@@ -86,6 +84,10 @@ export default function Page() {
       const response = await createPatient({
         ...data,
         birthdate: data.birthdate.toString(),
+        fiscal: {
+          ...data.fiscal,
+          registered_name: data.first_name + " " + data.first_last_name,
+        }
       }).unwrap()
 
       if (response.status === "SUCCESS") {
@@ -101,12 +103,6 @@ export default function Page() {
       })
     }
   }
-
-  useEffect(() => {
-    if (profile) {
-      newPatientForm.setValue("created_by", profile.data.id)
-    }
-  }, [profile])
 
   return (
     <Form {...newPatientForm}>
