@@ -30,11 +30,12 @@ export const doctorsApi = hcApi.injectEndpoints({
       }),
       invalidatesTags: ['Doctor'],
     }),
-    getSignature: builder.query<{ status: string, code: number, message: string, data: string }, string>({
+    getSignature: builder.query<string, string>({
       query: (id) => ({
         url: `/doctor/${id}/signature`,
         method: 'GET',
       }),
+      transformResponse: (response: { status: string, code: number, message: string, data: string }) => response.data,
       providesTags: ['Doctor'],
     }),
   }),

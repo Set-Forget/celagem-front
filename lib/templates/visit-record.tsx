@@ -9,13 +9,13 @@ import { resolveFieldDisplayValue } from "@/app/(private)/medical-management/vis
 import type { VisitDetail } from "@/app/(private)/medical-management/visits/schemas/visits"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
-import { useGetSignatureQuery } from "../services/doctors"
 
 export type VisitRecordData = {
   visit: VisitDetail
   appointment: AppointmentDetail
   patient: PatientDetail
   data: string
+  signature?: string
 }
 
 Font.register({
@@ -197,6 +197,14 @@ const styles = StyleSheet.create({
   footerRight: {
     width: "40%",
     textAlign: "right",
+    alignItems: "flex-end",
+  },
+  signature: {
+    width: 120,
+    height: 40,
+    marginBottom: 4,
+    alignSelf: "flex-end",
+    marginLeft: "auto",
   },
   doctorName: {
     fontWeight: 600,
@@ -256,9 +264,7 @@ const renderPdfValue = (value: any): React.ReactNode => {
 }
 
 const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
-  const { data: signature } = useGetSignatureQuery(data.appointment.doctor.id)
-
-  console.log(signature)
+  const signature = data.signature
 
   const medicalRecord = JSON.parse(data.data ?? "{}") as {
     template: TemplateDetail
@@ -273,7 +279,6 @@ const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
   return (
     <Document title={`Visit Record ${visit.visit_number}`}>
       <Page size="A4" style={styles.page}>
-        {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Text style={styles.title}>VISITA N° {visit.visit_number}</Text>
@@ -303,7 +308,6 @@ const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
           </View>
         </View>
 
-        {/* Patient Section */}
         <View style={styles.patientSection}>
           <Text style={styles.sectionTitle}>DATOS DEL PACIENTE</Text>
           <View style={styles.patientGrid}>
@@ -361,7 +365,6 @@ const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
           </View>
         </View>
 
-        {/* Template Content */}
         <Text style={styles.templateTitle}>{parsedTemplate.name.toUpperCase()}</Text>
 
         {parsedTemplate.sections.map((section: Section) => {
@@ -433,7 +436,6 @@ const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
           return null
         })}
 
-        {/* Footer */}
         <View style={styles.footer}>
           <View style={styles.footerContent}>
             <View style={styles.footerLeft}>
@@ -442,6 +444,12 @@ const VisitRecordPDF = ({ data }: { data: VisitRecordData }) => {
               <Text>Este documento contiene información médica confidencial protegida por la ley.</Text>
             </View>
             <View style={styles.footerRight}>
+              {signature && (
+                <Image
+                  src={signature.startsWith('data:image') ? signature : `data:image/png;base64,${signature}`}
+                  style={styles.signature}
+                />
+              )}
               <Text style={styles.doctorName}>
                 Dr. {appointment.doctor.first_name} {appointment.doctor.last_name}
               </Text>

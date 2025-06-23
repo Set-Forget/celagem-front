@@ -13,7 +13,7 @@ import { useFormContext } from "react-hook-form"
 import { v4 as uuidv4 } from "uuid"
 import { z } from "zod"
 import { NewPurchaseReceipt, NewPurchaseReceiptLine, newPurchaseReceiptSchema } from "../../schemas/purchase-receipts"
-import { columns } from "./columns"
+import { getColumns } from "./columns"
 
 export default function GeneralForm() {
   const searchParams = useSearchParams()
@@ -53,6 +53,8 @@ export default function GeneralForm() {
       return []
     }
   }
+
+  const columns = getColumns(!!purchaseOrderId)
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">

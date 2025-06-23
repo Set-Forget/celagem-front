@@ -27,7 +27,7 @@ export const billsApi = erpApi.injectEndpoints({
       transformResponse: (response: BillDetailResponse) => getBillAdapter(response.data),
       providesTags: ['Bill'],
     }),
-    createBill: builder.mutation<NewBillResponse, Omit<NewBill, 'cost_center' | 'notes' | 'accounting_account' | 'currency' | 'payment_term' | 'payment_method' | "accounting_date" | "date"> & { currency: number; payment_term: number, payment_method: number, accounting_date: string, date: string, purchase_order_id?: number }>({
+    createBill: builder.mutation<NewBillResponse, Omit<NewBill, 'cost_center' | 'notes' | 'accounting_account' | 'currency' | 'payment_term' | 'payment_method' | "accounting_date" | "date"> & { currency: number; payment_term: number, payment_method?: number, accounting_date: string, date: string, purchase_order_id?: number }>({
       query: ({ purchase_order_id, ...bill }) => ({
         url: '/purchase_invoices',
         method: 'POST',

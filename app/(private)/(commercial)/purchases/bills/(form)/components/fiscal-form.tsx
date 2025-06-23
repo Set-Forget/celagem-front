@@ -63,13 +63,13 @@ export default function FiscalForm() {
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
             <FormLabel className="w-fit">
-              Método de pago
+              Método de cobro
             </FormLabel>
             <FormControl>
-              <AsyncSelect<{ id: number, name: string }, number>
-                label="Método de pago"
+              <AsyncSelect<{ id: number, name: string }, number | undefined>
+                label="Método de cobro"
                 triggerClassName="!w-full"
-                placeholder="Seleccionar método de pago..."
+                placeholder="Seleccionar método de cobro..."
                 fetcher={handleSearchPaymentMethod}
                 getDisplayValue={(item) => item.name}
                 getOptionValue={(item) => item.id}
@@ -85,7 +85,7 @@ export default function FiscalForm() {
               <FormMessage />
             ) :
               <FormDescription>
-                Este será el método de pago de la factura de compra.
+                Este será el método de cobro de la factura de compra.
               </FormDescription>
             }
           </FormItem>

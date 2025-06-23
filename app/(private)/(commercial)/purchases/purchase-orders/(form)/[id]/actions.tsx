@@ -314,18 +314,34 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
 
   if (state === "done") {
     return (
-      <Dropdown
-        trigger={
-          <Button size="icon" variant="outline" className="h-8 w-8">
-            <Ellipsis />
-          </Button>
-        }
-      >
-        <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
-          <FileTextIcon />
-          Previsualizar
-        </DropdownMenuItem>
-      </Dropdown>
+      <div className="flex gap-2">
+        <Dropdown
+          trigger={
+            <Button size="icon" variant="outline" className="h-8 w-8">
+              <Ellipsis />
+            </Button>
+          }
+        >
+          <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
+            <FileTextIcon />
+            Previsualizar
+          </DropdownMenuItem>
+        </Dropdown>
+        <Dropdown
+          trigger={
+            <Button size="sm">
+              Crear
+              <ChevronDown />
+            </Button>
+          }
+        >
+          <DropdownMenuItem
+            onSelect={() => router.push(`/purchases/bills/new?purchase_order_id=${id}`)}
+          >
+            Factura de compra
+          </DropdownMenuItem>
+        </Dropdown>
+      </div>
     )
   }
 

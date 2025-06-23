@@ -25,7 +25,7 @@ export default function EditUserDialog() {
   const [sendMessage] = useSendMessageMutation();
   const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
 
-  const form = useForm<z.infer<typeof userBaseSchema>>({
+  const form = useForm<Partial<z.infer<typeof userBaseSchema>>>({
     resolver: zodResolver(editUserSchema),
     defaultValues: {
       first_name: '',
@@ -42,7 +42,7 @@ export default function EditUserDialog() {
     form.reset()
   }
 
-  const onSubmit = async (data: z.infer<typeof userBaseSchema>) => {
+  const onSubmit = async (data: Partial<z.infer<typeof userBaseSchema>>) => {
     try {
       const response = await updateUser({
         id: userId,

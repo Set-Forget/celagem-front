@@ -72,6 +72,7 @@ export const {
   useCreatePurchaseReceiptMutation,
   useValidatePurchaseReceiptMutation,
   useLazyListPurchaseReceiptsQuery,
+  useLazyGetPurchaseReceiptQuery,
   useUpdatePurchaseReceiptMutation,
   useCancelPurchaseReceiptMutation,
 } = purchaseReceiptsApi;

@@ -18,6 +18,8 @@ import NotesForm from "../components/notes-form"
 import { defaultValues } from "../default-values"
 import Actions from "./actions"
 import ConfirmPurchaseOrderDialog from "./components/confirm-purchase-order-dialog"
+import { useGetPurchaseReceiptQuery } from "@/lib/services/purchase-receipts"
+import { useLazyGetMaterialQuery } from "@/lib/services/materials"
 
 const tabs = [
   {
@@ -40,10 +42,13 @@ export default function Page() {
   const searchParams = useSearchParams()
 
   const purchaseOrderId = searchParams.get("purchase_order_id")
+  const purchaseReceiptId = searchParams.get("purchase_receipt_id")
 
   const { data: purchaseOrder } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
+  const { data: purchaseReceipt } = useGetPurchaseReceiptQuery(purchaseReceiptId!, { skip: !purchaseReceiptId })
 
   const [getSupplier] = useLazyGetSupplierQuery()
+  const [getMaterial] = useLazyGetMaterialQuery();
 
   const newBillForm = useForm<z.infer<typeof newBillSchema>>({
     resolver: zodResolver(newBillSchema),
@@ -68,6 +73,33 @@ export default function Page() {
       })
     })()
   }, [purchaseOrder, purchaseOrderId])
+
+  useEffect(() => {
+    if (!purchaseReceipt || !purchaseReceiptId) return
+    (async () => {
+      const supplier = await getSupplier(purchaseReceipt.supplier.id).unwrap()
+
+      const itemsWithPrices = await Promise.all(
+        purchaseReceipt.items.map(async (item) => {
+          const { standard_price } = await getMaterial(item.product_id).unwrap();
+          return {
+            product_id: item.product_id,
+            quantity: item.quantity,
+            price_unit: standard_price || 0,
+          };
+        })
+      );
+
+      newBillForm.reset({
+        supplier: purchaseReceipt?.supplier?.id,
+        currency: supplier?.currency?.id,
+        payment_term: supplier?.property_payment_term?.id,
+        payment_method: supplier?.payment_method?.id,
+        stock_picking: purchaseReceipt.id,
+        items: itemsWithPrices
+      })
+    })()
+  }, [purchaseReceipt, purchaseReceiptId])
 
   return (
     <Form {...newBillForm}>

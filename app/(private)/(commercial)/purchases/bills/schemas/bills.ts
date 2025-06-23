@@ -17,6 +17,7 @@ export const newBillLineSchema = z.object({
 export const newBillGeneralSchema = z.object({
   supplier: z.number({ required_error: "El proveedor es requerido" }),
   custom_sequence_number: z.string({ required_error: "El número de factura es requerido" }).min(1, { message: "El número de factura es requerido" }),
+  stock_picking: z.number().optional(),
   date: z
     .custom<CalendarDate>((v) => v instanceof CalendarDate, {
       message: "La fecha de factura es requerida",
@@ -38,7 +39,7 @@ export const newBillGeneralSchema = z.object({
 export const newBillFiscalSchema = z.object({
   currency: z.number({ required_error: "La moneda es requerida" }),
   payment_term: z.number({ required_error: "El término de pago es requerido" }),
-  payment_method: z.number({ required_error: "El método de pago es requerido" }),
+  payment_method: z.number({ required_error: "El método de pago es requerido" }).optional(),
 });
 
 export const newBillNotesSchema = z.object({
@@ -156,6 +157,10 @@ export const billDetailSchema = z.object({
     name: z.string(),
   }),
   payment_method: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+  stock_picking: z.object({
     id: z.number(),
     name: z.string(),
   }),

@@ -84,44 +84,45 @@ const ReceivedQuantityCell = ({ control, index }: { control: Control<z.infer<typ
   return <QuantityField
     control={control}
     name={`items.${index}.quantity`}
-    max={pendingQuantity}
+    max={purchaseOrderId ? pendingQuantity : undefined}
   />
 }
 
-export const columns: FormTableColumn<z.infer<typeof newPurchaseReceiptSchema>>[] = [
-  {
-    header: "Producto / Servicio",
-    width: 300,
-    headerClassName: "text-nowrap",
-    cellClassName: "pr-0",
-    renderCell: (
-      control,
-      index,
-    ) => <MaterialsCell control={control} index={index} />,
-  },
-  {
-    header: "Unidad de medida",
-    width: 100,
-    align: "right",
-    headerClassName: "px-0 pr-9",
-    renderCell: (
-      control,
-      index,
-    ) => <MeasurementCell control={control} index={index} />,
-  },
-  {
-    header: "Cantidad recibida",
-    width: 100,
-    align: "right",
-    headerClassName: "px-0 pr-9",
-    renderCell: (control, index) => <ReceivedQuantityCell control={control} index={index} />,
-  },
-  {
-    header: "Cantidad pendiente",
-    width: 100,
-    align: "right",
-    headerClassName: "px-0 pr-9",
-    cellClassName: "px-3 border-r border-l-0",
-    renderCell: (control, index) => <PendingQuantityCell control={control} index={index} />,
-  },
-];
+export function getColumns(hasPurchaseOrder: boolean): FormTableColumn<z.infer<typeof newPurchaseReceiptSchema>>[] {
+  const baseColumns: FormTableColumn<z.infer<typeof newPurchaseReceiptSchema>>[] = [
+    {
+      header: "Producto / Servicio",
+      width: 300,
+      headerClassName: "text-nowrap",
+      cellClassName: "pr-0",
+      renderCell: (control, index) => <MaterialsCell control={control} index={index} />,
+    },
+    {
+      header: "Unidad de medida",
+      width: 100,
+      align: "right",
+      headerClassName: "px-0 pr-9",
+      renderCell: (control, index) => <MeasurementCell control={control} index={index} />,
+    },
+    {
+      header: "Cantidad recibida",
+      width: 100,
+      align: "right",
+      headerClassName: "px-0 pr-9",
+      renderCell: (control, index) => <ReceivedQuantityCell control={control} index={index} />,
+    },
+  ];
+
+  if (hasPurchaseOrder) {
+    baseColumns.push({
+      header: "Cantidad pendiente",
+      width: 100,
+      align: "right",
+      headerClassName: "px-0 pr-9",
+      cellClassName: "px-3 border-r border-l-0",
+      renderCell: (control, index) => <PendingQuantityCell control={control} index={index} />,
+    });
+  }
+
+  return baseColumns;
+}

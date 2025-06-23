@@ -47,7 +47,7 @@ export const userBaseSchema = z.object({
 });
 
 const medicalRoleRefinement = (
-  { role_is_medical, speciality_id, signature }: { role_is_medical: boolean; speciality_id?: number; signature?: string | null },
+  { role_is_medical, speciality_id, signature }: { role_is_medical?: boolean; speciality_id?: number; signature?: string | null },
   ctx: z.RefinementCtx,
 ) => {
   if (role_is_medical && !speciality_id) {
@@ -83,7 +83,11 @@ export const newUserSchema = userBaseSchema
   .superRefine(medicalRoleRefinement);
 
 export const editUserSchema = userBaseSchema
+  .partial()
   .omit({ password: true })
+  .extend({
+    business_units: z.array(z.string()).optional(),
+  })
   .superRefine(medicalRoleRefinement);
 
 export const userListResponseSchema = z.object({

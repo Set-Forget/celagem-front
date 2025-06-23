@@ -96,7 +96,21 @@ const fields: FieldDefinition<AdaptedBillDetail>[] = [
         </Button>
       </div>
     ))
-  }
+  },
+  {
+    label: "Recepción de compra",
+    placeholderLength: 14,
+    show: (p) => !!p?.stock_picking,
+    render: (p) => (
+      <div className="grid grid-cols-1 justify-items-start" key={p.stock_picking.id}>
+        <Button variant="link" className="p-0 h-auto text-foreground" asChild>
+          <Link href={routes.purchaseReceipts.detail(p.stock_picking.id)} target="_blank">
+            {p.stock_picking.name}
+          </Link>
+        </Button>
+      </div>
+    )
+  },
 ];
 
 export default function DocumentsTab() {
@@ -107,10 +121,11 @@ export default function DocumentsTab() {
   const purchaseOrders = bill?.purchase_orders || []
   const creditNotes = bill?.credit_notes || []
   const debitNotes = bill?.debit_notes || []
+  const purchaseReceipt = bill?.stock_picking || []
 
   return (
     <div className="flex flex-col p-4">
-      {purchaseOrders.length === 0 && creditNotes.length === 0 && debitNotes.length === 0 && bill?.payments?.length === 0 ? (
+      {purchaseOrders.length === 0 && creditNotes.length === 0 && debitNotes.length === 0 && bill?.payments?.length === 0 && !purchaseReceipt ? (
         <div className="flex flex-col gap-4 items-center col-span-full">
           <div className="bg-secondary p-3 rounded-full shadow-lg shadow-secondary">
             <FileX2 className="w-6 h-6 text-muted-foreground" />

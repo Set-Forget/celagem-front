@@ -1,8 +1,10 @@
-import { usePurchaseOrderSelect } from "@/hooks/use-purchase-order-select";
 import { AsyncCommand } from "@/components/async-command";
 import CustomSonner from "@/components/custom-sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { usePurchaseOrderSelect } from "@/hooks/use-purchase-order-select";
+import { usePurchaseReceiptSelect } from "@/hooks/use-purchase-receipt-select";
 import { useCreateBillMutation } from "@/lib/services/bills";
 import { useGetPurchaseOrderQuery, useLazyGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
 import { useSendMessageMutation } from "@/lib/services/telegram";
@@ -12,12 +14,13 @@ import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { Building2, Calendar, LinkIcon, Save, User } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { newBillSchema } from "../../schemas/bills";
 import PurchaseOrderPopover from "./components/purchase-order-popover";
+import PurchaseReceiptPopover from "./components/purchase-receipt-popover";
 
 export default function Actions() {
   const router = useRouter()
@@ -31,6 +34,13 @@ export default function Actions() {
   const [createBill, { isLoading: isCreatingBill }] = useCreateBillMutation()
 
   const purchaseOrderId = searchParams.get("purchase_order_id")
+  const purchaseReceiptId = searchParams.get("purchase_receipt_id")
+
+  const selectedType: "purchase_order" | "purchase_receipt" | null = purchaseOrderId
+    ? "purchase_order"
+    : purchaseReceiptId
+      ? "purchase_receipt"
+      : null
 
   const [getPurchaseOrder] = useLazyGetPurchaseOrderQuery()
 
@@ -43,9 +53,43 @@ export default function Actions() {
       supplier: purchaseOrder.supplier.name,
       created_by: purchaseOrder.created_by.name,
       required_date: purchaseOrder.required_date,
-    }),
-    filter: (purchaseOrder) => purchaseOrder.status === "purchase"
+      type: "purchase_order",
+    }) as const,
+    filter: (purchaseOrder) => purchaseOrder.status !== "cancel" && purchaseOrder.status !== "draft"
   })
+
+  const { fetcher: handleSearchPurchaseReceipt } = usePurchaseReceiptSelect({
+    map: (purchaseReceipt) => ({
+      id: purchaseReceipt.id,
+      number: purchaseReceipt.number,
+      supplier: purchaseReceipt.supplier,
+      created_by: purchaseReceipt.created_by.name,
+      required_date: purchaseReceipt.scheduled_date,
+      type: "purchase_receipt",
+    }) as const,
+    filter: (purchaseReceipt) => purchaseReceipt.state !== "assigned" && purchaseReceipt.state !== "cancel" && purchaseReceipt.state !== "draft"
+  })
+
+  const handleSearch = useCallback(async (query?: string) => {
+    const [orders, receipts] = await Promise.all([
+      handleSearchPurchaseOrder(query),
+      handleSearchPurchaseReceipt(query),
+    ])
+    return [...orders, ...receipts]
+  }, [handleSearchPurchaseOrder, handleSearchPurchaseReceipt])
+
+  const handleLink = async (id: number, type: "purchase_order" | "purchase_receipt") => {
+    if (type === "purchase_order") {
+      const purchaseOrder = await getPurchaseOrder(id).unwrap();
+
+      const fullBilledItems = purchaseOrder.items.some(item => item.product_qty - item.qty_invoiced <= 0);
+      if (fullBilledItems) return setDialogsState({
+        open: "confirm-billed-po",
+        payload: { purchase_order_id: id }
+      });
+    }
+    window.history.pushState({}, "", `/purchases/bills/new?${type === "purchase_order" ? "purchase_order_id" : "purchase_receipt_id"}=${id}`);
+  }
 
   const onSubmit = async (data: z.infer<typeof newBillSchema>) => {
     try {
@@ -59,6 +103,7 @@ export default function Actions() {
           cost_center: items.cost_center || undefined
         })),
         purchase_order_id: purchaseOrderId ? parseInt(purchaseOrderId) : undefined,
+        stock_picking: purchaseReceiptId ? parseInt(purchaseReceiptId) : undefined,
         company: 1,
       }).unwrap()
 
@@ -83,7 +128,7 @@ export default function Actions() {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            {!purchaseOrderId ? (
+            {selectedType === null ? (
               <Button
                 size="sm"
                 variant="secondary"
@@ -93,12 +138,14 @@ export default function Actions() {
                 <LinkIcon />
                 Asociar
               </Button>
-            ) : (
+            ) : selectedType === "purchase_order" ? (
               <PurchaseOrderPopover />
+            ) : (
+              <PurchaseReceiptPopover />
             )}
           </TooltipTrigger>
           <TooltipContent>
-            {purchaseOrderId ? "Ver orden de compra" : "Asociar orden de compra"}
+            {selectedType === "purchase_order" ? "Ver orden de compra" : "Ver recibo de compra"}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -113,14 +160,19 @@ export default function Actions() {
           Guardar
         </Button>
       </div>
-      <AsyncCommand<{ id: number, number: string, supplier: string, created_by: string, required_date: string }, number>
+      <AsyncCommand<{ id: number, number: string, supplier: string, created_by: string, required_date: string, type: "purchase_order" | "purchase_receipt" }, number>
         open={openCommand}
         onOpenChange={setOpenCommand}
         label="Ordenes de compra"
-        fetcher={handleSearchPurchaseOrder}
+        fetcher={handleSearch}
         renderOption={(r) => (
           <div className="flex flex-col gap-1">
-            <span className="font-medium">{r.number}</span>
+            <div className="flex items-center gap-1.5">
+              <Badge variant="secondary" className="text-xs px-1">
+                {r.type === "purchase_order" ? "OC" : "RC"}
+              </Badge>
+              <span className="font-medium">{r.number}</span>
+            </div>
             <div className="grid grid-cols-4 items-center gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Building2 className="!h-3.5 !w-3.5" />
@@ -144,16 +196,7 @@ export default function Actions() {
           </div>
         )}
         getOptionValue={(r) => r.id}
-        onSelect={async (id, r) => {
-          const purchaseOrder = await getPurchaseOrder(id).unwrap();
-          const fullBilledItems = purchaseOrder.items.some(item => item.product_qty - item.qty_invoiced <= 0);
-          if (fullBilledItems) return setDialogsState({
-            open: "confirm-billed-po",
-            payload: { purchase_order_id: id }
-          });
-
-          window.history.pushState({}, "", `/purchases/bills/new?purchase_order_id=${id}`);
-        }}
+        onSelect={(id, r) => handleLink(id, r.type)}
       />
     </>
   )

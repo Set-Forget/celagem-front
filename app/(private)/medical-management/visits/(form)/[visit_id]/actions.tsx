@@ -5,6 +5,7 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useLazyGetAppointmentQuery } from "@/lib/services/appointments";
 import { useGetProfileQuery } from "@/lib/services/auth";
 import { useLazyGetPatientQuery } from "@/lib/services/patients";
+import { useLazyGetSignatureQuery } from "@/lib/services/doctors";
 import { useGetVisitQuery, useUpdateVisitMutation } from "@/lib/services/visits";
 import { cn } from "@/lib/utils";
 import { generatePDF } from "@/lib/templates/utils";
@@ -26,6 +27,7 @@ export default function Actions({ state }: { state?: 'DRAFT' | 'SIGNED' }) {
   const [updateVisit, { isLoading: isUpdatingVisit }] = useUpdateVisitMutation();
   const [getAppointment] = useLazyGetAppointmentQuery()
   const [getPatient] = useLazyGetPatientQuery()
+  const [getSignature] = useLazyGetSignatureQuery()
 
   const { data: visit } = useGetVisitQuery(visitId)
   const { data: userProfile } = useGetProfileQuery()
@@ -62,6 +64,7 @@ export default function Actions({ state }: { state?: 'DRAFT' | 'SIGNED' }) {
     try {
       const appointment = await getAppointment(visit?.appointment_id!).unwrap()
       const patient = await getPatient(appointment.patient.id!).unwrap()
+      const signature = await getSignature(appointment.doctor.id!).unwrap()
 
       const pdf = await generatePDF({
         templateName: 'visitRecord',
@@ -69,7 +72,8 @@ export default function Actions({ state }: { state?: 'DRAFT' | 'SIGNED' }) {
           visit: visit!,
           appointment: appointment!,
           patient: patient,
-          data: visit?.medical_record || "{}"
+          data: visit?.medical_record || "{}",
+          signature: signature,
         },
       });
       pdf.view();

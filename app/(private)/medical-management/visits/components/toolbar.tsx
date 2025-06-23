@@ -5,6 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useLazyGetAppointmentQuery } from "@/lib/services/appointments";
 import { useLazyGetPatientQuery } from "@/lib/services/patients";
 import { useLazyGetVisitQuery } from "@/lib/services/visits";
+import { useLazyGetSignatureQuery } from "@/lib/services/doctors";
 import { cn } from "@/lib/utils";
 import { generatePDF, mergePDFs } from "@/lib/templates/utils";
 import { Table } from "@tanstack/react-table";
@@ -59,6 +60,7 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
   const [getVisit] = useLazyGetVisitQuery()
   const [getAppointment] = useLazyGetAppointmentQuery()
   const [getPatient] = useLazyGetPatientQuery()
+  const [getSignature] = useLazyGetSignatureQuery()
 
   const handleGeneratePDF = async () => {
     setLoading(true)
@@ -68,6 +70,7 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
         const visit = await getVisit((row.original as { id: string }).id).unwrap()
         const appointment = await getAppointment(visit?.appointment_id!).unwrap()
         const patient = await getPatient(appointment.patient.id!).unwrap()
+        const signature = await getSignature(appointment.doctor.id!).unwrap()
 
         const pdf = await generatePDF({
           templateName: 'visitRecord',
@@ -75,7 +78,8 @@ export default function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) 
             visit: visit!,
             appointment: appointment!,
             patient: patient,
-            data: visit?.medical_record || "{}"
+            data: visit?.medical_record || "{}",
+            signature: signature,
           },
         });
         pdf.view();

@@ -37,7 +37,7 @@ export const newPurchaseReceiptItemSchema = z.object({
 
 export const purchaseReceiptListSchema = z.object({
   id: z.number(),
-  sequence_id: z.string().nullable(),
+  sequence_id: z.string(),
   hide: z.boolean(),
   supplier: z.string(),
   scheduled_date: z.string(),
@@ -72,7 +72,7 @@ export const newPurchaseReceiptSchema = z.object({
 
 export const purchaseReceiptDetailSchema = z.object({
   id: z.number(),
-  sequence_id: z.string().nullable(),
+  sequence_id: z.string(),
   supplier: z.object({
     id: z.number(),
     name: z.string(),
