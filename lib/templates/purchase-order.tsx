@@ -1,9 +1,9 @@
+import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import type React from "react"
-import { Document, Page, View, Text, Image, StyleSheet, Font } from "@react-pdf/renderer"
-import type { PurchaseOrderDetail } from "@/app/(private)/(commercial)/purchases/purchase-orders/schemas/purchase-orders"
+import { AdaptedPurchaseOrderDetail } from "../adapters/purchase-order"
+import { toWords } from "../utils"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
-import { toWords } from "../utils"
 
 const styles = StyleSheet.create({
   page: {
@@ -185,9 +185,14 @@ const styles = StyleSheet.create({
   },
 })
 
-const PurchaseOrderPDF: React.FC<{ data: PurchaseOrderDetail }> = ({ data }) => {
-  const formattedRequiredDate = data.required_date && format(parseISO(data.required_date), "PP", { locale: es })
-  const formattedCreatedDate = data.created_at && format(parseISO(data.created_at), "PP", { locale: es })
+const PurchaseOrderPDF: React.FC<{ data: AdaptedPurchaseOrderDetail }> = ({ data }) => {
+  const formattedRequiredDate = data.required_date
+    ? format(parseISO(data.required_date), "PP", { locale: es })
+    : "-";
+
+  const formattedCreatedDate = data.created_at
+    ? format(parseISO(data.created_at), "PP HH:mm a", { locale: es })
+    : "-";
 
   const subtotal = data.items.reduce((sum, item) => sum + item.price_subtotal, 0)
   const taxes = data.items.reduce((sum, item) => sum + item.price_tax, 0)

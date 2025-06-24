@@ -11,6 +11,8 @@ import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { newPurchaseOrderSchema } from "../../../schemas/purchase-orders";
 import { defaultValues } from "../../default-values";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
 
 export default function PurchaseRequestPopover() {
   const searchParams = useSearchParams()
@@ -65,7 +67,7 @@ export default function PurchaseRequestPopover() {
               <span className="text-sm">Fecha de requerimiento</span>
             </div>
             <span className="text-sm max-w-[100px] text-nowrap truncate font-medium">
-              {purchaseRequest?.request_date}
+              {purchaseRequest?.request_date && format(parseISO(purchaseRequest?.request_date), "PP", { locale: es })}
             </span>
           </div>
 

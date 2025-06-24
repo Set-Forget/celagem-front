@@ -11,7 +11,6 @@ export const STATUS_STYLES = {
 
   // Approval / ordering -------------------------------------------------------
   approved: { label: "A ordenar", bg_color: "bg-amber-100", text_color: "text-amber-800" },
-  "to approve": { label: "A aprobar", bg_color: "bg-amber-100", text_color: "text-amber-800" },
   to_approve: { label: "A aprobar", bg_color: "bg-amber-100", text_color: "text-amber-800" },
 
   // Processing / workflow -----------------------------------------------------

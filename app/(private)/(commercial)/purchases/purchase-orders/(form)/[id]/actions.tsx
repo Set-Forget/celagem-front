@@ -5,16 +5,16 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AdaptedPurchaseOrderDetail } from "@/lib/adapters/purchase-order";
 import { useApprovePurchaseOrderMutation, useCancelPurchaseOrderMutation, useConfirmPurchaseOrderMutation, useGetPurchaseOrderQuery, useResetPurchaseOrderMutation } from "@/lib/services/purchase-orders";
+import { useSendMessageMutation } from "@/lib/services/telegram";
 import { generatePDF } from "@/lib/templates/utils";
 import { cn } from "@/lib/utils";
 import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon, RotateCcw, Stamp } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { PurchaseOrderState } from "../../schemas/purchase-orders";
-import { useSendMessageMutation } from "@/lib/services/telegram";
 
-export default function Actions({ state }: { state?: PurchaseOrderState }) {
+export default function Actions({ state }: { state?: AdaptedPurchaseOrderDetail['status'] }) {
   const router = useRouter()
 
   const { id } = useParams<{ id: string }>()
@@ -178,7 +178,7 @@ export default function Actions({ state }: { state?: PurchaseOrderState }) {
     )
   }
 
-  if (state === "to approve") {
+  if (state === "to_approve") {
     return (
       <div className="flex gap-2">
         <Dropdown

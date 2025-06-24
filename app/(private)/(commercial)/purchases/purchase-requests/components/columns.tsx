@@ -5,6 +5,8 @@ import {
 } from "@tanstack/react-table"
 import StatusBadge from "@/components/status-badge"
 import { AdaptedPurchaseRequestList } from "@/lib/adapters/purchase-requests"
+import { format, parseISO } from "date-fns"
+import { es } from "date-fns/locale"
 
 export const columns: ColumnDef<AdaptedPurchaseRequestList>[] = [
   {
@@ -30,14 +32,14 @@ export const columns: ColumnDef<AdaptedPurchaseRequestList>[] = [
     accessorKey: "request_date",
     header: "Fecha de requerimiento",
     cell: ({ row }) => <div>
-      {row.original.request_date}
+      {row.original.request_date && format(parseISO(row.original.request_date), "PP", { locale: es })}
     </div>,
   },
   {
     accessorKey: "created_at",
     header: "Fecha de creación",
     cell: ({ row }) => <div>
-      {row.original.created_at}
+      {row.original.created_at && format(parseISO(row.original.created_at), "PP HH:mm a", { locale: es })}
     </div>,
   },
   {

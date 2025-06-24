@@ -19,6 +19,7 @@ import GeneralForm from "../components/general-form"
 import NotesForm from "../components/notes-form"
 import Actions from "./actions"
 import { defaultValues } from "../default-values"
+import { format, parseISO } from "date-fns"
 
 const tabs: FormTabsDefinition["tabs"] = [
   {
@@ -65,7 +66,7 @@ export default function Page() {
         })
       );
       newPurchaseOrderForm.reset({
-        required_date: parseDate(formatDateToISO(purchaseRequest.request_date)),
+        required_date: parseDate(format(parseISO(purchaseRequest.request_date), "yyyy-MM-dd")),
         purchase_request: purchaseRequest.id,
         items: itemsWithPrices,
       });

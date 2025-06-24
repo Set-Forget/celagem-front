@@ -49,7 +49,7 @@ export default function Actions() {
   const { fetcher: handleSearchPurchaseOrder } = usePurchaseOrderSelect({
     map: (purchaseOrder) => ({
       id: purchaseOrder.id,
-      number: purchaseOrder.number,
+      number: purchaseOrder.sequence_id,
       supplier: purchaseOrder.supplier.name,
       created_by: purchaseOrder.created_by.name,
       required_date: purchaseOrder.required_date,
@@ -189,7 +189,7 @@ export default function Actions() {
               <span className="flex items-center gap-1 truncate">
                 <Calendar className="!h-3.5 !w-3.5" />
                 <p className="truncate">
-                  {r.required_date && format(parseISO(r.required_date), "PP", { locale: es })}
+                  {r.required_date}
                 </p>
               </span>
             </div>

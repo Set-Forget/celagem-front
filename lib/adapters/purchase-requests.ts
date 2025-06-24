@@ -1,13 +1,11 @@
 import { PurchaseRequestDetail, PurchaseRequestList } from "@/app/(private)/(commercial)/purchases/purchase-requests/schemas/purchase-requests";
-import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
 
 export function listPurchaseRequestsAdapter(data: PurchaseRequestList) {
   return {
     id: data?.id,
     sequence_id: data?.sequence_id,
     status: data?.state,
-    request_date: data?.request_date && format(parseISO(data?.request_date), "PP", { locale: es }),
+    request_date: data?.request_date,
     company: data?.company && {
       id: data?.company?.id,
       name: data?.company?.name,
@@ -16,7 +14,7 @@ export function listPurchaseRequestsAdapter(data: PurchaseRequestList) {
       id: data?.created_by?.id,
       name: data?.created_by?.name,
     },
-    created_at: data?.created_at && format(parseISO(data?.created_at), "PP HH:mm a", { locale: es }),
+    created_at: data?.created_at,
   }
 }
 
@@ -24,11 +22,11 @@ export function getPurchaseRequestAdapter(data: PurchaseRequestDetail) {
   return {
     id: data?.id,
     sequence_id: data?.sequence_id,
-    request_date: data?.request_date && format(parseISO(data.request_date), "PP", { locale: es }),
+    request_date: data?.request_date,
     status: data?.state,
     internal_notes: data?.internal_notes,
     tyc_notes: data?.tyc_notes,
-    created_at: data?.created_at && format(parseISO(data.created_at), "PP HH:mm a", { locale: es }),
+    created_at: data?.created_at,
     purchase_order: data?.purchase_order && {
       id: data.purchase_order.id,
       sequence_id: data.purchase_order.sequence_id,

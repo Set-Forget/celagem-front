@@ -49,7 +49,7 @@ export default function Page() {
         <DataTable
           data={purchaseOrders
             ?.toSorted((a, b) => b.id - a.id)
-            .filter(item => search.field === "number" ? item?.number?.toString().includes(search.query) : true)
+            .filter(item => search.field === "number" ? item?.sequence_id?.toString().includes(search.query) : true)
             .filter(purchaseOrder => status.length === 0 || status.includes(purchaseOrder.status))
             .filter((po) => {
               if (!requiredDateStart && !requiredDateEnd) return true;

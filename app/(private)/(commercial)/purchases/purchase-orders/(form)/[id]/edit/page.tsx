@@ -21,6 +21,7 @@ import FiscalForm from "../../components/fiscal-form"
 import GeneralForm from "../../components/general-form"
 import NotesForm from "../../components/notes-form"
 import { useSendMessageMutation } from "@/lib/services/telegram"
+import { format, parseISO } from "date-fns"
 
 const tabs = [
   {
@@ -89,7 +90,7 @@ export default function Page() {
         supplier: purchaseOrder?.supplier?.id,
         currency: purchaseOrder?.currency?.id,
         payment_term: purchaseOrder?.payment_term?.id,
-        required_date: purchaseOrder?.required_date && parseDate(purchaseOrder?.required_date?.slice(0, 10)),
+        required_date: purchaseOrder?.required_date && parseDate(format(parseISO(purchaseOrder?.required_date), "yyyy-MM-dd")),
         internal_notes: purchaseOrder?.internal_notes || "",
         company: String(purchaseOrder?.company?.id),
         tyc_notes: purchaseOrder?.tyc_notes || "",

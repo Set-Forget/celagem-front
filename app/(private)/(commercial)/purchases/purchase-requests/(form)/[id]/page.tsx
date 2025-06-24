@@ -15,6 +15,8 @@ import Actions from "./actions"
 import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
 import NotesTab from "./components/notes-tab"
+import { format, parseISO } from "date-fns"
+import { es } from "date-fns/locale"
 
 const fields: FieldDefinition<AdaptedPurchaseRequestDetail>[] = [
   {
@@ -25,12 +27,12 @@ const fields: FieldDefinition<AdaptedPurchaseRequestDetail>[] = [
   {
     label: "Fecha de solicitud",
     placeholderLength: 10,
-    render: (p) => p?.created_at || "No especificado"
+    render: (p) => p?.created_at ? format(parseISO(p?.created_at), "PP HH:mm a", { locale: es }) : "No especificado"
   },
   {
     label: "Fecha de requerimiento",
     placeholderLength: 10,
-    render: (p) => p?.request_date || "No especificado"
+    render: (p) => p?.request_date ? format(parseISO(p?.request_date), "PP", { locale: es }) : "No especificado"
   },
   {
     label: "Compañía",

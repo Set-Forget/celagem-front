@@ -1,7 +1,7 @@
 import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { z } from "zod";
 
-export const purchaseOrderState = z.enum(["draft", "to approve", "purchase", "done", "cancel"])
+export const purchaseOrderState = z.enum(["draft", "to approve", "purchase", "cancel"])
 export const purchaseOrderReceiptStatus = z.enum(["full", "partial", "pending", "cancel"])
 
 const newPurchaseOrderLineSchema = z.object({
@@ -48,6 +48,7 @@ export const purchaseOrderListSchema = z.object({
     id: z.number(),
     name: z.string(),
   }),
+  rejection_reason: z.string().optional(),
   receipt_status: purchaseOrderReceiptStatus,
   status: purchaseOrderState,
   price: z.number(),

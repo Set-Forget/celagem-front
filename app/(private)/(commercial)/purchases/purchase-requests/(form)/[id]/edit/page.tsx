@@ -6,7 +6,7 @@ import Header from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useGetPurchaseRequestQuery, useUpdatePurchaseRequestMutation } from "@/lib/services/purchase-requests"
-import { cn } from "@/lib/utils"
+import { cn, placeholder } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { parseDate } from "@internationalized/date"
 import { Save, Sticker } from "lucide-react"
@@ -19,6 +19,7 @@ import { newPurchaseRequestNotesSchema, newPurchaseRequestSchema } from "../../.
 import GeneralForm from "../../new/components/general-form"
 import NotesForm from "../../new/components/notes-form"
 import { useSendMessageMutation } from "@/lib/services/telegram"
+import { format, parseISO } from "date-fns"
 
 const tabs = [
   {
@@ -34,7 +35,7 @@ export default function Page() {
   const router = useRouter()
   const { id } = useParams<{ id: string }>()
 
-  const { data: purchaseRequest } = useGetPurchaseRequestQuery(id!, { skip: !id })
+  const { data: purchaseRequest, isLoading: isPurchaseRequestLoading } = useGetPurchaseRequestQuery(id!, { skip: !id })
 
   const [sendMessage] = useSendMessageMutation();
   const [updatePurchaseRequest, { isLoading: isUpdatingPurchaseRequest }] = useUpdatePurchaseRequestMutation()
@@ -79,7 +80,7 @@ export default function Page() {
   useEffect(() => {
     if (purchaseRequest) {
       newPurchaseRequest.reset({
-        request_date: parseDate(purchaseRequest?.request_date),
+        request_date: parseDate(format(parseISO(purchaseRequest?.request_date), "yyyy-MM-dd")),
         company: String(purchaseRequest?.company?.id),
         items: purchaseRequest?.items.map((item) => ({
           product_id: item.product_id,
@@ -93,7 +94,11 @@ export default function Page() {
 
   return (
     <Form {...newPurchaseRequest}>
-      <Header title={`Editar solicitud de compra ${purchaseRequest?.sequence_id}`}>
+      <Header title={
+        <h1 className={cn("text-lg font-medium tracking-tight")}>
+          Editar solicitud de compra <span className={cn("transition-all duration-300", isPurchaseRequestLoading ? "blur-[4px]" : "blur-none")}>{isPurchaseRequestLoading ? placeholder(14, true) : purchaseRequest?.sequence_id}</span>
+        </h1>
+      }>
         <div className="flex gap-2 ml-auto">
           <Button
             type="submit"

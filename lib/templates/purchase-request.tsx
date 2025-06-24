@@ -2,6 +2,8 @@ import { STATUS_STYLES } from "@/components/status-badge"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import type React from "react"
 import { AdaptedPurchaseRequestDetail } from "../adapters/purchase-requests"
+import { format, parseISO } from "date-fns"
+import { es } from "date-fns/locale"
 
 const styles = StyleSheet.create({
   page: {
@@ -172,8 +174,8 @@ const styles = StyleSheet.create({
 })
 
 export const PurchaseRequestPDF: React.FC<{ data: AdaptedPurchaseRequestDetail }> = ({ data }) => {
-  const formattedRequestDate = data.request_date
-  const formattedCreatedDate = data.created_at
+  const formattedRequestDate = data.request_date && format(parseISO(data.request_date), "PP", { locale: es })
+  const formattedCreatedDate = data.created_at && format(parseISO(data.created_at), "PP HH:mm a", { locale: es })
 
   return (
     <Document title={`Solicitud de Pedido ${data.sequence_id}`}>

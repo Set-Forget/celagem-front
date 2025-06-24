@@ -30,8 +30,8 @@ const fields: FieldDefinition<AdaptedPurchaseOrderDetail>[] = [
   {
     label: "Facturas de compra",
     placeholderLength: 14,
-    show: (p) => !!p?.invoices.length,
-    render: (p) => p?.invoices?.map((invoice) => (
+    show: (p) => !!p?.bills.length,
+    render: (p) => p?.bills?.map((invoice) => (
       <div className="grid grid-cols-1 justify-items-start" key={invoice.id}>
         <Button
           key={invoice.id}
@@ -82,7 +82,7 @@ export default function DocumentsTab() {
 
   return (
     <div className="flex flex-col p-4">
-      {!purchaseOrder?.purchase_request && purchaseOrder?.invoices.length === 0 && purchaseOrder?.receptions.length === 0 ? (
+      {!purchaseOrder?.purchase_request && purchaseOrder?.bills.length === 0 && purchaseOrder?.receptions.length === 0 ? (
         <div className="flex flex-col gap-4 items-center col-span-full">
           <div className="bg-secondary p-3 rounded-full shadow-lg shadow-secondary">
             <FileX2 className="w-6 h-6 text-muted-foreground" />

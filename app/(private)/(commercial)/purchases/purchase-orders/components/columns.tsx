@@ -1,14 +1,12 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
+import StatusBadge from "@/components/status-badge";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AdaptedPurchaseOrderList } from "@/lib/adapters/purchase-order";
-import { cn } from "@/lib/utils";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
-import { purchaseOrderStatus } from "../utils";
 
 const PercentageReceivedCell = ({ row }: { row: Row<AdaptedPurchaseOrderList> }) => {
   const percentageReceived = row.original.percentage_received;
@@ -40,15 +38,7 @@ export const columns: ColumnDef<AdaptedPurchaseOrderList>[] = [
     accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      const status = purchaseOrderStatus[row.getValue("status") as keyof typeof purchaseOrderStatus];
-      return (
-        <Badge
-          variant="custom"
-          className={cn(`${status?.bg_color} ${status?.text_color} border-none`)}
-        >
-          {status?.label}
-        </Badge>
-      );
+      return <StatusBadge status={row.getValue("status")} />
     },
   },
   {
@@ -70,8 +60,7 @@ export const columns: ColumnDef<AdaptedPurchaseOrderList>[] = [
     header: "Fecha de requerimiento",
     cell: ({ row }) => (
       <div>
-        {row.original.required_date &&
-          format(parseISO(row.original.required_date), "PP", { locale: es })}
+        {row.original.required_date ? format(parseISO(row.original.required_date), "PP", { locale: es }) : "-"}
       </div>
     ),
   },

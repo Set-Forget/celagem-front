@@ -125,7 +125,7 @@ export default function Actions() {
               <span className="flex items-center gap-1 truncate">
                 <Calendar className="!h-3.5 !w-3.5" />
                 <p className="truncate">
-                  {r.request_date}
+                  {r.request_date && format(parseISO(r.request_date), "PP", { locale: es })}
                 </p>
               </span>
             </div>

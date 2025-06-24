@@ -41,7 +41,7 @@ export function usePurchaseOrderSelect<
         const bills = await searchPurchaseOrders({}, true).unwrap()
         return bills
           .filter((b) => (filter ? filter(b) : true))
-          .filter((b) => b?.number?.toString().toLowerCase().includes(query?.toLowerCase() ?? ""))
+          .filter((b) => b?.sequence_id?.toString().toLowerCase().includes(query?.toLowerCase() ?? ""))
           .slice(0, limit)
           .map(mapFn)
       } catch (e) {

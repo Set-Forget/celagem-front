@@ -1,13 +1,13 @@
 import { CreditNoteDetail } from "@/app/(private)/(commercial)/[scope]/credit-notes/schemas/credit-notes";
 import { DebitNoteDetail } from "@/app/(private)/(commercial)/[scope]/debit-notes/schemas/debit-notes";
 import { BillDetail } from "@/app/(private)/(commercial)/purchases/bills/schemas/bills";
-import { PurchaseOrderDetail } from "@/app/(private)/(commercial)/purchases/purchase-orders/schemas/purchase-orders";
 import { PurchaseReceiptDetail } from "@/app/(private)/(commercial)/purchases/purchase-receipts/schemas/purchase-receipts";
 import { DeliveryNoteDetail } from "@/app/(private)/(commercial)/sales/delivery-notes/schemas/delivery-notes";
 import { InvoiceDetail } from "@/app/(private)/(commercial)/sales/invoices/schemas/invoices";
 import { PaymentDetail } from "@/app/(private)/banking/payments/schemas/payments";
 import { ChargeDetail } from "@/app/(private)/banking/receipts/schemas/receipts";
 import { AdaptedPurchaseRequestDetail } from "@/lib/adapters/purchase-requests";
+import { AdaptedPurchaseOrderDetail } from "../adapters/purchase-order";
 import BillPDF from "./bill";
 import ChargePDF from "./charge";
 import CreditNotePDF from "./credit-note";
@@ -22,7 +22,7 @@ import VisitRecordPDF, { VisitRecordData } from "./visit-record";
 
 export type TemplateMap = {
   purchaseRequest: AdaptedPurchaseRequestDetail;
-  purchaseOrder: PurchaseOrderDetail;
+  purchaseOrder: AdaptedPurchaseOrderDetail;
   bill: BillDetail;
   reception: PurchaseReceiptDetail;
   creditNote: CreditNoteDetail

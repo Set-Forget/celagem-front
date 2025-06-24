@@ -35,7 +35,7 @@ export default function PurchaseOrderPopover() {
           className="h-7 bg-indigo-50 text-indigo-600 shadow-lg shadow-indigo-50 hover:bg-indigo-100 hover:shadow-indigo-100 transition-all"
         >
           <LinkIcon className={cn(isPurchaseOrderLoading && "hidden")} />
-          {purchaseOrder?.number}
+          {purchaseOrder?.sequence_id}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0 overflow-hidden" align="start">
@@ -47,7 +47,7 @@ export default function PurchaseOrderPopover() {
               asChild
             >
               <Link href={`/purchases/purchase-orders/${purchaseOrder?.id}`} target="_blank">
-                {purchaseOrder?.number}
+                {purchaseOrder?.sequence_id}
               </Link>
             </Button>
             <p className="text-xs text-muted-foreground">Solicitud de Compra</p>
@@ -68,7 +68,7 @@ export default function PurchaseOrderPopover() {
               <span className="text-sm">Total</span>
             </div>
             <span className="font-medium">
-              {purchaseOrder?.price.toFixed(2)} {purchaseOrder?.currency.name}
+              {purchaseOrder?.currency.name} {purchaseOrder?.price}
             </span>
           </div>
 
@@ -85,7 +85,9 @@ export default function PurchaseOrderPopover() {
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">Fecha Solicitud</span>
             </div>
-            <span className="text-sm max-w-[100px] text-nowrap truncate font-medium">{purchaseOrder?.required_date && format(parseISO(purchaseOrder?.required_date), "PP", { locale: es })}</span>
+            <span className="text-sm max-w-[100px] text-nowrap truncate font-medium">
+              {purchaseOrder?.required_date ? format(parseISO(purchaseOrder.required_date), "PP", { locale: es }) : "-"}
+            </span>
           </div>
 
           <div className="flex items-center justify-between">

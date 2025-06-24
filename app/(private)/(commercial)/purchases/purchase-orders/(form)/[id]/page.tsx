@@ -1,5 +1,6 @@
 'use client'
 
+import { TableFooter } from "@/app/(private)/(commercial)/components/table-footer"
 import { DataTable } from "@/components/data-table"
 import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
@@ -8,11 +9,10 @@ import { Badge } from "@/components/ui/badge"
 import { AdaptedPurchaseOrderDetail } from "@/lib/adapters/purchase-order"
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
-import { format, parseISO } from "date-fns"
-import { es } from "date-fns/locale"
 import { Box, Paperclip, Sticker, Wallet } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
+import { PurchaseOrderLine } from "../../schemas/purchase-orders"
 import { purchaseOrderStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
@@ -20,8 +20,9 @@ import DocumentsTab from "./components/documents-tab"
 import FiscalTab from "./components/fiscal"
 import NotesTab from "./components/notes-tab"
 import SupplierTab from "./components/supplier-tab"
-import { TableFooter } from "@/app/(private)/(commercial)/components/table-footer"
-import { PurchaseOrderLine } from "../../schemas/purchase-orders"
+import StatusBadge from "@/components/status-badge"
+import { format, parseISO } from "date-fns"
+import { es } from "date-fns/locale"
 
 const fields: FieldDefinition<AdaptedPurchaseOrderDetail>[] = [
   {
@@ -37,7 +38,7 @@ const fields: FieldDefinition<AdaptedPurchaseOrderDetail>[] = [
   {
     label: "Fecha de creación",
     placeholderLength: 10,
-    render: (p) => p?.created_at ? format(parseISO(p.created_at), "PP", { locale: es }) : "No especificada",
+    render: (p) => p?.created_at ? format(parseISO(p.created_at), "PP HH:mm a", { locale: es }) : "No especificada",
   },
   {
     label: "Compañía",
@@ -80,25 +81,15 @@ export default function Page() {
 
   const { data: purchaseOrder, isLoading: isPurchaseOrderLoading } = useGetPurchaseOrderQuery(id);
 
-  const status = purchaseOrderStatus[
-    purchaseOrder?.rejection_reason ? "rejected"
-      : purchaseOrder?.status as keyof typeof purchaseOrderStatus
-  ]
-
   return (
     <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isPurchaseOrderLoading ? "blur-[4px]" : "blur-none")}>
-          {isPurchaseOrderLoading ? placeholder(7, true) : purchaseOrder?.number}
+          {isPurchaseOrderLoading ? placeholder(7, true) : purchaseOrder?.sequence_id}
         </h1>
       }>
         <div className="mr-auto">
-          <Badge
-            variant="custom"
-            className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
-          >
-            {status?.label}
-          </Badge>
+          <StatusBadge status={purchaseOrder?.status} />
         </div>
         <Actions state={purchaseOrder?.status} />
       </Header>

@@ -1,12 +1,11 @@
 import RenderFields from "@/components/render-fields";
+import { Button } from "@/components/ui/button";
+import { AdaptedPurchaseOrderDetail } from "@/lib/adapters/purchase-order";
+import { routes } from "@/lib/routes";
 import { useGetPurchaseOrderQuery } from "@/lib/services/purchase-orders";
 import { FieldDefinition } from "@/lib/utils";
-import { useParams } from "next/navigation";
-import { PurchaseOrderDetail } from "../../../schemas/purchase-orders";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { routes } from "@/lib/routes";
-import { AdaptedPurchaseOrderDetail } from "@/lib/adapters/purchase-order";
+import { useParams } from "next/navigation";
 
 const fields: FieldDefinition<AdaptedPurchaseOrderDetail>[] = [
   {
