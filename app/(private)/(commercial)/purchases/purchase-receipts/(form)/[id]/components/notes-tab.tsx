@@ -1,15 +1,14 @@
 import RenderFields from "@/components/render-fields";
+import { AdaptedPurchaseReceiptDetail } from "@/lib/adapters/purchase-receipts";
 import { useGetPurchaseReceiptQuery } from "@/lib/services/purchase-receipts";
 import { FieldDefinition } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { PurchaseReceiptDetail } from "../../../schemas/purchase-receipts";
-import { AdaptedPurchaseReceiptDetail } from "@/lib/adapters/purchase-receipts";
 
 const fields: FieldDefinition<AdaptedPurchaseReceiptDetail>[] = [
   {
     label: "Notas",
     placeholderLength: 30,
-    render: (p) => p.note || "No especificado",
+    render: (p) => p.internal_notes || "No especificado",
   },
 ];
 

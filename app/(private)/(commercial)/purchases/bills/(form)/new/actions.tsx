@@ -10,8 +10,6 @@ import { useGetPurchaseOrderQuery, useLazyGetPurchaseOrderQuery } from "@/lib/se
 import { useSendMessageMutation } from "@/lib/services/telegram";
 import { setDialogsState } from "@/lib/store/dialogs-store";
 import { cn } from "@/lib/utils";
-import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
 import { Building2, Calendar, LinkIcon, Save, User } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
@@ -21,6 +19,8 @@ import { z } from "zod";
 import { newBillSchema } from "../../schemas/bills";
 import PurchaseOrderPopover from "./components/purchase-order-popover";
 import PurchaseReceiptPopover from "./components/purchase-receipt-popover";
+import { es } from "date-fns/locale";
+import { format, parseISO } from "date-fns";
 
 export default function Actions() {
   const router = useRouter()
@@ -61,13 +61,13 @@ export default function Actions() {
   const { fetcher: handleSearchPurchaseReceipt } = usePurchaseReceiptSelect({
     map: (purchaseReceipt) => ({
       id: purchaseReceipt.id,
-      number: purchaseReceipt.number,
+      number: purchaseReceipt.sequence_id,
       supplier: purchaseReceipt.supplier,
       created_by: purchaseReceipt.created_by.name,
       required_date: purchaseReceipt.scheduled_date,
       type: "purchase_receipt",
     }) as const,
-    filter: (purchaseReceipt) => purchaseReceipt.state !== "assigned" && purchaseReceipt.state !== "cancel" && purchaseReceipt.state !== "draft"
+    filter: (purchaseReceipt) => purchaseReceipt.status !== "assigned" && purchaseReceipt.status !== "cancel" && purchaseReceipt.status !== "draft"
   })
 
   const handleSearch = useCallback(async (query?: string) => {
@@ -189,7 +189,7 @@ export default function Actions() {
               <span className="flex items-center gap-1 truncate">
                 <Calendar className="!h-3.5 !w-3.5" />
                 <p className="truncate">
-                  {r.required_date}
+                  {r.required_date && format(parseISO(r.required_date), "PP", { locale: es })}
                 </p>
               </span>
             </div>

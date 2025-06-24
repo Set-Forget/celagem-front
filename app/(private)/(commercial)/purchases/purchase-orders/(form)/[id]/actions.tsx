@@ -345,7 +345,7 @@ export default function Actions({ state }: { state?: AdaptedPurchaseOrderDetail[
     )
   }
 
-  if (state === "cancel") {
+  if (state === "cancel" || state === "rejected") {
     return (
       <Button
         size="sm"

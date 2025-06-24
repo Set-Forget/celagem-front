@@ -1,19 +1,16 @@
 "use client"
 
+import StatusBadge from "@/components/status-badge"
+import { AdaptedPurchaseReceiptList } from "@/lib/adapters/purchase-receipts"
 import { ColumnDef } from "@tanstack/react-table"
 import { format, parseISO } from "date-fns"
-import { PurchaseReceiptList } from "../schemas/purchase-receipts"
 import { es } from "date-fns/locale"
-import { ArrowRight } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { purchaseReceiptStatus } from "../utils"
 
-export const columns: ColumnDef<PurchaseReceiptList>[] = [
+export const columns: ColumnDef<AdaptedPurchaseReceiptList>[] = [
   {
-    accessorKey: "number",
+    accessorKey: "sequence_id",
     header: "Número",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("number")}</div>,
+    cell: ({ row }) => <div className="font-medium">{row.getValue("sequence_id")}</div>,
   },
   {
     accessorKey: "supplier",
@@ -21,16 +18,10 @@ export const columns: ColumnDef<PurchaseReceiptList>[] = [
     cell: ({ row }) => <div>{row.getValue("supplier")}</div>,
   },
   {
-    accessorKey: "state",
+    accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      const status = purchaseReceiptStatus[row.getValue("state") as keyof typeof purchaseReceiptStatus]
-      return <Badge
-        variant="custom"
-        className={cn(`${status?.bg_color} ${status?.text_color} border-none`)}
-      >
-        {status?.label}
-      </Badge>
+      return <StatusBadge status={row.getValue("status")} />
     },
   },
   {

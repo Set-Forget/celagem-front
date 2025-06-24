@@ -14,6 +14,7 @@ import { z } from "zod";
 import { purchaseReceiptStatus } from "../../../../purchase-receipts/utils";
 import { newBillSchema } from "../../../schemas/bills";
 import { defaultValues } from "../../default-values";
+import { StatusBadge } from "@/components/status-badge";
 
 export default function PurchaseReceiptPopover() {
   const searchParams = useSearchParams()
@@ -22,8 +23,6 @@ export default function PurchaseReceiptPopover() {
 
   const purchaseReceiptId = searchParams.get("purchase_receipt_id")
   const { data: purchaseReceipt, isLoading: isPurchaseReceiptLoading } = useGetPurchaseReceiptQuery(purchaseReceiptId!, { skip: !purchaseReceiptId })
-
-  const status = purchaseReceiptStatus[purchaseReceipt?.state as keyof typeof purchaseReceiptStatus]
 
   return (
     <Popover>
@@ -35,7 +34,7 @@ export default function PurchaseReceiptPopover() {
           className="h-7 bg-indigo-50 text-indigo-600 shadow-lg shadow-indigo-50 hover:bg-indigo-100 hover:shadow-indigo-100 transition-all"
         >
           <LinkIcon className={cn(isPurchaseReceiptLoading && "hidden")} />
-          {purchaseReceipt?.number}
+          {purchaseReceipt?.sequence_id}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0 overflow-hidden" align="start">
@@ -47,17 +46,12 @@ export default function PurchaseReceiptPopover() {
               asChild
             >
               <Link href={`/purchases/purchase-receipts/${purchaseReceipt?.id}`} target="_blank">
-                {purchaseReceipt?.number}
+                {purchaseReceipt?.sequence_id}
               </Link>
             </Button>
             <p className="text-xs text-muted-foreground">Recepción de Compra</p>
           </div>
-          <Badge
-            variant="custom"
-            className={cn(`${status?.bg_color} ${status?.text_color} border-none`)}
-          >
-            {status?.label}
-          </Badge>
+          <StatusBadge status={purchaseReceipt?.status} />
         </div>
 
         <div className="space-y-2 p-2">
@@ -97,7 +91,7 @@ export default function PurchaseReceiptPopover() {
             <div key={item.id} className="bg-sidebar rounded-md p-2">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <p className="text-sm font-medium">{item.display_name.replace(/^\[\d+\]\s*/, "")}</p>
+                  <p className="text-sm font-medium">{item.product_name}</p>
                   <p className="text-xs text-muted-foreground">{item.product_code}</p>
                 </div>
                 <div className="text-right">

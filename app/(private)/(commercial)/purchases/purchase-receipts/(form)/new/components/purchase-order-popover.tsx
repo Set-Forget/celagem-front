@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import StatusBadge from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
@@ -12,7 +12,6 @@ import { useSearchParams } from "next/navigation";
 import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { newPurchaseReceiptSchema } from "../../../schemas/purchase-receipts";
-import { purchaseOrderStatus } from "@/app/(private)/(commercial)/purchases/purchase-orders/utils";
 import { defaultValues } from "../../default-values";
 
 export default function PurchaseOrderPopover() {
@@ -22,8 +21,6 @@ export default function PurchaseOrderPopover() {
 
   const purchaseOrderId = searchParams.get("purchase_order_id")
   const { data: purchaseOrder, isLoading: isPurchaseOrderLoading } = useGetPurchaseOrderQuery(purchaseOrderId!, { skip: !purchaseOrderId })
-
-  const status = purchaseOrderStatus[purchaseOrder?.status as keyof typeof purchaseOrderStatus]
 
   return (
     <Popover>
@@ -52,14 +49,8 @@ export default function PurchaseOrderPopover() {
             </Button>
             <p className="text-xs text-muted-foreground">Solicitud de Compra</p>
           </div>
-          <Badge
-            variant="custom"
-            className={cn(`${status?.bg_color} ${status?.text_color} border-none`)}
-          >
-            {status?.label}
-          </Badge>
+          <StatusBadge status={purchaseOrder?.status} />
         </div>
-
 
         <div className="space-y-2 p-2">
           <div className="flex items-center justify-between">

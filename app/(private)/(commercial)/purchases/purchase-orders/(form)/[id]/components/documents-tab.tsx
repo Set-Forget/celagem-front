@@ -52,7 +52,7 @@ const fields: FieldDefinition<AdaptedPurchaseOrderDetail>[] = [
   {
     label: "Recepciones de compra",
     placeholderLength: 14,
-    show: (p) => !!p?.receptions?.length,
+    show: (p) => p?.receptions?.filter((r) => !r.hide).length > 0,
     render: (p) => p?.receptions
       ?.filter((r) => !r.hide)
       ?.map((reception) => (
@@ -82,7 +82,7 @@ export default function DocumentsTab() {
 
   return (
     <div className="flex flex-col p-4">
-      {!purchaseOrder?.purchase_request && purchaseOrder?.bills.length === 0 && purchaseOrder?.receptions.length === 0 ? (
+      {!purchaseOrder?.purchase_request && purchaseOrder?.bills.length === 0 && purchaseOrder?.receptions.filter((r) => !r.hide).length === 0 ? (
         <div className="flex flex-col gap-4 items-center col-span-full">
           <div className="bg-secondary p-3 rounded-full shadow-lg shadow-secondary">
             <FileX2 className="w-6 h-6 text-muted-foreground" />

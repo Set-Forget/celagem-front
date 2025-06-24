@@ -3,6 +3,9 @@
 import { DataTable } from "@/components/data-table"
 import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
+import RenderFields from "@/components/render-fields"
+import { StatusBadge } from "@/components/status-badge"
+import { AdaptedPurchaseReceiptDetail } from "@/lib/adapters/purchase-receipts"
 import { useGetPurchaseReceiptQuery } from "@/lib/services/purchase-receipts"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
@@ -10,16 +13,11 @@ import { es } from "date-fns/locale"
 import { Box, Paperclip, Sticker } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
-import { PurchaseReceiptDetail } from "../../schemas/purchase-receipts"
 import Actions from "./actions"
 import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
-import SupplierTab from "./components/supplier-tab"
 import NotesTab from "./components/notes-tab"
-import RenderFields from "@/components/render-fields"
-import { Badge } from "@/components/ui/badge"
-import { purchaseReceiptStatus } from "../../utils"
-import { AdaptedPurchaseReceiptDetail } from "@/lib/adapters/purchase-receipts"
+import SupplierTab from "./components/supplier-tab"
 
 const fields: FieldDefinition<AdaptedPurchaseReceiptDetail>[] = [
   {
@@ -67,25 +65,18 @@ export default function Page() {
 
   const { data: purchaseReceipt, isLoading: isPurchaseReceiptLoading } = useGetPurchaseReceiptQuery(id);
 
-  const status = purchaseReceiptStatus[purchaseReceipt?.state as keyof typeof purchaseReceiptStatus]
-
   return (
     <div>
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isPurchaseReceiptLoading ? "blur-[4px]" : "blur-none")}>
-          {isPurchaseReceiptLoading ? placeholder(11, true) : purchaseReceipt?.number}
+          {isPurchaseReceiptLoading ? placeholder(11, true) : purchaseReceipt?.sequence_id}
         </h1>
       }>
         <div className="mr-auto">
-          <Badge
-            variant="custom"
-            className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
-          >
-            {status?.label}
-          </Badge>
+          <StatusBadge status={purchaseReceipt?.status} />
         </div>
         <div className="ml-auto">
-          <Actions state={purchaseReceipt?.state} />
+          <Actions state={purchaseReceipt?.status} />
         </div>
       </Header>
       <div className="flex flex-col gap-4 p-4">

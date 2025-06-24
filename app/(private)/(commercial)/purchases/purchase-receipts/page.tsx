@@ -50,7 +50,7 @@ export default function Page() {
           data={purchaseReceipts
             ?.toSorted((a, b) => b.id - a.id)
             .filter(item => !item.hide)
-            .filter(item => search.field === "number" ? item?.number?.toString().includes(search.query) : true)
+            .filter(item => search.field === "number" ? item?.sequence_id?.toString().includes(search.query) : true)
             .filter(item => {
               if (!receptionDateStart && !receptionDateEnd) return true;
               const recordDate = item.reception_date.split("T")[0];

@@ -58,7 +58,8 @@ export default function Page() {
                 (!requiredDateStart || d >= new Date(requiredDateStart).getTime()) &&
                 (!requiredDateEnd || d <= new Date(requiredDateEnd).getTime())
               );
-            }).filter((po) => {
+            })
+            .filter((po) => {
               if (!createdAtStart && !createdAtEnd) return true;
               const d = new Date(po.created_at).getTime();
               return (
