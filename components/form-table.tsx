@@ -41,6 +41,7 @@ export default function FormTable<TFormValues extends FieldValues>({
         <Table className="border-none">
           <TableHeader className="bg-sidebar">
             <TableRow>
+              <TableHead className="w-9 h-9"></TableHead>
               {columns.map((col, idx) => (
                 <TableHead key={idx} className={
                   cn("h-9",
@@ -81,6 +82,21 @@ export default function FormTable<TFormValues extends FieldValues>({
             )}
             {fields.map((item, index) => (
               <TableRow key={`${item.id}-${index}`} className="group h-9">
+                {deletableRows && (
+                  <TableCell className="py-0 px-2 text-right">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 transition-opacity opacity-0 group-hover:opacity-100"
+                      onClick={() => {
+                        removeItem(index);
+                      }}
+                    >
+                      <Trash2 className="!h-3.5 !w-3.5 text-destructive" />
+                    </Button>
+                  </TableCell>
+                )}
                 {columns.map((col, idx) => (
                   <TableCell
                     key={idx}
@@ -96,7 +112,7 @@ export default function FormTable<TFormValues extends FieldValues>({
                   </TableCell>
                 ))}
                 {deletableRows && (
-                  <TableCell className="py-0 pr-5 text-right">
+                  <TableCell className="py-0 px-2 text-right">
                     <Button
                       type="button"
                       variant="ghost"

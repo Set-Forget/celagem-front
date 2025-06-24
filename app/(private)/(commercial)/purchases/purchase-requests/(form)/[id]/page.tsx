@@ -4,16 +4,13 @@ import { DataTable } from "@/components/data-table"
 import DataTabs from "@/components/data-tabs"
 import Header from "@/components/header"
 import RenderFields from "@/components/render-fields"
-import { Badge } from "@/components/ui/badge"
+import StatusBadge from "@/components/status-badge"
 import { AdaptedPurchaseRequestDetail } from "@/lib/adapters/purchase-requests"
 import { useGetPurchaseRequestQuery } from "@/lib/services/purchase-requests"
 import { cn, FieldDefinition, placeholder } from "@/lib/utils"
-import { format, parseISO } from "date-fns"
-import { es } from "date-fns/locale"
 import { Paperclip, Sticker } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
-import { purchaseRequestStatus } from "../../utils"
 import Actions from "./actions"
 import { columns } from "./components/columns"
 import DocumentsTab from "./components/documents-tab"
@@ -28,12 +25,12 @@ const fields: FieldDefinition<AdaptedPurchaseRequestDetail>[] = [
   {
     label: "Fecha de solicitud",
     placeholderLength: 10,
-    render: (p) => p?.created_at ? format(parseISO(p.created_at), "PP", { locale: es }) : "No especificado"
+    render: (p) => p?.created_at || "No especificado"
   },
   {
     label: "Fecha de requerimiento",
     placeholderLength: 10,
-    render: (p) => p?.request_date ? format(parseISO(p.request_date), "PP", { locale: es }) : "No especificado"
+    render: (p) => p?.request_date || "No especificado"
   },
   {
     label: "Compañía",
@@ -64,24 +61,17 @@ export default function Page() {
 
   const [tab, setTab] = useState(tabs[0].value)
 
-  const status = purchaseRequestStatus[purchaseRequest?.state as keyof typeof purchaseRequestStatus];
-
   return (
     <div className="flex flex-col h-full">
       <Header title={
         <h1 className={cn("text-lg font-medium tracking-tight transition-all duration-300", isPurchaseRequestLoading ? "blur-[4px]" : "blur-none")}>
-          {isPurchaseRequestLoading ? placeholder(20, true) : purchaseRequest?.name}
+          {isPurchaseRequestLoading ? placeholder(20, true) : purchaseRequest?.sequence_id}
         </h1>
       }>
         <div className="mr-auto">
-          <Badge
-            variant="custom"
-            className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
-          >
-            {status?.label}
-          </Badge>
+          <StatusBadge status={purchaseRequest?.status} />
         </div>
-        <Actions state={purchaseRequest?.state} />
+        <Actions state={purchaseRequest?.status} />
       </Header>
       <div className="flex flex-col gap-4 p-4">
         <RenderFields

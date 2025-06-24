@@ -96,7 +96,7 @@ export function FormTableFooter<FV extends FieldValues = FieldValues, I = unknow
 
       {selectors.unitPrice && selectors.quantity && (
         <TableRow className="!border-b bg-background">
-          <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end">
+          <TableCell colSpan={colSpan} className="h-6 text-xs py-0 text-end">
             Subtotal&nbsp;(sin impuestos)
           </TableCell>
           <TableCell className="h-6 text-xs py-0 pr-5 text-nowrap">
@@ -110,7 +110,7 @@ export function FormTableFooter<FV extends FieldValues = FieldValues, I = unknow
         const taxInfo = taxMap.get(id);
         return (
           <TableRow key={`tax-${id}`} className="!border-b bg-background">
-            <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end">
+            <TableCell colSpan={colSpan} className="h-6 text-xs py-0 text-end">
               {taxInfo ? `${taxInfo.name} (${taxInfo.amount.toFixed(2)}%)` : "Impuesto"}
             </TableCell>
             <TableCell className="h-6 text-xs py-0 pr-5 text-nowrap">
@@ -123,7 +123,7 @@ export function FormTableFooter<FV extends FieldValues = FieldValues, I = unknow
 
       {selectors.unitPrice && selectors.quantity && (
         <TableRow className="!border-b">
-          <TableCell colSpan={colSpan - 1} className="h-6 text-xs py-0 text-end font-semibold">
+          <TableCell colSpan={colSpan} className="h-6 text-xs py-0 text-end font-semibold">
             Total
           </TableCell>
           <TableCell className="h-6 text-xs py-0 pr-5 font-semibold text-nowrap">
@@ -135,7 +135,7 @@ export function FormTableFooter<FV extends FieldValues = FieldValues, I = unknow
 
       {onAddRow && (
         <TableRow className="bg-background border-b-0 border-t">
-          <TableCell colSpan={colSpan + 1} className="p-0">
+          <TableCell colSpan={colSpan + 2} className="p-0">
             <Button
               type="button"
               variant="secondary"

@@ -26,13 +26,13 @@ export function usePurchaseRequestSelect<
 
   const mapFn = useCallback(
     (b: AdaptedPurchaseRequestList): O =>
-      map ? map(b) : { id: b.id, name: b.name } as O,
+      map ? map(b) : { id: b.id, name: b.sequence_id } as O,
     [map],
   )
 
   const initialOptions = useMemo(() => {
     if (!selectedPurchaseRequest) return []
-    return { id: selectedPurchaseRequest.id, name: selectedPurchaseRequest.name }
+    return { id: selectedPurchaseRequest.id, name: selectedPurchaseRequest.sequence_id }
   }, [selectedPurchaseRequest])
 
   const fetcher = useCallback(
@@ -41,7 +41,7 @@ export function usePurchaseRequestSelect<
         const bills = await searchPurchaseRequests({}, true).unwrap()
         return bills
           .filter((b) => (filter ? filter(b) : true))
-          .filter((b) => b.name.toString().toLowerCase().includes(query?.toLowerCase() ?? ""))
+          .filter((b) => b.sequence_id.toString().toLowerCase().includes(query?.toLowerCase() ?? ""))
           .sort((a, b) => b.id - a.id)
           .slice(0, limit)
           .map(mapFn)

@@ -34,12 +34,12 @@ export default function Actions() {
   const { fetcher: handleSearchPurchaseRequest } = usePurchaseRequestSelect({
     map: (purchaseRequest) => ({
       id: purchaseRequest.id,
-      name: purchaseRequest.name,
+      sequence_id: purchaseRequest.sequence_id,
       company_name: purchaseRequest.company.name,
       created_by: purchaseRequest.created_by.name,
       request_date: purchaseRequest.request_date,
     }),
-    filter: (purchaseRequest) => purchaseRequest.state === "approved"
+    filter: (purchaseRequest) => purchaseRequest.status === "approved"
   })
 
   const onSubmit = async (data: z.infer<typeof newPurchaseOrderSchema>) => {
@@ -101,14 +101,14 @@ export default function Actions() {
           Guardar
         </Button>
       </div>
-      <AsyncCommand<{ id: number, name: string, company_name: string, created_by: string, request_date: string }, number>
+      <AsyncCommand<{ id: number, sequence_id: string, company_name: string, created_by: string, request_date: string }, number>
         open={openCommand}
         onOpenChange={setOpenCommand}
         label="Solicitudes de pedido"
         fetcher={handleSearchPurchaseRequest}
         renderOption={(r) => (
           <div className="flex flex-col gap-1">
-            <span className="font-medium">{r.name}</span>
+            <span className="font-medium">{r.sequence_id}</span>
             <div className="grid grid-cols-4 items-center gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Building2 className="!h-3.5 !w-3.5" />
@@ -125,7 +125,7 @@ export default function Actions() {
               <span className="flex items-center gap-1 truncate">
                 <Calendar className="!h-3.5 !w-3.5" />
                 <p className="truncate">
-                  {r.request_date && format(parseISO(r.request_date), "PP", { locale: es })}
+                  {r.request_date}
                 </p>
               </span>
             </div>

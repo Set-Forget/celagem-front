@@ -45,8 +45,8 @@ export default function Page() {
         <DataTable
           data={purchaseRequests
             ?.toSorted((a, b) => b.id - a.id)
-            .filter(item => search.field === "name" ? item?.name?.toString().includes(search.query) : true)
-            .filter(purchaseRequest => status.length === 0 || status.includes(purchaseRequest.state))
+            .filter(item => search.field === "name" ? item?.sequence_id?.toString().includes(search.query) : true)
+            .filter(purchaseRequest => status.length === 0 || status.includes(purchaseRequest.status))
             .filter(purchaseRequest => {
               if (!requestDateStart && !requestDateEnd) return true;
               const d = new Date(purchaseRequest.request_date).getTime();

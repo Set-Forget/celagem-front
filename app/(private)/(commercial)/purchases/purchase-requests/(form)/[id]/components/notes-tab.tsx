@@ -1,9 +1,8 @@
 import RenderFields from "@/components/render-fields";
+import { AdaptedPurchaseRequestDetail } from "@/lib/adapters/purchase-requests";
 import { useGetPurchaseRequestQuery } from "@/lib/services/purchase-requests";
 import { FieldDefinition } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import { PurchaseRequestDetail } from "../../../schemas/purchase-requests";
-import { AdaptedPurchaseRequestDetail } from "@/lib/adapters/purchase-requests";
 
 const fields: FieldDefinition<AdaptedPurchaseRequestDetail>[] = [
   {

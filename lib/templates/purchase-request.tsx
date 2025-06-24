@@ -1,9 +1,7 @@
-import type { PurchaseRequestDetail } from "@/app/(private)/(commercial)/purchases/purchase-requests/schemas/purchase-requests"
-import { purchaseRequestStatus } from "@/app/(private)/(commercial)/purchases/purchase-requests/utils"
+import { STATUS_STYLES } from "@/components/status-badge"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
-import { format, parseISO } from "date-fns"
-import { es } from "date-fns/locale"
 import type React from "react"
+import { AdaptedPurchaseRequestDetail } from "../adapters/purchase-requests"
 
 const styles = StyleSheet.create({
   page: {
@@ -173,9 +171,9 @@ const styles = StyleSheet.create({
   },
 })
 
-export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ data }) => {
-  const formattedRequestDate = data.request_date && format(parseISO(data.request_date), "PP", { locale: es })
-  const formattedCreatedDate = data.created_at && format(parseISO(data.created_at), "PP", { locale: es })
+export const PurchaseRequestPDF: React.FC<{ data: AdaptedPurchaseRequestDetail }> = ({ data }) => {
+  const formattedRequestDate = data.request_date
+  const formattedCreatedDate = data.created_at
 
   return (
     <Document title={`Solicitud de Pedido ${data.sequence_id}`}>
@@ -213,7 +211,7 @@ export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ 
               </View>
               <View style={styles.row}>
                 <Text>Estado:</Text>
-                <Text style={styles.value}>{purchaseRequestStatus[data.state].label}</Text>
+                <Text style={styles.value}>{STATUS_STYLES[data.status].label}</Text>
               </View>
               {data.purchase_order && (
                 <View style={styles.row}>
@@ -293,7 +291,7 @@ export const PurchaseRequestPDF: React.FC<{ data: PurchaseRequestDetail }> = ({ 
               <View style={styles.summaryDivider} />
               <View style={styles.summaryTotal}>
                 <Text>ESTADO:</Text>
-                <Text>{purchaseRequestStatus[data.state].label}</Text>
+                <Text>{STATUS_STYLES[data.status].label}</Text>
               </View>
               {data.purchase_order && (
                 <Text style={styles.summaryNote}>Orden de compra asociada: {data.purchase_order.sequence_id}</Text>

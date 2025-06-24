@@ -7,12 +7,7 @@ export const purchaseRequestsApi = erpApi.injectEndpoints({
   endpoints: (builder) => ({
     listPurchaseRequests: builder.query<
       AdaptedPurchaseRequestList[],
-      {
-        name?: string,
-        status?: PurchaseRequestState,
-        request_date_start?: string,
-        request_date_end?: string,
-      } | void>({
+      { name?: string, status?: PurchaseRequestState, request_date_start?: string, request_date_end?: string } | void>({
         query: (data) => ({
           url: '/purchase_requests',
           params: data || {},
@@ -27,6 +22,7 @@ export const purchaseRequestsApi = erpApi.injectEndpoints({
         transformResponse: (response: PurchaseRequestDetailResponse) => getPurchaseRequestAdapter(response.data),
         providesTags: (result, error, id) => [{ type: 'PurchaseRequest', id }],
       }),
+
     updatePurchaseRequest: builder.mutation<{ status: string, message: string }, { body: Overwrite<Partial<NewPurchaseRequest>, { request_date: string, company: number }>, id: string | number }>({
       query: ({ body, id }) => ({
         url: `purchase_requests/${id}`,

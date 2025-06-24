@@ -3,31 +3,20 @@
 import {
   ColumnDef
 } from "@tanstack/react-table"
+import StatusBadge from "@/components/status-badge"
+import { AdaptedPurchaseRequestList } from "@/lib/adapters/purchase-requests"
 
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { format, parseISO } from "date-fns"
-import { purchaseRequestStatus } from "../utils"
-import { PurchaseRequestList } from "../schemas/purchase-requests"
-import { es } from "date-fns/locale"
-
-export const columns: ColumnDef<PurchaseRequestList>[] = [
+export const columns: ColumnDef<AdaptedPurchaseRequestList>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "sequence_id",
     header: "Número",
-    cell: ({ row }) => <span className="text-nowrap font-medium">{row.getValue("name")}</span>,
+    cell: ({ row }) => <span className="text-nowrap font-medium">{row.getValue("sequence_id")}</span>,
   },
   {
-    accessorKey: "state",
+    accessorKey: "status",
     header: "Estado",
     cell: ({ row }) => {
-      const status = purchaseRequestStatus[row.getValue("state") as keyof typeof purchaseRequestStatus]
-      return <Badge
-        variant="custom"
-        className={cn(`${status?.bg_color} ${status?.text_color} border-none rounded-sm`)}
-      >
-        {status?.label}
-      </Badge>
+      return <StatusBadge status={row.getValue("status")} />
     },
   },
   {
@@ -41,14 +30,14 @@ export const columns: ColumnDef<PurchaseRequestList>[] = [
     accessorKey: "request_date",
     header: "Fecha de requerimiento",
     cell: ({ row }) => <div>
-      {format(parseISO(row.getValue("request_date")), "PP", { locale: es })}
+      {row.original.request_date}
     </div>,
   },
   {
     accessorKey: "created_at",
     header: "Fecha de creación",
     cell: ({ row }) => <div>
-      {format(parseISO(row.getValue("created_at")), "PP", { locale: es })}
+      {row.original.created_at}
     </div>,
   },
   {

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useCancelPurchaseReceiptMutation, useGetPurchaseReceiptQuery, useValidatePurchaseReceiptMutation } from "@/lib/services/purchase-receipts";
 import { generatePDF } from "@/lib/templates/utils";
-import { Check, CircleX, EditIcon, Ellipsis, FileTextIcon } from "lucide-react";
+import { Check, ChevronDown, CircleX, EditIcon, Ellipsis, FileTextIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PurchaseReceiptStatus } from "../../schemas/purchase-receipts";
@@ -130,17 +130,33 @@ export default function Actions({ state }: { state?: PurchaseReceiptStatus }) {
   }
 
   return (
-    <Dropdown
-      trigger={
-        <Button size="icon" variant="outline" className="h-8 w-8">
-          <Ellipsis />
-        </Button>
-      }
-    >
-      <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
-        <FileTextIcon />
-        Previsualizar
-      </DropdownMenuItem>
-    </Dropdown>
+    <div className="flex gap-2">
+      <Dropdown
+        trigger={
+          <Button size="icon" variant="outline" className="h-8 w-8">
+            <Ellipsis />
+          </Button>
+        }
+      >
+        <DropdownMenuItem onSelect={() => handleGeneratePDF()}>
+          <FileTextIcon />
+          Previsualizar
+        </DropdownMenuItem>
+      </Dropdown>
+      <Dropdown
+        trigger={
+          <Button size="sm">
+            Crear
+            <ChevronDown />
+          </Button>
+        }
+      >
+        <DropdownMenuItem
+          onSelect={() => router.push(`/purchases/bills/new?purchase_receipt_id=${id}`)}
+        >
+          Factura de compra
+        </DropdownMenuItem>
+      </Dropdown>
+    </div>
   )
 }

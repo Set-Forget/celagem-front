@@ -1,19 +1,16 @@
-import { Badge } from "@/components/ui/badge";
+import StatusBadge from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { useGetPurchaseRequestQuery } from "@/lib/services/purchase-requests";
 import { cn } from "@/lib/utils";
-import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
 import { Building2, Calendar, LinkIcon, Package, Unlink, User } from "lucide-react";
 import Link from "next/link";
-import { defaultValues } from "../../default-values";
-import { z } from "zod";
-import { useFormContext } from "react-hook-form";
-import { newPurchaseOrderSchema } from "../../../schemas/purchase-orders";
 import { useSearchParams } from "next/navigation";
-import { useGetPurchaseRequestQuery } from "@/lib/services/purchase-requests";
-import { purchaseRequestStatus } from "@/app/(private)/(commercial)/purchases/purchase-requests/utils";
+import { useFormContext } from "react-hook-form";
+import { z } from "zod";
+import { newPurchaseOrderSchema } from "../../../schemas/purchase-orders";
+import { defaultValues } from "../../default-values";
 
 export default function PurchaseRequestPopover() {
   const searchParams = useSearchParams()
@@ -22,8 +19,6 @@ export default function PurchaseRequestPopover() {
 
   const purchaseRequestId = searchParams.get("purchase_request_id")
   const { data: purchaseRequest, isLoading: isPurchaseRequestLoading } = useGetPurchaseRequestQuery(purchaseRequestId!, { skip: !purchaseRequestId })
-
-  const status = purchaseRequestStatus[purchaseRequest?.state as keyof typeof purchaseRequestStatus]
 
   return (
     <Popover>
@@ -35,7 +30,7 @@ export default function PurchaseRequestPopover() {
           className="h-7 bg-indigo-50 text-indigo-600 shadow-lg shadow-indigo-50 hover:bg-indigo-100 hover:shadow-indigo-100 transition-all"
         >
           <LinkIcon className={cn(isPurchaseRequestLoading && "hidden")} />
-          {purchaseRequest?.name}
+          {purchaseRequest?.sequence_id}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0 overflow-hidden" align="start">
@@ -47,17 +42,12 @@ export default function PurchaseRequestPopover() {
               asChild
             >
               <Link href={`/purchases/purchase-requests/${purchaseRequest?.id}`} target="_blank">
-                {purchaseRequest?.name}
+                {purchaseRequest?.sequence_id}
               </Link>
             </Button>
             <p className="text-xs text-muted-foreground">Solicitud de Compra</p>
           </div>
-          <Badge
-            variant="custom"
-            className={cn(`${status?.bg_color} ${status?.text_color} border-none`)}
-          >
-            {status?.label}
-          </Badge>
+          <StatusBadge status={purchaseRequest?.status} />
         </div>
 
         <div className="space-y-2 p-2">
@@ -75,7 +65,7 @@ export default function PurchaseRequestPopover() {
               <span className="text-sm">Fecha de requerimiento</span>
             </div>
             <span className="text-sm max-w-[100px] text-nowrap truncate font-medium">
-              {purchaseRequest?.request_date && format(parseISO(purchaseRequest?.request_date), "PP", { locale: es })}
+              {purchaseRequest?.request_date}
             </span>
           </div>
 
